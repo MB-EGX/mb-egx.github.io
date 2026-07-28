@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MB-EGX — Trading Matrix & Sector Dashboard</title>
+    <title>Institutional Quant Engine — Out-of-Core Trading Matrix & Sector Dashboard</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js for Trendline & VWAP Charting -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Firebase (Auth + Firestore) for per-user accounts -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -62,8 +66,8 @@
             <div class="flex items-center gap-3">
                 <span class="text-3xl">🏛️</span>
                 <div>
-                    <h1 id="lbl-title" class="text-lg md:text-xl font-bold text-sky-400 tracking-wide">MB-EGX</h1>
-                    <p id="lbl-subtitle" class="text-[11px] text-textmuted">Trading Matrix & Sector Dashboard</p>
+                    <h1 id="lbl-title" class="text-lg md:text-xl font-bold text-sky-400 tracking-wide">Institutional Quant Engine — Out-of-Core Trading Matrix & Sector Dashboard</h1>
+                    <p id="lbl-subtitle" class="text-[11px] text-textmuted">Web Edition — Local Memory & Static JSON Feed</p>
                 </div>
             </div>
 
@@ -482,10 +486,22 @@
         let userHistory = JSON.parse(localStorage.getItem('quant_history')) || [];
         let hiddenCols = JSON.parse(localStorage.getItem('quant_hidden_cols')) || [];
 
+        // Saves cash/portfolio/history to this browser AND, if the user is
+        // logged in, to their private Firestore account (see the auth
+        // block near the end of <body>). Kept local-first so the app still
+        // works instantly even on a slow connection - the cloud write is
+        // fire-and-forget in the background.
+        function syncUserData() {
+            localStorage.setItem('quant_cash', userCash);
+            localStorage.setItem('quant_portfolio', JSON.stringify(userPortfolio));
+            localStorage.setItem('quant_history', JSON.stringify(userHistory));
+            if (window.cloudSyncUserData) window.cloudSyncUserData();
+        }
+
         const TRANSLATIONS = {
             EN: {
-                title: "MB-EGX",
-                subtitle: "Trading Matrix & Sector Dashboard",
+                title: "Institutional Quant Engine — Out-of-Core Trading Matrix & Sector Dashboard",
+                subtitle: "Web Edition — Local Memory & Static JSON Feed",
                 refresh: "Refresh Data", port: "+ Manage Portfolio", calc: "Risk Calculator",
                 cash: "Set Cash", themes: "Themes", cols: "Columns", reset: "Reset Filters",
                 filter: "🔍 Live Filters:", hide_illiquid: "🚫 Hide Illiquid / Unconfirmed",
@@ -497,8 +513,8 @@
                 time_zoom: "⏱️ Time Horizon:"
             },
             AR: {
-                title: "MB-EGX",
-                subtitle: "مصفوفة التداول ولوحة القطاعات",
+                title: "محرك التحليل الكمي للمؤسسات — مصفوفة التداول والقطاعات",
+                subtitle: "نسخة الويب — ذاكرة محلية وتغذية بيانات سريعة",
                 refresh: "تحديث البيانات", port: "+ إدارة المحفظة", calc: "حاسبة المخاطر",
                 cash: "تحديد النقدية", themes: "المظهر", cols: "الأعمدة", reset: "إعادة ضبط",
                 filter: "🔍 تصفية مباشرة:", hide_illiquid: "🚫 إخفاء الأسهم ضعيفة السيولة",
@@ -800,7 +816,7 @@
         }
         function saveCash() {
             userCash = parseFloat(document.getElementById('input-cash').value) || 0;
-            localStorage.setItem('quant_cash', userCash);
+            syncUserData();
             closeModal('modal-cash');
             renderAccountBar(); renderPortfolio();
         }
@@ -821,6 +837,7 @@
                 userPortfolio.push({ ticker, buyPrice: price, shares, date: new Date().toISOString().split('T')[0] });
             }
             localStorage.setItem('quant_portfolio', JSON.stringify(userPortfolio));
+            syncUserData();
             closeModal('modal-portfolio'); renderPortfolio(); renderAccountBar();
         }
         function sellPosition(ticker) {
@@ -839,17 +856,14 @@
                 realizedPnl: pnl, pnlPct: pnlPct, buyDate: pos.date, sellDate: new Date().toISOString().split('T')[0]
             });
             userPortfolio.splice(idx, 1); userCash += (cp * pos.shares);
-            localStorage.setItem('quant_portfolio', JSON.stringify(userPortfolio));
-            localStorage.setItem('quant_history', JSON.stringify(userHistory));
-            localStorage.setItem('quant_cash', userCash);
+            syncUserData();
             renderPortfolio(); renderHistory(); renderAccountBar();
         }
         function clearDemoData() {
             if (confirm("Are you sure you want to clear demo samples without deleting real trades?")) {
                 userPortfolio = userPortfolio.filter(p => !p.is_demo);
                 userHistory = userHistory.filter(h => !h.is_demo);
-                localStorage.setItem('quant_portfolio', JSON.stringify(userPortfolio));
-                localStorage.setItem('quant_history', JSON.stringify(userHistory));
+                syncUserData();
                 renderPortfolio(); renderHistory(); renderAccountBar();
             }
         }
@@ -1050,17 +1064,153 @@
             try {
                 const response = await fetch('./data/market_data.json');
                 globalData = await response.json();
-                if (globalData.cash_balance && userCash === 0) { userCash = globalData.cash_balance; localStorage.setItem('quant_cash', userCash); }
                 populateSelects(); applyFilters(); renderSectors(); renderTop10(); renderPortfolio(); renderHistory(); renderAccountBar();
             } catch (error) {
                 console.error("Failed to load market data:", error);
-                document.getElementById('tbody-matrix').innerHTML = `<tr><td colspan="16" class="p-8 text-center text-rose-400 font-sans">⚠️ Could not load ./data/market_data.json. Ensure your local HTTP server is running!</td></tr>`;
+                document.getElementById('tbody-matrix').innerHTML = `<tr><td colspan="16" class="p-8 text-center text-rose-400 font-sans">⚠️ Data temporarily unavailable. Please try refreshing in a moment.</td></tr>`;
             }
         }
 
         // Initialize
         applyTheme(localStorage.getItem('quant_theme') || 'dark');
         loadMarketData();
+    </script>
+
+    <!-- ===================== LOGIN GATE (Firebase Auth) ===================== -->
+    <!-- Covers the whole screen until the visitor signs in. Market data still
+         loads in the background (harmless, public data), but nobody can see
+         or touch the dashboard - or any portfolio data - while this is up. -->
+    <div id="auth-gate" class="fixed inset-0 z-[9999] bg-[#0f1115] flex items-center justify-center p-4">
+        <div class="w-full max-w-sm bg-[#1a1d24] border border-[#2d3748] rounded-xl p-8 shadow-2xl">
+            <h2 class="text-xl font-bold text-sky-400 mb-1 text-center">MB-EGX</h2>
+            <p class="text-xs text-slate-400 mb-6 text-center">Sign in to view your private dashboard</p>
+
+            <div id="auth-error" class="hidden mb-4 text-xs text-rose-400 bg-rose-950/40 border border-rose-800 rounded p-2"></div>
+
+            <input id="auth-email" type="email" placeholder="Email" autocomplete="email"
+                   class="w-full mb-3 px-3 py-2 rounded bg-[#0f1115] border border-[#2d3748] text-sm text-slate-200 focus:outline-none focus:border-sky-500">
+            <input id="auth-password" type="password" placeholder="Password" autocomplete="current-password"
+                   class="w-full mb-4 px-3 py-2 rounded bg-[#0f1115] border border-[#2d3748] text-sm text-slate-200 focus:outline-none focus:border-sky-500">
+
+            <button onclick="handleEmailSignIn()" id="btn-auth-signin"
+                    class="w-full mb-2 py-2 rounded bg-sky-600 hover:bg-sky-500 text-sm font-semibold text-white transition">Sign In</button>
+            <button onclick="handleEmailSignUp()" id="btn-auth-signup"
+                    class="w-full mb-4 py-2 rounded bg-transparent border border-[#2d3748] hover:bg-[#222730] text-sm text-slate-300 transition">Create Account</button>
+
+            <div class="flex items-center gap-2 mb-4">
+                <div class="h-px flex-1 bg-[#2d3748]"></div>
+                <span class="text-[10px] text-slate-500">OR</span>
+                <div class="h-px flex-1 bg-[#2d3748]"></div>
+            </div>
+
+            <button onclick="handleGoogleSignIn()"
+                    class="w-full py-2 rounded bg-white hover:bg-slate-100 text-sm font-semibold text-slate-800 flex items-center justify-center gap-2 transition">
+                <svg width="16" height="16" viewBox="0 0 48 48">
+                    <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.6-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"/>
+                    <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6 29.6 4 24 4c-7.6 0-14.1 4.3-17.4 10.7z"/>
+                    <path fill="#4CAF50" d="M24 44c5.5 0 10.4-1.9 14.2-5.1l-6.6-5.4C29.6 35.5 27 36.5 24 36.5c-5.3 0-9.6-3.4-11.3-8l-6.6 5.1C9.9 39.7 16.4 44 24 44z"/>
+                    <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.3-4.1 5.6l6.6 5.4C41.7 35.6 44 30.2 44 24c0-1.3-.1-2.7-.4-3.5z"/>
+                </svg>
+                Sign in with Google
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- Firebase setup ---
+        // These are PUBLIC client identifiers (not secrets) - safe to be
+        // visible in page source. Real access control happens server-side
+        // via Firestore security rules, not by hiding this config.
+        const firebaseConfig = {
+            apiKey: "AIzaSyBCC4D61IHTEFNsgO6i8H_BdixwArE-VRo",
+            authDomain: "mb-egx-12d11.firebaseapp.com",
+            projectId: "mb-egx-12d11",
+            storageBucket: "mb-egx-12d11.firebasestorage.app",
+            messagingSenderId: "739444696466",
+            appId: "1:739444696466:web:6947bf8d9198e799410d4b"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        function showAuthError(msg) {
+            const el = document.getElementById('auth-error');
+            el.textContent = msg;
+            el.classList.remove('hidden');
+        }
+        function clearAuthError() {
+            document.getElementById('auth-error').classList.add('hidden');
+        }
+
+        function handleEmailSignIn() {
+            clearAuthError();
+            const email = document.getElementById('auth-email').value.trim();
+            const password = document.getElementById('auth-password').value;
+            if (!email || !password) { showAuthError("Enter both email and password."); return; }
+            auth.signInWithEmailAndPassword(email, password).catch(err => showAuthError(err.message));
+        }
+
+        function handleEmailSignUp() {
+            clearAuthError();
+            const email = document.getElementById('auth-email').value.trim();
+            const password = document.getElementById('auth-password').value;
+            if (!email || !password) { showAuthError("Enter both email and password."); return; }
+            if (password.length < 6) { showAuthError("Password must be at least 6 characters."); return; }
+            auth.createUserWithEmailAndPassword(email, password).catch(err => showAuthError(err.message));
+        }
+
+        function handleGoogleSignIn() {
+            clearAuthError();
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider).catch(err => showAuthError(err.message));
+        }
+
+        function handleSignOut() {
+            auth.signOut();
+        }
+
+        // Pulls this user's private cash/portfolio/history from Firestore.
+        // If this is their very first login and they already had local
+        // browser data (from using the site before signing up), that data
+        // is migrated up to their new account instead of being discarded.
+        async function loadUserDataFromCloud(uid) {
+            const docRef = db.collection('users').doc(uid);
+            const snap = await docRef.get();
+            if (snap.exists) {
+                const data = snap.data();
+                userCash = data.cash || 0;
+                userPortfolio = data.portfolio || [];
+                userHistory = data.history || [];
+                localStorage.setItem('quant_cash', userCash);
+                localStorage.setItem('quant_portfolio', JSON.stringify(userPortfolio));
+                localStorage.setItem('quant_history', JSON.stringify(userHistory));
+            } else {
+                await docRef.set({ cash: userCash, portfolio: userPortfolio, history: userHistory });
+            }
+            if (typeof renderAccountBar === 'function') renderAccountBar();
+            if (typeof renderPortfolio === 'function') renderPortfolio();
+            if (typeof renderHistory === 'function') renderHistory();
+        }
+
+        // Called by syncUserData() (defined earlier in the core script)
+        // every time cash/portfolio/history changes, so it's always backed
+        // up to the user's account - not just this one browser.
+        window.cloudSyncUserData = function () {
+            if (!auth.currentUser) return;
+            db.collection('users').doc(auth.currentUser.uid).set({
+                cash: userCash, portfolio: userPortfolio, history: userHistory
+            }).catch(err => console.error('Cloud sync failed:', err));
+        };
+
+        auth.onAuthStateChanged(function (user) {
+            const gate = document.getElementById('auth-gate');
+            if (user) {
+                gate.style.display = 'none';
+                loadUserDataFromCloud(user.uid);
+            } else {
+                gate.style.display = 'flex';
+            }
+        });
     </script>
 </body>
 </html>
