@@ -16,12 +16,6 @@ setlocal
 cd /d "%~dp0"
 
 REM --- Prefer the project's venv Python if present, else fall back to PATH ---
-if exist "venv\Scripts\pythonw.exe" (
-    set "PYW=venv\Scripts\pythonw.exe"
-) else (
-    set "PYW=pythonw"
-)
-
 if exist "venv\Scripts\python.exe" (
     set "PY=venv\Scripts\python.exe"
 ) else (
@@ -31,7 +25,10 @@ if exist "venv\Scripts\python.exe" (
 echo ============================================
 echo  Starting Stock-Web desktop app...
 echo ============================================
-start "" "%PYW%" app_gui.py
+REM Launched with python.exe (not pythonw) in its own console window and
+REM /k so that window stays open if the app crashes on startup — that
+REM way any error/traceback is visible instead of silently disappearing.
+start "Stock-Web App" cmd /k ""%PY%" app_gui.py"
 
 echo.
 echo ============================================
