@@ -100,6 +100,7 @@ def export_market_matrix():
 
     buys, exits, top10, closed_trades, fin_stmt, sectors = matrix.analyze_market()
     cash = dbm.get_cash_balance()
+    last_data_date = dbm.get_latest_market_date()
 
     # Filter demo trades so the public web export doesn't leak them
     real_closed = [t for t in closed_trades if not t.get("is_demo")]
@@ -115,6 +116,7 @@ def export_market_matrix():
 
     payload = {
         "cash_balance": cash,
+        "last_data_date": last_data_date,
         "financial_statement": fin_stmt,
         "market_matrix": buys,
         "sectors": sectors,

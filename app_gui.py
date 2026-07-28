@@ -19,7 +19,7 @@ from PyQt6.QtWidgets import (
 
 TRANSLATIONS = {
     "EN": {
-        "title": "Institutional Quant Engine — Out-of-Core Trading Matrix & Sector Dashboard",
+        "title": "MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard",
         "scan_folder": "📂 Scan Folder:",
         "browse": "Browse Folder...",
         "ingest": "⚡ Run Ingestion",
@@ -50,7 +50,7 @@ TRANSLATIONS = {
         "equity_lbl": "🏛️ Total Account Equity:",
     },
     "AR": {
-        "title": "محرك التحليل الكمي للمؤسسات — مصفوفة التداول والقطاعات",
+        "title": "MB-EGX — مصفوفة التداول والقطاعات",
         "scan_folder": "📂 مجلد البيانات:",
         "browse": "استعراض...",
         "ingest": "⚡ معالجة البيانات",
@@ -646,7 +646,7 @@ class AnalysisWorker(QThread):
 class QuantDashboard(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Institutional Quant Engine — Out-of-Core Trading Matrix & Sector Dashboard")
+        self.setWindowTitle("MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard")
         self.resize(1520, 920)
         self.dbm = DatabaseManager()
         self.qe = QuantitativeEngine()

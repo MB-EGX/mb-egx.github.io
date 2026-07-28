@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Institutional Quant Engine — Out-of-Core Trading Matrix & Sector Dashboard</title>
+    <title>MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js for Trendline & VWAP Charting -->
@@ -66,8 +66,9 @@
             <div class="flex items-center gap-3">
                 <span class="text-3xl">🏛️</span>
                 <div>
-                    <h1 id="lbl-title" class="text-lg md:text-xl font-bold text-sky-400 tracking-wide">Institutional Quant Engine — Out-of-Core Trading Matrix & Sector Dashboard</h1>
+                    <h1 id="lbl-title" class="text-lg md:text-xl font-bold text-sky-400 tracking-wide">MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard</h1>
                     <p id="lbl-subtitle" class="text-[11px] text-textmuted">Web Edition — Local Memory & Static JSON Feed</p>
+                    <p class="text-[11px] text-textmuted mt-0.5">📅 <span id="lbl-last-date">Last Data Date:</span> <strong id="val-last-date" class="text-sky-400">—</strong></p>
                 </div>
             </div>
 
@@ -500,12 +501,13 @@
 
         const TRANSLATIONS = {
             EN: {
-                title: "Institutional Quant Engine — Out-of-Core Trading Matrix & Sector Dashboard",
+                title: "MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard",
                 subtitle: "Web Edition — Local Memory & Static JSON Feed",
                 refresh: "Refresh Data", port: "+ Manage Portfolio", calc: "Risk Calculator",
                 cash: "Set Cash", themes: "Themes", cols: "Columns", reset: "Reset Filters",
                 filter: "🔍 Live Filters:", hide_illiquid: "🚫 Hide Illiquid / Unconfirmed",
                 cash_lbl: "Cash Balance:", stock_lbl: "Stock Portfolio Value:", equity_lbl: "Total Account Equity:",
+                last_date: "Last Data Date:",
                 tab_matrix: "📈 Full Market Action Matrix", tab_sectors: "🏢 Sector Heatmap & Rotation",
                 tab_exits: "🛡️ Owned Portfolio Exit Strategy", tab_history: "📜 Trade History & Realized P&L",
                 tab_fin: "📊 Financial Statement", tab_top10: "🏆 Top 10 Overview", tab_charts: "📊 Charts & Trend Lines",
@@ -513,12 +515,13 @@
                 time_zoom: "⏱️ Time Horizon:"
             },
             AR: {
-                title: "محرك التحليل الكمي للمؤسسات — مصفوفة التداول والقطاعات",
+                title: "MB-EGX — مصفوفة التداول والقطاعات",
                 subtitle: "نسخة الويب — ذاكرة محلية وتغذية بيانات سريعة",
                 refresh: "تحديث البيانات", port: "+ إدارة المحفظة", calc: "حاسبة المخاطر",
                 cash: "تحديد النقدية", themes: "المظهر", cols: "الأعمدة", reset: "إعادة ضبط",
                 filter: "🔍 تصفية مباشرة:", hide_illiquid: "🚫 إخفاء الأسهم ضعيفة السيولة",
                 cash_lbl: "الرصيد النقدي:", stock_lbl: "قيمة محفظة الأسهم:", equity_lbl: "إجمالي حقوق الحساب:",
+                last_date: "تاريخ أحدث بيانات:",
                 tab_matrix: "📈 مصفوفة السوق الكاملة", tab_sectors: "🏢 خريطة القطاعات والسيولة",
                 tab_exits: "🛡️ إستراتيجية الخروج للمحفظة", tab_history: "📜 سجل الصفقات والربح المحقق",
                 tab_fin: "📊 القوائم المالية", tab_top10: "🏆 أفضل 10 أسهم", tab_charts: "📊 الرسوم البيانية والاتجاهات",
@@ -554,6 +557,7 @@
             document.getElementById('lbl-cash').innerText = t.cash_lbl;
             document.getElementById('lbl-stock-val').innerText = t.stock_lbl;
             document.getElementById('lbl-equity').innerText = t.equity_lbl;
+            document.getElementById('lbl-last-date').innerText = t.last_date;
             document.getElementById('btn-tab-matrix').innerText = t.tab_matrix;
             document.getElementById('btn-tab-sectors').innerText = t.tab_sectors;
             document.getElementById('btn-tab-exits').innerText = t.tab_exits;
@@ -1064,6 +1068,7 @@
             try {
                 const response = await fetch('./data/market_data.json');
                 globalData = await response.json();
+                document.getElementById('val-last-date').innerText = globalData.last_data_date || "N/A";
                 populateSelects(); applyFilters(); renderSectors(); renderTop10(); renderPortfolio(); renderHistory(); renderAccountBar();
             } catch (error) {
                 console.error("Failed to load market data:", error);
