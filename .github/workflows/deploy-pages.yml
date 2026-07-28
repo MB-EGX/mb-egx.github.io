@@ -1,0 +1,43 @@
+# Place this file at:  .github/workflows/deploy-pages.yml
+#
+# One-time setup after adding this file:
+#   Repo → Settings → Pages → "Build and deployment" → Source → "GitHub Actions"
+# (You do this once. After that, every push that touches web_public/
+#  redeploys the live site automatically — no further manual steps.)
+
+name: Deploy website
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "web_public/**"
+  workflow_dispatch:   # lets you manually trigger a redeploy from the Actions tab if needed
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one deployment at a time; a newer push cancels an in-flight older one.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web_public
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

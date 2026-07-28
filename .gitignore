@@ -1,0 +1,36 @@
+# Python bytecode & caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+venv/
+env/
+.venv/
+ENV/
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# DuckDB — runtime artefacts
+quant_master.duckdb
+quant_master.duckdb.wal
+*.duckdb.tmp
+
+# Application logs
+quant_app.log
+
+# Drop-folder for new market data spreadsheets (user-managed)
+market_data_feeds/
+
+# Generated web dashboard payload
+web_public/data/
+
+# Editor backups
+*.bak
+*~

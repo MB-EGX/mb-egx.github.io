@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en" class="dark" id="html-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Institutional Quant Engine — Out-of-Core Trading Matrix & Sector Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for Trendline & VWAP Charting -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: 'var(--bg-main)',
+                        panelbg: 'var(--bg-panel)',
+                        bordercol: 'var(--border-col)',
+                        accent: 'var(--accent-col)',
+                        textmain: 'var(--text-main)',
+                        textmuted: 'var(--text-muted)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --bg-main: #1a1d24; --bg-panel: #222730; --border-col: #2d3748;
+            --accent-col: #3182ce; --text-main: #e2e8f0; --text-muted: #a0aec0;
+        }
+        [data-theme="light"] {
+            --bg-main: #f8fafc; --bg-panel: #ffffff; --border-col: #cbd5e0;
+            --accent-col: #2b6cb0; --text-main: #1a202c; --text-muted: #4a5568;
+        }
+        [data-theme="blue"] {
+            --bg-main: #0f172a; --bg-panel: #1e293b; --border-col: #334155;
+            --accent-col: #0284c7; --text-main: #f8fafc; --text-muted: #94a3b8;
+        }
+        [data-theme="blush"] {
+            --bg-main: #fdf2f8; --bg-panel: #ffffff; --border-col: #fbcfe8;
+            --accent-col: #ec4899; --text-main: #500724; --text-muted: #831843;
+        }
+        [data-theme="velvet"] {
+            --bg-main: #20131a; --bg-panel: #311825; --border-col: #3f2231;
+            --accent-col: #e11d48; --text-main: #ffe4e6; --text-muted: #f472b6;
+        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-main); }
+        ::-webkit-scrollbar-thumb { background: var(--border-col); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-col); }
+        .tab-active { background-color: var(--accent-col) !important; color: #ffffff !important; font-weight: bold; }
+    </style>
+</head>
+<body class="bg-darkbg text-textmain font-sans min-h-screen text-xs md:text-sm transition-colors duration-200 pb-16">
+    
+    <div class="max-w-[1650px] mx-auto p-3 md:p-5 space-y-4">
+        
+        <!-- Header Bar -->
+        <header class="bg-panelbg p-4 rounded-xl border border-bordercol shadow-xl flex flex-col xl:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <span class="text-3xl">🏛️</span>
+                <div>
+                    <h1 id="lbl-title" class="text-lg md:text-xl font-bold text-sky-400 tracking-wide">Institutional Quant Engine — Out-of-Core Trading Matrix & Sector Dashboard</h1>
+                    <p id="lbl-subtitle" class="text-[11px] text-textmuted">Web Edition — Local Memory & Static JSON Feed</p>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="flex flex-wrap items-center gap-2">
+                <button onclick="loadMarketData()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
+                    <span>⚡</span> <span id="btn-refresh-text">Refresh Data</span>
+                </button>
+                <button onclick="openModal('modal-portfolio')" class="bg-purple-600 hover:bg-purple-500 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
+                    <span>💼</span> <span id="btn-port-text">+ Manage Portfolio</span>
+                </button>
+                <button onclick="openModal('modal-calc')" class="bg-amber-600 hover:bg-amber-500 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
+                    <span>⚖️</span> <span id="btn-calc-text">Risk Calculator</span>
+                </button>
+                <button onclick="openModal('modal-cash')" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
+                    <span>💵</span> <span id="btn-cash-text">Set Cash</span>
+                </button>
+                <button onclick="openModal('modal-theme')" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
+                    <span>⚙️</span> <span id="btn-theme-text">Themes</span>
+                </button>
+                <select id="lang-select" onchange="switchLanguage(this.value)" class="bg-darkbg border border-bordercol rounded-lg px-2.5 py-2 text-white font-bold cursor-pointer">
+                    <option value="EN">🇬🇧 English</option>
+                    <option value="AR">🇪🇬 العربية</option>
+                </select>
+            </div>
+        </header>
+
+        <!-- Account Equity Bar -->
+        <div class="bg-panelbg px-4 py-2.5 rounded-lg border border-bordercol shadow flex flex-col md:flex-row justify-between items-center text-center font-semibold tracking-wide text-xs md:text-sm gap-2" id="account-bar">
+            <span>💵 <span id="lbl-cash">Cash Balance:</span> <strong class="text-emerald-400">0.00 EGP</strong></span>
+            <span class="hidden md:inline text-bordercol">|</span>
+            <span>📈 <span id="lbl-stock-val">Stock Portfolio Value:</span> <strong class="text-sky-400">0.00 EGP</strong></span>
+            <span class="hidden md:inline text-bordercol">|</span>
+            <span>🏛️ <span id="lbl-equity">Total Account Equity:</span> <strong class="text-amber-400">0.00 EGP</strong></span>
+        </div>
+
+        <!-- Live Filters Bar -->
+        <div class="bg-panelbg p-3 rounded-xl border border-bordercol shadow flex flex-col lg:flex-row items-center gap-3">
+            <span id="lbl-filter" class="font-bold text-sky-400 flex items-center gap-1 whitespace-nowrap">🔍 Live Filters:</span>
+            
+            <input type="text" id="filter-search" oninput="applyFilters()" placeholder="Search Ticker or keyword..." 
+                class="bg-darkbg border border-bordercol rounded px-3 py-1.5 text-textmain w-full lg:w-56 focus:outline-none focus:border-sky-500">
+
+            <select id="filter-action" onchange="applyFilters()" class="bg-darkbg border border-bordercol rounded px-2 py-1.5 text-textmain w-full lg:w-auto">
+                <option value="All">All Actions</option>
+                <option value="🔥 STRONG BUY">🔥 STRONG BUY</option>
+                <option value="⚡ BREAKOUT BUY">⚡ BREAKOUT BUY</option>
+                <option value="📈 ACCUMULATE">📈 ACCUMULATE</option>
+                <option value="⏳ BUY ON DIP">⏳ BUY ON DIP</option>
+                <option value="🟡 HOLD">🟡 HOLD / NEUTRAL</option>
+                <option value="🛑 SELL">🛑 SELL / AVOID</option>
+            </select>
+
+            <select id="filter-trend" onchange="applyFilters()" class="bg-darkbg border border-bordercol rounded px-2 py-1.5 text-textmain w-full lg:w-auto">
+                <option value="All">All Trends</option>
+                <option value="Strong Bullish">Strong Bullish</option>
+                <option value="Weak Bullish">Weak Bullish</option>
+                <option value="Consolidation">Consolidation / Neutral</option>
+                <option value="Weak Bearish">Weak Bearish</option>
+                <option value="Strong Bearish">Strong Bearish</option>
+            </select>
+
+            <select id="filter-confidence" onchange="applyFilters()" class="bg-darkbg border border-bordercol rounded px-2 py-1.5 text-textmain w-full lg:w-auto">
+                <option value="All">All Data Confidence</option>
+                <option value="High">High (1Y+)</option>
+                <option value="Medium">Medium (<1 Year)</option>
+                <option value="Low">Low (<3 Months)</option>
+            </select>
+
+            <label class="flex items-center gap-2 cursor-pointer bg-darkbg px-3 py-1.5 rounded border border-bordercol whitespace-nowrap">
+                <input type="checkbox" id="filter-illiquid" onchange="applyFilters()" checked class="rounded bg-slate-800 text-sky-500 focus:ring-0">
+                <span id="lbl-hide-illiquid">🚫 Hide Illiquid / Unconfirmed</span>
+            </label>
+
+            <button onclick="openModal('modal-columns')" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded font-bold whitespace-nowrap transition">
+                👁️ <span id="btn-cols-text">Columns</span>
+            </button>
+
+            <button onclick="resetFilters()" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded font-bold whitespace-nowrap ml-auto transition" id="btn-reset-text">
+                Reset Filters
+            </button>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="border-b border-bordercol flex flex-wrap gap-1 bg-panelbg px-2 pt-2 rounded-t-xl">
+            <button onclick="switchTab('tab-matrix')" id="btn-tab-matrix" class="px-4 py-2.5 rounded-t-lg font-semibold bg-darkbg text-textmuted hover:text-textmain transition tab-active">
+                📈 Full Market Action Matrix
+            </button>
+            <button onclick="switchTab('tab-sectors')" id="btn-tab-sectors" class="px-4 py-2.5 rounded-t-lg font-semibold bg-darkbg text-textmuted hover:text-textmain transition">
+                🏢 Sector Heatmap & Rotation
+            </button>
+            <button onclick="switchTab('tab-exits')" id="btn-tab-exits" class="px-4 py-2.5 rounded-t-lg font-semibold bg-darkbg text-textmuted hover:text-textmain transition">
+                🛡️ Owned Portfolio Exit Strategy
+            </button>
+            <button onclick="switchTab('tab-history')" id="btn-tab-history" class="px-4 py-2.5 rounded-t-lg font-semibold bg-darkbg text-textmuted hover:text-textmain transition">
+                📜 Trade History & Realized P&L
+            </button>
+            <button onclick="switchTab('tab-fin')" id="btn-tab-fin" class="px-4 py-2.5 rounded-t-lg font-semibold bg-darkbg text-textmuted hover:text-textmain transition">
+                📊 Financial Statement
+            </button>
+            <button onclick="switchTab('tab-top10')" id="btn-tab-top10" class="px-4 py-2.5 rounded-t-lg font-semibold bg-darkbg text-textmuted hover:text-textmain transition">
+                🏆 Top 10 Overview
+            </button>
+            <button onclick="switchTab('tab-charts')" id="btn-tab-charts" class="px-4 py-2.5 rounded-t-lg font-semibold bg-darkbg text-textmuted hover:text-textmain transition">
+                📊 Charts & Trend Lines
+            </button>
+        </div>
+
+        <!-- TAB 1: MATRIX -->
+        <div id="tab-matrix" class="bg-panelbg rounded-b-xl border border-t-0 border-bordercol p-4 shadow-xl overflow-hidden">
+            <div class="overflow-x-auto max-h-[680px]">
+                <table class="w-full text-left border-collapse whitespace-nowrap font-mono" id="table-matrix">
+                    <thead class="sticky top-0 bg-[#2d3748] text-white font-sans text-xs z-10 shadow">
+                        <tr id="thead-matrix-tr">
+                            <th class="p-2.5 border border-darkbg" data-col="0">#</th>
+                            <th class="p-2.5 border border-darkbg" data-col="1">Ticker</th>
+                            <th class="p-2.5 border border-darkbg text-center" data-col="2">Action</th>
+                            <th class="p-2.5 border border-darkbg" data-col="3">Score</th>
+                            <th class="p-2.5 border border-darkbg" data-col="4">Price</th>
+                            <th class="p-2.5 border border-darkbg" data-col="5">Entry (VWAP)</th>
+                            <th class="p-2.5 border border-darkbg" data-col="6">Stop-Loss</th>
+                            <th class="p-2.5 border border-darkbg" data-col="7">Shares (1% Risk)</th>
+                            <th class="p-2.5 border border-darkbg" data-col="8">Proj. Gain %</th>
+                            <th class="p-2.5 border border-darkbg" data-col="9">Pattern Conf %</th>
+                            <th class="p-2.5 border border-darkbg font-sans" data-col="10">Trend</th>
+                            <th class="p-2.5 border border-darkbg" data-col="11">RSI-14</th>
+                            <th class="p-2.5 border border-darkbg" data-col="12">ADX-14</th>
+                            <th class="p-2.5 border border-darkbg" data-col="13">Vol Z-Score</th>
+                            <th class="p-2.5 border border-darkbg" data-col="14">Avg Vol (20D)</th>
+                            <th class="p-2.5 border border-darkbg font-sans" data-col="15">Data Conf.</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-matrix" class="divide-y divide-bordercol/50 text-xs">
+                        <tr><td colspan="16" class="p-8 text-center text-textmuted font-sans">Loading quantitative matrix...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 2: SECTORS -->
+        <div id="tab-sectors" class="bg-panelbg rounded-b-xl border border-t-0 border-bordercol p-4 shadow-xl hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse whitespace-nowrap">
+                    <thead class="bg-[#2d3748] text-white text-xs">
+                        <tr>
+                            <th class="p-2.5 border border-darkbg">Sector</th>
+                            <th class="p-2.5 border border-darkbg text-center">Stocks</th>
+                            <th class="p-2.5 border border-darkbg text-right">1D Return (%)</th>
+                            <th class="p-2.5 border border-darkbg text-right">5D Return (%)</th>
+                            <th class="p-2.5 border border-darkbg text-right">Money Flow (CMF)</th>
+                            <th class="p-2.5 border border-darkbg text-right">Bullish Breadth (%)</th>
+                            <th class="p-2.5 border border-darkbg text-right">Traded Value (EGP)</th>
+                            <th class="p-2.5 border border-darkbg text-center">Sector Leader</th>
+                            <th class="p-2.5 border border-darkbg text-center">Sector Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-sectors" class="divide-y divide-bordercol/50 text-xs font-mono">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 3: OWNED PORTFOLIO -->
+        <div id="tab-exits" class="bg-panelbg rounded-b-xl border border-t-0 border-bordercol p-4 shadow-xl hidden space-y-4">
+            <div class="flex justify-between items-center">
+                <span class="text-textmuted text-xs">Positions stored securely in browser local storage.</span>
+                <div class="flex gap-2">
+                    <button onclick="clearDemoData()" class="bg-rose-800 hover:bg-rose-700 text-white px-3 py-1.5 rounded font-bold text-xs">🧹 Clear Demo Data</button>
+                    <button onclick="openModal('modal-portfolio')" class="bg-purple-600 hover:bg-purple-500 text-white px-3 py-1.5 rounded font-bold text-xs">+ Add Position</button>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse whitespace-nowrap font-mono">
+                    <thead class="bg-[#2d3748] text-white font-sans text-xs">
+                        <tr>
+                            <th class="p-2.5 border border-darkbg">Ticker</th>
+                            <th class="p-2.5 border border-darkbg">Shares</th>
+                            <th class="p-2.5 border border-darkbg">Buy Price</th>
+                            <th class="p-2.5 border border-darkbg">Current Price</th>
+                            <th class="p-2.5 border border-darkbg">P&L (EGP)</th>
+                            <th class="p-2.5 border border-darkbg">P&L (%)</th>
+                            <th class="p-2.5 border border-darkbg text-center font-sans">Action Command</th>
+                            <th class="p-2.5 border border-darkbg">Take-Profit</th>
+                            <th class="p-2.5 border border-darkbg">Trailing Stop</th>
+                            <th class="p-2.5 border border-darkbg font-sans">Trend</th>
+                            <th class="p-2.5 border border-darkbg font-sans text-center">Manage</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-exits" class="divide-y divide-bordercol/50 text-xs">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 4: TRADE HISTORY -->
+        <div id="tab-history" class="bg-panelbg rounded-b-xl border border-t-0 border-bordercol p-4 shadow-xl hidden space-y-4">
+            <div class="flex justify-between items-center">
+                <span class="text-textmuted text-xs">Closed trade ledger.</span>
+                <button onclick="exportAuditLedger()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded font-bold text-xs flex items-center gap-1">
+                    📥 Export Tax & Audit Ledger (CSV)
+                </button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse whitespace-nowrap font-mono">
+                    <thead class="bg-[#2d3748] text-white font-sans text-xs">
+                        <tr>
+                            <th class="p-2.5 border border-darkbg">Ticker</th>
+                            <th class="p-2.5 border border-darkbg">Shares Sold</th>
+                            <th class="p-2.5 border border-darkbg">Buy Price</th>
+                            <th class="p-2.5 border border-darkbg">Sell Price</th>
+                            <th class="p-2.5 border border-darkbg">Realized P&L (EGP)</th>
+                            <th class="p-2.5 border border-darkbg">Realized P&L (%)</th>
+                            <th class="p-2.5 border border-darkbg">Purchase Date</th>
+                            <th class="p-2.5 border border-darkbg">Sell Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-history" class="divide-y divide-bordercol/50 text-xs">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 5: FINANCIALS -->
+        <div id="tab-fin" class="bg-panelbg rounded-b-xl border border-t-0 border-bordercol p-4 shadow-xl hidden">
+            <div class="max-w-3xl mx-auto bg-darkbg p-6 rounded-xl border border-bordercol shadow">
+                <h3 class="text-base font-bold text-sky-400 mb-4 border-b border-bordercol pb-2">📊 Account Financial Overview</h3>
+                <div id="fin-statement-content" class="space-y-3 font-mono text-sm"></div>
+            </div>
+        </div>
+
+        <!-- TAB 6: TOP 10 -->
+        <div id="tab-top10" class="bg-panelbg rounded-b-xl border border-t-0 border-bordercol p-4 shadow-xl hidden">
+            <div id="top10-container" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+        </div>
+
+        <!-- TAB 7: CHARTS & TREND LINES -->
+        <div id="tab-charts" class="bg-panelbg rounded-b-xl border border-t-0 border-bordercol p-4 shadow-xl hidden space-y-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 bg-darkbg p-3 rounded-xl border border-bordercol">
+                <div class="flex items-center gap-4">
+                    <label class="flex items-center gap-1.5 font-bold cursor-pointer">
+                        <input type="radio" name="chart_mode" value="stock" checked onchange="onChartModeChange()" class="text-sky-500">
+                        <span id="lbl-rad-stock">📈 Per Stock</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 font-bold cursor-pointer">
+                        <input type="radio" name="chart_mode" value="sector" onchange="onChartModeChange()" class="text-sky-500">
+                        <span id="lbl-rad-sector">🏢 Per Sector</span>
+                    </label>
+                </div>
+                <div class="flex items-center gap-2 w-full md:w-auto">
+                    <span class="font-bold text-textmuted" id="lbl-chart-select">Select Item:</span>
+                    <select id="chart-selector" onchange="plotChart()" class="bg-panelbg border border-bordercol rounded px-3 py-1.5 text-textmain font-bold w-full md:w-64"></select>
+                </div>
+            </div>
+
+            <!-- Time Horizon Zoom Filter Bar -->
+            <div class="flex flex-wrap items-center justify-between gap-2 bg-darkbg p-2.5 rounded-lg border border-bordercol text-xs">
+                <div class="flex items-center gap-1" id="timeframe-buttons">
+                    <span class="font-bold text-sky-400 mr-2" id="lbl-time-zoom">⏱️ Time Horizon:</span>
+                    <button onclick="applyTimeFrame('1W')" class="px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white" data-tf="1W">1W (1 Week)</button>
+                    <button onclick="applyTimeFrame('2W')" class="px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white" data-tf="2W">2W (2 Weeks)</button>
+                    <button onclick="applyTimeFrame('1M')" class="px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white" data-tf="1M">1M (1 Month)</button>
+                    <button onclick="applyTimeFrame('3M')" class="px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white" data-tf="3M">3M (3 Months)</button>
+                    <button onclick="applyTimeFrame('6M')" class="px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white" data-tf="6M">6M (6 Months)</button>
+                    <button onclick="applyTimeFrame('1Y')" class="px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white" data-tf="1Y">1Y (1 Year)</button>
+                    <button onclick="applyTimeFrame('ALL')" class="px-2.5 py-1 rounded font-bold transition bg-sky-600 text-white" data-tf="ALL">ALL History</button>
+                </div>
+                <span id="lbl-bars-shown" class="text-textmuted font-mono text-[11px]">Showing all available bars</span>
+            </div>
+
+            <!-- Alphabet Quick Filter -->
+            <div id="alpha-container" class="flex flex-wrap items-center gap-1 bg-darkbg p-2 rounded-lg border border-bordercol text-xs">
+                <span class="font-bold text-textmuted mr-2" id="lbl-alpha-quick">🔤 Quick Filter:</span>
+                <!-- Generated dynamically -->
+            </div>
+
+            <!-- Canvas Container -->
+            <div class="bg-darkbg p-4 rounded-xl border border-bordercol relative h-[500px] w-full">
+                <canvas id="mainChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODALS -->
+    <!-- Column Chooser Modal -->
+    <div id="modal-columns" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-panelbg border border-bordercol rounded-xl max-w-sm w-full p-5 space-y-4 shadow-2xl max-h-[80vh] flex flex-col">
+            <h3 class="text-base font-bold text-sky-400">👁️ Select Columns to Display</h3>
+            <div class="flex gap-2">
+                <button onclick="toggleAllColumns(true)" class="bg-blue-600 text-white px-3 py-1 rounded text-xs font-bold flex-1">Select All</button>
+                <button onclick="toggleAllColumns(false)" class="bg-slate-700 text-white px-3 py-1 rounded text-xs font-bold flex-1">Deselect All</button>
+            </div>
+            <div id="col-checkboxes" class="overflow-y-auto space-y-2 text-xs flex-1 border border-bordercol p-3 rounded bg-darkbg"></div>
+            <div class="flex justify-end">
+                <button onclick="closeModal('modal-columns')" class="bg-emerald-600 text-white px-4 py-2 rounded font-bold text-xs">✅ OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theme Settings Modal -->
+    <div id="modal-theme" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-panelbg border border-bordercol rounded-xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
+            <h3 class="text-base font-bold text-sky-400">⚙️ Appearance & Theme Settings</h3>
+            <p class="text-xs text-textmuted">Choose your preferred visual dashboard palette:</p>
+            <select id="theme-select" onchange="applyTheme(this.value)" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-bold">
+                <option value="dark">🌙 Institutional Dark</option>
+                <option value="light">☀️ Professional Light</option>
+                <option value="blue">🌊 Midnight Blue</option>
+                <option value="blush">🌸 Soft Blush Rose (Pastel)</option>
+                <option value="velvet">✨ Velvet Rose Gold (Elegance)</option>
+            </select>
+            <div class="flex justify-end">
+                <button onclick="closeModal('modal-theme')" class="bg-blue-600 text-white px-4 py-2 rounded font-bold text-xs">✅ Close & Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Risk Calculator Modal -->
+    <div id="modal-calc" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-panelbg border border-bordercol rounded-xl max-w-md w-full p-5 space-y-4 shadow-2xl">
+            <h3 class="text-base font-bold text-amber-400">⚖️ Interactive Risk Calculator</h3>
+            <div class="space-y-3 text-xs">
+                <div class="bg-darkbg p-2 rounded border border-bordercol">
+                    <label class="block text-sky-400 font-bold mb-1">⚡ Ticker Symbol / Auto-Load Price:</label>
+                    <select id="calc-ticker-select" onchange="autoLoadRiskPrices()" class="w-full bg-panelbg border border-bordercol rounded p-1.5 text-textmain font-mono"></select>
+                </div>
+                <div>
+                    <label class="block text-textmuted mb-1">Stop-Loss Mode:</label>
+                    <select id="calc-stop-mode" onchange="onStopModeChange()" class="w-full bg-darkbg border border-bordercol rounded p-1.5 text-textmain font-bold">
+                        <option value="manual">Manual Stop</option>
+                        <option value="1.5">1.5x ATR Stop</option>
+                        <option value="2.0">2.0x ATR Stop</option>
+                        <option value="3.0">3.0x ATR Stop</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-textmuted mb-1">Target Entry (EGP):</label>
+                        <input type="number" id="calc-entry" value="10.00" step="0.01" oninput="runRiskCalc()" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-textmuted mb-1">Stop-Loss (EGP):</label>
+                        <input type="number" id="calc-stop" value="9.20" step="0.01" oninput="runRiskCalc()" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-textmuted mb-1">Max Account Risk (%):</label>
+                    <input type="number" id="calc-risk" value="1.0" step="0.1" oninput="runRiskCalc()" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono">
+                </div>
+                <div id="calc-output" class="bg-darkbg p-3 rounded border border-bordercol space-y-1 font-mono text-textmain"></div>
+            </div>
+            <div class="flex justify-end">
+                <button onclick="closeModal('modal-calc')" class="bg-slate-700 text-white px-4 py-2 rounded font-bold text-xs">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Set Cash Modal -->
+    <div id="modal-cash" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-panelbg border border-bordercol rounded-xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
+            <h3 class="text-base font-bold text-sky-400">💵 Set Available Cash Balance</h3>
+            <input type="number" id="input-cash" placeholder="e.g. 100000" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono text-sm">
+            <div class="flex justify-end gap-2">
+                <button onclick="closeModal('modal-cash')" class="bg-slate-700 text-white px-3 py-1.5 rounded font-bold text-xs">Cancel</button>
+                <button onclick="saveCash()" class="bg-blue-600 text-white px-4 py-1.5 rounded font-bold text-xs">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portfolio Modal -->
+    <div id="modal-portfolio" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-panelbg border border-bordercol rounded-xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
+            <h3 class="text-base font-bold text-purple-400">🛒 Open / Add Position</h3>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-textmuted mb-1">Ticker Symbol:</label>
+                    <input type="text" id="port-ticker" list="portfolio-ticker-list" placeholder="e.g. COMI.CA" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono uppercase">
+                    <datalist id="portfolio-ticker-list"></datalist>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-textmuted mb-1">Buy Price (EGP):</label>
+                        <input type="number" id="port-price" step="0.01" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-textmuted mb-1">Shares:</label>
+                        <input type="number" id="port-shares" step="1" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-textmuted mb-1">Mode:</label>
+                    <select id="port-mode" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-bold">
+                        <option value="scale">📈 Add Shares / Scale In (Auto-Avg)</option>
+                        <option value="overwrite">✏️ Correct Mistake / Overwrite</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2">
+                <button onclick="closeModal('modal-portfolio')" class="bg-slate-700 text-white px-3 py-1.5 rounded font-bold text-xs">Cancel</button>
+                <button onclick="addPortfolioPosition()" class="bg-purple-600 text-white px-4 py-1.5 rounded font-bold text-xs">Save Position</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CORE JAVASCRIPT ENGINE -->
+    <script>
+        // State
+        let globalData = null;
+        let currentLang = 'EN';
+        let currentTheme = 'dark';
+        let currentAlpha = 'ALL';
+        let currentTimeFrame = 'ALL';
+        let chartInstance = null;
+        let userCash = parseFloat(localStorage.getItem('quant_cash')) || 0;
+        let userPortfolio = JSON.parse(localStorage.getItem('quant_portfolio')) || [];
+        let userHistory = JSON.parse(localStorage.getItem('quant_history')) || [];
+        let hiddenCols = JSON.parse(localStorage.getItem('quant_hidden_cols')) || [];
+
+        const TRANSLATIONS = {
+            EN: {
+                title: "Institutional Quant Engine — Out-of-Core Trading Matrix & Sector Dashboard",
+                subtitle: "Web Edition — Local Memory & Static JSON Feed",
+                refresh: "Refresh Data", port: "+ Manage Portfolio", calc: "Risk Calculator",
+                cash: "Set Cash", themes: "Themes", cols: "Columns", reset: "Reset Filters",
+                filter: "🔍 Live Filters:", hide_illiquid: "🚫 Hide Illiquid / Unconfirmed",
+                cash_lbl: "Cash Balance:", stock_lbl: "Stock Portfolio Value:", equity_lbl: "Total Account Equity:",
+                tab_matrix: "📈 Full Market Action Matrix", tab_sectors: "🏢 Sector Heatmap & Rotation",
+                tab_exits: "🛡️ Owned Portfolio Exit Strategy", tab_history: "📜 Trade History & Realized P&L",
+                tab_fin: "📊 Financial Statement", tab_top10: "🏆 Top 10 Overview", tab_charts: "📊 Charts & Trend Lines",
+                rad_stock: "📈 Per Stock", rad_sector: "🏢 Per Sector", select_item: "Select Item:", alpha_quick: "🔤 Quick Filter:",
+                time_zoom: "⏱️ Time Horizon:"
+            },
+            AR: {
+                title: "محرك التحليل الكمي للمؤسسات — مصفوفة التداول والقطاعات",
+                subtitle: "نسخة الويب — ذاكرة محلية وتغذية بيانات سريعة",
+                refresh: "تحديث البيانات", port: "+ إدارة المحفظة", calc: "حاسبة المخاطر",
+                cash: "تحديد النقدية", themes: "المظهر", cols: "الأعمدة", reset: "إعادة ضبط",
+                filter: "🔍 تصفية مباشرة:", hide_illiquid: "🚫 إخفاء الأسهم ضعيفة السيولة",
+                cash_lbl: "الرصيد النقدي:", stock_lbl: "قيمة محفظة الأسهم:", equity_lbl: "إجمالي حقوق الحساب:",
+                tab_matrix: "📈 مصفوفة السوق الكاملة", tab_sectors: "🏢 خريطة القطاعات والسيولة",
+                tab_exits: "🛡️ إستراتيجية الخروج للمحفظة", tab_history: "📜 سجل الصفقات والربح المحقق",
+                tab_fin: "📊 القوائم المالية", tab_top10: "🏆 أفضل 10 أسهم", tab_charts: "📊 الرسوم البيانية والاتجاهات",
+                rad_stock: "📈 تحليل الأسهم", rad_sector: "🏢 تحليل القطاعات", select_item: "اختر العنصر:", alpha_quick: "🔤 تصفية بالحرف:",
+                time_zoom: "⏱️ الفترة الزمنية:"
+            }
+        };
+
+        // Theme Switcher
+        function applyTheme(themeName) {
+            currentTheme = themeName;
+            document.getElementById('html-root').setAttribute('data-theme', themeName !== 'dark' ? themeName : '');
+            localStorage.setItem('quant_theme', themeName);
+            if (chartInstance) plotChart();
+        }
+
+        // Language Switcher
+        function switchLanguage(lang) {
+            currentLang = lang;
+            const t = TRANSLATIONS[lang];
+            document.getElementById('html-root').setAttribute('dir', lang === 'AR' ? 'rtl' : 'ltr');
+            document.getElementById('lbl-title').innerText = t.title;
+            document.getElementById('lbl-subtitle').innerText = t.subtitle;
+            document.getElementById('btn-refresh-text').innerText = t.refresh;
+            document.getElementById('btn-port-text').innerText = t.port;
+            document.getElementById('btn-calc-text').innerText = t.calc;
+            document.getElementById('btn-cash-text').innerText = t.cash;
+            document.getElementById('btn-theme-text').innerText = t.themes;
+            document.getElementById('btn-cols-text').innerText = t.cols;
+            document.getElementById('btn-reset-text').innerText = t.reset;
+            document.getElementById('lbl-filter').innerText = t.filter;
+            document.getElementById('lbl-hide-illiquid').innerText = t.hide_illiquid;
+            document.getElementById('lbl-cash').innerText = t.cash_lbl;
+            document.getElementById('lbl-stock-val').innerText = t.stock_lbl;
+            document.getElementById('lbl-equity').innerText = t.equity_lbl;
+            document.getElementById('btn-tab-matrix').innerText = t.tab_matrix;
+            document.getElementById('btn-tab-sectors').innerText = t.tab_sectors;
+            document.getElementById('btn-tab-exits').innerText = t.tab_exits;
+            document.getElementById('btn-tab-history').innerText = t.tab_history;
+            document.getElementById('btn-tab-fin').innerText = t.tab_fin;
+            document.getElementById('btn-tab-top10').innerText = t.tab_top10;
+            document.getElementById('btn-tab-charts').innerText = t.tab_charts;
+            document.getElementById('lbl-rad-stock').innerText = t.rad_stock;
+            document.getElementById('lbl-rad-sector').innerText = t.rad_sector;
+            document.getElementById('lbl-chart-select').innerText = t.select_item;
+            document.getElementById('lbl-alpha-quick').innerText = t.alpha_quick;
+            if (document.getElementById('lbl-time-zoom')) document.getElementById('lbl-time-zoom').innerText = t.time_zoom;
+            if (chartInstance) plotChart();
+        }
+
+        // Modals & Tabs
+        function switchTab(tabId) {
+            ['tab-matrix', 'tab-sectors', 'tab-exits', 'tab-history', 'tab-fin', 'tab-top10', 'tab-charts'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+                document.getElementById('btn-' + id).classList.remove('tab-active');
+            });
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById('btn-' + tabId).classList.add('tab-active');
+            if (tabId === 'tab-charts' && !chartInstance) plotChart();
+        }
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+            if (id === 'modal-calc') { populateSelects(); runRiskCalc(); }
+            if (id === 'modal-cash') document.getElementById('input-cash').value = userCash;
+            if (id === 'modal-columns') buildColumnCheckboxes();
+        }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        // Column Visibility Engine
+        function buildColumnCheckboxes() {
+            const headers = Array.from(document.querySelectorAll('#thead-matrix-tr th')).map((th, i) => ({ idx: i, text: th.innerText }));
+            const container = document.getElementById('col-checkboxes');
+            container.innerHTML = headers.map(h => `
+                <label class="flex items-center gap-2 cursor-pointer p-1.5 hover:bg-panelbg rounded">
+                    <input type="checkbox" checked onchange="toggleColumn(${h.idx}, this.checked)" ${!hiddenCols.includes(h.idx) ? 'checked' : ''} class="rounded text-sky-500">
+                    <span>${h.text}</span>
+                </label>
+            `).join('');
+            applyColumnVisibility();
+        }
+        function toggleColumn(idx, show) {
+            if (show) hiddenCols = hiddenCols.filter(i => i !== idx);
+            else if (!hiddenCols.includes(idx)) hiddenCols.push(idx);
+            localStorage.setItem('quant_hidden_cols', JSON.stringify(hiddenCols));
+            applyColumnVisibility();
+        }
+        function toggleAllColumns(show) {
+            const checkboxes = document.querySelectorAll('#col-checkboxes input[type="checkbox"]');
+            checkboxes.forEach((chk, i) => { chk.checked = show; toggleColumn(i, show); });
+        }
+        function applyColumnVisibility() {
+            document.querySelectorAll('#table-matrix tr').forEach(tr => {
+                Array.from(tr.children).forEach((td, i) => {
+                    td.style.display = hiddenCols.includes(i) ? 'none' : '';
+                });
+            });
+        }
+
+        // Populate Dropdowns
+        function populateSelects() {
+            if (!globalData || !globalData.market_matrix) return;
+            const tickers = globalData.market_matrix.map(row => row.Ticker).filter(Boolean).sort();
+            document.getElementById('portfolio-ticker-list').innerHTML = tickers.map(t => `<option value="${t}">`).join('');
+            document.getElementById('calc-ticker-select').innerHTML = '<option value="">-- Select Symbol --</option>' + tickers.map(t => `<option value="${t}">${t}</option>`).join('');
+            
+            // Populate Alphabet Quick Filter
+            const alphaContainer = document.getElementById('alpha-container');
+            const letters = ['ALL', ...Array.from({length: 26}, (_, i) => String.fromCharCode(65 + i)), '#'];
+            alphaContainer.innerHTML = `<span class="font-bold text-textmuted mr-2" id="lbl-alpha-quick">${TRANSLATIONS[currentLang].alpha_quick}</span>` + letters.map(l => `
+                <button onclick="applyAlphaFilter('${l}')" class="px-2 py-1 rounded font-bold transition ${currentAlpha === l ? 'bg-sky-600 text-white' : 'bg-panelbg text-textmuted hover:text-white'}">${l}</button>
+            `).join('');
+            
+            updateChartSelector();
+        }
+
+        // Charting & Time Horizon Zoom Engine
+        function onChartModeChange() {
+            document.getElementById('alpha-container').style.display = document.querySelector('input[name="chart_mode"]:checked').value === 'stock' ? '' : 'none';
+            updateChartSelector();
+        }
+        function applyAlphaFilter(letter) {
+            currentAlpha = letter;
+            populateSelects();
+            updateChartSelector();
+        }
+        function applyTimeFrame(tf) {
+            currentTimeFrame = tf;
+            document.querySelectorAll('#timeframe-buttons button').forEach(btn => {
+                if (btn.getAttribute('data-tf') === tf) {
+                    btn.className = 'px-2.5 py-1 rounded font-bold transition bg-sky-600 text-white';
+                } else {
+                    btn.className = 'px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white';
+                }
+            });
+            plotChart();
+        }
+        function updateChartSelector() {
+            const mode = document.querySelector('input[name="chart_mode"]:checked').value;
+            const select = document.getElementById('chart-selector');
+            select.innerHTML = '';
+            if (!globalData) return;
+
+            if (mode === 'stock') {
+                let tickers = globalData.market_matrix.map(r => r.Ticker).filter(Boolean).sort();
+                if (currentAlpha !== 'ALL') {
+                    if (currentAlpha === '#') tickers = tickers.filter(t => !/^[A-Z]/i.test(t));
+                    else tickers = tickers.filter(t => t.toUpperCase().startsWith(currentAlpha));
+                }
+                select.innerHTML = tickers.map(t => `<option value="${t}">${t}</option>`).join('');
+            } else {
+                const sectors = (globalData.sectors || []).map(s => s.Sector).filter(Boolean).sort();
+                select.innerHTML = sectors.map(s => `<option value="${s}">${s}</option>`).join('');
+            }
+            if (select.options.length > 0) plotChart();
+        }
+
+        function plotChart() {
+            if (typeof Chart === 'undefined') { console.warn("Chart.js library not loaded yet."); return; }
+            const select = document.getElementById('chart-selector');
+            if (!select || !select.value || !globalData) return;
+            const selected = select.value;
+            const mode = document.querySelector('input[name="chart_mode"]:checked').value;
+
+            let prices = [];
+            let vwaps = [];
+            let labels = [];
+
+            if (mode === 'stock') {
+                const stockHistory = globalData.chart_history && globalData.chart_history.stocks ? globalData.chart_history.stocks[selected] : null;
+                if (stockHistory && stockHistory.close && stockHistory.close.length > 0) {
+                    labels = stockHistory.dates || [];
+                    prices = stockHistory.close.map(Number);
+                    vwaps = (stockHistory.vwap || []).map(Number);
+                } else {
+                    const row = globalData.market_matrix.find(r => r.Ticker === selected);
+                    const latestPrice = row ? row["Current Price"] || 10.0 : 10.0;
+                    prices = [latestPrice]; labels = [new Date().toISOString().split('T')[0]];
+                }
+            } else {
+                const secHistory = globalData.chart_history && globalData.chart_history.sectors ? globalData.chart_history.sectors[selected] : null;
+                if (secHistory && secHistory.close && secHistory.close.length > 0) {
+                    labels = secHistory.dates || [];
+                    prices = secHistory.close.map(Number);
+                } else {
+                    prices = [100.0]; labels = [new Date().toISOString().split('T')[0]];
+                }
+            }
+
+            // Time Horizon Zoom Slicing (Trading Days: 1W=5, 2W=10, 1M=22, 3M=66, 6M=130, 1Y=260)
+            let barCount = prices.length;
+            if (currentTimeFrame === '1W') barCount = 5;
+            else if (currentTimeFrame === '2W') barCount = 10;
+            else if (currentTimeFrame === '1M') barCount = 22;
+            else if (currentTimeFrame === '3M') barCount = 66;
+            else if (currentTimeFrame === '6M') barCount = 130;
+            else if (currentTimeFrame === '1Y') barCount = 260;
+
+            if (barCount < prices.length) {
+                prices = prices.slice(-barCount);
+                labels = labels.slice(-barCount);
+                if (vwaps.length > 0) vwaps = vwaps.slice(-barCount);
+            }
+            if (document.getElementById('lbl-bars-shown')) {
+                document.getElementById('lbl-bars-shown').innerText = `Showing ${prices.length} trading bar(s) (${labels[0] || ''} to ${labels[labels.length-1] || ''})`;
+            }
+
+            // Compute Linear Regression Trendline (y = mx + b)
+            const n = prices.length;
+            if (n === 0) return;
+            let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+            for (let i = 0; i < n; i++) {
+                sumX += i; sumY += prices[i]; sumXY += i * prices[i]; sumX2 += i * i;
+            }
+            const denom = (n * sumX2 - sumX * sumX);
+            const slope = denom !== 0 ? (n * sumXY - sumX * sumY) / denom : 0;
+            const intercept = (sumY - slope * sumX) / n;
+            const trendVals = Array.from({length: n}, (_, i) => Number((slope * i + intercept).toFixed(4)));
+            const slopePct = trendVals[0] !== 0 ? ((trendVals[n - 1] - trendVals[0]) / trendVals[0] * 100).toFixed(2) : "0.00";
+
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+
+            const isDark = currentTheme !== 'light' && currentTheme !== 'blush';
+            const gridCol = isDark ? '#334155' : '#cbd5e0';
+            const textCol = isDark ? '#f8fafc' : '#1a202c';
+
+            const datasets = [
+                { label: mode === 'stock' ? 'Close Price (EGP)' : 'Sector Index', data: prices, borderColor: '#38bdf8', borderWidth: 2, tension: 0.1, pointRadius: 2 },
+                { label: `Trendline (${slope >= 0 ? '+' : ''}${slopePct}%)`, data: trendVals, borderColor: slope >= 0 ? '#22c55e' : '#ef4444', borderWidth: 2, borderDash: [5, 5], pointRadius: 0 }
+            ];
+            if (mode === 'stock' && vwaps.length > 0) {
+                datasets.push({ label: 'VWAP (20D)', data: vwaps, borderColor: '#f59e0b', borderWidth: 1.5, borderDash: [2, 2], pointRadius: 0 });
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'line', data: { labels, datasets },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        x: { grid: { color: gridCol }, ticks: { color: textCol, maxTicksLimit: 12 } },
+                        y: { grid: { color: gridCol }, ticks: { color: textCol } }
+                    },
+                    plugins: { legend: { labels: { color: textCol, font: { weight: 'bold' } } } }
+                }
+            });
+        }
+
+        // Portfolio & Risk Engine
+        function autoLoadRiskPrices() {
+            const ticker = document.getElementById('calc-ticker-select').value;
+            if (!ticker || !globalData) return;
+            const row = globalData.market_matrix.find(r => r.Ticker === ticker);
+            if (row) {
+                document.getElementById('calc-entry').value = row["Current Price"] || 0;
+                document.getElementById('calc-stop').value = row["Suggested Stop-Loss"] || 0;
+                onStopModeChange();
+            }
+        }
+        function onStopModeChange() {
+            const mode = document.getElementById('calc-stop-mode').value;
+            const stopInput = document.getElementById('calc-stop');
+            if (mode === 'manual') { stopInput.readOnly = false; runRiskCalc(); return; }
+            const ticker = document.getElementById('calc-ticker-select').value;
+            const entry = parseFloat(document.getElementById('calc-entry').value) || 0;
+            if (!ticker || !globalData || entry <= 0) return;
+            const row = globalData.market_matrix.find(r => r.Ticker === ticker);
+            if (row) {
+                const defaultStop = row["Suggested Stop-Loss"] || entry * 0.95;
+                const estimatedAtr = (entry - defaultStop) / 2.0;
+                const mult = parseFloat(mode);
+                stopInput.value = Math.max(0.0001, entry - (mult * estimatedAtr)).toFixed(4);
+                stopInput.readOnly = true;
+            }
+            runRiskCalc();
+        }
+        function runRiskCalc() {
+            const entry = parseFloat(document.getElementById('calc-entry').value) || 0;
+            const stop = parseFloat(document.getElementById('calc-stop').value) || 0;
+            const riskPct = (parseFloat(document.getElementById('calc-risk').value) || 1) / 100;
+            const out = document.getElementById('calc-output');
+            if (stop >= entry || entry <= 0) { out.innerHTML = `<span class="text-rose-400 font-bold">⚠️ Stop-Loss must be below Target Entry.</span>`; return; }
+            const riskBudget = userCash * riskPct;
+            const stopDist = entry - stop;
+            const fee = 0.0035;
+            const effectiveCost = entry * (1 + fee);
+            const maxShares = effectiveCost > 0 ? Math.floor(userCash / effectiveCost) : 0;
+            const rawShares = stopDist > 0 ? Math.floor(riskBudget / stopDist) : 0;
+            const shares = Math.min(rawShares, maxShares);
+            const totalOutlay = shares * entry * (1 + fee);
+            out.innerHTML = `
+                <div>🎯 Recommended Shares: <strong class="text-white">${shares.toLocaleString()}</strong></div>
+                <div>💵 Total Outlay (incl fee): <strong class="text-sky-400">${totalOutlay.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} EGP</strong></div>
+                <div>🛡️ Max Capital at Risk: <strong class="text-amber-400">${Math.min(riskBudget, shares * entry).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} EGP</strong></div>
+            `;
+        }
+        function saveCash() {
+            userCash = parseFloat(document.getElementById('input-cash').value) || 0;
+            localStorage.setItem('quant_cash', userCash);
+            closeModal('modal-cash');
+            renderAccountBar(); renderPortfolio();
+        }
+        function addPortfolioPosition() {
+            const ticker = document.getElementById('port-ticker').value.trim().toUpperCase();
+            const price = parseFloat(document.getElementById('port-price').value);
+            const shares = parseFloat(document.getElementById('port-shares').value);
+            const mode = document.getElementById('port-mode').value;
+            if (!ticker || !price || !shares) { alert("Please fill all fields."); return; }
+            const existing = userPortfolio.find(p => p.ticker === ticker);
+            if (existing && mode === 'scale') {
+                const total = existing.shares + shares;
+                existing.buyPrice = ((existing.shares * existing.buyPrice) + (shares * price)) / total;
+                existing.shares = total;
+            } else if (existing && mode === 'overwrite') {
+                existing.buyPrice = price; existing.shares = shares;
+            } else {
+                userPortfolio.push({ ticker, buyPrice: price, shares, date: new Date().toISOString().split('T')[0] });
+            }
+            localStorage.setItem('quant_portfolio', JSON.stringify(userPortfolio));
+            closeModal('modal-portfolio'); renderPortfolio(); renderAccountBar();
+        }
+        function sellPosition(ticker) {
+            const idx = userPortfolio.findIndex(p => p.ticker === ticker);
+            if (idx === -1) return;
+            const pos = userPortfolio[idx];
+            let cp = pos.buyPrice;
+            if (globalData && globalData.market_matrix) {
+                const found = globalData.market_matrix.find(m => m.Ticker === ticker);
+                if (found) cp = found["Current Price"];
+            }
+            const pnl = (cp - pos.buyPrice) * pos.shares;
+            const pnlPct = ((cp - pos.buyPrice) / pos.buyPrice) * 100;
+            userHistory.unshift({
+                ticker: pos.ticker, shares: pos.shares, buyPrice: pos.buyPrice, sellPrice: cp,
+                realizedPnl: pnl, pnlPct: pnlPct, buyDate: pos.date, sellDate: new Date().toISOString().split('T')[0]
+            });
+            userPortfolio.splice(idx, 1); userCash += (cp * pos.shares);
+            localStorage.setItem('quant_portfolio', JSON.stringify(userPortfolio));
+            localStorage.setItem('quant_history', JSON.stringify(userHistory));
+            localStorage.setItem('quant_cash', userCash);
+            renderPortfolio(); renderHistory(); renderAccountBar();
+        }
+        function clearDemoData() {
+            if (confirm("Are you sure you want to clear demo samples without deleting real trades?")) {
+                userPortfolio = userPortfolio.filter(p => !p.is_demo);
+                userHistory = userHistory.filter(h => !h.is_demo);
+                localStorage.setItem('quant_portfolio', JSON.stringify(userPortfolio));
+                localStorage.setItem('quant_history', JSON.stringify(userHistory));
+                renderPortfolio(); renderHistory(); renderAccountBar();
+            }
+        }
+
+        // Audit Ledger Export
+        function exportAuditLedger() {
+            if (userHistory.length === 0) { alert("No closed trades available to export."); return; }
+            let csv = "Ticker,Shares Sold,Buy Price,Sell Price,Realized P&L (EGP),Realized P&L (%),Purchase Date,Sell Date\n";
+            let grossGains = 0, grossLosses = 0;
+            userHistory.forEach(h => {
+                csv += `${h.ticker},${h.shares},${h.buyPrice},${h.sellPrice},${h.realizedPnl.toFixed(2)},${h.pnlPct.toFixed(2)}%,${h.buyDate},${h.sellDate}\n`;
+                if (h.realizedPnl > 0) grossGains += h.realizedPnl;
+                else grossLosses += Math.abs(h.realizedPnl);
+            });
+            const wins = userHistory.filter(h => h.realizedPnl > 0).length;
+            const winRate = ((wins / userHistory.length) * 100).toFixed(2);
+            const profitFactor = grossLosses > 0 ? (grossGains / grossLosses).toFixed(2) : grossGains.toFixed(2);
+            const netPnl = (grossGains - grossLosses).toFixed(2);
+            csv += `\n=== AUDIT SUMMARY ===\nTotal Trades Executed,${userHistory.length}\nWinning Trades,${wins},Win Rate: ${winRate}%\nGross Realized Gains,${grossGains.toFixed(2)}\nGross Realized Losses,-${grossLosses.toFixed(2)}\nProfit Factor,${profitFactor}\nNET REALIZED P&L (EGP),${netPnl}\n`;
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "Trade_Audit_Ledger.csv";
+            link.click();
+        }
+
+        // Render Functions
+        function renderAccountBar() {
+            let stockVal = 0, costBasis = 0;
+            userPortfolio.forEach(pos => {
+                let cp = pos.buyPrice;
+                if (globalData && globalData.market_matrix) {
+                    const m = globalData.market_matrix.find(x => x.Ticker === pos.ticker);
+                    if (m) cp = m["Current Price"];
+                }
+                stockVal += (cp * pos.shares); costBasis += (pos.buyPrice * pos.shares);
+            });
+            const totalEquity = userCash + stockVal;
+            const unrealizedPnl = stockVal - costBasis;
+            const unrealizedPct = costBasis > 0 ? (unrealizedPnl / costBasis) * 100 : 0;
+            const realizedPnl = userHistory.reduce((acc, curr) => acc + curr.realizedPnl, 0);
+            
+            const barValues = document.querySelectorAll('#account-bar strong');
+            if (barValues[0]) barValues[0].innerText = `${userCash.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} EGP`;
+            if (barValues[1]) barValues[1].innerText = `${stockVal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} EGP`;
+            if (barValues[2]) barValues[2].innerText = `${totalEquity.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} EGP`;
+            
+            document.getElementById('fin-statement-content').innerHTML = `
+                <div class="flex justify-between py-2 border-b border-bordercol"><span>Cash Balance (EGP):</span> <strong>${userCash.toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></div>
+                <div class="flex justify-between py-2 border-b border-bordercol"><span>Stock Portfolio Cost Basis (EGP):</span> <strong>${costBasis.toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></div>
+                <div class="flex justify-between py-2 border-b border-bordercol"><span>Stock Portfolio Market Value (EGP):</span> <strong>${stockVal.toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></div>
+                <div class="flex justify-between py-2 border-b border-bordercol"><span>Unrealized Stock P&L (EGP):</span> <strong class="${unrealizedPnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${unrealizedPnl.toLocaleString(undefined, {minimumFractionDigits: 2})} (${unrealizedPct.toFixed(2)}%)</strong></div>
+                <div class="flex justify-between py-2 border-b border-bordercol"><span>Realized P&L from Closed Trades (EGP):</span> <strong class="${realizedPnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${realizedPnl.toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></div>
+                <div class="flex justify-between py-2 bg-panelbg px-3 rounded text-base"><span>Total Account Equity (EGP):</span> <strong class="text-amber-400">${totalEquity.toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></div>
+            `;
+        }
+
+        function renderPortfolio() {
+            const tbody = document.getElementById('tbody-exits');
+            tbody.innerHTML = '';
+            if (userPortfolio.length === 0) { tbody.innerHTML = '<tr><td colspan="11" class="p-6 text-center text-textmuted font-sans">No active stock positions. Click "+ Add Position" to start tracking!</td></tr>'; return; }
+            userPortfolio.forEach(pos => {
+                let cp = pos.buyPrice, rsi = 50.0, adx = 0.0, trend = "Consolidation", action = "🛡️ HOLD / TRAIL STOP";
+                if (globalData && globalData.market_matrix) {
+                    const m = globalData.market_matrix.find(x => x.Ticker === pos.ticker);
+                    if (m) { cp = m["Current Price"]; rsi = m["RSI-14"]; adx = m["ADX-14"]; trend = m["Trend Class"]; }
+                }
+                const pnl = (cp - pos.buyPrice) * pos.shares;
+                const pnlPct = ((cp - pos.buyPrice) / pos.buyPrice) * 100;
+                const tp = cp * 1.0535, stop = cp * 0.95;
+                let actionBg = 'bg-[#975a16] text-white';
+                if (pnlPct <= -8.0) { action = "⚠️ CUT LOSS / REVIEW"; actionBg = 'bg-[#9b2c2c] text-white font-bold'; }
+                else if (cp >= tp) { action = "💰 TAKE PROFIT ZONE"; actionBg = 'bg-[#22543d] text-white font-bold'; }
+                const tr = document.createElement('tr');
+                tr.className = 'border-b border-bordercol hover:bg-panelbg transition';
+                tr.innerHTML = `
+                    <td class="p-2.5 font-bold text-sky-400">${pos.ticker}</td><td class="p-2.5">${pos.shares.toLocaleString()}</td><td class="p-2.5">${pos.buyPrice.toFixed(4)}</td><td class="p-2.5 font-bold text-white">${cp.toFixed(4)}</td>
+                    <td class="p-2.5 font-bold ${pnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${pnl.toLocaleString(undefined, {minimumFractionDigits: 2})}</td><td class="p-2.5 font-bold ${pnlPct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${pnlPct.toFixed(2)}%</td>
+                    <td class="p-2.5 text-center font-sans"><span class="px-2 py-1 rounded text-[11px] ${actionBg}">${action}</span></td><td class="p-2.5 text-emerald-400">${tp.toFixed(4)}</td><td class="p-2.5 text-rose-400">${stop.toFixed(4)}</td>
+                    <td class="p-2.5 font-sans text-textmuted">${trend}</td><td class="p-2.5 text-center font-sans"><button onclick="sellPosition('${pos.ticker}')" class="bg-rose-700 text-white px-2.5 py-1 rounded text-[11px] font-bold">🤝 Record Sale</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderHistory() {
+            const tbody = document.getElementById('tbody-history');
+            tbody.innerHTML = '';
+            if (userHistory.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="p-6 text-center text-textmuted font-sans">No closed trades recorded yet.</td></tr>'; return; }
+            userHistory.forEach(h => {
+                const tr = document.createElement('tr');
+                tr.className = 'border-b border-bordercol hover:bg-panelbg transition';
+                tr.innerHTML = `
+                    <td class="p-2.5 font-bold text-sky-400">${h.ticker}</td><td class="p-2.5">${h.shares.toLocaleString()}</td><td class="p-2.5">${h.buyPrice.toFixed(4)}</td><td class="p-2.5">${h.sellPrice.toFixed(4)}</td>
+                    <td class="p-2.5 font-bold ${h.realizedPnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${h.realizedPnl.toLocaleString(undefined, {minimumFractionDigits: 2})}</td><td class="p-2.5 font-bold ${h.pnlPct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${h.pnlPct.toFixed(2)}%</td>
+                    <td class="p-2.5 text-textmuted">${h.buyDate}</td><td class="p-2.5 text-textmuted">${h.sellDate}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderSectors() {
+            const tbody = document.getElementById('tbody-sectors');
+            tbody.innerHTML = '';
+            if (!globalData || !globalData.sectors) return;
+            globalData.sectors.forEach(s => {
+                let statusBg = 'bg-slate-800 text-slate-300';
+                if (s["Sector Status"].includes("STRONG INFLOW") || s["Sector Status"].includes("BREAKOUT")) statusBg = 'bg-[#276749] text-white font-bold';
+                else if (s["Sector Status"].includes("ACCUMULATE")) statusBg = 'bg-[#2b6cb0] text-white';
+                else if (s["Sector Status"].includes("HEAVY DISTRIBUTION")) statusBg = 'bg-[#9b2c2c] text-white font-bold';
+                const r1d = parseFloat(s["1D Return (%)"]), r5d = parseFloat(s["5D Return (%)"]), cmf = parseFloat(s["Money Flow (CMF)"]);
+                const tr = document.createElement('tr');
+                tr.className = 'border-b border-bordercol hover:bg-panelbg transition font-mono';
+                tr.innerHTML = `
+                    <td class="p-2.5 font-sans font-bold text-textmain">${s.Sector}</td><td class="p-2.5 text-center">${s.Stocks}</td>
+                    <td class="p-2.5 text-right font-bold ${r1d >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${r1d.toFixed(2)}%</td><td class="p-2.5 text-right font-bold ${r5d >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${r5d.toFixed(2)}%</td>
+                    <td class="p-2.5 text-right ${cmf >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${cmf.toFixed(2)}</td><td class="p-2.5 text-right">${s["Bullish Breadth (%)"]}%</td>
+                    <td class="p-2.5 text-right text-textmain">${parseFloat(s["Traded Value (EGP)"]).toLocaleString(undefined, {maximumFractionDigits: 0})}</td>
+                    <td class="p-2.5 text-center font-bold text-sky-400">${s["Sector Leader"]}</td><td class="p-2.5 text-center font-sans"><span class="px-2 py-1 rounded text-[11px] ${statusBg}">${s["Sector Status"]}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderTop10() {
+            const container = document.getElementById('top10-container');
+            container.innerHTML = '';
+            if (!globalData || !globalData.top_10) return;
+            [{ key: "🔥 STRONG BUY", title: "🔥 Top 10 Strong Buy", col: "text-emerald-400" }, { key: "⚡ BREAKOUT BUY", title: "⚡ Top 10 Breakout", col: "text-sky-400" }, { key: "📈 ACCUMULATE", title: "📈 Top 10 Accumulate", col: "text-blue-400" }, { key: "⏳ BUY ON DIP", title: "⏳ Top 10 Buy on Dip", col: "text-amber-400" }].forEach(c => {
+                const list = globalData.top_10[c.key] || [];
+                let rowsHtml = list.map((row, i) => `
+                    <tr class="border-b border-bordercol/40 hover:bg-panelbg"><td class="p-2 text-textmuted">${i+1}</td><td class="p-2 font-bold text-sky-400">${row.Ticker}</td><td class="p-2 text-white font-bold">${row["Current Price"]}</td><td class="p-2 text-textmain">${row["Rank Score"]}</td><td class="p-2 font-sans text-textmuted">${row["Trend Class"]}</td></tr>
+                `).join('');
+                const box = document.createElement('div');
+                box.className = 'bg-darkbg p-4 rounded-xl border border-bordercol shadow space-y-3';
+                box.innerHTML = `
+                    <h3 class="font-bold text-sm ${c.col} border-b border-bordercol pb-2">${c.title}</h3>
+                    <div class="overflow-x-auto"><table class="w-full text-left border-collapse font-mono text-xs"><thead class="text-textmuted border-b border-bordercol"><tr><th class="p-1">#</th><th class="p-1">Ticker</th><th class="p-1">Price</th><th class="p-1">Score</th><th class="p-1 font-sans">Trend</th></tr></thead><tbody>${rowsHtml || '<tr><td colspan="5" class="p-4 text-center text-textmuted font-sans">No stocks in category</td></tr>'}</tbody></table></div>
+                `;
+                container.appendChild(box);
+            });
+        }
+
+        function applyFilters() {
+            const tbody = document.getElementById('tbody-matrix');
+            tbody.innerHTML = '';
+            if (!globalData || !globalData.market_matrix) return;
+            const search = document.getElementById('filter-search').value.trim().toUpperCase();
+            const actionFilter = document.getElementById('filter-action').value;
+            const trendFilter = document.getElementById('filter-trend').value;
+            const confFilter = document.getElementById('filter-confidence').value;
+            const hideIlliquid = document.getElementById('filter-illiquid').checked;
+            let rowCount = 0;
+            globalData.market_matrix.forEach((row) => {
+                const ticker = (row.Ticker || "").toUpperCase(), action = row.Action || "", trend = row["Trend Class"] || "", conf = row["Data Confidence"] || "";
+                if (search && !ticker.includes(search)) return;
+                if (actionFilter !== "All" && !action.includes(actionFilter)) return;
+                if (trendFilter !== "All" && trend !== trendFilter) return;
+                if (confFilter !== "All" && !conf.includes(confFilter)) return;
+                if (hideIlliquid && (action.includes("ILLIQUID") || action.includes("Unconfirmed"))) return;
+                rowCount++;
+                let actionStyle = 'bg-slate-800 text-slate-300';
+                if (action.includes('STRONG BUY') || action.includes('BREAKOUT BUY')) actionStyle = 'bg-[#276749] text-white font-bold';
+                else if (action.includes('ACCUMULATE') || action.includes('BUY ON DIP')) actionStyle = 'bg-[#2b6cb0] text-white';
+                else if (action.includes('SELL') || action.includes('AVOID')) actionStyle = 'bg-[#9b2c2c] text-white font-bold';
+                else if (action.includes('HOLD')) actionStyle = 'bg-[#975a16] text-white';
+                else if (action.includes('ILLIQUID') || action.includes('Unconfirmed')) actionStyle = 'bg-[#4a5568] text-slate-200';
+                let confStyle = 'text-slate-300';
+                if (conf.includes('Very Low')) confStyle = 'text-rose-400 font-bold';
+                else if (conf.includes('Low')) confStyle = 'text-amber-400 font-semibold';
+                const tr = document.createElement('tr');
+                tr.className = 'border-b border-bordercol/40 hover:bg-panelbg transition';
+                tr.innerHTML = `
+                    <td class="p-2.5 font-sans text-textmuted">${rowCount}</td><td class="p-2.5 font-bold text-sky-400">${row.Ticker || '-'}</td><td class="p-2 text-center font-sans ${actionStyle} rounded-sm shadow-sm">${row.Action || '-'}</td>
+                    <td class="p-2.5 text-textmain font-bold">${row["Rank Score"] || 0}</td><td class="p-2.5 font-bold text-white">${row["Current Price"] || 0}</td><td class="p-2.5 text-textmain">${row["Target Entry (VWAP)"] || 0}</td>
+                    <td class="p-2.5 text-rose-400 font-semibold">${row["Suggested Stop-Loss"] || 0}</td><td class="p-2.5 text-textmain">${row["Suggested Shares (1% Risk)"] ? row["Suggested Shares (1% Risk)"].toLocaleString() : 0}</td>
+                    <td class="p-2.5 text-emerald-400 font-semibold">${row["Projected Gain (%)"] || 'N/A'}</td><td class="p-2.5 text-textmain">${row["Pattern Conf (%)"] || 'N/A'}</td><td class="p-2.5 font-sans text-textmuted">${row["Trend Class"] || '-'}</td>
+                    <td class="p-2.5 text-textmain">${row["RSI-14"] || 0}</td><td class="p-2.5 text-textmain">${row["ADX-14"] || 0}</td><td class="p-2.5 text-textmain">${row["Vol Z-Score"] || 0}</td>
+                    <td class="p-2.5 text-textmuted">${row["Avg Volume (20D)"] ? row["Avg Volume (20D)"].toLocaleString() : 0}</td><td class="p-2.5 font-sans ${confStyle}">${row["Data Confidence"] || '-'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            if (rowCount === 0) tbody.innerHTML = '<tr><td colspan="16" class="p-8 text-center text-textmuted font-sans">No stocks match your active filter criteria.</td></tr>';
+            applyColumnVisibility();
+        }
+
+        function resetFilters() {
+            document.getElementById('filter-search').value = '';
+            document.getElementById('filter-action').value = 'All';
+            document.getElementById('filter-trend').value = 'All';
+            document.getElementById('filter-confidence').value = 'All';
+            document.getElementById('filter-illiquid').checked = true;
+            applyFilters();
+        }
+
+        async function loadMarketData() {
+            try {
+                const response = await fetch('./data/market_data.json');
+                globalData = await response.json();
+                if (globalData.cash_balance && userCash === 0) { userCash = globalData.cash_balance; localStorage.setItem('quant_cash', userCash); }
+                populateSelects(); applyFilters(); renderSectors(); renderTop10(); renderPortfolio(); renderHistory(); renderAccountBar();
+            } catch (error) {
+                console.error("Failed to load market data:", error);
+                document.getElementById('tbody-matrix').innerHTML = `<tr><td colspan="16" class="p-8 text-center text-rose-400 font-sans">⚠️ Could not load ./data/market_data.json. Ensure your local HTTP server is running!</td></tr>`;
+            }
+        }
+
+        // Initialize
+        applyTheme(localStorage.getItem('quant_theme') || 'dark');
+        loadMarketData();
+    </script>
+</body>
+</html>

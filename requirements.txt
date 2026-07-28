@@ -1,0 +1,15 @@
+# Pinned, compatible-release versions of the runtime dependencies.
+# The `~=` operator means "this major.minor, any patch >= this one".
+#
+# Why pinning matters: the original `launch.bat` ran `pip install --upgrade`
+# on every launch, which means matplotlib today ≠ matplotlib tomorrow and
+# your charts can silently shift appearance between runs.
+#
+# To upgrade deliberately:  pip install -U -r requirements.txt
+matplotlib~=3.8
+PyQt6~=6.6
+pandas~=2.1
+numpy~=1.26
+duckdb~=0.10
+python-calamine~=0.2
+openpyxl~=3.1
