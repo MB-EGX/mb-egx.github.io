@@ -1,19 +1,20 @@
 """
 publish.py — one-command refresh for the whole pipeline.
 
-Run this after you drop new spreadsheets/CSVs into market_data_feeds/:
+Run this after ANY change: new market data, an engine/calculation
+fix, or a web_public/index.html layout tweak. It always does the
+same 3 things, so you never have to think about which command to use:
 
     python publish.py
 
-It will:
-  1. Ingest any new/changed files in market_data_feeds/ into DuckDB.
-  2. Recompute the decision matrix and regenerate
-     web_public/data/market_data.json.
-  3. Commit + push that file. The .github/workflows/deploy-pages.yml
-     workflow (triggered by the push) then redeploys the live site
-     automatically — nothing further to do on GitHub's side.
+1. Ingest any new/changed files in market_data_feeds/.
+2. Recompute the decision matrix and regenerate
+   web_public/data/market_data.json.
+3. Commit + push EVERYTHING that changed in the repo (data, engine
+   code, index.html, whatever) so the live site + your GitHub
+   history always reflect exactly what's on this machine.
 
-Run this from the repo root (same directory as export_json.py / config.py).
+Run this from the repo root (same folder as export_json.py / config.py).
 """
 import subprocess
 import sys
@@ -39,13 +40,19 @@ def main():
     print("2/3  Recomputing decision matrix and exporting market_data.json...")
     export_market_matrix()
 
-    print("3/3  Publishing to GitHub Pages...")
-    run_git("add", "web_public/data/market_data.json")
-    status = run_git("status", "--porcelain", "web_public/data/market_data.json")
+    print("3/3  Publishing everything (data + code + website changes)...")
+    # Stage the whole repo, not just the data file, so code fixes and
+    # index.html/layout edits are never silently left behind.
+    run_git("add", "-A")
+    status = run_git("status", "--porcelain")
     if not status:
-        print("      No data changes since last publish — nothing to push.")
+        print("      No changes since last publish — nothing to push.")
         return
-    run_git("commit", "-m", "Update market data")
+
+    print("      Changes to publish:")
+    print("      " + status.replace("\n", "\n      "))
+
+    run_git("commit", "-m", "Update market data / app changes")
     run_git("push")
     print("✅ Pushed. GitHub Actions will redeploy the site within ~1 minute.")
 
