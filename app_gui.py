@@ -395,17 +395,15 @@ THEME_DARK = """
         color: #e2e2e8; 
         font-family: 'Inter', 'Segoe UI', Arial, sans-serif; 
     }
-    
     QWidget#webPanel, QWidget#filterPanel {
         background-color: #1a1d24;
         border: 1px solid #2d3748;
-        border-radius: 10px;
+        border-radius: 8px;
     }
-
     QTabWidget::pane { 
         border: 1px solid #2d3748; 
         background-color: #1a1d24; 
-        border-radius: 10px;
+        border-radius: 8px;
         margin-top: -1px;
     }
     QTabBar::tab { 
@@ -413,8 +411,8 @@ THEME_DARK = """
         color: #a0aec0; 
         padding: 8px 12px;
         font-size: 12px;
-        border-top-left-radius: 8px; 
-        border-top-right-radius: 8px; 
+        border-top-left-radius: 6px; 
+        border-top-right-radius: 6px; 
         margin-right: 2px;
         font-weight: bold; 
         border: 1px solid transparent;
@@ -435,16 +433,18 @@ THEME_DARK = """
         color: #e2e2e8; 
         gridline-color: #2d3748; 
         border: none;
-        border-bottom-left-radius: 10px;
-        border-bottom-right-radius: 10px;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
         selection-background-color: rgba(49, 152, 220, 0.2); 
         selection-color: #ffffff;
         outline: none;
     }
+    QHeaderView { background-color: #2d3748; border: none; }
+    QTableCornerButton::section { background-color: #2d3748; border: none; }
     QHeaderView::section { 
         background-color: #2d3748; 
         color: #93ccff; 
-        padding: 8px; 
+        padding: 6px; 
         font-weight: bold; 
         font-size: 11px;
         letter-spacing: 1px;
@@ -455,107 +455,137 @@ THEME_DARK = """
         background-color: #0f1115; 
         color: #ffffff; 
         border: 1px solid #2d3748; 
-        padding: 6px 10px; 
-        border-radius: 6px; 
+        padding: 4px 8px; 
+        border-radius: 4px; 
     }
-    QLineEdit:focus, QComboBox:focus {
-        border: 1px solid #3198dc;
-    }
+    QLineEdit:focus, QComboBox:focus { border: 1px solid #3198dc; }
     QPushButton { 
         background-color: #2d3748; 
         color: #ffffff; 
         border: none; 
-        border-radius: 6px; 
+        border-radius: 4px; 
         padding: 6px 12px; 
         font-weight: bold; 
         font-size: 12px;
     }
-    QPushButton:hover { 
-        background-color: #3a4557; 
-    }
-    QPushButton:pressed { 
-        background-color: #232b38; 
-    }
+    QPushButton:hover { background-color: #3a4557; }
+    QPushButton:pressed { background-color: #232b38; }
     QProgressBar { 
-        border: 1px solid #2d3748; 
-        border-radius: 6px; 
-        text-align: center; 
-        background-color: #0f1115; 
-        color: white; 
-        height: 14px;
+        border: 1px solid #2d3748; border-radius: 4px; 
+        text-align: center; background-color: #0f1115; color: white; height: 12px;
     }
-    QProgressBar::chunk { 
-        background-color: #3198dc; 
-        border-radius: 4px;
-    }
+    QProgressBar::chunk { background-color: #3198dc; border-radius: 3px; }
+    QScrollBar:vertical { background: #0f1115; width: 14px; margin: 0px; }
+    QScrollBar::handle:vertical { background: #2d3748; border-radius: 7px; min-height: 20px; }
+    QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0px; }
+    QScrollBar:horizontal { background: #0f1115; height: 14px; margin: 0px; }
+    QScrollBar::handle:horizontal { background: #2d3748; border-radius: 7px; min-width: 20px; }
+    QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal { width: 0px; }
+    QAbstractScrollArea::corner { background-color: #1a1d24; }
 """
 
 THEME_LIGHT = """
     QMainWindow, QDialog, QWidget#main_widget { background-color: #f8fafc; color: #1a202c; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
-    QWidget#webPanel, QWidget#filterPanel { background-color: #ffffff; border: 1px solid #cbd5e0; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    QTabWidget::pane { border: 1px solid #cbd5e0; background-color: #ffffff; border-radius: 10px; margin-top: -1px; }
-    QTabBar::tab { background: transparent; color: #4a5568; padding: 8px 12px; font-size: 12px; border-top-left-radius: 8px; border-top-right-radius: 8px; margin-right: 2px; font-weight: bold; border: 1px solid transparent; }
+    QWidget#webPanel, QWidget#filterPanel { background-color: #ffffff; border: 1px solid #cbd5e0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    QTabWidget::pane { border: 1px solid #cbd5e0; background-color: #ffffff; border-radius: 8px; margin-top: -1px; }
+    QTabBar::tab { background: transparent; color: #4a5568; padding: 8px 12px; font-size: 12px; border-top-left-radius: 6px; border-top-right-radius: 6px; margin-right: 2px; font-weight: bold; border: 1px solid transparent; }
     QTabBar::tab:selected { background-color: #2b6cb0; color: #ffffff; border: 1px solid #cbd5e0; border-bottom: none; }
     QTabBar::tab:hover:!selected { background-color: rgba(0, 0, 0, 0.03); }
-    QTableWidget, QTableView { background-color: #ffffff; alternate-background-color: #f1f5f9; color: #1a202c; gridline-color: #e2e8f0; border: none; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; selection-background-color: #bee3f8; selection-color: #1a202c; }
-    QHeaderView::section { background-color: #2d3748; color: #ffffff; padding: 8px; font-weight: bold; font-size: 11px; letter-spacing: 1px; border: none; border-bottom: 2px solid #f8fafc; }
-    QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #ffffff; color: #1a202c; border: 1px solid #a0aec0; padding: 6px 10px; border-radius: 6px; }
-    QPushButton { background-color: #e2e8f0; color: #1a202c; border: none; border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: bold; }
+    QTableWidget, QTableView { background-color: #ffffff; alternate-background-color: #f1f5f9; color: #1a202c; gridline-color: #e2e8f0; border: none; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; selection-background-color: #bee3f8; selection-color: #1a202c; }
+    QHeaderView { background-color: #2d3748; border: none; }
+    QTableCornerButton::section { background-color: #2d3748; border: none; }
+    QHeaderView::section { background-color: #2d3748; color: #ffffff; padding: 6px; font-weight: bold; font-size: 11px; letter-spacing: 1px; border: none; border-bottom: 2px solid #f8fafc; }
+    QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #ffffff; color: #1a202c; border: 1px solid #a0aec0; padding: 4px 8px; border-radius: 4px; }
+    QPushButton { background-color: #e2e8f0; color: #1a202c; border: none; border-radius: 4px; padding: 6px 12px; font-size: 12px; font-weight: bold; }
     QPushButton:hover { background-color: #cbd5e0; }
     QPushButton:pressed { background-color: #b8c4d4; }
-    QProgressBar { border: 1px solid #cbd5e0; border-radius: 6px; text-align: center; background-color: #e2e8f0; color: #1a202c; height: 14px; }
-    QProgressBar::chunk { background-color: #3182ce; border-radius: 4px; }
+    QProgressBar { border: 1px solid #cbd5e0; border-radius: 4px; text-align: center; background-color: #e2e8f0; color: #1a202c; height: 12px; }
+    QProgressBar::chunk { background-color: #3182ce; border-radius: 3px; }
+    QScrollBar:vertical { background: #f8fafc; width: 14px; margin: 0px; }
+    QScrollBar::handle:vertical { background: #cbd5e0; border-radius: 7px; min-height: 20px; }
+    QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0px; }
+    QScrollBar:horizontal { background: #f8fafc; height: 14px; margin: 0px; }
+    QScrollBar::handle:horizontal { background: #cbd5e0; border-radius: 7px; min-width: 20px; }
+    QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal { width: 0px; }
+    QAbstractScrollArea::corner { background-color: #ffffff; }
 """
 
 THEME_BLUE = """
     QMainWindow, QDialog, QWidget#main_widget { background-color: #0f172a; color: #e2e8f0; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
-    QWidget#webPanel, QWidget#filterPanel { background-color: #1e293b; border: 1px solid #334155; border-radius: 10px; }
-    QTabWidget::pane { border: 1px solid #1e293b; background-color: #0f172a; border-radius: 10px; margin-top: -1px; }
-    QTabBar::tab { background: transparent; color: #94a3b8; padding: 8px 12px; font-size: 12px; border-top-left-radius: 8px; border-top-right-radius: 8px; margin-right: 2px; font-weight: bold; border: 1px solid transparent; }
+    QWidget#webPanel, QWidget#filterPanel { background-color: #1e293b; border: 1px solid #334155; border-radius: 8px; }
+    QTabWidget::pane { border: 1px solid #1e293b; background-color: #0f172a; border-radius: 8px; margin-top: -1px; }
+    QTabBar::tab { background: transparent; color: #94a3b8; padding: 8px 12px; font-size: 12px; border-top-left-radius: 6px; border-top-right-radius: 6px; margin-right: 2px; font-weight: bold; border: 1px solid transparent; }
     QTabBar::tab:selected { background-color: #0284c7; color: #ffffff; border: 1px solid #1e293b; border-bottom: none; }
     QTabBar::tab:hover:!selected { background-color: rgba(255, 255, 255, 0.05); color: #ffffff; }
-    QTableWidget, QTableView { background-color: #0f172a; alternate-background-color: #162032; color: #f8fafc; gridline-color: #334155; border: none; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; selection-background-color: #0369a1; }
-    QHeaderView::section { background-color: #1e293b; color: #38bdf8; padding: 8px; font-weight: bold; font-size: 11px; letter-spacing: 1px; border: none; border-bottom: 2px solid #0f172a; }
-    QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #1e293b; color: #f8fafc; border: 1px solid #475569; padding: 6px 10px; border-radius: 6px; }
-    QPushButton { background-color: #1e293b; color: #f8fafc; border: none; border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: bold; }
+    QTableWidget, QTableView { background-color: #0f172a; alternate-background-color: #162032; color: #f8fafc; gridline-color: #334155; border: none; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; selection-background-color: #0369a1; }
+    QHeaderView { background-color: #1e293b; border: none; }
+    QTableCornerButton::section { background-color: #1e293b; border: none; }
+    QHeaderView::section { background-color: #1e293b; color: #38bdf8; padding: 6px; font-weight: bold; font-size: 11px; letter-spacing: 1px; border: none; border-bottom: 2px solid #0f172a; }
+    QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #1e293b; color: #f8fafc; border: 1px solid #475569; padding: 4px 8px; border-radius: 4px; }
+    QPushButton { background-color: #1e293b; color: #f8fafc; border: none; border-radius: 4px; padding: 6px 12px; font-size: 12px; font-weight: bold; }
     QPushButton:hover { background-color: #334155; }
     QPushButton:pressed { background-color: #16202f; }
-    QProgressBar { border: 1px solid #334155; border-radius: 6px; text-align: center; background-color: #1e293b; color: white; height: 14px; }
-    QProgressBar::chunk { background-color: #0284c7; border-radius: 4px; }
+    QProgressBar { border: 1px solid #334155; border-radius: 4px; text-align: center; background-color: #1e293b; color: white; height: 12px; }
+    QProgressBar::chunk { background-color: #0284c7; border-radius: 3px; }
+    QScrollBar:vertical { background: #0f172a; width: 14px; margin: 0px; }
+    QScrollBar::handle:vertical { background: #334155; border-radius: 7px; min-height: 20px; }
+    QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0px; }
+    QScrollBar:horizontal { background: #0f172a; height: 14px; margin: 0px; }
+    QScrollBar::handle:horizontal { background: #334155; border-radius: 7px; min-width: 20px; }
+    QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal { width: 0px; }
+    QAbstractScrollArea::corner { background-color: #0f172a; }
 """
 
 THEME_BLUSH_ROSE = """
     QMainWindow, QDialog, QWidget#main_widget { background-color: #fdf2f8; color: #500724; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
-    QWidget#webPanel, QWidget#filterPanel { background-color: #ffffff; border: 1px solid #fbcfe8; border-radius: 10px; }
-    QTabWidget::pane { border: 1px solid #fbcfe8; background-color: #ffffff; border-radius: 10px; margin-top: -1px; }
-    QTabBar::tab { background: transparent; color: #831843; padding: 8px 12px; font-size: 12px; border-top-left-radius: 8px; border-top-right-radius: 8px; margin-right: 2px; font-weight: bold; border: 1px solid transparent; }
+    QWidget#webPanel, QWidget#filterPanel { background-color: #ffffff; border: 1px solid #fbcfe8; border-radius: 8px; }
+    QTabWidget::pane { border: 1px solid #fbcfe8; background-color: #ffffff; border-radius: 8px; margin-top: -1px; }
+    QTabBar::tab { background: transparent; color: #831843; padding: 8px 12px; font-size: 12px; border-top-left-radius: 6px; border-top-right-radius: 6px; margin-right: 2px; font-weight: bold; border: 1px solid transparent; }
     QTabBar::tab:selected { background-color: #ec4899; color: #ffffff; border: 1px solid #fbcfe8; border-bottom: none; }
     QTabBar::tab:hover:!selected { background-color: rgba(0, 0, 0, 0.03); }
-    QTableWidget, QTableView { background-color: #ffffff; alternate-background-color: #fef6fb; color: #500724; gridline-color: #fbcfe8; border: none; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; selection-background-color: #f472b6; selection-color: #ffffff; }
-    QHeaderView::section { background-color: #be185d; color: #ffffff; padding: 8px; font-weight: bold; font-size: 11px; letter-spacing: 1px; border: none; border-bottom: 2px solid #fdf2f8; }
-    QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #ffffff; color: #500724; border: 1px solid #f472b6; padding: 6px 10px; border-radius: 6px; }
-    QPushButton { background-color: #fce7f3; color: #831843; border: none; border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: bold; }
+    QTableWidget, QTableView { background-color: #ffffff; alternate-background-color: #fef6fb; color: #500724; gridline-color: #fbcfe8; border: none; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; selection-background-color: #f472b6; selection-color: #ffffff; }
+    QHeaderView { background-color: #be185d; border: none; }
+    QTableCornerButton::section { background-color: #be185d; border: none; }
+    QHeaderView::section { background-color: #be185d; color: #ffffff; padding: 6px; font-weight: bold; font-size: 11px; letter-spacing: 1px; border: none; border-bottom: 2px solid #fdf2f8; }
+    QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #ffffff; color: #500724; border: 1px solid #f472b6; padding: 4px 8px; border-radius: 4px; }
+    QPushButton { background-color: #fce7f3; color: #831843; border: none; border-radius: 4px; padding: 6px 12px; font-size: 12px; font-weight: bold; }
     QPushButton:hover { background-color: #fbcfe8; }
     QPushButton:pressed { background-color: #f9a8d4; }
-    QProgressBar { border: 1px solid #fbcfe8; border-radius: 6px; text-align: center; background-color: #fce7f3; color: #500724; height: 14px; }
-    QProgressBar::chunk { background-color: #ec4899; border-radius: 4px; }
+    QProgressBar { border: 1px solid #fbcfe8; border-radius: 4px; text-align: center; background-color: #fce7f3; color: #500724; height: 12px; }
+    QProgressBar::chunk { background-color: #ec4899; border-radius: 3px; }
+    QScrollBar:vertical { background: #fdf2f8; width: 14px; margin: 0px; }
+    QScrollBar::handle:vertical { background: #fbcfe8; border-radius: 7px; min-height: 20px; }
+    QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0px; }
+    QScrollBar:horizontal { background: #fdf2f8; height: 14px; margin: 0px; }
+    QScrollBar::handle:horizontal { background: #fbcfe8; border-radius: 7px; min-width: 20px; }
+    QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal { width: 0px; }
+    QAbstractScrollArea::corner { background-color: #ffffff; }
 """
 
 THEME_VELVET_ROSE = """
     QMainWindow, QDialog, QWidget#main_widget { background-color: #20131a; color: #ffe4e6; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
-    QWidget#webPanel, QWidget#filterPanel { background-color: #311825; border: 1px solid #3f2231; border-radius: 10px; }
-    QTabWidget::pane { border: 1px solid #3f2231; background-color: #20131a; border-radius: 10px; margin-top: -1px; }
-    QTabBar::tab { background: transparent; color: #f472b6; padding: 8px 12px; font-size: 12px; border-top-left-radius: 8px; border-top-right-radius: 8px; margin-right: 2px; font-weight: bold; border: 1px solid transparent; }
+    QWidget#webPanel, QWidget#filterPanel { background-color: #311825; border: 1px solid #3f2231; border-radius: 8px; }
+    QTabWidget::pane { border: 1px solid #3f2231; background-color: #20131a; border-radius: 8px; margin-top: -1px; }
+    QTabBar::tab { background: transparent; color: #f472b6; padding: 8px 12px; font-size: 12px; border-top-left-radius: 6px; border-top-right-radius: 6px; margin-right: 2px; font-weight: bold; border: 1px solid transparent; }
     QTabBar::tab:selected { background-color: #e11d48; color: #ffffff; border: 1px solid #3f2231; border-bottom: none; }
     QTabBar::tab:hover:!selected { background-color: rgba(255, 255, 255, 0.05); color: #ffffff; }
-    QTableWidget, QTableView { background-color: #20131a; alternate-background-color: #26171f; color: #fff1f2; gridline-color: #3f2231; border: none; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; selection-background-color: #be185d; }
-    QHeaderView::section { background-color: #3f2231; color: #fb7185; padding: 8px; font-weight: bold; font-size: 11px; letter-spacing: 1px; border: none; border-bottom: 2px solid #20131a; }
-    QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #311825; color: #fff1f2; border: 1px solid #9f1239; padding: 6px 10px; border-radius: 6px; }
-    QPushButton { background-color: #311825; color: #fecdd3; border: none; border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: bold; }
+    QTableWidget, QTableView { background-color: #20131a; alternate-background-color: #26171f; color: #fff1f2; gridline-color: #3f2231; border: none; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; selection-background-color: #be185d; }
+    QHeaderView { background-color: #3f2231; border: none; }
+    QTableCornerButton::section { background-color: #3f2231; border: none; }
+    QHeaderView::section { background-color: #3f2231; color: #fb7185; padding: 6px; font-weight: bold; font-size: 11px; letter-spacing: 1px; border: none; border-bottom: 2px solid #20131a; }
+    QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #311825; color: #fff1f2; border: 1px solid #9f1239; padding: 4px 8px; border-radius: 4px; }
+    QPushButton { background-color: #311825; color: #fecdd3; border: none; border-radius: 4px; padding: 6px 12px; font-size: 12px; font-weight: bold; }
     QPushButton:hover { background-color: #3f2231; }
     QPushButton:pressed { background-color: #26121b; }
-    QProgressBar { border: 1px solid #9f1239; border-radius: 6px; text-align: center; background-color: #311825; color: white; height: 14px; }
-    QProgressBar::chunk { background-color: #e11d48; border-radius: 4px; }
+    QProgressBar { border: 1px solid #9f1239; border-radius: 4px; text-align: center; background-color: #311825; color: white; height: 12px; }
+    QProgressBar::chunk { background-color: #e11d48; border-radius: 3px; }
+    QScrollBar:vertical { background: #20131a; width: 14px; margin: 0px; }
+    QScrollBar::handle:vertical { background: #3f2231; border-radius: 7px; min-height: 20px; }
+    QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0px; }
+    QScrollBar:horizontal { background: #20131a; height: 14px; margin: 0px; }
+    QScrollBar::handle:horizontal { background: #3f2231; border-radius: 7px; min-width: 20px; }
+    QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal { width: 0px; }
+    QAbstractScrollArea::corner { background-color: #20131a; }
 """
 
 THEMES_MAP = {
@@ -1069,8 +1099,10 @@ class LoginDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("MB-EGX Alpha — Terminal Access")
-        self.resize(600, 780)
-        # Isolate LoginDialog explicitly so it doesn't bleed weird native Windows OS colors
+        
+        # Maximize the login window by default
+        self.showMaximized()
+
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.setObjectName("loginDialog")
         
@@ -1123,11 +1155,15 @@ class LoginDialog(QDialog):
         
         body = QWidget()
         body.setObjectName("scrollBody")
-        layout = QVBoxLayout(body)
-        layout.setContentsMargins(40, 32, 40, 32)
+        body_layout = QVBoxLayout(body)
+
+        # Center Container to keep the form from stretching across the whole maximized screen
+        center_widget = QWidget()
+        center_widget.setMaximumWidth(600)
+        center_widget.setStyleSheet("background-color: transparent;")
+        layout = QVBoxLayout(center_widget)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(16)
-        scroll.setWidget(body)
-        outer.addWidget(scroll)
 
         if LOGO_PATH.exists():
             lbl_logo = QLabel()
@@ -1222,6 +1258,14 @@ class LoginDialog(QDialog):
         lbl_footer.setStyleSheet("color: #718096; font-size: 11px;")
         lbl_footer.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(lbl_footer)
+
+        # Center the constrained box in the middle of the screen vertically and horizontally
+        body_layout.addStretch()
+        body_layout.addWidget(center_widget, alignment=Qt.AlignmentFlag.AlignCenter)
+        body_layout.addStretch()
+
+        scroll.setWidget(body)
+        outer.addWidget(scroll)
 
     def _on_consent_toggled(self, _state):
         checked = self.chk_consent.isChecked()
@@ -1490,7 +1534,7 @@ class QuantDashboard(QMainWindow):
             if QApplication.instance():
                 QApplication.instance().setStyleSheet(stylesheet)
 
-            btn_base_style = "color: white; border-radius: 8px; font-weight: bold; padding: 10px 16px; font-size: 13px;"
+            btn_base_style = "color: white; border-radius: 6px; font-weight: bold; padding: 6px 12px; font-size: 12px;"
 
             if "Blush Rose" in theme_name:
                 self.theme_highlight = QColor("#be185d")
@@ -1499,22 +1543,20 @@ class QuantDashboard(QMainWindow):
                 self.btn_manage_portfolio.setStyleSheet(f"background-color: #9d174d; {btn_base_style}")
                 self.btn_calc.setStyleSheet(f"background-color: #e11d48; {btn_base_style}")
                 self.btn_set_cash.setStyleSheet(f"background-color: #831843; {btn_base_style}")
-                self.btn_settings.setStyleSheet(f"background-color: #f472b6; color: #500724; font-weight: bold; border-radius: 8px; padding: 10px 16px; font-size: 13px;")
+                self.btn_settings.setStyleSheet(f"background-color: #f472b6; color: #500724; font-weight: bold; border-radius: 6px; padding: 6px 12px; font-size: 12px;")
                 self.btn_top10.setStyleSheet(f"background-color: #be185d; {btn_base_style}")
-                self.lbl_account_header.setStyleSheet("font-size: 14px; font-weight: bold; background-color: #fce7f3; color: #831843; padding: 14px; border-radius: 12px; border: 1px solid #fbcfe8;")
-                self.lbl_disclosure.setStyleSheet("font-size: 12px; color: #9d174d; background-color: #fef6fb; padding: 8px; border: 1px solid #f472b6; border-radius: 6px;")
+                self.lbl_account_header.setStyleSheet("font-size: 13px; font-weight: bold; background-color: #fce7f3; color: #831843; padding: 8px; border-radius: 8px; border: 1px solid #fbcfe8;")
                 
             elif "Velvet Rose" in theme_name:
                 self.theme_highlight = QColor("#e11d48")
                 self.btn_ingest.setStyleSheet(f"background-color: #e11d48; {btn_base_style}")
                 self.btn_analyze.setStyleSheet(f"background-color: #be185d; {btn_base_style}")
                 self.btn_manage_portfolio.setStyleSheet(f"background-color: #9f1239; {btn_base_style}")
-                self.btn_calc.setStyleSheet(f"background-color: #fb7185; color: #20131a; font-weight: bold; border-radius: 8px; padding: 10px 16px; font-size: 13px;")
+                self.btn_calc.setStyleSheet(f"background-color: #fb7185; color: #20131a; font-weight: bold; border-radius: 6px; padding: 6px 12px; font-size: 12px;")
                 self.btn_set_cash.setStyleSheet(f"background-color: #881337; {btn_base_style}")
-                self.btn_settings.setStyleSheet(f"background-color: #4c1d32; color: #ffe4e6; border-radius: 8px; padding: 10px 16px; font-size: 13px;")
+                self.btn_settings.setStyleSheet(f"background-color: #4c1d32; color: #ffe4e6; border-radius: 6px; padding: 6px 12px; font-size: 12px;")
                 self.btn_top10.setStyleSheet(f"background-color: #e11d48; {btn_base_style}")
-                self.lbl_account_header.setStyleSheet("font-size: 14px; font-weight: bold; background-color: #311825; color: #fb7185; padding: 14px; border-radius: 12px; border: 1px solid #9f1239;")
-                self.lbl_disclosure.setStyleSheet("font-size: 12px; color: #fecdd3; background-color: #2a1822; padding: 8px; border: 1px solid #e11d48; border-radius: 6px;")
+                self.lbl_account_header.setStyleSheet("font-size: 13px; font-weight: bold; background-color: #311825; color: #fb7185; padding: 8px; border-radius: 8px; border: 1px solid #9f1239;")
                 
             elif "Light" in theme_name:
                 self.theme_highlight = QColor("#3182ce")
@@ -1525,8 +1567,7 @@ class QuantDashboard(QMainWindow):
                 self.btn_set_cash.setStyleSheet(f"background-color: #d69e2e; {btn_base_style}")
                 self.btn_settings.setStyleSheet(f"background-color: #4a5568; {btn_base_style}")
                 self.btn_top10.setStyleSheet(f"background-color: #3182ce; {btn_base_style}")
-                self.lbl_account_header.setStyleSheet("font-size: 14px; font-weight: bold; background-color: #ffffff; color: #2b6cb0; padding: 14px; border-radius: 12px; border: 1px solid #cbd5e0; box-shadow: 0 4px 6px rgba(0,0,0,0.1);")
-                self.lbl_disclosure.setStyleSheet("font-size: 12px; color: #744210; background-color: #fffaf0; padding: 8px; border: 1px solid #ecc94b; border-radius: 6px;")
+                self.lbl_account_header.setStyleSheet("font-size: 13px; font-weight: bold; background-color: #ffffff; color: #2b6cb0; padding: 8px; border-radius: 8px; border: 1px solid #cbd5e0; box-shadow: 0 4px 6px rgba(0,0,0,0.1);")
                 
             elif "Midnight" in theme_name:
                 self.theme_highlight = QColor("#0284c7")
@@ -1537,8 +1578,7 @@ class QuantDashboard(QMainWindow):
                 self.btn_set_cash.setStyleSheet(f"background-color: #d97706; {btn_base_style}")
                 self.btn_settings.setStyleSheet(f"background-color: #475569; {btn_base_style}")
                 self.btn_top10.setStyleSheet(f"background-color: #0284c7; {btn_base_style}")
-                self.lbl_account_header.setStyleSheet("font-size: 14px; font-weight: bold; background-color: #1e293b; color: #38bdf8; padding: 14px; border-radius: 12px; border: 1px solid #334155;")
-                self.lbl_disclosure.setStyleSheet("font-size: 12px; color: #fde68a; background-color: #451a03; padding: 8px; border: 1px solid #d97706; border-radius: 6px;")
+                self.lbl_account_header.setStyleSheet("font-size: 13px; font-weight: bold; background-color: #1e293b; color: #38bdf8; padding: 8px; border-radius: 8px; border: 1px solid #334155;")
                 
             else:
                 self.theme_highlight = QColor("#3198dc")
@@ -1550,8 +1590,7 @@ class QuantDashboard(QMainWindow):
                 self.btn_settings.setStyleSheet(f"background-color: #334155; {btn_base_style}") 
                 self.btn_top10.setStyleSheet(f"background-color: #ca8a04; {btn_base_style}") 
                 
-                self.lbl_account_header.setStyleSheet("font-size: 14px; font-weight: bold; background-color: #1a1d24; color: #e2e2e8; padding: 16px; border-radius: 12px; border: 1px solid #2d3748;")
-                self.lbl_disclosure.setStyleSheet("font-size: 12px; color: #fbd38d; background-color: #744210; padding: 8px; border: 1px solid #b7791f; border-radius: 6px;")
+                self.lbl_account_header.setStyleSheet("font-size: 13px; font-weight: bold; background-color: #1a1d24; color: #e2e2e8; padding: 8px; border-radius: 8px; border: 1px solid #2d3748;")
 
     def _init_ui(self):
         main_widget = QWidget()
@@ -1559,32 +1598,33 @@ class QuantDashboard(QMainWindow):
         self.setCentralWidget(main_widget)
         layout = QVBoxLayout(main_widget)
         
-        layout.setContentsMargins(24, 20, 24, 20)
-        layout.setSpacing(16)
+        # Reduced Margins to give Table Content more room
+        layout.setContentsMargins(12, 12, 12, 12)
+        layout.setSpacing(8)
 
         # Main header wrap
         header_wrap = QWidget()
         header_wrap.setObjectName("webPanel")
         header_layout = QVBoxLayout(header_wrap)
-        header_layout.setContentsMargins(16, 12, 16, 12)
-        header_layout.setSpacing(12)
+        header_layout.setContentsMargins(12, 8, 12, 8)
+        header_layout.setSpacing(6)
 
         # 1. Top Row: Brand & Status
         top_row = QHBoxLayout()
-        # Brand
         brand_layout = QHBoxLayout()
         if LOGO_PATH.exists():
             self.lbl_brand_logo = QLabel()
-            logo_pixmap = QPixmap(str(LOGO_PATH)).scaledToHeight(44, Qt.TransformationMode.SmoothTransformation)
+            # Scaled down logo from 44 to 32
+            logo_pixmap = QPixmap(str(LOGO_PATH)).scaledToHeight(32, Qt.TransformationMode.SmoothTransformation)
             self.lbl_brand_logo.setPixmap(logo_pixmap)
             brand_layout.addWidget(self.lbl_brand_logo)
         
         brand_text_col = QVBoxLayout()
         brand_text_col.setSpacing(0)
         self.lbl_brand_title = QLabel("MB-EGX")
-        self.lbl_brand_title.setStyleSheet("font-size: 20px; font-weight: 900; color: #93ccff; letter-spacing: 1px;")
+        self.lbl_brand_title.setStyleSheet("font-size: 18px; font-weight: 900; color: #93ccff; letter-spacing: 1px;")
         self.lbl_brand_tagline = QLabel("Out-of-Core Trading Matrix & Sector Dashboard")
-        self.lbl_brand_tagline.setStyleSheet("font-size: 11px; color: #a0aec0;")
+        self.lbl_brand_tagline.setStyleSheet("font-size: 10px; color: #a0aec0;")
         brand_text_col.addWidget(self.lbl_brand_title)
         brand_text_col.addWidget(self.lbl_brand_tagline)
         brand_layout.addLayout(brand_text_col)
@@ -1595,11 +1635,11 @@ class QuantDashboard(QMainWindow):
         status_layout = QVBoxLayout()
         status_layout.setSpacing(2)
         self.lbl_last_date = QLabel("📅 Last Data Date: Loading...")
-        self.lbl_last_date.setStyleSheet("font-weight: bold; color: #93ccff; font-size: 12px;")
+        self.lbl_last_date.setStyleSheet("font-weight: bold; color: #93ccff; font-size: 11px;")
         self.lbl_welcome_user = QLabel("")
         if self.user_info:
             self.lbl_welcome_user.setText(f"👋 {self.user_info['name']}")
-            self.lbl_welcome_user.setStyleSheet("font-weight: bold; color: #a0aec0; font-size: 12px;")
+            self.lbl_welcome_user.setStyleSheet("font-weight: bold; color: #a0aec0; font-size: 11px;")
         status_layout.addWidget(self.lbl_last_date, alignment=Qt.AlignmentFlag.AlignRight)
         status_layout.addWidget(self.lbl_welcome_user, alignment=Qt.AlignmentFlag.AlignRight)
         top_row.addLayout(status_layout)
@@ -1646,7 +1686,7 @@ class QuantDashboard(QMainWindow):
         controls_row.addWidget(self.cmb_lang)
         
         self.btn_analytics = QPushButton("📊 Analytics")
-        self.btn_analytics.setStyleSheet("background-color: #0d9488; color: white; font-weight: bold; padding: 10px 14px; border-radius: 8px;")
+        self.btn_analytics.setStyleSheet("background-color: #0d9488; color: white; font-weight: bold; padding: 6px 12px; font-size: 12px; border-radius: 6px;")
         self.btn_analytics.clicked.connect(self.open_analytics_dialog)
         self.btn_analytics.setVisible(bool(self.user_info and self.user_info.get("email") in ADMIN_EMAILS))
         controls_row.addWidget(self.btn_analytics)
@@ -1658,7 +1698,7 @@ class QuantDashboard(QMainWindow):
         dir_layout = QHBoxLayout()
         dir_layout.setSpacing(8)
         self.lbl_dir = QLabel("📂 Scan Folder:")
-        self.lbl_dir.setStyleSheet("font-weight: bold; font-size: 12px; color: #a0aec0;")
+        self.lbl_dir.setStyleSheet("font-weight: bold; font-size: 11px; color: #a0aec0;")
         dir_layout.addWidget(self.lbl_dir)
         self.txt_scan_dir = QLineEdit(str(WATCH_DIR))
         dir_layout.addWidget(self.txt_scan_dir, stretch=1)
@@ -1680,11 +1720,11 @@ class QuantDashboard(QMainWindow):
         filter_wrap = QWidget()
         filter_wrap.setObjectName("filterPanel")
         filter_layout = QHBoxLayout(filter_wrap)
-        filter_layout.setContentsMargins(14, 12, 14, 12)
-        filter_layout.setSpacing(10)
+        filter_layout.setContentsMargins(10, 6, 10, 6)
+        filter_layout.setSpacing(6)
         
         self.lbl_filter = QLabel("🔍 Live Filters:")
-        self.lbl_filter.setStyleSheet("font-weight: bold; font-size: 14px; color: #93ccff;")
+        self.lbl_filter.setStyleSheet("font-weight: bold; font-size: 13px; color: #93ccff;")
         filter_layout.addWidget(self.lbl_filter)
 
         self.txt_search = QLineEdit()
@@ -1731,28 +1771,29 @@ class QuantDashboard(QMainWindow):
         self.chk_hide_illiquid = QPushButton("🚫 Hide Illiquid / Unconfirmed")
         self.chk_hide_illiquid.setCheckable(True)
         self.chk_hide_illiquid.setChecked(True)
-        self.chk_hide_illiquid.setStyleSheet("background-color: #334155; color: white; padding: 8px 12px; border-radius: 6px;")
+        self.chk_hide_illiquid.setStyleSheet("background-color: #334155; color: white; padding: 6px 12px; font-size: 11px; border-radius: 6px;")
         self.chk_hide_illiquid.clicked.connect(self.apply_filters)
         filter_layout.addWidget(self.chk_hide_illiquid)
 
         self.btn_columns = QPushButton("👁️ Columns")
-        self.btn_columns.setStyleSheet("background-color: #4a5568; color: white; padding: 8px 12px; border-radius: 6px;")
+        self.btn_columns.setStyleSheet("background-color: #4a5568; color: white; padding: 6px 12px; font-size: 11px; border-radius: 6px;")
         self.btn_columns.clicked.connect(self.open_column_chooser)
         filter_layout.addWidget(self.btn_columns)
 
         self.btn_reset_filters = QPushButton("Reset Filters")
-        self.btn_reset_filters.setStyleSheet("background-color: #4a5568; color: white; padding: 8px 12px; border-radius: 6px;")
+        self.btn_reset_filters.setStyleSheet("background-color: #4a5568; color: white; padding: 6px 12px; font-size: 11px; border-radius: 6px;")
         self.btn_reset_filters.clicked.connect(self.reset_filters)
         filter_layout.addWidget(self.btn_reset_filters)
         
         layout.addWidget(filter_wrap)
 
         self.lbl_disclosure = QLabel("⚠️ Educational tool, not investment advice. Sector Breadth, VWAP entries, and Sortino risk penalties applied.")
+        self.lbl_disclosure.setStyleSheet("font-size: 10px; color: #a0aec0;")
         self.lbl_disclosure.setWordWrap(True)
         layout.addWidget(self.lbl_disclosure)
 
         self.lbl_status = QLabel("System Idle. Ready for processing.")
-        self.lbl_status.setStyleSheet("font-size: 12px; color: #a0aec0;")
+        self.lbl_status.setStyleSheet("font-size: 11px; color: #a0aec0;")
         layout.addWidget(self.lbl_status)
         
         self.progress_bar = QProgressBar()
