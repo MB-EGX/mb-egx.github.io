@@ -23,7 +23,7 @@ from PyQt6.QtWidgets import (
     QFileDialog, QFormLayout, QHBoxLayout, QHeaderView, QInputDialog, QLabel,
     QLineEdit, QMainWindow, QMessageBox, QProgressBar, QPushButton, QScrollArea,
     QTableWidget, QTableWidgetItem, QTableView, QTabWidget, QVBoxLayout, QWidget,
-    QCheckBox, QTextEdit, QSizePolicy
+    QCheckBox, QTextEdit, QSizePolicy, QRadioButton
 )
 
 logger = get_logger("app_gui")
@@ -324,7 +324,7 @@ class _CloudWorker(QThread):
             result = None
         self.finished_result.emit(result)
 
-# Shortened labels to prevent Tab bar corruption & truncation
+
 TRANSLATIONS = {
     "EN": {
         "title": "MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard",
@@ -392,7 +392,6 @@ TRANSLATIONS = {
     }
 }
 
-# CSS Styles reduced padding so inner chart_widget filter buttons don't break
 THEME_DARK = """
     QMainWindow, QDialog, QWidget#main_widget { 
         background-color: #0f1115; 
@@ -474,6 +473,30 @@ THEME_DARK = """
     }
     QPushButton:hover { background-color: #3a4557; }
     QPushButton:pressed { background-color: #232b38; }
+    QRadioButton {
+        color: #e2e2e8;
+        font-weight: bold;
+        font-size: 12px;
+        spacing: 6px;
+    }
+    QRadioButton::indicator {
+        width: 14px;
+        height: 14px;
+        border-radius: 7px;
+        border: 1px solid #2d3748;
+        background-color: #0f1115;
+    }
+    QRadioButton::indicator:checked {
+        background-color: #3198dc;
+        border: 1px solid #93ccff;
+    }
+    QLabel {
+        color: #e2e2e8;
+    }
+    QScrollArea, QScrollArea > QWidget, QScrollArea > QWidget > QWidget {
+        background-color: #0f1115;
+        border: none;
+    }
     QProgressBar { 
         border: none; 
         background-color: rgba(255,255,255,0.1); 
@@ -488,7 +511,7 @@ THEME_DARK = """
     QScrollBar:horizontal { background: #0f1115; height: 14px; margin: 0px; }
     QScrollBar::handle:horizontal { background: #2d3748; border-radius: 7px; min-width: 20px; }
     QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal { width: 0px; }
-    QAbstractScrollArea::corner { background-color: #1a1d24; }
+    QAbstractScrollArea::corner { background-color: #0f1115; }
 """
 
 THEME_LIGHT = """
@@ -506,6 +529,11 @@ THEME_LIGHT = """
     QPushButton { background-color: #e2e8f0; color: #1a202c; border: none; border-radius: 4px; padding: 4px; font-size: 11px; font-weight: bold; }
     QPushButton:hover { background-color: #cbd5e0; }
     QPushButton:pressed { background-color: #b8c4d4; }
+    QRadioButton { color: #1a202c; font-weight: bold; font-size: 12px; spacing: 6px; }
+    QRadioButton::indicator { width: 14px; height: 14px; border-radius: 7px; border: 1px solid #a0aec0; background-color: #ffffff; }
+    QRadioButton::indicator:checked { background-color: #2b6cb0; border: 1px solid #2b6cb0; }
+    QLabel { color: #1a202c; }
+    QScrollArea, QScrollArea > QWidget, QScrollArea > QWidget > QWidget { background-color: #f8fafc; border: none; }
     QProgressBar { border: none; background-color: rgba(0,0,0,0.1); border-radius: 2px; height: 4px; max-height: 4px; }
     QProgressBar::chunk { background-color: #3182ce; border-radius: 2px; }
     QScrollBar:vertical { background: #f8fafc; width: 14px; margin: 0px; }
@@ -514,7 +542,7 @@ THEME_LIGHT = """
     QScrollBar:horizontal { background: #f8fafc; height: 14px; margin: 0px; }
     QScrollBar::handle:horizontal { background: #cbd5e0; border-radius: 7px; min-width: 20px; }
     QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal { width: 0px; }
-    QAbstractScrollArea::corner { background-color: #ffffff; }
+    QAbstractScrollArea::corner { background-color: #f8fafc; }
 """
 
 THEME_BLUE = """
@@ -532,6 +560,11 @@ THEME_BLUE = """
     QPushButton { background-color: #1e293b; color: #f8fafc; border: none; border-radius: 4px; padding: 4px; font-size: 11px; font-weight: bold; }
     QPushButton:hover { background-color: #334155; }
     QPushButton:pressed { background-color: #16202f; }
+    QRadioButton { color: #f8fafc; font-weight: bold; font-size: 12px; spacing: 6px; }
+    QRadioButton::indicator { width: 14px; height: 14px; border-radius: 7px; border: 1px solid #475569; background-color: #0f172a; }
+    QRadioButton::indicator:checked { background-color: #0284c7; border: 1px solid #38bdf8; }
+    QLabel { color: #e2e8f0; }
+    QScrollArea, QScrollArea > QWidget, QScrollArea > QWidget > QWidget { background-color: #0f172a; border: none; }
     QProgressBar { border: none; background-color: rgba(255,255,255,0.1); border-radius: 2px; height: 4px; max-height: 4px; }
     QProgressBar::chunk { background-color: #0284c7; border-radius: 2px; }
     QScrollBar:vertical { background: #0f172a; width: 14px; margin: 0px; }
@@ -558,6 +591,11 @@ THEME_BLUSH_ROSE = """
     QPushButton { background-color: #fce7f3; color: #831843; border: none; border-radius: 4px; padding: 4px; font-size: 11px; font-weight: bold; }
     QPushButton:hover { background-color: #fbcfe8; }
     QPushButton:pressed { background-color: #f9a8d4; }
+    QRadioButton { color: #500724; font-weight: bold; font-size: 12px; spacing: 6px; }
+    QRadioButton::indicator { width: 14px; height: 14px; border-radius: 7px; border: 1px solid #f472b6; background-color: #ffffff; }
+    QRadioButton::indicator:checked { background-color: #ec4899; border: 1px solid #ec4899; }
+    QLabel { color: #500724; }
+    QScrollArea, QScrollArea > QWidget, QScrollArea > QWidget > QWidget { background-color: #fdf2f8; border: none; }
     QProgressBar { border: none; background-color: rgba(0,0,0,0.05); border-radius: 2px; height: 4px; max-height: 4px; }
     QProgressBar::chunk { background-color: #ec4899; border-radius: 2px; }
     QScrollBar:vertical { background: #fdf2f8; width: 14px; margin: 0px; }
@@ -584,6 +622,11 @@ THEME_VELVET_ROSE = """
     QPushButton { background-color: #311825; color: #fecdd3; border: none; border-radius: 4px; padding: 4px; font-size: 11px; font-weight: bold; }
     QPushButton:hover { background-color: #3f2231; }
     QPushButton:pressed { background-color: #26121b; }
+    QRadioButton { color: #fff1f2; font-weight: bold; font-size: 12px; spacing: 6px; }
+    QRadioButton::indicator { width: 14px; height: 14px; border-radius: 7px; border: 1px solid #9f1239; background-color: #20131a; }
+    QRadioButton::indicator:checked { background-color: #e11d48; border: 1px solid #fb7185; }
+    QLabel { color: #ffe4e6; }
+    QScrollArea, QScrollArea > QWidget, QScrollArea > QWidget > QWidget { background-color: #20131a; border: none; }
     QProgressBar { border: none; background-color: rgba(255,255,255,0.1); border-radius: 2px; height: 4px; max-height: 4px; }
     QProgressBar::chunk { background-color: #e11d48; border-radius: 2px; }
     QScrollBar:vertical { background: #20131a; width: 14px; margin: 0px; }
@@ -1538,7 +1581,8 @@ class QuantDashboard(QMainWindow):
             if QApplication.instance():
                 QApplication.instance().setStyleSheet(stylesheet)
 
-            btn_base_style = "color: white; border-radius: 6px; font-weight: bold; padding: 6px 12px; font-size: 12px;"
+            # Preserved larger padding for main action buttons while global QSS handles compact filter buttons
+            btn_base_style = "color: white; border-radius: 6px; font-weight: bold; padding: 6px 14px; font-size: 12px;"
 
             if "Blush Rose" in theme_name:
                 self.theme_highlight = QColor("#be185d")
@@ -1547,7 +1591,7 @@ class QuantDashboard(QMainWindow):
                 self.btn_manage_portfolio.setStyleSheet(f"background-color: #9d174d; {btn_base_style}")
                 self.btn_calc.setStyleSheet(f"background-color: #e11d48; {btn_base_style}")
                 self.btn_set_cash.setStyleSheet(f"background-color: #831843; {btn_base_style}")
-                self.btn_settings.setStyleSheet(f"background-color: #f472b6; color: #500724; font-weight: bold; border-radius: 6px; padding: 6px 12px; font-size: 12px;")
+                self.btn_settings.setStyleSheet(f"background-color: #f472b6; color: #500724; font-weight: bold; border-radius: 6px; padding: 6px 14px; font-size: 12px;")
                 self.btn_top10.setStyleSheet(f"background-color: #be185d; {btn_base_style}")
                 self.lbl_account_header.setStyleSheet("font-size: 13px; font-weight: bold; background-color: #fce7f3; color: #831843; padding: 8px; border-radius: 8px; border: 1px solid #fbcfe8;")
                 
@@ -1559,9 +1603,9 @@ class QuantDashboard(QMainWindow):
                 self.btn_ingest.setStyleSheet(f"background-color: #e11d48; {btn_base_style}")
                 self.btn_analyze.setStyleSheet(f"background-color: #be185d; {btn_base_style}")
                 self.btn_manage_portfolio.setStyleSheet(f"background-color: #9f1239; {btn_base_style}")
-                self.btn_calc.setStyleSheet(f"background-color: #fb7185; color: #20131a; font-weight: bold; border-radius: 6px; padding: 6px 12px; font-size: 12px;")
+                self.btn_calc.setStyleSheet(f"background-color: #fb7185; color: #20131a; font-weight: bold; border-radius: 6px; padding: 6px 14px; font-size: 12px;")
                 self.btn_set_cash.setStyleSheet(f"background-color: #881337; {btn_base_style}")
-                self.btn_settings.setStyleSheet(f"background-color: #4c1d32; color: #ffe4e6; border-radius: 6px; padding: 6px 12px; font-size: 12px;")
+                self.btn_settings.setStyleSheet(f"background-color: #4c1d32; color: #ffe4e6; border-radius: 6px; padding: 6px 14px; font-size: 12px;")
                 self.btn_top10.setStyleSheet(f"background-color: #e11d48; {btn_base_style}")
                 self.lbl_account_header.setStyleSheet("font-size: 13px; font-weight: bold; background-color: #311825; color: #fb7185; padding: 8px; border-radius: 8px; border: 1px solid #9f1239;")
                 
@@ -1617,7 +1661,6 @@ class QuantDashboard(QMainWindow):
         self.setCentralWidget(main_widget)
         layout = QVBoxLayout(main_widget)
         
-        # Reduced Margins to give Table Content more room
         layout.setContentsMargins(12, 12, 12, 12)
         layout.setSpacing(8)
 
@@ -1635,7 +1678,6 @@ class QuantDashboard(QMainWindow):
         brand_layout = QHBoxLayout()
         if LOGO_PATH.exists():
             self.lbl_brand_logo = QLabel()
-            # Scaled down logo from 44 to 32
             logo_pixmap = QPixmap(str(LOGO_PATH)).scaledToHeight(32, Qt.TransformationMode.SmoothTransformation)
             self.lbl_brand_logo.setPixmap(logo_pixmap)
             brand_layout.addWidget(self.lbl_brand_logo)
@@ -1665,8 +1707,8 @@ class QuantDashboard(QMainWindow):
         
         self.progress_bar = QProgressBar()
         self.progress_bar.setValue(0)
-        self.progress_bar.setTextVisible(False) # No text makes it a sleek line
-        self.progress_bar.setFixedHeight(4)     # Very thin progress bar
+        self.progress_bar.setTextVisible(False)
+        self.progress_bar.setFixedHeight(4)
         
         msg_layout.addWidget(self.lbl_disclosure)
         msg_layout.addWidget(self.lbl_status)
@@ -1747,7 +1789,7 @@ class QuantDashboard(QMainWindow):
         self.txt_scan_dir = QLineEdit(str(WATCH_DIR))
         dir_layout.addWidget(self.txt_scan_dir, stretch=1)
         self.btn_browse = QPushButton("Browse...")
-        self.btn_browse.setStyleSheet("background-color: #4a5568; color: white; padding: 6px 12px; border-radius: 6px;")
+        self.btn_browse.setStyleSheet("background-color: #4a5568; color: white; padding: 6px 12px; border-radius: 6px; font-size: 11px;")
         self.btn_browse.clicked.connect(self.browse_folder)
         dir_layout.addWidget(self.btn_browse)
         
@@ -1889,7 +1931,7 @@ class QuantDashboard(QMainWindow):
         tab_history_widget = QWidget()
         history_layout = QVBoxLayout(tab_history_widget)
         btn_export = QPushButton("📥 Export Tax & Audit Ledger (Excel/CSV)")
-        btn_export.setStyleSheet("background-color: #38a169; color: white; font-weight: bold; padding: 12px; border-radius: 8px;")
+        btn_export.setStyleSheet("background-color: #38a169; color: white; font-weight: bold; padding: 8px 14px; font-size: 12px; border-radius: 6px;")
         btn_export.clicked.connect(self.export_trade_ledger)
         history_layout.addWidget(btn_export)
 
@@ -1915,7 +1957,7 @@ class QuantDashboard(QMainWindow):
 
         self.chart_widget = StockSectorChartWidget(self.qe, self.dbm, self)
 
-        # Apply short names to tabs so they fit easily without scrolling
+        # Precise 8 Tab mappings matching TRANSLATIONS
         self.tabs.addTab(self.tbl_buys, "📈 Action Matrix")
         self.tabs.addTab(self.tbl_sectors, "🏢 Sectors")
         self.tabs.addTab(self.tbl_exits, "🛡️ Exits")
@@ -2011,6 +2053,7 @@ class QuantDashboard(QMainWindow):
 
     def _build_top10_overview_tab(self):
         container = QWidget()
+        container.setObjectName("top10Container")
         v_layout = QVBoxLayout(container)
         v_layout.setSpacing(4)
 
