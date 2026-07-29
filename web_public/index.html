@@ -90,6 +90,9 @@
                 <button onclick="openModal('modal-theme')" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
                     <span>⚙️</span> <span id="btn-theme-text">Themes</span>
                 </button>
+                <button onclick="openModal('modal-guide')" class="bg-teal-600 hover:bg-teal-500 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
+                    <span>❓</span> <span id="btn-guide-text">Guide</span>
+                </button>
                 <select id="lang-select" onchange="switchLanguage(this.value)" class="bg-darkbg border border-bordercol rounded-lg px-2.5 py-2 text-white font-bold cursor-pointer">
                     <option value="EN">🇬🇧 English</option>
                     <option value="AR">🇪🇬 العربية</option>
@@ -398,6 +401,206 @@
         </div>
     </div>
 
+    <!-- Signal & Terminology Guide Modal (bilingual EN/AR) -->
+    <div id="modal-guide" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-panelbg border border-bordercol rounded-xl max-w-4xl w-full p-5 space-y-5 shadow-2xl max-h-[85vh] overflow-y-auto">
+
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <h3 class="text-base font-bold text-teal-400">
+                        <span data-lang="en">❓ Signal &amp; Terminology Guide</span>
+                        <span data-lang="ar" style="display:none">❓ دليل الإشارات والمصطلحات</span>
+                    </h3>
+                    <p class="text-[11px] text-textmuted mt-0.5">
+                        <span data-lang="en">What every icon, label, and column on this dashboard means.</span>
+                        <span data-lang="ar" style="display:none">شرح لكل رمز وتسمية وعمود يظهر في هذه اللوحة.</span>
+                    </p>
+                </div>
+                <div class="flex bg-darkbg border border-bordercol rounded-lg overflow-hidden shrink-0">
+                    <button id="guide-btn-en" onclick="setGuideLang('en')" class="px-3 py-1.5 text-xs font-bold bg-sky-600 text-white transition">🇬🇧 English</button>
+                    <button id="guide-btn-ar" onclick="setGuideLang('ar')" class="px-3 py-1.5 text-xs font-bold text-textmuted transition">🇪🇬 العربية</button>
+                </div>
+            </div>
+
+            <!-- Action Signals -->
+            <div>
+                <h4 class="text-sm font-bold text-sky-400 mb-1">
+                    <span data-lang="en">🎯 Action Signals</span><span data-lang="ar" style="display:none">🎯 إشارات القرار</span>
+                </h4>
+                <p class="text-[11px] text-textmuted mb-2">
+                    <span data-lang="en">The "Action" label on every row of the Market Matrix — what to do about this stock right now.</span>
+                    <span data-lang="ar" style="display:none">تسمية "الإجراء" في كل صف بمصفوفة السوق — ماذا تفعل تجاه هذا السهم الآن.</span>
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-[11px]">
+                    <div class="bg-darkbg border-l-4 border-rose-500 rounded p-2.5">
+                        <div class="font-bold">🛑 <span data-lang="en">SELL / AVOID</span><span data-lang="ar" style="display:none">بيع / تجنب</span></div>
+                        <p class="text-textmuted mt-1"><span data-lang="en">Deep drop below the 50-day average with a deeply oversold RSI. A warning, not a bargain.</span><span data-lang="ar" style="display:none">هبوط حاد تحت المتوسط الـ50 يوم مع RSI في تشبع بيعي عميق. إشارة تحذير وليست فرصة رخيصة.</span></p>
+                    </div>
+                    <div class="bg-darkbg border-l-4 border-emerald-500 rounded p-2.5">
+                        <div class="font-bold">🔥 <span data-lang="en">STRONG BUY</span><span data-lang="ar" style="display:none">شراء قوي</span></div>
+                        <p class="text-textmuted mt-1"><span data-lang="en">Near its 1-year high, RSI in the healthy bullish zone, no gap down. The strongest confirmed setup.</span><span data-lang="ar" style="display:none">قرب أعلى سعر خلال سنة، RSI في نطاق صعودي صحي، بدون فجوة هبوطية. أقوى إعداد مؤكد.</span></p>
+                    </div>
+                    <div class="bg-darkbg border-l-4 border-emerald-500 rounded p-2.5">
+                        <div class="font-bold">⚡ <span data-lang="en">BREAKOUT BUY</span><span data-lang="ar" style="display:none">شراء اختراق</span></div>
+                        <p class="text-textmuted mt-1">
+                            <span data-lang="en">A short-term trigger fired — 3 strengths: <b>(X-OVER+MOMENTUM)</b> both fired together (strongest), <b>(X-OVER)</b> 50-day golden cross only, <b>(MOMENTUM)</b> RSI/EMA heating up only.</span>
+                            <span data-lang="ar" style="display:none">انطلقت إشارة قصيرة المدى — 3 درجات: <b>(X-OVER+MOMENTUM)</b> تحقق الاثنان معاً (الأقوى)، <b>(X-OVER)</b> تقاطع ذهبي لـ50 يوم فقط، <b>(MOMENTUM)</b> ارتفاع RSI/EMA فقط.</span>
+                        </p>
+                    </div>
+                    <div class="bg-darkbg border-l-4 border-amber-500 rounded p-2.5">
+                        <div class="font-bold">📈 <span data-lang="en">ACCUMULATE</span><span data-lang="ar" style="display:none">تجميع</span></div>
+                        <p class="text-textmuted mt-1"><span data-lang="en">No trigger, no red flag — a steady stock worth slowly building a position in.</span><span data-lang="ar" style="display:none">لا إشارة ولا تحذير — سهم مستقر يستحق بناء مركز فيه تدريجياً.</span></p>
+                    </div>
+                    <div class="bg-darkbg border-l-4 border-amber-500 rounded p-2.5">
+                        <div class="font-bold">⏳ <span data-lang="en">BUY ON DIP</span><span data-lang="ar" style="display:none">شراء عند الهبوط</span></div>
+                        <p class="text-textmuted mt-1"><span data-lang="en">Near the bottom of its recent range or RSI is low — a potential value entry, not yet trend-confirmed.</span><span data-lang="ar" style="display:none">قرب أدنى نطاقه الأخير أو RSI منخفض — دخول محتمل بسعر جيد، دون تأكيد اتجاه بعد.</span></p>
+                    </div>
+                    <div class="bg-darkbg border-l-4 border-slate-500 rounded p-2.5">
+                        <div class="font-bold">🟡 <span data-lang="en">HOLD / NEUTRAL</span><span data-lang="ar" style="display:none">احتفاظ / محايد</span></div>
+                        <p class="text-textmuted mt-1"><span data-lang="en">Filter option — none of the above fired clearly yet.</span><span data-lang="ar" style="display:none">خيار تصفية — لم تنطلق أي إشارة واضحة بعد.</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tags -->
+            <div>
+                <h4 class="text-sm font-bold text-sky-400 mb-1">
+                    <span data-lang="en">🏷️ Signal Tags &amp; Qualifiers</span><span data-lang="ar" style="display:none">🏷️ وسوم وتصنيفات إضافية</span>
+                </h4>
+                <p class="text-[11px] text-textmuted mb-2"><span data-lang="en">Attach to an Action label to sharpen or soften it. A stock can carry more than one.</span><span data-lang="ar" style="display:none">تُضاف إلى تسمية الإجراء لتقويتها أو إضعافها. قد يحمل السهم أكثر من وسم.</span></p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-[11px]">
+                    <div class="bg-darkbg border-l-4 border-slate-500 rounded p-2.5">
+                        <div class="font-bold"><span data-lang="en">(Unconfirmed: low ADX/volume)</span><span data-lang="ar" style="display:none">(غير مؤكد: ADX/حجم منخفض)</span></div>
+                        <p class="text-textmuted mt-1"><span data-lang="en">Trend isn't strong (ADX below 20) and/or volume didn't confirm. Score discounted — treat with caution.</span><span data-lang="ar" style="display:none">الاتجاه غير قوي (ADX أقل من 20) و/أو حجم التداول لم يؤكد. الدرجة مخفّضة — تعامل بحذر.</span></p>
+                    </div>
+                    <div class="bg-darkbg border-l-4 border-emerald-500 rounded p-2.5">
+                        <div class="font-bold">💥 <span data-lang="en">SQUEEZE</span><span data-lang="ar" style="display:none">انضغاط تقلب</span></div>
+                        <p class="text-textmuted mt-1"><span data-lang="en">Bollinger Bands contracted inside the Keltner Channel — unusually low volatility, often precedes a sharp move.</span><span data-lang="ar" style="display:none">انضغطت بولينجر داخل كيلتنر — تقلب منخفض بشكل غير معتاد، وغالباً يسبق حركة حادة.</span></p>
+                    </div>
+                    <div class="bg-darkbg border-l-4 border-purple-500 rounded p-2.5">
+                        <div class="font-bold">👑 <span data-lang="en">WEEKLY ALIGNED</span><span data-lang="ar" style="display:none">متوافق أسبوعياً</span></div>
+                        <p class="text-textmuted mt-1"><span data-lang="en">The weekly chart agrees with the daily signal. Only shown on Strong Buy / Breakout Buy.</span><span data-lang="ar" style="display:none">الرسم الأسبوعي يتفق مع إشارة اليوم. يظهر فقط مع شراء قوي / شراء اختراق.</span></p>
+                    </div>
+                    <div class="bg-darkbg border-l-4 border-slate-500 rounded p-2.5">
+                        <div class="font-bold">🚫 <span data-lang="en">ILLIQUID</span><span data-lang="ar" style="display:none">ضعيف السيولة</span></div>
+                        <p class="text-textmuted mt-1"><span data-lang="en">20-day average volume too thin to trade safely. Use "Hide Illiquid" to remove these.</span><span data-lang="ar" style="display:none">متوسط حجم التداول لـ20 يوماً منخفض جداً. استخدم "إخفاء ضعيف السيولة" لإزالتها.</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exit Strategy -->
+            <div>
+                <h4 class="text-sm font-bold text-sky-400 mb-1">
+                    <span data-lang="en">🛡️ Exit Strategy (Owned Positions)</span><span data-lang="ar" style="display:none">🛡️ إستراتيجية الخروج (المراكز المملوكة)</span>
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-[11px]">
+                    <div class="bg-darkbg border-l-4 border-sky-500 rounded p-2.5">
+                        <div class="font-bold">🛡️ <span data-lang="en">HOLD / TRAIL STOP</span><span data-lang="ar" style="display:none">احتفاظ / وقف خسارة متحرك</span></div>
+                        <p class="text-textmuted mt-1"><span data-lang="en">Default state. Your trailing stop-loss updates automatically as price moves.</span><span data-lang="ar" style="display:none">الحالة الافتراضية. يُحدَّث وقف الخسارة تلقائياً مع تحرك السعر.</span></p>
+                    </div>
+                    <div class="bg-darkbg border-l-4 border-rose-500 rounded p-2.5">
+                        <div class="font-bold">⚠️ <span data-lang="en">CUT LOSS / REVIEW</span><span data-lang="ar" style="display:none">قطع الخسارة / مراجعة</span></div>
+                        <p class="text-textmuted mt-1"><span data-lang="en">Loss passed your threshold, or price fell meaningfully below VWAP while losing. Reassess the position.</span><span data-lang="ar" style="display:none">تجاوزت الخسارة الحد المقبول، أو هبط السعر تحت VWAP أثناء خسارة. أعد تقييم المركز.</span></p>
+                    </div>
+                    <div class="bg-darkbg border-l-4 border-emerald-500 rounded p-2.5">
+                        <div class="font-bold">💰 <span data-lang="en">TAKE PROFIT ZONE</span><span data-lang="ar" style="display:none">منطقة جني الأرباح</span></div>
+                        <p class="text-textmuted mt-1"><span data-lang="en">Price reached or passed your take-profit target. Consider locking in gains.</span><span data-lang="ar" style="display:none">وصل السعر إلى هدف جني الأرباح أو تجاوزه. فكّر في تثبيت الأرباح.</span></p>
+                    </div>
+                    <div class="bg-darkbg border-l-4 border-slate-500 rounded p-2.5">
+                        <div class="font-bold">⚠️ <span data-lang="en">NO MARKET DATA FOUND</span><span data-lang="ar" style="display:none">لا توجد بيانات سوق</span></div>
+                        <p class="text-textmuted mt-1"><span data-lang="en">No recent price data — figures shown use your original buy price as a placeholder.</span><span data-lang="ar" style="display:none">لا توجد بيانات حديثة — الأرقام تستخدم سعر الشراء الأصلي كقيمة مؤقتة.</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sector Status -->
+            <div>
+                <h4 class="text-sm font-bold text-sky-400 mb-1">
+                    <span data-lang="en">🏢 Sector Status</span><span data-lang="ar" style="display:none">🏢 حالة القطاع</span>
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-[11px]">
+                    <div class="bg-darkbg border-l-4 border-emerald-500 rounded p-2.5">
+                        <div class="font-bold">🟢 <span data-lang="en">STRONG INFLOW</span><span data-lang="ar" style="display:none">تدفق نقدي قوي</span></div>
+                        <p class="text-textmuted mt-1"><span data-lang="en">Positive money flow, solid 1-day gain, most stocks in the sector participating.</span><span data-lang="ar" style="display:none">تدفق نقدي إيجابي، مكسب يومي قوي، ومعظم أسهم القطاع تشارك.</span></p>
+                    </div>
+                    <div class="bg-darkbg border-l-4 border-emerald-500 rounded p-2.5">
+                        <div class="font-bold">⚡ <span data-lang="en">BREAKOUT</span><span data-lang="ar" style="display:none">اختراق</span></div>
+                        <p class="text-textmuted mt-1"><span data-lang="en">A sharp 1-day move up for the sector as a whole.</span><span data-lang="ar" style="display:none">حركة صعودية حادة خلال يوم واحد للقطاع ككل.</span></p>
+                    </div>
+                    <div class="bg-darkbg border-l-4 border-amber-500 rounded p-2.5">
+                        <div class="font-bold">📈 <span data-lang="en">ACCUMULATE</span><span data-lang="ar" style="display:none">تجميع</span></div>
+                        <p class="text-textmuted mt-1"><span data-lang="en">Steady 5-day gain with broad participation across the sector.</span><span data-lang="ar" style="display:none">مكسب ثابت خلال 5 أيام مع مشاركة واسعة.</span></p>
+                    </div>
+                    <div class="bg-darkbg border-l-4 border-rose-500 rounded p-2.5">
+                        <div class="font-bold">🔴 <span data-lang="en">HEAVY DISTRIBUTION</span><span data-lang="ar" style="display:none">توزيع كثيف</span></div>
+                        <p class="text-textmuted mt-1"><span data-lang="en">Sharp 1-day drop combined with negative money flow — selling pressure across the sector.</span><span data-lang="ar" style="display:none">هبوط حاد مصحوب بتدفق نقدي سلبي — ضغط بيع على مستوى القطاع.</span></p>
+                    </div>
+                    <div class="bg-darkbg border-l-4 border-slate-500 rounded p-2.5 md:col-span-2">
+                        <div class="font-bold">⚪ <span data-lang="en">CONSOLIDATION</span><span data-lang="ar" style="display:none">تماسك / تذبذب</span></div>
+                        <p class="text-textmuted mt-1"><span data-lang="en">None of the above — the sector is drifting sideways without a clear signal.</span><span data-lang="ar" style="display:none">لا شيء مما سبق — القطاع يتحرك جانبياً دون إشارة واضحة.</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Indicators glossary -->
+            <div>
+                <h4 class="text-sm font-bold text-sky-400 mb-2">
+                    <span data-lang="en">📊 Technical Indicators</span><span data-lang="ar" style="display:none">📊 المؤشرات الفنية</span>
+                </h4>
+                <table class="w-full text-[11px]">
+                    <tbody>
+                        <tr class="border-b border-bordercol/50"><td class="py-1.5 pr-2 font-bold text-sky-400 whitespace-nowrap align-top">RSI-14</td><td class="py-1.5 text-textmuted"><span data-lang="en">Relative Strength Index (0–100). Above ~70 overbought, below ~30 oversold.</span><span data-lang="ar" style="display:none">مؤشر القوة النسبية (0–100). أعلى من 70 تشبع شرائي، أقل من 30 تشبع بيعي.</span></td></tr>
+                        <tr class="border-b border-bordercol/50"><td class="py-1.5 pr-2 font-bold text-sky-400 whitespace-nowrap align-top">ADX-14</td><td class="py-1.5 text-textmuted"><span data-lang="en">Trend strength, not direction. Above 20 = a real, tradeable trend.</span><span data-lang="ar" style="display:none">قوة الاتجاه وليس اتجاهه. أعلى من 20 = اتجاه حقيقي قابل للتداول.</span></td></tr>
+                        <tr class="border-b border-bordercol/50"><td class="py-1.5 pr-2 font-bold text-sky-400 whitespace-nowrap align-top">VWAP (20D)</td><td class="py-1.5 text-textmuted"><span data-lang="en">Volume-weighted "fair value" price over 20 days.</span><span data-lang="ar" style="display:none">سعر "القيمة العادلة" المرجّح بالحجم خلال 20 يوماً.</span></td></tr>
+                        <tr class="border-b border-bordercol/50"><td class="py-1.5 pr-2 font-bold text-sky-400 whitespace-nowrap align-top">CMF (20D)</td><td class="py-1.5 text-textmuted"><span data-lang="en">Chaikin Money Flow — positive = buying pressure dominates, negative = selling.</span><span data-lang="ar" style="display:none">مؤشر تشايكن للتدفق النقدي — موجب = سيطرة الشراء، سالب = سيطرة البيع.</span></td></tr>
+                        <tr class="border-b border-bordercol/50"><td class="py-1.5 pr-2 font-bold text-sky-400 whitespace-nowrap align-top">ATR-14</td><td class="py-1.5 text-textmuted"><span data-lang="en">Typical daily price swing. Used to size stop-losses and take-profits.</span><span data-lang="ar" style="display:none">حجم التذبذب اليومي المعتاد. يُستخدم لتحديد وقف الخسارة وجني الأرباح.</span></td></tr>
+                        <tr class="border-b border-bordercol/50"><td class="py-1.5 pr-2 font-bold text-sky-400 whitespace-nowrap align-top"><span data-lang="en">Vol Z-Score</span><span data-lang="ar" style="display:none">درجة Z للحجم</span></td><td class="py-1.5 text-textmuted"><span data-lang="en">Above ~1.5 = unusually heavy trading day vs. the 20-day average.</span><span data-lang="ar" style="display:none">أعلى من 1.5 تقريباً = يوم تداول كثيف بشكل غير معتاد مقارنة بمتوسط 20 يوم.</span></td></tr>
+                        <tr class="border-b border-bordercol/50"><td class="py-1.5 pr-2 font-bold text-sky-400 whitespace-nowrap align-top"><span data-lang="en">Trend Class</span><span data-lang="ar" style="display:none">تصنيف الاتجاه</span></td><td class="py-1.5 text-textmuted"><span data-lang="en">Plain-language trend + strength: Strong/Weak Bullish, Consolidation/Neutral, Weak/Strong Bearish.</span><span data-lang="ar" style="display:none">قراءة مبسطة للاتجاه وقوته: صعود قوي/ضعيف، تماسك/محايد، هبوط ضعيف/قوي.</span></td></tr>
+                        <tr><td class="py-1.5 pr-2 font-bold text-sky-400 whitespace-nowrap align-top"><span data-lang="en">Rank Score</span><span data-lang="ar" style="display:none">درجة الترتيب</span></td><td class="py-1.5 text-textmuted"><span data-lang="en">The composite number the whole matrix is sorted by.</span><span data-lang="ar" style="display:none">الرقم المركّب الذي تُرتَّب المصفوفة بأكملها حسبه.</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Table columns -->
+            <div>
+                <h4 class="text-sm font-bold text-sky-400 mb-2">
+                    <span data-lang="en">📋 Table Columns</span><span data-lang="ar" style="display:none">📋 أعمدة الجداول</span>
+                </h4>
+                <table class="w-full text-[11px]">
+                    <tbody>
+                        <tr class="border-b border-bordercol/50"><td class="py-1.5 pr-2 font-bold text-sky-400 whitespace-nowrap align-top"><span data-lang="en">Target Entry (VWAP)</span><span data-lang="ar" style="display:none">سعر الدخول المستهدف</span></td><td class="py-1.5 text-textmuted"><span data-lang="en">Suggested entry — the lower of current price and VWAP, so you don't chase.</span><span data-lang="ar" style="display:none">سعر الدخول المقترح — الأقل بين السعر الحالي وVWAP، لتجنب مطاردة السعر.</span></td></tr>
+                        <tr class="border-b border-bordercol/50"><td class="py-1.5 pr-2 font-bold text-sky-400 whitespace-nowrap align-top"><span data-lang="en">Suggested Stop-Loss</span><span data-lang="ar" style="display:none">وقف الخسارة المقترح</span></td><td class="py-1.5 text-textmuted"><span data-lang="en">Current price minus 2× ATR — sized to the stock's own typical volatility.</span><span data-lang="ar" style="display:none">السعر الحالي ناقص ضعفي ATR — محسوب حسب تقلب السهم المعتاد.</span></td></tr>
+                        <tr class="border-b border-bordercol/50"><td class="py-1.5 pr-2 font-bold text-sky-400 whitespace-nowrap align-top"><span data-lang="en">Suggested Shares (1% Risk)</span><span data-lang="ar" style="display:none">عدد الأسهم المقترح</span></td><td class="py-1.5 text-textmuted"><span data-lang="en">Position size so a stop-loss hit loses no more than 1% of your cash balance.</span><span data-lang="ar" style="display:none">حجم المركز بحيث لا تتجاوز الخسارة 1% من رصيدك النقدي عند تفعيل وقف الخسارة.</span></td></tr>
+                        <tr class="border-b border-bordercol/50"><td class="py-1.5 pr-2 font-bold text-sky-400 whitespace-nowrap align-top"><span data-lang="en">Projected Gain / Pattern Conf.</span><span data-lang="ar" style="display:none">الربح المتوقع / ثقة النمط</span></td><td class="py-1.5 text-textmuted"><span data-lang="en">Expected move and similarity score from the closest matching historical price pattern, if found.</span><span data-lang="ar" style="display:none">الحركة المتوقعة ودرجة التشابه من أقرب نمط سعري تاريخي مطابق، إن وُجد.</span></td></tr>
+                        <tr><td class="py-1.5 pr-2 font-bold text-sky-400 whitespace-nowrap align-top"><span data-lang="en">Breakout Score</span><span data-lang="ar" style="display:none">درجة الاختراق المحتمل</span></td><td class="py-1.5 text-textmuted"><span data-lang="en">Breakout Watchlist only — flags stocks that look like they're coiling, before any Buy signal fires.</span><span data-lang="ar" style="display:none">في قائمة مراقبة الاختراق فقط — ترصد الأسهم المتأهبة قبل انطلاق أي إشارة شراء.</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Data confidence -->
+            <div>
+                <h4 class="text-sm font-bold text-sky-400 mb-2">
+                    <span data-lang="en">🔎 Data Confidence Tiers</span><span data-lang="ar" style="display:none">🔎 مستويات الثقة بالبيانات</span>
+                </h4>
+                <p class="text-[11px] text-textmuted">
+                    <span data-lang="en"><b>Very Low</b> (&lt;20 days) · <b>Low</b> (&lt;3 months) · <b>Medium</b> (&lt;1 year) · <b>High</b> (1 year+) — the less history behind a ticker, the less weight the matrix puts on its signal.</span>
+                    <span data-lang="ar" style="display:none"><b>منخفضة جداً</b> (أقل من 20 يوماً) · <b>منخفضة</b> (أقل من 3 أشهر) · <b>متوسطة</b> (أقل من سنة) · <b>عالية</b> (سنة فأكثر) — كلما قلّ السجل التاريخي للسهم، قلّ وزن إشارته في المصفوفة.</span>
+                </p>
+            </div>
+
+            <div class="bg-amber-500/10 border border-amber-500/40 text-amber-400 rounded p-2.5 text-[11px]">
+                <span data-lang="en">⚠️ Educational tool, not investment advice. Every signal here is a mechanical read of price/volume history — always apply your own judgment.</span>
+                <span data-lang="ar" style="display:none">⚠️ أداة تعليمية وليست نصيحة استثمارية. كل إشارة هنا هي قراءة آلية لتاريخ السعر وحجم التداول — استخدم دائماً حكمك الشخصي.</span>
+            </div>
+
+            <div class="flex justify-end">
+                <button onclick="closeModal('modal-guide')" class="bg-teal-600 text-white px-4 py-2 rounded font-bold text-xs">
+                    <span data-lang="en">Close</span><span data-lang="ar" style="display:none">إغلاق</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Usage Analytics Modal (admin only) -->
     <div id="modal-analytics" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
         <div class="bg-panelbg border border-bordercol rounded-xl max-w-3xl w-full p-5 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
@@ -567,7 +770,7 @@
                 tab_exits: "🛡️ Owned Portfolio Exit Strategy", tab_history: "📜 Trade History & Realized P&L",
                 tab_fin: "📊 Financial Statement", tab_top10: "🏆 Top 10 Overview", tab_charts: "📊 Charts & Trend Lines",
                 rad_stock: "📈 Per Stock", rad_sector: "🏢 Per Sector", select_item: "Select Item:", alpha_quick: "🔤 Quick Filter:",
-                time_zoom: "⏱️ Time Horizon:"
+                time_zoom: "⏱️ Time Horizon:", guide: "Guide"
             },
             AR: {
                 title: "MB-EGX — مصفوفة التداول والقطاعات",
@@ -581,7 +784,7 @@
                 tab_exits: "🛡️ إستراتيجية الخروج للمحفظة", tab_history: "📜 سجل الصفقات والربح المحقق",
                 tab_fin: "📊 القوائم المالية", tab_top10: "🏆 أفضل 10 أسهم", tab_charts: "📊 الرسوم البيانية والاتجاهات",
                 rad_stock: "📈 تحليل الأسهم", rad_sector: "🏢 تحليل القطاعات", select_item: "اختر العنصر:", alpha_quick: "🔤 تصفية بالحرف:",
-                time_zoom: "⏱️ الفترة الزمنية:"
+                time_zoom: "⏱️ الفترة الزمنية:", guide: "الدليل"
             }
         };
 
@@ -605,6 +808,7 @@
             document.getElementById('btn-calc-text').innerText = t.calc;
             document.getElementById('btn-cash-text').innerText = t.cash;
             document.getElementById('btn-theme-text').innerText = t.themes;
+            document.getElementById('btn-guide-text').innerText = t.guide;
             document.getElementById('btn-cols-text').innerText = t.cols;
             document.getElementById('btn-reset-text').innerText = t.reset;
             document.getElementById('lbl-filter').innerText = t.filter;
@@ -643,8 +847,24 @@
             if (id === 'modal-calc') { populateSelects(); runRiskCalc(); }
             if (id === 'modal-cash') document.getElementById('input-cash').value = userCash;
             if (id === 'modal-columns') buildColumnCheckboxes();
+            if (id === 'modal-guide') setGuideLang(currentLang === 'AR' ? 'ar' : 'en');
         }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        // Signal & Terminology Guide - internal EN/AR toggle (independent of the
+        // main app language, but defaults to match it when the modal opens)
+        function setGuideLang(lang) {
+            const modal = document.getElementById('modal-guide');
+            modal.querySelectorAll('[data-lang="en"]').forEach(el => el.style.display = (lang === 'en') ? '' : 'none');
+            modal.querySelectorAll('[data-lang="ar"]').forEach(el => el.style.display = (lang === 'ar') ? '' : 'none');
+            modal.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+            document.getElementById('guide-btn-en').classList.toggle('bg-sky-600', lang === 'en');
+            document.getElementById('guide-btn-en').classList.toggle('text-white', lang === 'en');
+            document.getElementById('guide-btn-en').classList.toggle('text-textmuted', lang !== 'en');
+            document.getElementById('guide-btn-ar').classList.toggle('bg-sky-600', lang === 'ar');
+            document.getElementById('guide-btn-ar').classList.toggle('text-white', lang === 'ar');
+            document.getElementById('guide-btn-ar').classList.toggle('text-textmuted', lang !== 'ar');
+        }
 
         // Column Visibility Engine
         function buildColumnCheckboxes() {
