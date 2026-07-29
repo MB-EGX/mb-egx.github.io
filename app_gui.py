@@ -36,6 +36,139 @@ FIREBASE_API_KEY = "AIzaSyBCC4D61IHTEFNsgO6i8H_BdixwArE-VRo"
 FIREBASE_PROJECT_ID = "mb-egx-12d11"
 FIRESTORE_BASE = f"https://firestore.googleapis.com/v1/projects/{FIREBASE_PROJECT_ID}/databases/(default)/documents"
 
+# Emails allowed to see the in-app "Usage Analytics" button/dialog.
+# Keep this in sync with the ADMIN_EMAILS list and Firestore rules on the website.
+ADMIN_EMAILS = ["drmo071990@gmail.com"]
+
+
+def _from_firestore_value(v):
+    """Decode one Firestore REST 'Value' object into a plain Python value."""
+    if "stringValue" in v:
+        return v["stringValue"]
+    if "integerValue" in v:
+        return int(v["integerValue"])
+    if "doubleValue" in v:
+        return float(v["doubleValue"])
+    if "booleanValue" in v:
+        return v["booleanValue"]
+    if "timestampValue" in v:
+        return v["timestampValue"]  # RFC3339 string; parsed by callers as needed
+    if "nullValue" in v:
+        return None
+    if "mapValue" in v:
+        return {k: _from_firestore_value(val) for k, val in v["mapValue"].get("fields", {}).items()}
+    if "arrayValue" in v:
+        return [_from_firestore_value(x) for x in v["arrayValue"].get("values", [])]
+    return None
+
+
+def _doc_to_dict(doc):
+    return {k: _from_firestore_value(v) for k, v in doc.get("fields", {}).items()}
+
+
+def _parse_ts(ts):
+    if not ts:
+        return None
+    try:
+        return datetime.fromisoformat(ts.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+
+
+def list_recent_sessions(id_token, limit=1000):
+    """Reads the most recent session docs (paginated, 300/request)."""
+    headers = {"Authorization": f"Bearer {id_token}"}
+    docs = []
+    page_token = None
+    while len(docs) < limit:
+        params = {"pageSize": min(300, limit - len(docs)), "orderBy": "start desc"}
+        if page_token:
+            params["pageToken"] = page_token
+        resp = requests.get(f"{FIRESTORE_BASE}/sessions", headers=headers, params=params, timeout=15)
+        data = resp.json()
+        if resp.status_code != 200:
+            raise RuntimeError(data.get("error", {}).get("message", "Failed to list sessions."))
+        batch = data.get("documents", [])
+        docs.extend(batch)
+        page_token = data.get("nextPageToken")
+        if not page_token or not batch:
+            break
+    return [_doc_to_dict(d) for d in docs[:limit]]
+
+
+def get_user_doc(id_token, uid):
+    headers = {"Authorization": f"Bearer {id_token}"}
+    resp = requests.get(f"{FIRESTORE_BASE}/users/{uid}", headers=headers, timeout=10)
+    if resp.status_code == 404:
+        return {}
+    data = resp.json()
+    if resp.status_code != 200:
+        raise RuntimeError(data.get("error", {}).get("message", "Failed to load user doc."))
+    return _doc_to_dict(data)
+
+
+def compute_usage_analytics(id_token):
+    """Combines sessions (web + desktop) with the trade/portfolio stats each
+    app pushes to users/{uid}, into one per-user summary. Mirrors the
+    website's Usage Analytics panel."""
+    sessions = list_recent_sessions(id_token, limit=1000)
+    per_user = {}
+    total_duration = 0.0
+    session_count = 0
+
+    for s in sessions:
+        start_dt = _parse_ts(s.get("start"))
+        last_dt = _parse_ts(s.get("lastSeen"))
+        if not start_dt or not last_dt:
+            continue
+        dur = max(0.0, (last_dt - start_dt).total_seconds())
+        source = s.get("source") or "web"
+        session_count += 1
+        total_duration += dur
+
+        key = s.get("uid") or s.get("email") or "unknown"
+        entry = per_user.setdefault(key, {
+            "uid": s.get("uid"), "name": s.get("name") or s.get("email") or "Unknown",
+            "email": s.get("email") or "", "web_sessions": 0, "desktop_sessions": 0,
+            "total_sec": 0.0, "last_seen": last_dt,
+            "trade_count": 0, "trade_value_egp": 0.0, "portfolio_value_egp": 0.0,
+        })
+        entry["desktop_sessions" if source == "desktop" else "web_sessions"] += 1
+        entry["total_sec"] += dur
+        if last_dt > entry["last_seen"]:
+            entry["last_seen"] = last_dt
+
+    for entry in per_user.values():
+        uid = entry.get("uid")
+        if not uid:
+            continue
+        try:
+            udoc = get_user_doc(id_token, uid)
+        except Exception as e:
+            logger.warning(f"Could not load stats for {uid}: {e}")
+            continue
+        for field in ("web_stats", "desktop_stats"):
+            stats = udoc.get(field) or {}
+            entry["trade_count"] += int(stats.get("trade_count", 0) or 0)
+            entry["trade_value_egp"] += float(stats.get("total_trade_value_egp", 0) or 0)
+            entry["portfolio_value_egp"] += float(stats.get("portfolio_value_egp", 0) or 0)
+
+    return {
+        "unique_users": len(per_user),
+        "session_count": session_count,
+        "avg_duration_sec": (total_duration / session_count) if session_count else 0.0,
+        "per_user": sorted(per_user.values(), key=lambda u: u["total_sec"], reverse=True),
+    }
+
+
+def _format_duration(total_seconds):
+    if total_seconds is None or total_seconds < 0:
+        return "—"
+    mins = round(total_seconds / 60)
+    if mins < 60:
+        return f"{mins}m"
+    return f"{mins // 60}h {mins % 60}m"
+
 
 def _now_iso():
     """RFC3339 UTC timestamp in the form Firestore's REST API expects."""
@@ -895,6 +1028,96 @@ class LoginDialog(QDialog):
             self.setEnabled(True)
 
 
+class AnalyticsDialog(QDialog):
+    """Admin-only viewer: sessions + trading activity combined across the
+    website and desktop app, read straight from Firestore."""
+
+    def __init__(self, id_token, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("📊 Usage Analytics")
+        self.resize(920, 520)
+        self.setStyleSheet(THEME_DARK)
+        self.id_token = id_token
+        self._worker = None
+        self._init_ui()
+        self._load()
+
+    def _init_ui(self):
+        layout = QVBoxLayout(self)
+
+        lbl_info = QLabel(
+            "Sessions and trading activity combined across the website (🌐) and the desktop app (🖥️). "
+            "Time is approximate (30s heartbeat). Trade Value = total EGP bought + sold; "
+            "Portfolio Value = cash + open positions at cost."
+        )
+        lbl_info.setWordWrap(True)
+        lbl_info.setStyleSheet("color: #a0aec0; font-size: 11px;")
+        layout.addWidget(lbl_info)
+
+        self.lbl_status = QLabel("Loading session data…")
+        self.lbl_status.setStyleSheet("font-weight: bold; padding: 4px 0;")
+        layout.addWidget(self.lbl_status)
+
+        self.table = QTableWidget()
+        self.table.setColumnCount(7)
+        self.table.setHorizontalHeaderLabels(
+            ["User", "Sessions (🌐/🖥️)", "Total Time", "Trades", "Trade Value", "Portfolio Value", "Last Seen"]
+        )
+        self.table.horizontalHeader().setStretchLastSection(True)
+        self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        self.table.setAlternatingRowColors(True)
+        layout.addWidget(self.table, stretch=1)
+
+        btn_row = QHBoxLayout()
+        btn_row.addStretch()
+        self.btn_refresh = QPushButton("🔄 Refresh")
+        self.btn_refresh.clicked.connect(self._load)
+        btn_row.addWidget(self.btn_refresh)
+        btn_close = QPushButton("Close")
+        btn_close.clicked.connect(self.accept)
+        btn_row.addWidget(btn_close)
+        layout.addLayout(btn_row)
+
+    def _load(self):
+        self.lbl_status.setText("Loading session data…")
+        self.btn_refresh.setEnabled(False)
+        self._worker = _CloudWorker(compute_usage_analytics, self.id_token)
+        self._worker.finished_result.connect(self._on_loaded)
+        self._worker.start()
+
+    def _on_loaded(self, result):
+        self.btn_refresh.setEnabled(True)
+        if not result:
+            self.lbl_status.setText("⚠️ Could not load analytics data (check your connection or Firestore rules).")
+            self.table.setRowCount(0)
+            return
+
+        self.lbl_status.setText(
+            f"👥 Unique Users: {result['unique_users']}    |    "
+            f"📅 Total Sessions: {result['session_count']}    |    "
+            f"⏱️ Avg Time / Session: {_format_duration(result['avg_duration_sec'])}"
+        )
+
+        rows = result["per_user"]
+        self.table.setRowCount(len(rows))
+        for i, u in enumerate(rows):
+            last_seen_str = u["last_seen"].astimezone().strftime("%Y-%m-%d %H:%M") if u.get("last_seen") else "—"
+            values = [
+                u["name"] + (f"  ({u['email']})" if u["email"] else ""),
+                f"{u['web_sessions'] + u['desktop_sessions']}  (🌐{u['web_sessions']} 🖥️{u['desktop_sessions']})",
+                _format_duration(u["total_sec"]),
+                str(u["trade_count"]),
+                f"{u['trade_value_egp']:,.0f} EGP",
+                f"{u['portfolio_value_egp']:,.0f} EGP",
+                last_seen_str,
+            ]
+            for j, val in enumerate(values):
+                item = QTableWidgetItem(val)
+                item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
+                self.table.setItem(i, j, item)
+        self.table.resizeColumnsToContents()
+
+
 class QuantDashboard(QMainWindow):
     def __init__(self, user_info=None):
         super().__init__()
@@ -973,6 +1196,12 @@ class QuantDashboard(QMainWindow):
             "total_trade_value_egp": round(total_value, 2),
             "portfolio_value_egp": round(portfolio_value, 2),
         }
+
+    def open_analytics_dialog(self):
+        if not self.user_info:
+            return
+        dlg = AnalyticsDialog(self.user_info["idToken"], self)
+        dlg.exec()
 
     def closeEvent(self, event):
         if self._session_id and self.user_info and requests is not None:
@@ -1063,6 +1292,12 @@ class QuantDashboard(QMainWindow):
             self.lbl_welcome_user.setText(f"👋 {self.user_info['name']}")
             self.lbl_welcome_user.setStyleSheet("font-weight: bold; color: #38bdf8; padding: 4px 8px;")
         top_bar.addWidget(self.lbl_welcome_user)
+
+        self.btn_analytics = QPushButton("📊 Usage Analytics")
+        self.btn_analytics.setStyleSheet("background-color: #0d9488; color: white; font-weight: bold;")
+        self.btn_analytics.clicked.connect(self.open_analytics_dialog)
+        self.btn_analytics.setVisible(bool(self.user_info and self.user_info.get("email") in ADMIN_EMAILS))
+        top_bar.addWidget(self.btn_analytics)
 
         top_bar.addWidget(QLabel("🌐 Language / اللغة:"))
         top_bar.addWidget(self.cmb_lang)
