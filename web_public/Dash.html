@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MB-EGX Alpha | Sector Heatmap &amp; Rotation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;900&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-container": "#412200",
+                        "inverse-surface": "#e2e2e8",
+                        "primary-fixed": "#cce5ff",
+                        "inverse-on-surface": "#2f3035",
+                        "on-tertiary-fixed-variant": "#6b3b00",
+                        "text-muted": "#A0AEC0",
+                        "on-primary-fixed": "#001d31",
+                        "surface": "#111317",
+                        "tertiary-fixed": "#ffdcc0",
+                        "secondary-container": "#3d4759",
+                        "secondary": "#bdc7dc",
+                        "surface-variant": "#333539",
+                        "primary-container": "#3198dc",
+                        "on-secondary-fixed": "#121c2c",
+                        "outline-variant": "#3f4850",
+                        "tertiary-container": "#d07d1c",
+                        "primary-fixed-dim": "#93ccff",
+                        "background": "#111317",
+                        "outline": "#89929b",
+                        "surface-container-highest": "#333539",
+                        "error-container": "#93000a",
+                        "primary": "#93ccff",
+                        "on-secondary-container": "#abb5cb",
+                        "tertiary": "#ffb875",
+                        "on-background": "#e2e2e8",
+                        "surface-container-low": "#1a1c20",
+                        "text-primary": "#FFFFFF",
+                        "surface-elevated": "#1A1D24",
+                        "on-secondary": "#273141",
+                        "on-surface": "#e2e2e8",
+                        "surface-container-high": "#282a2e",
+                        "inverse-primary": "#006398",
+                        "tertiary-fixed-dim": "#ffb875",
+                        "surface-container-lowest": "#0c0e12",
+                        "secondary-fixed-dim": "#bdc7dc",
+                        "on-surface-variant": "#bfc7d2",
+                        "error": "#ffb4ab",
+                        "surface-tint": "#93ccff",
+                        "on-secondary-fixed-variant": "#3d4759",
+                        "on-error": "#690005",
+                        "on-primary": "#003351",
+                        "on-tertiary": "#4b2800",
+                        "surface-bright": "#37393e",
+                        "surface-dim": "#111317",
+                        "on-tertiary-fixed": "#2d1600",
+                        "on-error-container": "#ffdad6",
+                        "surface-container": "#1e2024",
+                        "on-primary-container": "#002c47",
+                        "secondary-fixed": "#d9e3f9",
+                        "on-primary-fixed-variant": "#004b73"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "margin-mobile": "20px",
+                        "max-width": "1280px",
+                        "margin-desktop": "64px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Hanken Grotesk"],
+                        "label-mono": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-xl": ["Hanken Grotesk"],
+                        "stat-lg": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-mono": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "stat-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0F1115;
+            color: #e2e2e8;
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-card {
+            background: #1A1D24;
+            box-shadow: 0 12px 24px -12px rgba(49, 152, 220, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .heat-cell-positive { background: rgba(34, 197, 94, 0.15); border-left: 4px solid #22c55e; }
+        .heat-cell-negative { background: rgba(239, 68, 68, 0.15); border-left: 4px solid #ef4444; }
+        .heat-cell-neutral { background: rgba(160, 174, 192, 0.1); border-left: 4px solid #a0aec0; }
+        
+        .zebra-table tr:nth-child(even) { background-color: #1A1D24; }
+        .zebra-table tr:nth-child(odd) { background-color: #0F1115; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0F1115; }
+        ::-webkit-scrollbar-thumb { background: #3d4759; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- TopNavBar -->
+<nav class="flex justify-between items-center px-margin-desktop h-16 w-full fixed top-0 z-50 bg-surface/95 backdrop-blur-md border-b border-outline-variant shadow-sm">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3">
+<img alt="MB-EGX Metallic Logo" class="h-10 w-auto" src="assets/mb-egx-logo.png"/>
+<span class="font-headline-lg text-headline-lg font-bold tracking-tighter text-primary">MB-EGX Alpha</span>
+</div>
+<div class="hidden md:flex gap-6">
+<a class="text-on-surface-variant font-medium hover:text-primary-fixed-dim transition-colors duration-200" href="#">Market Data</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1 transition-colors duration-200" href="#">Insights</a>
+<a class="text-on-surface-variant font-medium hover:text-primary-fixed-dim transition-colors duration-200" href="#">Orders</a>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden lg:flex flex-col items-end">
+<span class="font-body-sm text-body-sm text-primary font-bold">Equity: 1,420,500 EGP</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Cash: 85,200 EGP</span>
+</div>
+<div class="flex items-center gap-4 border-l border-outline-variant pl-6">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-all">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-all">settings</button>
+<div class="w-8 h-8 rounded-full bg-surface-variant border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Close-up professional headshot of an institutional investor, wearing a dark navy suit against a soft blurred office background with subtle blue terminal lighting highlights." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQSDbj_Ou5KH_rE2Z4r1y4SAP3eBlBFS7BCEdht-nwyilgaEsaPNi1vFau7993DHKnm1MwT5XRgzqXfqM_lN-t8kguwrVnSEcv2p6atga9BNa-Hrk1Y1Je-Nhx4KL-lZQW0ATp-4gQxWY4HNa_sa70i9F10YmflpaX-LMwgeWMbcEmiRQZ2kBeaQaI40XZKZ6tawk-DiQARMfOJhjLTzAxSsZU1ScF1tkHwsU9SOq-EK77MD7erNsUZQ"/>
+</div>
+</div>
+</div>
+</nav>
+<!-- SideNavBar -->
+<aside class="hidden lg:flex flex-col p-4 gap-2 h-[calc(100vh-64px)] w-64 fixed left-0 top-16 bg-surface-container border-r border-outline-variant">
+<div class="mb-6 px-2">
+<div class="font-headline-xl text-headline-xl text-primary font-black">MB-EGX</div>
+<div class="font-label-mono text-label-mono text-on-surface-variant uppercase tracking-widest opacity-70">Precision Wealth Alpha</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="font-label-mono text-label-mono">Market Matrix</span>
+</a>
+<a class="flex items-center gap-3 p-3 bg-primary-container text-on-primary-container rounded-lg font-bold translate-x-1" href="#">
+<span class="material-symbols-outlined">window</span>
+<span class="font-label-mono text-label-mono">Sector Heatmap</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-label-mono text-label-mono">Portfolio Strategy</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">candlestick_chart</span>
+<span class="font-label-mono text-label-mono">Trade Execution</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-mono text-label-mono">Institutional Analytics</span>
+</a>
+</nav>
+<div class="pt-4 mt-4 border-t border-outline-variant">
+<button class="w-full py-3 bg-primary text-on-primary font-bold rounded-lg hover:brightness-110 active:scale-95 transition-all mb-4">
+                Launch Terminal
+            </button>
+<div class="space-y-1">
+<a class="flex items-center gap-3 p-2 text-on-surface-variant hover:bg-surface-variant rounded-lg font-label-mono text-[10px]" href="#">
+<span class="material-symbols-outlined text-sm">help</span>
+                    Help Center
+                </a>
+<a class="flex items-center gap-3 p-2 text-on-surface-variant hover:bg-surface-variant rounded-lg font-label-mono text-[10px]" href="#">
+<span class="material-symbols-outlined text-sm">headset_mic</span>
+                    Support
+                </a>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="lg:ml-64 pt-20 p-8 min-h-screen">
+<header class="mb-10">
+<div class="flex justify-between items-end">
+<div>
+<h1 class="font-headline-xl text-headline-xl text-text-primary mb-2">Sector Heatmap &amp; Rotation</h1>
+<p class="text-text-muted font-body-md text-body-md max-w-2xl">Visualizing Egyptian Market breadth and capital velocity. Track institutional rotation through Out-of-Core trading metrics.</p>
+</div>
+<div class="flex gap-4">
+<div class="px-4 py-2 bg-surface-container-high border border-outline-variant rounded-lg flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="font-label-mono text-label-mono text-primary">Live Feed: Connected</span>
+</div>
+<button class="flex items-center gap-2 px-4 py-2 glass-card rounded-lg hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-sm">download</span>
+<span class="font-label-mono text-label-mono">Export CSV</span>
+</button>
+</div>
+</div>
+</header>
+<!-- KPI Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div class="glass-card p-6 rounded-xl">
+<div class="text-on-surface-variant font-label-mono text-label-mono mb-2 uppercase tracking-wider">Market Breath</div>
+<div class="text-stat-lg font-stat-lg text-primary">72.4%</div>
+<div class="mt-2 text-body-sm font-body-sm text-green-400 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span> +4.2% (Strong Bullish)
+                </div>
+</div>
+<div class="glass-card p-6 rounded-xl">
+<div class="text-on-surface-variant font-label-mono text-label-mono mb-2 uppercase tracking-wider">Top Rotation Sector</div>
+<div class="text-stat-lg font-stat-lg text-tertiary">Real Estate</div>
+<div class="mt-2 text-body-sm font-body-sm text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">bolt</span> Breakout Watch
+                </div>
+</div>
+<div class="glass-card p-6 rounded-xl">
+<div class="text-on-surface-variant font-label-mono text-label-mono mb-2 uppercase tracking-wider">Avg Money Flow (CMF)</div>
+<div class="text-stat-lg font-stat-lg text-on-surface">0.24</div>
+<div class="mt-2 text-body-sm font-body-sm text-green-400 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">arrow_upward</span> Institutional Inflow
+                </div>
+</div>
+<div class="glass-card p-6 rounded-xl">
+<div class="text-on-surface-variant font-label-mono text-label-mono mb-2 uppercase tracking-wider">Trading Volume</div>
+<div class="text-stat-lg font-stat-lg text-on-surface">2.4B EGP</div>
+<div class="mt-2 text-body-sm font-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">history</span> vs 1.8B (20D Avg)
+                </div>
+</div>
+</div>
+<div class="grid grid-cols-12 gap-8">
+<!-- Heatmap Section -->
+<div class="col-span-12 lg:col-span-8">
+<div class="glass-card rounded-xl overflow-hidden">
+<div class="p-6 border-b border-outline-variant flex justify-between items-center">
+<h2 class="font-headline-lg text-headline-lg text-text-primary">Sector Breadth Grid</h2>
+<div class="flex bg-surface-container-lowest rounded-lg p-1">
+<button class="px-3 py-1 bg-primary text-on-primary text-[10px] font-bold rounded">1D</button>
+<button class="px-3 py-1 text-on-surface-variant text-[10px] font-bold rounded hover:text-on-surface">5D</button>
+<button class="px-3 py-1 text-on-surface-variant text-[10px] font-bold rounded hover:text-on-surface">1M</button>
+</div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 p-4 gap-4">
+<!-- Heatmap Tiles -->
+<div class="heat-cell-positive p-4 rounded-lg flex flex-col justify-between h-32 transition-transform hover:scale-[1.02] cursor-pointer">
+<div>
+<div class="font-headline-lg text-lg text-text-primary">Banking</div>
+<div class="font-label-mono text-[10px] text-green-400">CMF: +0.42</div>
+</div>
+<div class="flex justify-between items-end">
+<span class="text-stat-lg font-stat-lg">+2.45%</span>
+<span class="material-symbols-outlined text-green-400">trending_up</span>
+</div>
+</div>
+<div class="heat-cell-positive p-4 rounded-lg flex flex-col justify-between h-32 transition-transform hover:scale-[1.02] cursor-pointer">
+<div>
+<div class="font-headline-lg text-lg text-text-primary">Real Estate</div>
+<div class="font-label-mono text-[10px] text-green-400">CMF: +0.38</div>
+</div>
+<div class="flex justify-between items-end">
+<span class="text-stat-lg font-stat-lg">+1.82%</span>
+<span class="material-symbols-outlined text-green-400">bolt</span>
+</div>
+</div>
+<div class="heat-cell-negative p-4 rounded-lg flex flex-col justify-between h-32 transition-transform hover:scale-[1.02] cursor-pointer">
+<div>
+<div class="font-headline-lg text-lg text-text-primary">Industrial</div>
+<div class="font-label-mono text-[10px] text-red-400">CMF: -0.15</div>
+</div>
+<div class="flex justify-between items-end">
+<span class="text-stat-lg font-stat-lg">-0.94%</span>
+<span class="material-symbols-outlined text-red-400">trending_down</span>
+</div>
+</div>
+<div class="heat-cell-neutral p-4 rounded-lg flex flex-col justify-between h-32 transition-transform hover:scale-[1.02] cursor-pointer">
+<div>
+<div class="font-headline-lg text-lg text-text-primary">Tech &amp; Comm</div>
+<div class="font-label-mono text-[10px] text-on-surface-variant">CMF: +0.02</div>
+</div>
+<div class="flex justify-between items-end">
+<span class="text-stat-lg font-stat-lg">+0.12%</span>
+<span class="material-symbols-outlined text-on-surface-variant">remove</span>
+</div>
+</div>
+<div class="heat-cell-positive p-4 rounded-lg flex flex-col justify-between h-32 transition-transform hover:scale-[1.02] cursor-pointer">
+<div>
+<div class="font-headline-lg text-lg text-text-primary">Basic Resources</div>
+<div class="font-label-mono text-[10px] text-green-400">CMF: +0.21</div>
+</div>
+<div class="flex justify-between items-end">
+<span class="text-stat-lg font-stat-lg">+3.10%</span>
+<span class="material-symbols-outlined text-green-400">show_chart</span>
+</div>
+</div>
+<div class="heat-cell-negative p-4 rounded-lg flex flex-col justify-between h-32 transition-transform hover:scale-[1.02] cursor-pointer">
+<div>
+<div class="font-headline-lg text-lg text-text-primary">Pharma</div>
+<div class="font-label-mono text-[10px] text-red-400">CMF: -0.28</div>
+</div>
+<div class="flex justify-between items-end">
+<span class="text-stat-lg font-stat-lg">-1.55%</span>
+<span class="material-symbols-outlined text-red-400">sell</span>
+</div>
+</div>
+<div class="heat-cell-positive p-4 rounded-lg flex flex-col justify-between h-32 transition-transform hover:scale-[1.02] cursor-pointer">
+<div>
+<div class="font-headline-lg text-lg text-text-primary">Shipping</div>
+<div class="font-label-mono text-[10px] text-green-400">CMF: +0.15</div>
+</div>
+<div class="flex justify-between items-end">
+<span class="text-stat-lg font-stat-lg">+0.88%</span>
+<span class="material-symbols-outlined text-green-400">stat_3</span>
+</div>
+</div>
+<div class="heat-cell-neutral p-4 rounded-lg flex flex-col justify-between h-32 transition-transform hover:scale-[1.02] cursor-pointer">
+<div>
+<div class="font-headline-lg text-lg text-text-primary">Construction</div>
+<div class="font-label-mono text-[10px] text-on-surface-variant">CMF: -0.04</div>
+</div>
+<div class="flex justify-between items-end">
+<span class="text-stat-lg font-stat-lg">-0.05%</span>
+<span class="material-symbols-outlined text-on-surface-variant">drag_handle</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Rotation Table -->
+<div class="mt-8 glass-card rounded-xl overflow-hidden">
+<div class="p-6 border-b border-outline-variant">
+<h2 class="font-headline-lg text-headline-lg text-text-primary">Institutional Flow Matrix</h2>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full zebra-table">
+<thead class="bg-surface-container-highest">
+<tr class="text-left">
+<th class="p-4 font-label-mono text-[10px] uppercase text-on-surface-variant">Sector</th>
+<th class="p-4 font-label-mono text-[10px] uppercase text-on-surface-variant">Status</th>
+<th class="p-4 font-label-mono text-[10px] uppercase text-on-surface-variant">CMF (20D)</th>
+<th class="p-4 font-label-mono text-[10px] uppercase text-on-surface-variant">Breadth (%)</th>
+<th class="p-4 font-label-mono text-[10px] uppercase text-on-surface-variant">Traded Value</th>
+<th class="p-4 font-label-mono text-[10px] uppercase text-on-surface-variant">Rotation</th>
+</tr>
+</thead>
+<tbody class="text-on-surface font-body-sm text-body-sm">
+<tr>
+<td class="p-4 font-bold">Banking</td>
+<td class="p-4">
+<span class="px-2 py-1 rounded bg-green-500/20 text-green-400 text-[10px] font-bold border border-green-500/30">STRONG INFLOW</span>
+</td>
+<td class="p-4 font-label-mono">+0.42</td>
+<td class="p-4 font-label-mono">85%</td>
+<td class="p-4">840M EGP</td>
+<td class="p-4">
+<div class="w-24 h-1 bg-surface-variant rounded-full overflow-hidden">
+<div class="w-[85%] h-full bg-primary"></div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="p-4 font-bold">Real Estate</td>
+<td class="p-4">
+<span class="px-2 py-1 rounded bg-primary/20 text-primary text-[10px] font-bold border border-primary/30">BREAKOUT</span>
+</td>
+<td class="p-4 font-label-mono">+0.38</td>
+<td class="p-4 font-label-mono">72%</td>
+<td class="p-4">620M EGP</td>
+<td class="p-4">
+<div class="w-24 h-1 bg-surface-variant rounded-full overflow-hidden">
+<div class="w-[72%] h-full bg-primary"></div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="p-4 font-bold">Industrial</td>
+<td class="p-4">
+<span class="px-2 py-1 rounded bg-red-500/20 text-red-400 text-[10px] font-bold border border-red-500/30">DISTRIBUTION</span>
+</td>
+<td class="p-4 font-label-mono">-0.15</td>
+<td class="p-4 font-label-mono">24%</td>
+<td class="p-4">310M EGP</td>
+<td class="p-4">
+<div class="w-24 h-1 bg-surface-variant rounded-full overflow-hidden">
+<div class="w-[24%] h-full bg-error"></div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="p-4 font-bold">Food &amp; Bev</td>
+<td class="p-4">
+<span class="px-2 py-1 rounded bg-on-tertiary-container/20 text-tertiary text-[10px] font-bold border border-on-tertiary-container/30">ACCUMULATE</span>
+</td>
+<td class="p-4 font-label-mono">+0.12</td>
+<td class="p-4 font-label-mono">55%</td>
+<td class="p-4">190M EGP</td>
+<td class="p-4">
+<div class="w-24 h-1 bg-surface-variant rounded-full overflow-hidden">
+<div class="w-[55%] h-full bg-tertiary"></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Sidebar Stats Section -->
+<div class="col-span-12 lg:col-span-4 space-y-8">
+<!-- Sector Leaderboard -->
+<div class="glass-card rounded-xl p-6">
+<h3 class="font-headline-lg text-xl text-text-primary mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">trophy</span> Sector Alpha Leaders
+                    </h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-3 rounded-lg bg-surface-container-lowest border border-outline-variant">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-primary-container/20 flex items-center justify-center text-primary font-bold">COMI</div>
+<div>
+<div class="font-bold text-on-surface">CIB Bank</div>
+<div class="text-[10px] font-label-mono text-on-surface-variant">Banking Leader</div>
+</div>
+</div>
+<div class="text-right">
+<div class="text-green-400 font-bold">+3.2%</div>
+<div class="text-[10px] text-on-surface-variant">Value: 420M</div>
+</div>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg bg-surface-container-lowest border border-outline-variant">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-tertiary-container/20 flex items-center justify-center text-tertiary font-bold">TMGH</div>
+<div>
+<div class="font-bold text-on-surface">Talaat Moustafa</div>
+<div class="text-[10px] font-label-mono text-on-surface-variant">Real Estate Leader</div>
+</div>
+</div>
+<div class="text-right">
+<div class="text-green-400 font-bold">+5.8%</div>
+<div class="text-[10px] text-on-surface-variant">Value: 310M</div>
+</div>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg bg-surface-container-lowest border border-outline-variant">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-on-secondary-container/20 flex items-center justify-center text-secondary font-bold">EKHO</div>
+<div>
+<div class="font-bold text-on-surface">Egypt Kuwait Holding</div>
+<div class="text-[10px] font-label-mono text-on-surface-variant">Diversified Leader</div>
+</div>
+</div>
+<div class="text-right">
+<div class="text-on-surface-variant font-bold">+0.4%</div>
+<div class="text-[10px] text-on-surface-variant">Value: 125M</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Technical Legend -->
+<div class="glass-card rounded-xl p-6 border-l-4 border-primary">
+<h3 class="font-headline-lg text-lg text-text-primary mb-4">Signal Decoder</h3>
+<div class="space-y-4 text-body-sm text-on-surface-variant">
+<div>
+<span class="text-green-400 font-bold">STRONG INFLOW:</span>
+<p class="mt-1">Positive money flow + 1D gain + broad sector participation.</p>
+</div>
+<div>
+<span class="text-primary font-bold">BREAKOUT:</span>
+<p class="mt-1">Sharp volatility expansion combined with heavy relative volume.</p>
+</div>
+<div>
+<span class="text-red-400 font-bold">HEAVY DISTRIBUTION:</span>
+<p class="mt-1">High volume sell-offs. Institutions are exiting positions.</p>
+</div>
+</div>
+</div>
+<!-- Mini Chart Canvas -->
+<div class="glass-card rounded-xl p-4 bg-gradient-to-br from-surface-elevated to-surface">
+<div class="flex justify-between items-center mb-4">
+<span class="font-label-mono text-xs text-on-surface-variant">EGX30 Momentum Scan</span>
+<span class="material-symbols-outlined text-sm text-primary">analytics</span>
+</div>
+<div class="relative h-48 w-full">
+<!-- Custom Background Pattern for Chart -->
+<div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 1px 1px, #93ccff 1px, transparent 0); background-size: 20px 20px;"></div>
+<div class="absolute bottom-0 left-0 w-full h-full flex items-end justify-between px-2 pb-2 gap-1">
+<div class="w-full bg-primary/20 rounded-t h-[30%] hover:bg-primary/40 transition-all cursor-help" title="Sun"></div>
+<div class="w-full bg-primary/20 rounded-t h-[45%] hover:bg-primary/40 transition-all cursor-help" title="Mon"></div>
+<div class="w-full bg-primary/20 rounded-t h-[35%] hover:bg-primary/40 transition-all cursor-help" title="Tue"></div>
+<div class="w-full bg-primary/20 rounded-t h-[60%] hover:bg-primary/40 transition-all cursor-help" title="Wed"></div>
+<div class="w-full bg-primary/20 rounded-t h-[85%] hover:bg-primary/40 transition-all cursor-help" title="Thu"></div>
+<div class="w-full bg-primary/60 rounded-t h-[95%] shadow-[0_-4px_12px_rgba(147,204,255,0.3)] animate-pulse" title="Current Rotation"></div>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-outline-variant flex justify-between items-center">
+<span class="text-[10px] font-label-mono text-on-surface-variant">Volume Intensity</span>
+<span class="text-primary font-bold text-xs">+18.5% YoY</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB Action (Contextual) -->
+<div class="fixed bottom-8 right-8 z-40">
+<button class="flex items-center gap-2 bg-primary text-on-primary p-4 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined">bolt</span>
+<span class="font-label-mono text-xs font-bold uppercase tracking-widest hidden md:inline">Scanner</span>
+</button>
+</div>
+<!-- Background Shader -->
+<div class="fixed inset-0 -z-50 opacity-20 pointer-events-none">
+
+</div>
+<script>
+        // Simple Micro-interaction for Heatmap hover
+        document.querySelectorAll('.heat-cell-positive, .heat-cell-negative, .heat-cell-neutral').forEach(cell => {
+            cell.addEventListener('mouseenter', () => {
+                cell.style.filter = 'brightness(1.2)';
+            });
+            cell.addEventListener('mouseleave', () => {
+                cell.style.filter = 'brightness(1)';
+            });
+        });
+
+        // Sticky Header Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 20) {
+                nav.classList.add('bg-surface/100', 'shadow-lg');
+            } else {
+                nav.classList.remove('bg-surface/100', 'shadow-lg');
+            }
+        });
+    </script>
+</body></html>

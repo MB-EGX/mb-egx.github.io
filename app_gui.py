@@ -17,7 +17,7 @@ from analytics import QuantitativeEngine
 from chart_widget import StockSectorChartWidget
 from ingestion import IngestionPipeline
 from PyQt6.QtCore import QDate, Qt, QThread, QTimer, pyqtSignal, QAbstractTableModel, QModelIndex
-from PyQt6.QtGui import QFont, QColor
+from PyQt6.QtGui import QFont, QColor, QPixmap, QIcon
 from PyQt6.QtWidgets import (
     QApplication, QComboBox, QCompleter, QDateEdit, QDialog, QDoubleSpinBox,
     QFileDialog, QFormLayout, QHBoxLayout, QHeaderView, QInputDialog, QLabel,
@@ -27,6 +27,10 @@ from PyQt6.QtWidgets import (
 )
 
 logger = get_logger("app_gui")
+
+# Logo asset — place mb-egx-logo.png in an "assets" folder next to this
+# script (same layout as the web dashboard's assets/ folder).
+LOGO_PATH = Path(__file__).resolve().parent / "assets" / "mb-egx-logo.png"
 
 # =============================================================================
 # FIREBASE AUTH + FIRESTORE (REST) — same project as the web dashboard, so
@@ -438,20 +442,20 @@ TRANSLATIONS = {
 }
 
 THEME_DARK = """
-    QMainWindow, QDialog, QWidget { background-color: #1a1d24; color: #e2e8f0; font-family: 'Segoe UI', Arial, sans-serif; }
-    QTabWidget::pane { border: 1px solid #2d3748; background-color: #1a1d24; }
-    QTabBar::tab { background-color: #2d3748; color: #a0aec0; padding: 8px 16px; border-top-left-radius: 4px; border-top-right-radius: 4px; font-weight: bold; }
-    QTabBar::tab:selected { background-color: #3182ce; color: #ffffff; }
-    QTableWidget, QTableView { background-color: #1a1d24; alternate-background-color: #222730; color: #e2e8f0; gridline-color: #2d3748; border: none; selection-background-color: #2b6cb0; }
-    QHeaderView::section { background-color: #2d3748; color: #ffffff; padding: 6px; font-weight: bold; border: 1px solid #1a1d24; }
-    QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #2d3748; color: #ffffff; border: 1px solid #4a5568; padding: 6px; border-radius: 4px; }
-    QPushButton { border-radius: 4px; padding: 8px; font-weight: bold; }
-    QProgressBar { border: 1px solid #4a5568; border-radius: 4px; text-align: center; background-color: #2d3748; color: white; }
-    QProgressBar::chunk { background-color: #3182ce; }
+    QMainWindow, QDialog, QWidget { background-color: #0f1115; color: #e2e2e8; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
+    QTabWidget::pane { border: 1px solid #2d3748; background-color: #0f1115; }
+    QTabBar::tab { background-color: #1a1d24; color: #a0aec0; padding: 8px 16px; border-top-left-radius: 4px; border-top-right-radius: 4px; font-weight: bold; }
+    QTabBar::tab:selected { background-color: #3198dc; color: #ffffff; }
+    QTableWidget, QTableView { background-color: #0f1115; alternate-background-color: #1a1d24; color: #e2e2e8; gridline-color: #2d3748; border: none; selection-background-color: #2b6cb0; }
+    QHeaderView::section { background-color: #1a1d24; color: #93ccff; padding: 6px; font-weight: bold; border: 1px solid #0f1115; }
+    QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #1a1d24; color: #ffffff; border: 1px solid #2d3748; padding: 6px; border-radius: 4px; }
+    QPushButton { border-radius: 6px; padding: 8px; font-weight: bold; }
+    QProgressBar { border: 1px solid #2d3748; border-radius: 4px; text-align: center; background-color: #1a1d24; color: white; }
+    QProgressBar::chunk { background-color: #3198dc; }
 """
 
 THEME_LIGHT = """
-    QMainWindow, QDialog, QWidget { background-color: #f8fafc; color: #1a202c; font-family: 'Segoe UI', Arial, sans-serif; }
+    QMainWindow, QDialog, QWidget { background-color: #f8fafc; color: #1a202c; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
     QTabWidget::pane { border: 1px solid #cbd5e0; background-color: #ffffff; }
     QTabBar::tab { background-color: #e2e8f0; color: #4a5568; padding: 8px 16px; border-top-left-radius: 4px; border-top-right-radius: 4px; font-weight: bold; }
     QTabBar::tab:selected { background-color: #2b6cb0; color: #ffffff; }
@@ -464,7 +468,7 @@ THEME_LIGHT = """
 """
 
 THEME_BLUE = """
-    QMainWindow, QDialog, QWidget { background-color: #0f172a; color: #e2e8f0; font-family: 'Segoe UI', Arial, sans-serif; }
+    QMainWindow, QDialog, QWidget { background-color: #0f172a; color: #e2e8f0; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
     QTabWidget::pane { border: 1px solid #1e293b; background-color: #0f172a; }
     QTabBar::tab { background-color: #1e293b; color: #94a3b8; padding: 8px 16px; border-top-left-radius: 4px; border-top-right-radius: 4px; font-weight: bold; }
     QTabBar::tab:selected { background-color: #0284c7; color: #ffffff; }
@@ -477,7 +481,7 @@ THEME_BLUE = """
 """
 
 THEME_BLUSH_ROSE = """
-    QMainWindow, QDialog, QWidget { background-color: #fdf2f8; color: #500724; font-family: 'Segoe UI', Arial, sans-serif; }
+    QMainWindow, QDialog, QWidget { background-color: #fdf2f8; color: #500724; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
     QTabWidget::pane { border: 1px solid #fbcfe8; background-color: #ffffff; }
     QTabBar::tab { background-color: #fce7f3; color: #831843; padding: 8px 16px; border-top-left-radius: 4px; border-top-right-radius: 4px; font-weight: bold; }
     QTabBar::tab:selected { background-color: #ec4899; color: #ffffff; }
@@ -490,7 +494,7 @@ THEME_BLUSH_ROSE = """
 """
 
 THEME_VELVET_ROSE = """
-    QMainWindow, QDialog, QWidget { background-color: #20131a; color: #ffe4e6; font-family: 'Segoe UI', Arial, sans-serif; }
+    QMainWindow, QDialog, QWidget { background-color: #20131a; color: #ffe4e6; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
     QTabWidget::pane { border: 1px solid #3f2231; background-color: #20131a; }
     QTabBar::tab { background-color: #311825; color: #f472b6; padding: 8px 16px; border-top-left-radius: 4px; border-top-right-radius: 4px; font-weight: bold; }
     QTabBar::tab:selected { background-color: #e11d48; color: #ffffff; }
@@ -697,7 +701,7 @@ class ThemeSettingsDialog(QDialog):
 
         btn_layout = QHBoxLayout()
         btn_close = QPushButton("✅ Close & Save")
-        btn_close.setStyleSheet("background-color: #3182ce; color: white; margin-top: 10px;")
+        btn_close.setStyleSheet("background-color: #3198dc; color: white; margin-top: 10px;")
         btn_close.clicked.connect(self.accept)
         btn_layout.addStretch()
         btn_layout.addWidget(btn_close)
@@ -854,7 +858,7 @@ class PortfolioDialog(QDialog):
         form_buy.addRow("Purchase Date:", self.dt_buy_date)
 
         btn_scale = QPushButton("📈 Add Shares / Scale In (Auto-Calculate Average)")
-        btn_scale.setStyleSheet("background-color: #3182ce; color: white; margin-top: 5px;")
+        btn_scale.setStyleSheet("background-color: #3198dc; color: white; margin-top: 5px;")
         btn_scale.clicked.connect(lambda: self.save_buy_position(mode="ADD_SCALE"))
         form_buy.addRow(btn_scale)
 
@@ -1008,6 +1012,8 @@ class LoginDialog(QDialog):
         self.setWindowTitle("MB-EGX — Sign In")
         self.resize(420, 520)
         self.setStyleSheet(THEME_DARK)
+        if LOGO_PATH.exists():
+            self.setWindowIcon(QIcon(str(LOGO_PATH)))
         self.user_info = None
         self._init_ui()
 
@@ -1016,8 +1022,16 @@ class LoginDialog(QDialog):
         layout.setSpacing(10)
 
         lbl_title = QLabel("MB-EGX")
-        lbl_title.setStyleSheet("font-size: 20px; font-weight: bold; color: #38bdf8;")
+        lbl_title.setStyleSheet("font-size: 20px; font-weight: bold; color: #93ccff;")
         lbl_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        if LOGO_PATH.exists():
+            lbl_logo = QLabel()
+            pixmap = QPixmap(str(LOGO_PATH)).scaledToHeight(88, Qt.TransformationMode.SmoothTransformation)
+            lbl_logo.setPixmap(pixmap)
+            lbl_logo.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            layout.addWidget(lbl_logo)
+
         layout.addWidget(lbl_title)
 
         lbl_sub = QLabel("Sign in to your private dashboard")
@@ -1072,7 +1086,7 @@ class LoginDialog(QDialog):
 
         btn_row = QHBoxLayout()
         self.btn_signin = QPushButton("Sign In")
-        self.btn_signin.setStyleSheet("background-color: #3182ce; color: white; padding: 8px; font-weight: bold;")
+        self.btn_signin.setStyleSheet("background-color: #3198dc; color: white; padding: 8px; font-weight: bold;")
         self.btn_signin.clicked.connect(self.do_sign_in)
         self.btn_signup = QPushButton("Create Account")
         self.btn_signup.setEnabled(False)
@@ -1261,11 +1275,13 @@ class QuantDashboard(QMainWindow):
         super().__init__()
         self.setWindowTitle("MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard")
         self.resize(1520, 920)
+        if LOGO_PATH.exists():
+            self.setWindowIcon(QIcon(str(LOGO_PATH)))
         self.dbm = DatabaseManager()
         self.qe = QuantitativeEngine()
         self.current_theme = "🌙 Institutional Dark"
         self.current_lang = "EN"
-        self.theme_highlight = QColor("#2b6cb0")
+        self.theme_highlight = QColor("#3198dc")
         self._raw_buys_data = []
         self.user_info = user_info
         self._session_id = None
@@ -1399,14 +1415,14 @@ class QuantDashboard(QMainWindow):
                 self.lbl_account_header.setStyleSheet("font-size: 14px; font-weight: bold; background-color: #1e293b; color: #38bdf8; padding: 10px; border-radius: 4px; border: 1px solid #334155;")
                 self.lbl_disclosure.setStyleSheet("font-size: 11px; color: #fde68a; background-color: #451a03; padding: 6px; border: 1px solid #d97706; border-radius: 4px;")
             else:
-                self.theme_highlight = QColor("#2b6cb0")
-                self.btn_ingest.setStyleSheet("background-color: #2b6cb0; color: white;")
+                self.theme_highlight = QColor("#3198dc")
+                self.btn_ingest.setStyleSheet("background-color: #3198dc; color: white;")
                 self.btn_analyze.setStyleSheet("background-color: #2f855a; color: white;")
                 self.btn_manage_portfolio.setStyleSheet("background-color: #6b46c1; color: white;")
                 self.btn_calc.setStyleSheet("background-color: #c05621; color: white;")
                 self.btn_set_cash.setStyleSheet("background-color: #b7791f; color: white;")
                 self.btn_settings.setStyleSheet("background-color: #4a5568; color: white;")
-                self.lbl_account_header.setStyleSheet("font-size: 14px; font-weight: bold; background-color: #222730; color: #63b3ed; padding: 10px; border-radius: 4px; border: 1px solid #4a5568;")
+                self.lbl_account_header.setStyleSheet("font-size: 14px; font-weight: bold; background-color: #1a1d24; color: #93ccff; padding: 10px; border-radius: 4px; border: 1px solid #2d3748;")
                 self.lbl_disclosure.setStyleSheet("font-size: 11px; color: #fbd38d; background-color: #744210; padding: 6px; border: 1px solid #b7791f; border-radius: 4px;")
 
     def _init_ui(self):
@@ -1416,7 +1432,7 @@ class QuantDashboard(QMainWindow):
 
         top_bar = QHBoxLayout()
         self.lbl_last_date = QLabel("📅 Last Data Date: Loading...")
-        self.lbl_last_date.setStyleSheet("font-weight: bold; background-color: #2d3748; color: #38bdf8; padding: 4px 8px; border-radius: 4px;")
+        self.lbl_last_date.setStyleSheet("font-weight: bold; background-color: #1a1d24; color: #93ccff; padding: 4px 8px; border-radius: 4px;")
         
         self.cmb_lang = QComboBox()
         self.cmb_lang.addItems(["🇬🇧 English", "🇪🇬 العربية"])
@@ -1428,7 +1444,7 @@ class QuantDashboard(QMainWindow):
         self.lbl_welcome_user = QLabel("")
         if self.user_info:
             self.lbl_welcome_user.setText(f"👋 {self.user_info['name']}")
-            self.lbl_welcome_user.setStyleSheet("font-weight: bold; color: #38bdf8; padding: 4px 8px;")
+            self.lbl_welcome_user.setStyleSheet("font-weight: bold; color: #93ccff; padding: 4px 8px;")
         top_bar.addWidget(self.lbl_welcome_user)
 
         self.btn_analytics = QPushButton("📊 Usage Analytics")
