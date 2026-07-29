@@ -28,31 +28,16 @@ from PyQt6.QtWidgets import (
 
 logger = get_logger("app_gui")
 
-# Logo asset — place mb-egx-logo.png in an "assets" folder next to this
-# script (same layout as the web dashboard's assets/ folder).
 LOGO_PATH = Path(__file__).resolve().parent / "assets" / "mb-egx-logo.png"
 
 # =============================================================================
-# FIREBASE AUTH + FIRESTORE (REST) — same project as the web dashboard, so
-# desktop sign-ins and website sign-ins share one user base and one
-# `sessions` collection for usage analytics.
+# FIREBASE AUTH + FIRESTORE (REST)
 # =============================================================================
 FIREBASE_API_KEY = "AIzaSyBCC4D61IHTEFNsgO6i8H_BdixwArE-VRo"
 FIREBASE_PROJECT_ID = "mb-egx-12d11"
 FIRESTORE_BASE = f"https://firestore.googleapis.com/v1/projects/{FIREBASE_PROJECT_ID}/databases/(default)/documents"
-
-# Emails allowed to see the in-app "Usage Analytics" button/dialog.
-# Keep this in sync with the ADMIN_EMAILS list and Firestore rules on the website.
 ADMIN_EMAILS = ["drmo071990@gmail.com"]
 
-# =============================================================================
-# END-USER CONSENT AND LEGAL DISCLAIMER
-# Keep this text byte-for-byte identical to the disclaimer shown in
-# index.html's auth-gate - both surfaces write agreed_to_terms/terms_version
-# to the SAME users/{uid} Firestore document, and firestore.rules enforces
-# the same fields regardless of which app created the account.
-# Bump TERMS_VERSION whenever the text below materially changes.
-# =============================================================================
 TERMS_VERSION = "1.0"
 
 DISCLAIMER_TEXT = (
@@ -405,11 +390,19 @@ TRANSLATIONS = {
 }
 
 THEME_DARK = """
-    QMainWindow, QDialog, QWidget { 
+    QMainWindow, QDialog, QWidget#main_widget { 
         background-color: #0f1115; 
         color: #e2e2e8; 
         font-family: 'Inter', 'Segoe UI', Arial, sans-serif; 
     }
+    
+    /* Panels matching the Web UI */
+    QWidget#webPanel {
+        background-color: #1a1d24;
+        border: 1px solid #2d3748;
+        border-radius: 12px;
+    }
+
     QTabWidget::pane { 
         border: 1px solid #2d3748; 
         background-color: #1a1d24; 
@@ -417,11 +410,12 @@ THEME_DARK = """
         margin-top: -1px;
     }
     QTabBar::tab { 
-        background-color: #0f1115; 
+        background: transparent; 
         color: #a0aec0; 
-        padding: 10px 20px; 
-        border-top-left-radius: 8px; 
-        border-top-right-radius: 8px; 
+        padding: 12px 24px;
+        font-size: 13px;
+        border-top-left-radius: 10px; 
+        border-top-right-radius: 10px; 
         margin-right: 4px;
         font-weight: bold; 
         border: 1px solid transparent;
@@ -433,15 +427,16 @@ THEME_DARK = """
         border-bottom: none;
     }
     QTabBar::tab:hover:!selected {
-        color: #e2e2e8;
+        color: #ffffff;
     }
     QTableWidget, QTableView { 
         background-color: #1a1d24; 
-        alternate-background-color: #15181e; 
+        alternate-background-color: #14171c; 
         color: #e2e2e8; 
         gridline-color: #2d3748; 
-        border: 1px solid #2d3748; 
-        border-radius: 12px;
+        border: none;
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
         selection-background-color: rgba(49, 152, 220, 0.2); 
         selection-color: #ffffff;
         outline: none;
@@ -449,9 +444,10 @@ THEME_DARK = """
     QHeaderView::section { 
         background-color: #2d3748; 
         color: #93ccff; 
-        padding: 8px; 
+        padding: 10px; 
         font-weight: bold; 
-        font-family: 'JetBrains Mono', monospace; 
+        font-size: 11px;
+        letter-spacing: 1px;
         border: none;
         border-bottom: 2px solid #0f1115;
     }
@@ -472,6 +468,7 @@ THEME_DARK = """
         border-radius: 8px; 
         padding: 10px 16px; 
         font-weight: bold; 
+        font-size: 13px;
     }
     QPushButton:hover { 
         background-color: #3a4557; 
@@ -494,14 +491,15 @@ THEME_DARK = """
 """
 
 THEME_LIGHT = """
-    QMainWindow, QDialog, QWidget { background-color: #f8fafc; color: #1a202c; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
+    QMainWindow, QDialog, QWidget#main_widget { background-color: #f8fafc; color: #1a202c; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
+    QWidget#webPanel { background-color: #ffffff; border: 1px solid #cbd5e0; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
     QTabWidget::pane { border: 1px solid #cbd5e0; background-color: #ffffff; border-radius: 12px; margin-top: -1px; }
-    QTabBar::tab { background-color: #f8fafc; color: #4a5568; padding: 10px 20px; border-top-left-radius: 8px; border-top-right-radius: 8px; margin-right: 4px; font-weight: bold; border: 1px solid transparent; }
+    QTabBar::tab { background: transparent; color: #4a5568; padding: 12px 24px; font-size: 13px; border-top-left-radius: 10px; border-top-right-radius: 10px; margin-right: 4px; font-weight: bold; border: 1px solid transparent; }
     QTabBar::tab:selected { background-color: #2b6cb0; color: #ffffff; border: 1px solid #cbd5e0; border-bottom: none; }
-    QTableWidget, QTableView { background-color: #ffffff; alternate-background-color: #f1f5f9; color: #1a202c; gridline-color: #e2e8f0; border: 1px solid #cbd5e0; border-radius: 12px; selection-background-color: #bee3f8; selection-color: #1a202c; }
-    QHeaderView::section { background-color: #2d3748; color: #ffffff; padding: 8px; font-weight: bold; font-family: 'JetBrains Mono', monospace; border: none; border-bottom: 2px solid #f8fafc; }
+    QTableWidget, QTableView { background-color: #ffffff; alternate-background-color: #f1f5f9; color: #1a202c; gridline-color: #e2e8f0; border: none; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; selection-background-color: #bee3f8; selection-color: #1a202c; }
+    QHeaderView::section { background-color: #2d3748; color: #ffffff; padding: 10px; font-weight: bold; font-size: 11px; letter-spacing: 1px; border: none; border-bottom: 2px solid #f8fafc; }
     QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #ffffff; color: #1a202c; border: 1px solid #a0aec0; padding: 8px 12px; border-radius: 6px; }
-    QPushButton { background-color: #e2e8f0; color: #1a202c; border: none; border-radius: 8px; padding: 10px 16px; font-weight: bold; }
+    QPushButton { background-color: #e2e8f0; color: #1a202c; border: none; border-radius: 8px; padding: 10px 16px; font-size: 13px; font-weight: bold; }
     QPushButton:hover { background-color: #cbd5e0; }
     QPushButton:pressed { background-color: #b8c4d4; }
     QProgressBar { border: 1px solid #cbd5e0; border-radius: 6px; text-align: center; background-color: #e2e8f0; color: #1a202c; height: 18px; }
@@ -509,14 +507,15 @@ THEME_LIGHT = """
 """
 
 THEME_BLUE = """
-    QMainWindow, QDialog, QWidget { background-color: #0f172a; color: #e2e8f0; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
+    QMainWindow, QDialog, QWidget#main_widget { background-color: #0f172a; color: #e2e8f0; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
+    QWidget#webPanel { background-color: #1e293b; border: 1px solid #334155; border-radius: 12px; }
     QTabWidget::pane { border: 1px solid #1e293b; background-color: #0f172a; border-radius: 12px; margin-top: -1px; }
-    QTabBar::tab { background-color: #0f172a; color: #94a3b8; padding: 10px 20px; border-top-left-radius: 8px; border-top-right-radius: 8px; margin-right: 4px; font-weight: bold; border: 1px solid transparent; }
+    QTabBar::tab { background: transparent; color: #94a3b8; padding: 12px 24px; font-size: 13px; border-top-left-radius: 10px; border-top-right-radius: 10px; margin-right: 4px; font-weight: bold; border: 1px solid transparent; }
     QTabBar::tab:selected { background-color: #0284c7; color: #ffffff; border: 1px solid #1e293b; border-bottom: none; }
-    QTableWidget, QTableView { background-color: #0f172a; alternate-background-color: #1e293b; color: #f8fafc; gridline-color: #334155; border: 1px solid #334155; border-radius: 12px; selection-background-color: #0369a1; }
-    QHeaderView::section { background-color: #1e293b; color: #38bdf8; padding: 8px; font-weight: bold; font-family: 'JetBrains Mono', monospace; border: none; border-bottom: 2px solid #0f172a; }
+    QTableWidget, QTableView { background-color: #0f172a; alternate-background-color: #162032; color: #f8fafc; gridline-color: #334155; border: none; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; selection-background-color: #0369a1; }
+    QHeaderView::section { background-color: #1e293b; color: #38bdf8; padding: 10px; font-weight: bold; font-size: 11px; letter-spacing: 1px; border: none; border-bottom: 2px solid #0f172a; }
     QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #1e293b; color: #f8fafc; border: 1px solid #475569; padding: 8px 12px; border-radius: 6px; }
-    QPushButton { background-color: #1e293b; color: #f8fafc; border: none; border-radius: 8px; padding: 10px 16px; font-weight: bold; }
+    QPushButton { background-color: #1e293b; color: #f8fafc; border: none; border-radius: 8px; padding: 10px 16px; font-size: 13px; font-weight: bold; }
     QPushButton:hover { background-color: #334155; }
     QPushButton:pressed { background-color: #16202f; }
     QProgressBar { border: 1px solid #334155; border-radius: 6px; text-align: center; background-color: #1e293b; color: white; height: 18px; }
@@ -524,14 +523,15 @@ THEME_BLUE = """
 """
 
 THEME_BLUSH_ROSE = """
-    QMainWindow, QDialog, QWidget { background-color: #fdf2f8; color: #500724; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
+    QMainWindow, QDialog, QWidget#main_widget { background-color: #fdf2f8; color: #500724; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
+    QWidget#webPanel { background-color: #ffffff; border: 1px solid #fbcfe8; border-radius: 12px; }
     QTabWidget::pane { border: 1px solid #fbcfe8; background-color: #ffffff; border-radius: 12px; margin-top: -1px; }
-    QTabBar::tab { background-color: #fdf2f8; color: #831843; padding: 10px 20px; border-top-left-radius: 8px; border-top-right-radius: 8px; margin-right: 4px; font-weight: bold; border: 1px solid transparent; }
+    QTabBar::tab { background: transparent; color: #831843; padding: 12px 24px; font-size: 13px; border-top-left-radius: 10px; border-top-right-radius: 10px; margin-right: 4px; font-weight: bold; border: 1px solid transparent; }
     QTabBar::tab:selected { background-color: #ec4899; color: #ffffff; border: 1px solid #fbcfe8; border-bottom: none; }
-    QTableWidget, QTableView { background-color: #ffffff; alternate-background-color: #fef6fb; color: #500724; gridline-color: #fbcfe8; border: 1px solid #fbcfe8; border-radius: 12px; selection-background-color: #f472b6; selection-color: #ffffff; }
-    QHeaderView::section { background-color: #be185d; color: #ffffff; padding: 8px; font-weight: bold; font-family: 'JetBrains Mono', monospace; border: none; border-bottom: 2px solid #fdf2f8; }
+    QTableWidget, QTableView { background-color: #ffffff; alternate-background-color: #fef6fb; color: #500724; gridline-color: #fbcfe8; border: none; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; selection-background-color: #f472b6; selection-color: #ffffff; }
+    QHeaderView::section { background-color: #be185d; color: #ffffff; padding: 10px; font-weight: bold; font-size: 11px; letter-spacing: 1px; border: none; border-bottom: 2px solid #fdf2f8; }
     QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #ffffff; color: #500724; border: 1px solid #f472b6; padding: 8px 12px; border-radius: 6px; }
-    QPushButton { background-color: #fce7f3; color: #831843; border: none; border-radius: 8px; padding: 10px 16px; font-weight: bold; }
+    QPushButton { background-color: #fce7f3; color: #831843; border: none; border-radius: 8px; padding: 10px 16px; font-size: 13px; font-weight: bold; }
     QPushButton:hover { background-color: #fbcfe8; }
     QPushButton:pressed { background-color: #f9a8d4; }
     QProgressBar { border: 1px solid #fbcfe8; border-radius: 6px; text-align: center; background-color: #fce7f3; color: #500724; height: 18px; }
@@ -539,14 +539,15 @@ THEME_BLUSH_ROSE = """
 """
 
 THEME_VELVET_ROSE = """
-    QMainWindow, QDialog, QWidget { background-color: #20131a; color: #ffe4e6; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
+    QMainWindow, QDialog, QWidget#main_widget { background-color: #20131a; color: #ffe4e6; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
+    QWidget#webPanel { background-color: #311825; border: 1px solid #3f2231; border-radius: 12px; }
     QTabWidget::pane { border: 1px solid #3f2231; background-color: #20131a; border-radius: 12px; margin-top: -1px; }
-    QTabBar::tab { background-color: #20131a; color: #f472b6; padding: 10px 20px; border-top-left-radius: 8px; border-top-right-radius: 8px; margin-right: 4px; font-weight: bold; border: 1px solid transparent; }
+    QTabBar::tab { background: transparent; color: #f472b6; padding: 12px 24px; font-size: 13px; border-top-left-radius: 10px; border-top-right-radius: 10px; margin-right: 4px; font-weight: bold; border: 1px solid transparent; }
     QTabBar::tab:selected { background-color: #e11d48; color: #ffffff; border: 1px solid #3f2231; border-bottom: none; }
-    QTableWidget, QTableView { background-color: #20131a; alternate-background-color: #2a1822; color: #fff1f2; gridline-color: #3f2231; border: 1px solid #3f2231; border-radius: 12px; selection-background-color: #be185d; }
-    QHeaderView::section { background-color: #3f2231; color: #fb7185; padding: 8px; font-weight: bold; font-family: 'JetBrains Mono', monospace; border: none; border-bottom: 2px solid #20131a; }
+    QTableWidget, QTableView { background-color: #20131a; alternate-background-color: #26171f; color: #fff1f2; gridline-color: #3f2231; border: none; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; selection-background-color: #be185d; }
+    QHeaderView::section { background-color: #3f2231; color: #fb7185; padding: 10px; font-weight: bold; font-size: 11px; letter-spacing: 1px; border: none; border-bottom: 2px solid #20131a; }
     QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #311825; color: #fff1f2; border: 1px solid #9f1239; padding: 8px 12px; border-radius: 6px; }
-    QPushButton { background-color: #311825; color: #fecdd3; border: none; border-radius: 8px; padding: 10px 16px; font-weight: bold; }
+    QPushButton { background-color: #311825; color: #fecdd3; border: none; border-radius: 8px; padding: 10px 16px; font-size: 13px; font-weight: bold; }
     QPushButton:hover { background-color: #3f2231; }
     QPushButton:pressed { background-color: #26121b; }
     QProgressBar { border: 1px solid #9f1239; border-radius: 6px; text-align: center; background-color: #311825; color: white; height: 18px; }
@@ -618,7 +619,7 @@ class ColumnChooserDialog(QDialog):
         layout.addWidget(scroll)
 
         btn_close = QPushButton("✅ OK" if self.lang == "EN" else "✅ حسناً")
-        btn_close.setStyleSheet("background-color: #38a169; color: white; padding: 8px; font-weight: bold;")
+        btn_close.setStyleSheet("background-color: #38a169; color: white; padding: 10px; font-weight: bold;")
         btn_close.clicked.connect(self.accept)
         layout.addWidget(btn_close)
 
@@ -712,7 +713,7 @@ class MatrixTableModel(QAbstractTableModel):
                     return QColor("#dd6b20")
         elif role == Qt.ItemDataRole.FontRole:
             if key == "Action" and ("STRONG BUY" in val_str or "BREAKOUT BUY" in val_str):
-                return QFont("Segoe UI", 9, QFont.Weight.Bold)
+                return QFont("Inter", 9, QFont.Weight.Bold)
         return None
 
     def update_data(self, new_data):
@@ -725,7 +726,7 @@ class ThemeSettingsDialog(QDialog):
     def __init__(self, current_theme_name, apply_callback, parent=None):
         super().__init__(parent)
         self.setWindowTitle("⚙️ Appearance & Theme Settings")
-        self.resize(380, 160)
+        self.resize(400, 180)
         self.apply_callback = apply_callback
         self._init_ui(current_theme_name)
 
@@ -734,6 +735,7 @@ class ThemeSettingsDialog(QDialog):
         form = QFormLayout()
         lbl_info = QLabel("Choose your preferred visual dashboard palette:")
         lbl_info.setWordWrap(True)
+        lbl_info.setStyleSheet("font-size: 13px;")
         layout.addWidget(lbl_info)
 
         self.cmb_themes = QComboBox()
@@ -747,7 +749,7 @@ class ThemeSettingsDialog(QDialog):
 
         btn_layout = QHBoxLayout()
         btn_close = QPushButton("✅ Close & Save")
-        btn_close.setStyleSheet("background-color: #3198dc; color: white; margin-top: 10px;")
+        btn_close.setStyleSheet("background-color: #3198dc; color: white; margin-top: 10px; padding: 10px 20px;")
         btn_close.clicked.connect(self.accept)
         btn_layout.addStretch()
         btn_layout.addWidget(btn_close)
@@ -758,7 +760,7 @@ class PositionSizingDialog(QDialog):
     def __init__(self, dbm, cash_balance, parent=None):
         super().__init__(parent)
         self.setWindowTitle("⚖️ Interactive Risk & Position-Sizing Calculator")
-        self.resize(450, 350)
+        self.resize(480, 400)
         self.dbm = dbm
         self.qe = QuantitativeEngine()
         self.cash = cash_balance
@@ -768,6 +770,7 @@ class PositionSizingDialog(QDialog):
         layout = QVBoxLayout(self)
         form = QFormLayout()
         lbl_cash = QLabel(f"<b>Available Cash:</b> {self.cash:,.2f} EGP")
+        lbl_cash.setStyleSheet("font-size: 14px; margin-bottom: 8px;")
         layout.addWidget(lbl_cash)
 
         available_tickers = self.dbm.get_unique_tickers()
@@ -807,7 +810,7 @@ class PositionSizingDialog(QDialog):
 
         layout.addLayout(form)
         self.lbl_result = QLabel()
-        self.lbl_result.setStyleSheet("padding: 12px; border-radius: 6px; font-size: 13px; border: 1px solid #4a5568;")
+        self.lbl_result.setStyleSheet("padding: 16px; border-radius: 8px; font-size: 14px; border: 1px solid #4a5568; background-color: #1a1d24;")
         layout.addWidget(self.lbl_result)
         self.calculate()
 
@@ -853,8 +856,8 @@ class PositionSizingDialog(QDialog):
         pct_of_portfolio = (total_with_fees / self.cash) * 100 if self.cash > 0 else 0.0
 
         self.lbl_result.setText(
-            f"🎯 <b>Recommended Shares:</b> {shares:,} shares<br>"
-            f"💵 <b>Total Outlay (incl. 0.35% fee):</b> {total_with_fees:,.2f} EGP ({pct_of_portfolio:.1f}% of cash)<br>"
+            f"🎯 <b>Recommended Shares:</b> {shares:,} shares<br><br>"
+            f"💵 <b>Total Outlay (incl. 0.35% fee):</b> {total_with_fees:,.2f} EGP ({pct_of_portfolio:.1f}% of cash)<br><br>"
             f"🛡️ <b>Max Capital at Risk:</b> {min(risk_budget, total_outlay):,.2f} EGP"
         )
 
@@ -863,7 +866,7 @@ class PortfolioDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Institutional Portfolio & Trade Manager")
-        self.resize(500, 450)
+        self.resize(550, 500)
         self.dbm = DatabaseManager()
         self._init_ui()
 
@@ -874,6 +877,7 @@ class PortfolioDialog(QDialog):
 
         tab_buy = QWidget()
         form_buy = QFormLayout(tab_buy)
+        form_buy.setSpacing(12)
 
         self.cmb_buy_ticker = QComboBox()
         self.cmb_buy_ticker.setEditable(True)
@@ -904,17 +908,17 @@ class PortfolioDialog(QDialog):
         form_buy.addRow("Purchase Date:", self.dt_buy_date)
 
         btn_scale = QPushButton("📈 Add Shares / Scale In (Auto-Calculate Average)")
-        btn_scale.setStyleSheet("background-color: #3198dc; color: white; margin-top: 5px;")
+        btn_scale.setStyleSheet("background-color: #3198dc; color: white; margin-top: 10px; padding: 12px;")
         btn_scale.clicked.connect(lambda: self.save_buy_position(mode="ADD_SCALE"))
         form_buy.addRow(btn_scale)
 
         btn_layout = QHBoxLayout()
-        btn_overwrite = QPushButton("✏️ Correct Mistake / Overwrite")
-        btn_overwrite.setStyleSheet("background-color: #d69e2e; color: white;")
+        btn_overwrite = QPushButton("✏️ Correct Mistake")
+        btn_overwrite.setStyleSheet("background-color: #d69e2e; color: white; padding: 10px;")
         btn_overwrite.clicked.connect(lambda: self.save_buy_position(mode="OVERWRITE"))
 
         btn_delete = QPushButton("🗑️ Delete Position")
-        btn_delete.setStyleSheet("background-color: #e53e3e; color: white;")
+        btn_delete.setStyleSheet("background-color: #e53e3e; color: white; padding: 10px;")
         btn_delete.clicked.connect(self.delete_buy_position)
 
         btn_layout.addWidget(btn_overwrite)
@@ -924,6 +928,7 @@ class PortfolioDialog(QDialog):
 
         tab_sell = QWidget()
         form_sell = QFormLayout(tab_sell)
+        form_sell.setSpacing(12)
 
         self.cmb_sell_ticker = QComboBox()
         self.cmb_sell_ticker.setEditable(True)
@@ -954,14 +959,14 @@ class PortfolioDialog(QDialog):
         form_sell.addRow("Sell Date:", self.dt_sell_date)
 
         btn_record_sale = QPushButton("🤝 Record Sale & Calculate P&L")
-        btn_record_sale.setStyleSheet("background-color: #38a169; color: white; margin-top: 10px;")
+        btn_record_sale.setStyleSheet("background-color: #38a169; color: white; margin-top: 10px; padding: 12px;")
         btn_record_sale.clicked.connect(self.record_stock_sale)
         form_sell.addRow(btn_record_sale)
         self.tabs.addTab(tab_sell, "🤝 Record Sale / Close Trade")
         layout.addWidget(self.tabs)
 
         btn_clean = QPushButton("🧹 Clear Sample Demo Data")
-        btn_clean.setStyleSheet("background-color: #4a5568; color: white; margin-top: 5px;")
+        btn_clean.setStyleSheet("background-color: #4a5568; color: white; margin-top: 5px; padding: 10px;")
         btn_clean.clicked.connect(self.clean_samples)
         layout.addWidget(btn_clean)
 
@@ -1060,17 +1065,20 @@ class LoginDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("MB-EGX Alpha — Terminal Access")
-        self.resize(460, 640)
+        # Enlarge the Login Dialog significantly as requested
+        self.resize(600, 780)
         self.setStyleSheet(THEME_DARK + f"""
             QDialog {{ background-color: {self._BG}; }}
             QLineEdit {{
                 background-color: {self._CARD_LOWEST}; color: #ffffff;
-                border: 1px solid {self._OUTLINE}; border-radius: 6px; padding: 10px;
+                border: 1px solid {self._OUTLINE}; border-radius: 8px; padding: 12px;
+                font-size: 14px;
             }}
             QLineEdit:focus {{ border: 1px solid {self._PRIMARY}; }}
             QTextEdit {{
                 background-color: {self._CARD_LOWEST}; color: {self._TEXT_MUTED};
-                border: 1px solid {self._OUTLINE}; border-radius: 6px; font-size: 10px;
+                border: 1px solid {self._OUTLINE}; border-radius: 8px; font-size: 12px;
+                padding: 10px;
             }}
         """)
         if LOGO_PATH.exists():
@@ -1085,13 +1093,13 @@ class LoginDialog(QDialog):
         header = QWidget()
         header.setStyleSheet(f"background-color: {self._CARD}; border-bottom: 1px solid {self._OUTLINE};")
         header_layout = QHBoxLayout(header)
-        header_layout.setContentsMargins(16, 10, 16, 10)
+        header_layout.setContentsMargins(20, 14, 20, 14)
         lbl_header_title = QLabel("MB-EGX Alpha")
-        lbl_header_title.setStyleSheet(f"font-size: 16px; font-weight: 900; color: {self._PRIMARY};")
+        lbl_header_title.setStyleSheet(f"font-size: 18px; font-weight: 900; color: {self._PRIMARY};")
         header_layout.addWidget(lbl_header_title)
         header_layout.addStretch()
         lbl_header_tag = QLabel("Precision Wealth Alpha")
-        lbl_header_tag.setStyleSheet("font-size: 11px; color: #a0aec0;")
+        lbl_header_tag.setStyleSheet("font-size: 13px; color: #a0aec0;")
         header_layout.addWidget(lbl_header_tag)
         outer.addWidget(header)
 
@@ -1100,31 +1108,31 @@ class LoginDialog(QDialog):
         scroll.setStyleSheet("QScrollArea { border: none; background: transparent; }")
         body = QWidget()
         layout = QVBoxLayout(body)
-        layout.setContentsMargins(28, 24, 28, 24)
-        layout.setSpacing(12)
+        layout.setContentsMargins(40, 32, 40, 32)
+        layout.setSpacing(16)
         scroll.setWidget(body)
         outer.addWidget(scroll)
 
         if LOGO_PATH.exists():
             lbl_logo = QLabel()
-            pixmap = QPixmap(str(LOGO_PATH)).scaledToHeight(96, Qt.TransformationMode.SmoothTransformation)
+            pixmap = QPixmap(str(LOGO_PATH)).scaledToHeight(120, Qt.TransformationMode.SmoothTransformation)
             lbl_logo.setPixmap(pixmap)
             lbl_logo.setAlignment(Qt.AlignmentFlag.AlignCenter)
             layout.addWidget(lbl_logo)
 
         lbl_title = QLabel("Terminal Access")
-        lbl_title.setStyleSheet("font-size: 22px; font-weight: 700; color: #ffffff;")
+        lbl_title.setStyleSheet("font-size: 28px; font-weight: 700; color: #ffffff;")
         lbl_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(lbl_title)
 
         lbl_sub = QLabel("Sign in to view your private dashboard")
-        lbl_sub.setStyleSheet(f"color: {self._TEXT_MUTED}; font-size: 12px;")
+        lbl_sub.setStyleSheet(f"color: {self._TEXT_MUTED}; font-size: 14px;")
         lbl_sub.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(lbl_sub)
-        layout.addSpacing(8)
+        layout.addSpacing(12)
 
         lbl_email_hdr = QLabel("EMAIL ADDRESS")
-        lbl_email_hdr.setStyleSheet(f"color: {self._TEXT_MUTED}; font-size: 10px; font-weight: bold; letter-spacing: 1px;")
+        lbl_email_hdr.setStyleSheet(f"color: {self._TEXT_MUTED}; font-size: 11px; font-weight: bold; letter-spacing: 1px;")
         layout.addWidget(lbl_email_hdr)
         self.txt_email = QLineEdit()
         self.txt_email.setPlaceholderText("investor@mb-egx.ai")
@@ -1132,14 +1140,14 @@ class LoginDialog(QDialog):
 
         pw_row = QHBoxLayout()
         lbl_pw_hdr = QLabel("PASSWORD")
-        lbl_pw_hdr.setStyleSheet(f"color: {self._TEXT_MUTED}; font-size: 10px; font-weight: bold; letter-spacing: 1px;")
+        lbl_pw_hdr.setStyleSheet(f"color: {self._TEXT_MUTED}; font-size: 11px; font-weight: bold; letter-spacing: 1px;")
         pw_row.addWidget(lbl_pw_hdr)
         pw_row.addStretch()
         self.btn_forgot = QPushButton("Forgot Access?")
         self.btn_forgot.setFlat(True)
         self.btn_forgot.setCursor(Qt.CursorShape.PointingHandCursor)
         self.btn_forgot.setStyleSheet(
-            f"background: transparent; border: none; color: {self._PRIMARY}; font-size: 11px; padding: 0;"
+            f"background: transparent; border: none; color: {self._PRIMARY}; font-size: 12px; padding: 0;"
         )
         self.btn_forgot.clicked.connect(self.do_forgot_password)
         pw_row.addWidget(self.btn_forgot)
@@ -1152,28 +1160,28 @@ class LoginDialog(QDialog):
         layout.addWidget(self.txt_password)
 
         consent_box = QWidget()
-        consent_box.setStyleSheet(f"background-color: {self._CARD}; border: 1px solid {self._OUTLINE}; border-radius: 6px;")
+        consent_box.setStyleSheet(f"background-color: {self._CARD}; border: 1px solid {self._OUTLINE}; border-radius: 8px;")
         consent_layout = QVBoxLayout(consent_box)
-        consent_layout.setContentsMargins(12, 10, 12, 10)
+        consent_layout.setContentsMargins(16, 14, 16, 14)
 
         lbl_consent_hdr = QLabel("END-USER CONSENT AND LEGAL DISCLAIMER")
-        lbl_consent_hdr.setStyleSheet(f"color: {self._TEXT_MUTED}; font-size: 10px; font-weight: bold; letter-spacing: 1px;")
+        lbl_consent_hdr.setStyleSheet(f"color: {self._TEXT_MUTED}; font-size: 11px; font-weight: bold; letter-spacing: 1px;")
         consent_layout.addWidget(lbl_consent_hdr)
 
         self.txt_disclaimer = QTextEdit()
         self.txt_disclaimer.setReadOnly(True)
         self.txt_disclaimer.setPlainText(DISCLAIMER_TEXT)
-        self.txt_disclaimer.setFixedHeight(140)
+        self.txt_disclaimer.setFixedHeight(180)
         consent_layout.addWidget(self.txt_disclaimer)
 
         self.chk_consent = QCheckBox("I acknowledge and agree to the End-User Consent and Legal Disclaimer.")
-        self.chk_consent.setStyleSheet("color: #e2e2e8; font-size: 11px;")
+        self.chk_consent.setStyleSheet("color: #e2e2e8; font-size: 13px; margin-top: 8px;")
         self.chk_consent.stateChanged.connect(self._on_consent_toggled)
         consent_layout.addWidget(self.chk_consent)
         layout.addWidget(consent_box)
 
         self.lbl_error = QLabel("")
-        self.lbl_error.setStyleSheet("color: #ffb4ab; font-size: 11px;")
+        self.lbl_error.setStyleSheet("color: #ffb4ab; font-size: 13px;")
         self.lbl_error.setWordWrap(True)
         layout.addWidget(self.lbl_error)
 
@@ -1181,7 +1189,7 @@ class LoginDialog(QDialog):
         self.btn_signin.setCursor(Qt.CursorShape.PointingHandCursor)
         self.btn_signin.setStyleSheet(
             f"background-color: {self._PRIMARY}; color: {self._ON_PRIMARY}; "
-            "padding: 12px; font-weight: bold; font-size: 13px; border: none; border-radius: 8px;"
+            "padding: 14px; font-weight: bold; font-size: 16px; border: none; border-radius: 8px;"
         )
         self.btn_signin.clicked.connect(self.do_sign_in)
         layout.addWidget(self.btn_signin)
@@ -1189,11 +1197,14 @@ class LoginDialog(QDialog):
         self.btn_signup = QPushButton("Create Account")
         self.btn_signup.setCursor(Qt.CursorShape.PointingHandCursor)
         self.btn_signup.setEnabled(False)
+        self.btn_signup.setStyleSheet(
+            "background-color: #1a1d24; color: #4a5568; padding: 14px; font-size: 15px; border-radius: 8px; border: 1px solid #2d3748;"
+        )
         layout.addWidget(self.btn_signup)
         self.btn_signup.clicked.connect(self.do_sign_up)
 
         lbl_footer = QLabel("🔒 AES-256 Bank Grade Encryption Matrix Enabled")
-        lbl_footer.setStyleSheet("color: #718096; font-size: 10px;")
+        lbl_footer.setStyleSheet("color: #718096; font-size: 11px;")
         lbl_footer.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(lbl_footer)
 
@@ -1201,8 +1212,8 @@ class LoginDialog(QDialog):
         checked = self.chk_consent.isChecked()
         self.btn_signup.setEnabled(checked)
         self.btn_signup.setStyleSheet(
-            "background-color: #2d3748; color: white; padding: 10px; border-radius: 8px; border: 1px solid #3f4850;" if checked
-            else "background-color: #1a1d24; color: #4a5568; padding: 10px; border-radius: 8px; border: 1px solid #2d3748;"
+            "background-color: #2d3748; color: white; padding: 14px; font-size: 15px; border-radius: 8px; border: 1px solid #3f4850;" if checked
+            else "background-color: #1a1d24; color: #4a5568; padding: 14px; font-size: 15px; border-radius: 8px; border: 1px solid #2d3748;"
         )
 
     def _friendly_name(self, data, email):
@@ -1297,11 +1308,11 @@ class AnalyticsDialog(QDialog):
             "Portfolio Value = cash + open positions at cost."
         )
         lbl_info.setWordWrap(True)
-        lbl_info.setStyleSheet("color: #a0aec0; font-size: 11px;")
+        lbl_info.setStyleSheet("color: #a0aec0; font-size: 13px;")
         layout.addWidget(lbl_info)
 
         self.lbl_status = QLabel("Loading session data…")
-        self.lbl_status.setStyleSheet("font-weight: bold; padding: 4px 0;")
+        self.lbl_status.setStyleSheet("font-weight: bold; font-size: 14px; padding: 6px 0;")
         layout.addWidget(self.lbl_status)
 
         self.table = QTableWidget()
@@ -1464,8 +1475,7 @@ class QuantDashboard(QMainWindow):
             if QApplication.instance():
                 QApplication.instance().setStyleSheet(stylesheet)
 
-            # Define standard button border-radius and padding for the modern web look
-            btn_base_style = "color: white; border-radius: 8px; font-weight: bold; padding: 10px 14px;"
+            btn_base_style = "color: white; border-radius: 8px; font-weight: bold; padding: 10px 16px; font-size: 13px;"
 
             if "Blush Rose" in theme_name:
                 self.theme_highlight = QColor("#be185d")
@@ -1474,22 +1484,22 @@ class QuantDashboard(QMainWindow):
                 self.btn_manage_portfolio.setStyleSheet(f"background-color: #9d174d; {btn_base_style}")
                 self.btn_calc.setStyleSheet(f"background-color: #e11d48; {btn_base_style}")
                 self.btn_set_cash.setStyleSheet(f"background-color: #831843; {btn_base_style}")
-                self.btn_settings.setStyleSheet(f"background-color: #f472b6; color: #500724; font-weight: bold; border-radius: 8px; padding: 10px 14px;")
+                self.btn_settings.setStyleSheet(f"background-color: #f472b6; color: #500724; font-weight: bold; border-radius: 8px; padding: 10px 16px; font-size: 13px;")
                 self.btn_top10.setStyleSheet(f"background-color: #be185d; {btn_base_style}")
-                self.lbl_account_header.setStyleSheet("font-size: 13px; font-weight: bold; background-color: #fce7f3; color: #831843; padding: 12px; border-radius: 8px; border: 1px solid #fbcfe8;")
-                self.lbl_disclosure.setStyleSheet("font-size: 11px; color: #9d174d; background-color: #fef6fb; padding: 6px; border: 1px solid #f472b6; border-radius: 4px;")
+                self.lbl_account_header.setStyleSheet("font-size: 14px; font-weight: bold; background-color: #fce7f3; color: #831843; padding: 14px; border-radius: 12px; border: 1px solid #fbcfe8;")
+                self.lbl_disclosure.setStyleSheet("font-size: 12px; color: #9d174d; background-color: #fef6fb; padding: 8px; border: 1px solid #f472b6; border-radius: 6px;")
                 
             elif "Velvet Rose" in theme_name:
                 self.theme_highlight = QColor("#e11d48")
                 self.btn_ingest.setStyleSheet(f"background-color: #e11d48; {btn_base_style}")
                 self.btn_analyze.setStyleSheet(f"background-color: #be185d; {btn_base_style}")
                 self.btn_manage_portfolio.setStyleSheet(f"background-color: #9f1239; {btn_base_style}")
-                self.btn_calc.setStyleSheet(f"background-color: #fb7185; color: #20131a; font-weight: bold; border-radius: 8px; padding: 10px 14px;")
+                self.btn_calc.setStyleSheet(f"background-color: #fb7185; color: #20131a; font-weight: bold; border-radius: 8px; padding: 10px 16px; font-size: 13px;")
                 self.btn_set_cash.setStyleSheet(f"background-color: #881337; {btn_base_style}")
-                self.btn_settings.setStyleSheet(f"background-color: #4c1d32; color: #ffe4e6; border-radius: 8px; padding: 10px 14px;")
+                self.btn_settings.setStyleSheet(f"background-color: #4c1d32; color: #ffe4e6; border-radius: 8px; padding: 10px 16px; font-size: 13px;")
                 self.btn_top10.setStyleSheet(f"background-color: #e11d48; {btn_base_style}")
-                self.lbl_account_header.setStyleSheet("font-size: 13px; font-weight: bold; background-color: #311825; color: #fb7185; padding: 12px; border-radius: 8px; border: 1px solid #9f1239;")
-                self.lbl_disclosure.setStyleSheet("font-size: 11px; color: #fecdd3; background-color: #2a1822; padding: 6px; border: 1px solid #e11d48; border-radius: 4px;")
+                self.lbl_account_header.setStyleSheet("font-size: 14px; font-weight: bold; background-color: #311825; color: #fb7185; padding: 14px; border-radius: 12px; border: 1px solid #9f1239;")
+                self.lbl_disclosure.setStyleSheet("font-size: 12px; color: #fecdd3; background-color: #2a1822; padding: 8px; border: 1px solid #e11d48; border-radius: 6px;")
                 
             elif "Light" in theme_name:
                 self.theme_highlight = QColor("#3182ce")
@@ -1500,8 +1510,8 @@ class QuantDashboard(QMainWindow):
                 self.btn_set_cash.setStyleSheet(f"background-color: #d69e2e; {btn_base_style}")
                 self.btn_settings.setStyleSheet(f"background-color: #4a5568; {btn_base_style}")
                 self.btn_top10.setStyleSheet(f"background-color: #3182ce; {btn_base_style}")
-                self.lbl_account_header.setStyleSheet("font-size: 13px; font-weight: bold; background-color: #ffffff; color: #2b6cb0; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e0;")
-                self.lbl_disclosure.setStyleSheet("font-size: 11px; color: #744210; background-color: #fffaf0; padding: 6px; border: 1px solid #ecc94b; border-radius: 4px;")
+                self.lbl_account_header.setStyleSheet("font-size: 14px; font-weight: bold; background-color: #ffffff; color: #2b6cb0; padding: 14px; border-radius: 12px; border: 1px solid #cbd5e0; box-shadow: 0 4px 6px rgba(0,0,0,0.1);")
+                self.lbl_disclosure.setStyleSheet("font-size: 12px; color: #744210; background-color: #fffaf0; padding: 8px; border: 1px solid #ecc94b; border-radius: 6px;")
                 
             elif "Midnight" in theme_name:
                 self.theme_highlight = QColor("#0284c7")
@@ -1512,105 +1522,75 @@ class QuantDashboard(QMainWindow):
                 self.btn_set_cash.setStyleSheet(f"background-color: #d97706; {btn_base_style}")
                 self.btn_settings.setStyleSheet(f"background-color: #475569; {btn_base_style}")
                 self.btn_top10.setStyleSheet(f"background-color: #0284c7; {btn_base_style}")
-                self.lbl_account_header.setStyleSheet("font-size: 13px; font-weight: bold; background-color: #1e293b; color: #38bdf8; padding: 12px; border-radius: 8px; border: 1px solid #334155;")
-                self.lbl_disclosure.setStyleSheet("font-size: 11px; color: #fde68a; background-color: #451a03; padding: 6px; border: 1px solid #d97706; border-radius: 4px;")
+                self.lbl_account_header.setStyleSheet("font-size: 14px; font-weight: bold; background-color: #1e293b; color: #38bdf8; padding: 14px; border-radius: 12px; border: 1px solid #334155;")
+                self.lbl_disclosure.setStyleSheet("font-size: 12px; color: #fde68a; background-color: #451a03; padding: 8px; border: 1px solid #d97706; border-radius: 6px;")
                 
             else:
-                # Default "Institutional Dark" mapping to exactly match the Web App Tailwind Colors
                 self.theme_highlight = QColor("#3198dc")
-                self.btn_ingest.setStyleSheet(f"background-color: #059669; {btn_base_style}") # Emerald-600
-                self.btn_analyze.setStyleSheet(f"background-color: #0d9488; {btn_base_style}") # Teal-600
-                self.btn_manage_portfolio.setStyleSheet(f"background-color: #9333ea; {btn_base_style}") # Purple-600
-                self.btn_calc.setStyleSheet(f"background-color: #d97706; {btn_base_style}") # Amber-600
-                self.btn_set_cash.setStyleSheet(f"background-color: #2563eb; {btn_base_style}") # Blue-600
-                self.btn_settings.setStyleSheet(f"background-color: #334155; {btn_base_style}") # Slate-700
-                self.btn_top10.setStyleSheet(f"background-color: #ca8a04; {btn_base_style}") # Yellow-600
+                self.btn_ingest.setStyleSheet(f"background-color: #059669; {btn_base_style}") 
+                self.btn_analyze.setStyleSheet(f"background-color: #0d9488; {btn_base_style}") 
+                self.btn_manage_portfolio.setStyleSheet(f"background-color: #9333ea; {btn_base_style}") 
+                self.btn_calc.setStyleSheet(f"background-color: #d97706; {btn_base_style}") 
+                self.btn_set_cash.setStyleSheet(f"background-color: #2563eb; {btn_base_style}") 
+                self.btn_settings.setStyleSheet(f"background-color: #334155; {btn_base_style}") 
+                self.btn_top10.setStyleSheet(f"background-color: #ca8a04; {btn_base_style}") 
                 
-                # Account Header mimicking the Web's "Account Equity Bar"
-                self.lbl_account_header.setStyleSheet("font-size: 13px; font-weight: bold; background-color: #1a1d24; color: #e2e2e8; padding: 14px; border-radius: 10px; border: 1px solid #2d3748;")
-                self.lbl_disclosure.setStyleSheet("font-size: 11px; color: #fbd38d; background-color: #744210; padding: 6px; border: 1px solid #b7791f; border-radius: 4px;")
+                self.lbl_account_header.setStyleSheet("font-size: 14px; font-weight: bold; background-color: #1a1d24; color: #e2e2e8; padding: 16px; border-radius: 12px; border: 1px solid #2d3748;")
+                self.lbl_disclosure.setStyleSheet("font-size: 12px; color: #fbd38d; background-color: #744210; padding: 8px; border: 1px solid #b7791f; border-radius: 6px;")
 
     def _init_ui(self):
         main_widget = QWidget()
+        main_widget.setObjectName("main_widget")
         self.setCentralWidget(main_widget)
         layout = QVBoxLayout(main_widget)
         
-        # Add the margins and spacing here for better web-like padding
-        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setContentsMargins(24, 20, 24, 20)
         layout.setSpacing(16)
 
-        brand_bar = QWidget()
-        brand_bar.setObjectName("brandBar")
-        brand_bar.setStyleSheet(
-            "#brandBar { background-color: #1a1d24; border-bottom: 2px solid #3198dc; }"
-        )
-        brand_layout = QHBoxLayout(brand_bar)
-        brand_layout.setContentsMargins(16, 10, 16, 10)
+        # Main header wrap
+        header_wrap = QWidget()
+        header_wrap.setObjectName("webPanel")
+        header_layout = QVBoxLayout(header_wrap)
+        header_layout.setContentsMargins(16, 16, 16, 16)
+        header_layout.setSpacing(12)
 
+        # Logo and Title row
+        brand_layout = QHBoxLayout()
         if LOGO_PATH.exists():
             self.lbl_brand_logo = QLabel()
-            logo_pixmap = QPixmap(str(LOGO_PATH)).scaledToHeight(
-                40, Qt.TransformationMode.SmoothTransformation
-            )
+            logo_pixmap = QPixmap(str(LOGO_PATH)).scaledToHeight(48, Qt.TransformationMode.SmoothTransformation)
             self.lbl_brand_logo.setPixmap(logo_pixmap)
             brand_layout.addWidget(self.lbl_brand_logo)
 
         brand_text_col = QVBoxLayout()
         brand_text_col.setSpacing(0)
         self.lbl_brand_title = QLabel("MB-EGX")
-        self.lbl_brand_title.setStyleSheet(
-            "font-size: 22px; font-weight: 900; color: #93ccff; letter-spacing: 1px;"
-        )
+        self.lbl_brand_title.setStyleSheet("font-size: 24px; font-weight: 900; color: #93ccff; letter-spacing: 1px;")
         self.lbl_brand_tagline = QLabel("Precision Wealth Alpha — Out-of-Core Trading Matrix & Sector Dashboard")
-        self.lbl_brand_tagline.setStyleSheet("font-size: 11px; color: #a0aec0;")
+        self.lbl_brand_tagline.setStyleSheet("font-size: 12px; color: #a0aec0;")
         brand_text_col.addWidget(self.lbl_brand_title)
         brand_text_col.addWidget(self.lbl_brand_tagline)
         brand_layout.addLayout(brand_text_col)
         brand_layout.addStretch()
-        layout.addWidget(brand_bar)
-
-        top_bar = QHBoxLayout()
-        self.lbl_last_date = QLabel("📅 Last Data Date: Loading...")
-        self.lbl_last_date.setStyleSheet("font-weight: bold; background-color: #1a1d24; color: #93ccff; padding: 4px 8px; border-radius: 4px;")
         
-        self.cmb_lang = QComboBox()
-        self.cmb_lang.addItems(["🇬🇧 English", "🇪🇬 العربية"])
-        self.cmb_lang.currentIndexChanged.connect(self.switch_language)
-
-        top_bar.addWidget(self.lbl_last_date)
-        top_bar.addStretch()
-
+        # User details on the right
+        top_right_col = QVBoxLayout()
+        self.lbl_last_date = QLabel("📅 Last Data Date: Loading...")
+        self.lbl_last_date.setStyleSheet("font-weight: bold; color: #93ccff; font-size: 12px; margin-bottom: 2px;")
         self.lbl_welcome_user = QLabel("")
         if self.user_info:
             self.lbl_welcome_user.setText(f"👋 {self.user_info['name']}")
-            self.lbl_welcome_user.setStyleSheet("font-weight: bold; color: #93ccff; padding: 4px 8px;")
-        top_bar.addWidget(self.lbl_welcome_user)
+            self.lbl_welcome_user.setStyleSheet("font-weight: bold; color: #a0aec0; font-size: 12px;")
+            
+        top_right_col.addWidget(self.lbl_last_date, alignment=Qt.AlignmentFlag.AlignRight)
+        top_right_col.addWidget(self.lbl_welcome_user, alignment=Qt.AlignmentFlag.AlignRight)
+        brand_layout.addLayout(top_right_col)
 
-        self.btn_analytics = QPushButton("📊 Usage Analytics")
-        self.btn_analytics.setStyleSheet("background-color: #0d9488; color: white; font-weight: bold;")
-        self.btn_analytics.clicked.connect(self.open_analytics_dialog)
-        self.btn_analytics.setVisible(bool(self.user_info and self.user_info.get("email") in ADMIN_EMAILS))
-        top_bar.addWidget(self.btn_analytics)
+        header_layout.addLayout(brand_layout)
 
-        top_bar.addWidget(QLabel("🌐 Language / اللغة:"))
-        top_bar.addWidget(self.cmb_lang)
-        layout.addLayout(top_bar)
-
-        dir_layout = QHBoxLayout()
-        self.lbl_dir = QLabel("📂 Scan Folder:")
-        self.lbl_dir.setStyleSheet("font-weight: bold; font-size: 13px;")
-        dir_layout.addWidget(self.lbl_dir)
-
-        self.txt_scan_dir = QLineEdit(str(WATCH_DIR))
-        dir_layout.addWidget(self.txt_scan_dir, stretch=1)
-
-        self.btn_browse = QPushButton("Browse Folder...")
-        self.btn_browse.setStyleSheet("background-color: #4a5568; color: white;")
-        self.btn_browse.clicked.connect(self.browse_folder)
-        dir_layout.addWidget(self.btn_browse)
-        layout.addLayout(dir_layout)
-
-        control_panel = QHBoxLayout()
+        # Controls Row (Scan folder + Language + Buttons)
+        controls_row = QHBoxLayout()
+        
         self.btn_ingest = QPushButton("⚡ Run Ingestion")
         self.btn_ingest.clicked.connect(self.start_ingestion)
 
@@ -1629,35 +1609,60 @@ class QuantDashboard(QMainWindow):
         self.btn_settings = QPushButton("⚙️ Themes")
         self.btn_settings.clicked.connect(self.open_settings_dialog)
 
-        self.btn_top10 = QPushButton("🏆 Top 10 Overview")
+        self.btn_top10 = QPushButton("🏆 Top 10")
         self.btn_top10.clicked.connect(self.show_top10_overview)
+        
+        self.cmb_lang = QComboBox()
+        self.cmb_lang.addItems(["🇬🇧 EN", "🇪🇬 AR"])
+        self.cmb_lang.currentIndexChanged.connect(self.switch_language)
+        
+        self.btn_analytics = QPushButton("📊 Analytics")
+        self.btn_analytics.setStyleSheet("background-color: #0d9488; color: white; font-weight: bold; padding: 10px; border-radius: 8px;")
+        self.btn_analytics.clicked.connect(self.open_analytics_dialog)
+        self.btn_analytics.setVisible(bool(self.user_info and self.user_info.get("email") in ADMIN_EMAILS))
 
-        control_panel.addWidget(self.btn_ingest)
-        control_panel.addWidget(self.btn_analyze)
-        control_panel.addWidget(self.btn_manage_portfolio)
-        control_panel.addWidget(self.btn_calc)
-        control_panel.addWidget(self.btn_set_cash)
-        control_panel.addWidget(self.btn_settings)
-        control_panel.addWidget(self.btn_top10)
-        layout.addLayout(control_panel)
+        controls_row.addWidget(self.btn_ingest)
+        controls_row.addWidget(self.btn_analyze)
+        controls_row.addWidget(self.btn_manage_portfolio)
+        controls_row.addWidget(self.btn_calc)
+        controls_row.addWidget(self.btn_set_cash)
+        controls_row.addWidget(self.btn_settings)
+        controls_row.addWidget(self.btn_top10)
+        controls_row.addWidget(self.cmb_lang)
+        controls_row.addWidget(self.btn_analytics)
+        controls_row.addStretch()
 
+        header_layout.addLayout(controls_row)
+
+        dir_layout = QHBoxLayout()
+        self.lbl_dir = QLabel("📂 Scan Folder:")
+        self.lbl_dir.setStyleSheet("font-weight: bold; font-size: 13px; color: #a0aec0;")
+        dir_layout.addWidget(self.lbl_dir)
+
+        self.txt_scan_dir = QLineEdit(str(WATCH_DIR))
+        dir_layout.addWidget(self.txt_scan_dir, stretch=1)
+
+        self.btn_browse = QPushButton("Browse Folder...")
+        self.btn_browse.setStyleSheet("background-color: #4a5568; color: white; padding: 10px; border-radius: 8px;")
+        self.btn_browse.clicked.connect(self.browse_folder)
+        dir_layout.addWidget(self.btn_browse)
+        
+        header_layout.addLayout(dir_layout)
+        layout.addWidget(header_wrap)
+
+        # Account Equity Bar (like Web app)
         self.lbl_account_header = QLabel()
         self.lbl_account_header.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.lbl_account_header)
 
-        self.lbl_disclosure = QLabel("⚠️ Educational tool, not investment advice. Sector Breadth, VWAP entries, and Sortino risk penalties applied.")
-        self.lbl_disclosure.setWordWrap(True)
-        layout.addWidget(self.lbl_disclosure)
-
-        self.lbl_status = QLabel("System Idle. Ready for processing.")
-        layout.addWidget(self.lbl_status)
-        self.progress_bar = QProgressBar()
-        self.progress_bar.setValue(0)
-        layout.addWidget(self.progress_bar)
-
-        filter_layout = QHBoxLayout()
+        # Filters Wrap
+        filter_wrap = QWidget()
+        filter_wrap.setObjectName("webPanel")
+        filter_layout = QHBoxLayout(filter_wrap)
+        filter_layout.setContentsMargins(14, 14, 14, 14)
+        
         self.lbl_filter = QLabel("🔍 Live Filters:")
-        self.lbl_filter.setStyleSheet("font-weight: bold; font-size: 13px;")
+        self.lbl_filter.setStyleSheet("font-weight: bold; font-size: 14px; color: #93ccff;")
         filter_layout.addWidget(self.lbl_filter)
 
         self.txt_search = QLineEdit()
@@ -1704,18 +1709,33 @@ class QuantDashboard(QMainWindow):
         self.chk_hide_illiquid = QPushButton("🚫 Hide Illiquid / Unconfirmed")
         self.chk_hide_illiquid.setCheckable(True)
         self.chk_hide_illiquid.setChecked(True)
+        self.chk_hide_illiquid.setStyleSheet("background-color: #334155; color: white; padding: 10px 14px; border-radius: 8px;")
         self.chk_hide_illiquid.clicked.connect(self.apply_filters)
         filter_layout.addWidget(self.chk_hide_illiquid)
 
         self.btn_columns = QPushButton("👁️ Columns")
-        self.btn_columns.setStyleSheet("background-color: #4a5568; color: white;")
+        self.btn_columns.setStyleSheet("background-color: #4a5568; color: white; padding: 10px 14px; border-radius: 8px;")
         self.btn_columns.clicked.connect(self.open_column_chooser)
         filter_layout.addWidget(self.btn_columns)
 
         self.btn_reset_filters = QPushButton("Reset Filters")
+        self.btn_reset_filters.setStyleSheet("background-color: #4a5568; color: white; padding: 10px 14px; border-radius: 8px;")
         self.btn_reset_filters.clicked.connect(self.reset_filters)
         filter_layout.addWidget(self.btn_reset_filters)
-        layout.addLayout(filter_layout)
+        
+        layout.addWidget(filter_wrap)
+
+        self.lbl_disclosure = QLabel("⚠️ Educational tool, not investment advice. Sector Breadth, VWAP entries, and Sortino risk penalties applied.")
+        self.lbl_disclosure.setWordWrap(True)
+        layout.addWidget(self.lbl_disclosure)
+
+        self.lbl_status = QLabel("System Idle. Ready for processing.")
+        self.lbl_status.setStyleSheet("font-size: 12px; color: #a0aec0;")
+        layout.addWidget(self.lbl_status)
+        
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setValue(0)
+        layout.addWidget(self.progress_bar)
 
         self.tabs = QTabWidget()
         self.tbl_buys = self._create_matrix_table()
@@ -1780,7 +1800,7 @@ class QuantDashboard(QMainWindow):
         history_layout = QVBoxLayout(tab_history_widget)
         
         btn_export = QPushButton("📥 Export Tax & Audit Ledger (Excel/CSV)")
-        btn_export.setStyleSheet("background-color: #38a169; color: white; font-weight: bold; padding: 8px;")
+        btn_export.setStyleSheet("background-color: #38a169; color: white; font-weight: bold; padding: 12px; border-radius: 8px;")
         btn_export.clicked.connect(self.export_trade_ledger)
         history_layout.addWidget(btn_export)
 
@@ -2087,10 +2107,10 @@ class QuantDashboard(QMainWindow):
                             v_num = float(val)
                             if v_num > 0:
                                 item.setForeground(QColor("#38a169"))
-                                item.setFont(QFont("Segoe UI", 9, QFont.Weight.Bold))
+                                item.setFont(QFont("Inter", 10, QFont.Weight.Bold))
                             elif v_num < 0:
                                 item.setForeground(QColor("#e53e3e"))
-                                item.setFont(QFont("Segoe UI", 9, QFont.Weight.Bold))
+                                item.setFont(QFont("Inter", 10, QFont.Weight.Bold))
                         except ValueError:
                             pass
 
@@ -2124,10 +2144,10 @@ class QuantDashboard(QMainWindow):
                             val_num = float(row_data.get(key, 0))
                             if val_num > 0:
                                 item.setForeground(QColor("#38a169"))
-                                item.setFont(QFont("Segoe UI", 9, QFont.Weight.Bold))
+                                item.setFont(QFont("Inter", 10, QFont.Weight.Bold))
                             elif val_num < 0:
                                 item.setForeground(QColor("#e53e3e"))
-                                item.setFont(QFont("Segoe UI", 9, QFont.Weight.Bold))
+                                item.setFont(QFont("Inter", 10, QFont.Weight.Bold))
                         except ValueError:
                             pass
 
@@ -2160,10 +2180,10 @@ class QuantDashboard(QMainWindow):
                             val_num = float(row_data.get(key, 0))
                             if val_num > 0:
                                 item.setForeground(QColor("#38a169"))
-                                item.setFont(QFont("Segoe UI", 9, QFont.Weight.Bold))
+                                item.setFont(QFont("Inter", 10, QFont.Weight.Bold))
                             elif val_num < 0:
                                 item.setForeground(QColor("#e53e3e"))
-                                item.setFont(QFont("Segoe UI", 9, QFont.Weight.Bold))
+                                item.setFont(QFont("Inter", 10, QFont.Weight.Bold))
                         except ValueError:
                             pass
                     self.tbl_closed.setItem(row_idx, col_idx, item)
@@ -2172,13 +2192,13 @@ class QuantDashboard(QMainWindow):
             for row_idx, (metric_name, val_num) in enumerate(fin_stmt.items()):
                 item_name = QTableWidgetItem(metric_name)
                 item_name.setFlags(item_name.flags() & ~Qt.ItemFlag.ItemIsEditable)
-                item_name.setFont(QFont("Segoe UI", 10, QFont.Weight.Bold))
+                item_name.setFont(QFont("Inter", 11, QFont.Weight.Bold))
 
                 val_str = f"{val_num:,.2f}" if "%" not in metric_name else f"{val_num:,.2f}%"
                 item_val = QTableWidgetItem(val_str)
                 item_val.setFlags(item_val.flags() & ~Qt.ItemFlag.ItemIsEditable)
                 item_val.setTextAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
-                item_val.setFont(QFont("Segoe UI", 10, QFont.Weight.Bold))
+                item_val.setFont(QFont("Inter", 11, QFont.Weight.Bold))
 
                 if "P&L" in metric_name:
                     if val_num > 0:
