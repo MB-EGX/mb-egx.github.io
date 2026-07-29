@@ -113,14 +113,22 @@ def write_consent_doc(id_token, uid, ip_address):
 
 
 def _from_firestore_value(v):
-    if "stringValue" in v: return v["stringValue"]
-    if "integerValue" in v: return int(v["integerValue"])
-    if "doubleValue" in v: return float(v["doubleValue"])
-    if "booleanValue" in v: return v["booleanValue"]
-    if "timestampValue" in v: return v["timestampValue"] 
-    if "nullValue" in v: return None
-    if "mapValue" in v: return {k: _from_firestore_value(val) for k, val in v["mapValue"].get("fields", {}).items()}
-    if "arrayValue" in v: return [_from_firestore_value(x) for x in v["arrayValue"].get("values", [])]
+    if "stringValue" in v:
+        return v["stringValue"]
+    if "integerValue" in v:
+        return int(v["integerValue"])
+    if "doubleValue" in v:
+        return float(v["doubleValue"])
+    if "booleanValue" in v:
+        return v["booleanValue"]
+    if "timestampValue" in v:
+        return v["timestampValue"] 
+    if "nullValue" in v:
+        return None
+    if "mapValue" in v:
+        return {k: _from_firestore_value(val) for k, val in v["mapValue"].get("fields", {}).items()}
+    if "arrayValue" in v:
+        return [_from_firestore_value(x) for x in v["arrayValue"].get("values", [])]
     return None
 
 
@@ -129,9 +137,12 @@ def _doc_to_dict(doc):
 
 
 def _parse_ts(ts):
-    if not ts: return None
-    try: return datetime.fromisoformat(ts.replace("Z", "+00:00"))
-    except ValueError: return None
+    if not ts:
+        return None
+    try:
+        return datetime.fromisoformat(ts.replace("Z", "+00:00"))
+    except ValueError:
+        return None
 
 
 def list_recent_sessions(id_token, limit=1000):
@@ -140,23 +151,28 @@ def list_recent_sessions(id_token, limit=1000):
     page_token = None
     while len(docs) < limit:
         params = {"pageSize": min(300, limit - len(docs)), "orderBy": "start desc"}
-        if page_token: params["pageToken"] = page_token
+        if page_token:
+            params["pageToken"] = page_token
         resp = requests.get(f"{FIRESTORE_BASE}/sessions", headers=headers, params=params, timeout=15)
         data = resp.json()
-        if resp.status_code != 200: raise RuntimeError(data.get("error", {}).get("message", "Failed to list sessions."))
+        if resp.status_code != 200:
+            raise RuntimeError(data.get("error", {}).get("message", "Failed to list sessions."))
         batch = data.get("documents", [])
         docs.extend(batch)
         page_token = data.get("nextPageToken")
-        if not page_token or not batch: break
+        if not page_token or not batch:
+            break
     return [_doc_to_dict(d) for d in docs[:limit]]
 
 
 def get_user_doc(id_token, uid):
     headers = {"Authorization": f"Bearer {id_token}"}
     resp = requests.get(f"{FIRESTORE_BASE}/users/{uid}", headers=headers, timeout=10)
-    if resp.status_code == 404: return {}
+    if resp.status_code == 404:
+        return {}
     data = resp.json()
-    if resp.status_code != 200: raise RuntimeError(data.get("error", {}).get("message", "Failed to load user doc."))
+    if resp.status_code != 200:
+        raise RuntimeError(data.get("error", {}).get("message", "Failed to load user doc."))
     return _doc_to_dict(data)
 
 
@@ -169,7 +185,8 @@ def compute_usage_analytics(id_token):
     for s in sessions:
         start_dt = _parse_ts(s.get("start"))
         last_dt = _parse_ts(s.get("lastSeen"))
-        if not start_dt or not last_dt: continue
+        if not start_dt or not last_dt:
+            continue
         dur = max(0.0, (last_dt - start_dt).total_seconds())
         source = s.get("source") or "web"
         session_count += 1
@@ -184,13 +201,18 @@ def compute_usage_analytics(id_token):
         })
         entry["desktop_sessions" if source == "desktop" else "web_sessions"] += 1
         entry["total_sec"] += dur
-        if last_dt > entry["last_seen"]: entry["last_seen"] = last_dt
+        if last_dt > entry["last_seen"]:
+            entry["last_seen"] = last_dt
 
     for entry in per_user.values():
         uid = entry.get("uid")
-        if not uid: continue
-        try: udoc = get_user_doc(id_token, uid)
-        except Exception: continue
+        if not uid:
+            continue
+        try:
+            udoc = get_user_doc(id_token, uid)
+        except Exception as e:
+            logger.warning(f"Could not load stats for {uid}: {e}")
+            continue
         for field in ("web_stats", "desktop_stats"):
             stats = udoc.get(field) or {}
             entry["trade_count"] += int(stats.get("trade_count", 0) or 0)
@@ -206,9 +228,11 @@ def compute_usage_analytics(id_token):
 
 
 def _format_duration(total_seconds):
-    if total_seconds is None or total_seconds < 0: return "—"
+    if total_seconds is None or total_seconds < 0:
+        return "—"
     mins = round(total_seconds / 60)
-    if mins < 60: return f"{mins}m"
+    if mins < 60:
+        return f"{mins}m"
     return f"{mins // 60}h {mins % 60}m"
 
 
@@ -217,29 +241,35 @@ def _now_iso():
 
 
 def firebase_sign_in(email, password):
-    if requests is None: raise RuntimeError("requests package required.")
+    if requests is None:
+        raise RuntimeError("The 'requests' package is required for sign-in. Install it with: pip install requests")
     url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={FIREBASE_API_KEY}"
     resp = requests.post(url, json={"email": email, "password": password, "returnSecureToken": True}, timeout=10)
     data = resp.json()
-    if resp.status_code != 200: raise RuntimeError(data.get("error", {}).get("message", "Sign-in failed."))
+    if resp.status_code != 200:
+        raise RuntimeError(data.get("error", {}).get("message", "Sign-in failed."))
     return data
 
 
 def firebase_sign_up(email, password):
-    if requests is None: raise RuntimeError("requests package required.")
+    if requests is None:
+        raise RuntimeError("The 'requests' package is required for sign-up. Install it with: pip install requests")
     url = f"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={FIREBASE_API_KEY}"
     resp = requests.post(url, json={"email": email, "password": password, "returnSecureToken": True}, timeout=10)
     data = resp.json()
-    if resp.status_code != 200: raise RuntimeError(data.get("error", {}).get("message", "Sign-up failed."))
+    if resp.status_code != 200:
+        raise RuntimeError(data.get("error", {}).get("message", "Sign-up failed."))
     return data
 
 
 def firebase_send_password_reset(email):
-    if requests is None: raise RuntimeError("requests package required.")
+    if requests is None:
+        raise RuntimeError("The 'requests' package is required. Install it with: pip install requests")
     url = f"https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key={FIREBASE_API_KEY}"
     resp = requests.post(url, json={"requestType": "PASSWORD_RESET", "email": email}, timeout=10)
     data = resp.json()
-    if resp.status_code != 200: raise RuntimeError(data.get("error", {}).get("message", "Could not send reset email."))
+    if resp.status_code != 200:
+        raise RuntimeError(data.get("error", {}).get("message", "Could not send reset email."))
     return data
 
 
@@ -619,6 +649,7 @@ THEMES_MAP = {
     "🌸 Soft Blush Rose (Pastel & Cream)": THEME_BLUSH_ROSE,
     "✨ Velvet Rose Gold (Warm Elegance)": THEME_VELVET_ROSE,
 }
+
 
 class MatrixTableModel(QAbstractTableModel):
     def __init__(self, data=None, parent=None):
@@ -1118,7 +1149,6 @@ class LoginDialog(QDialog):
     _OUTLINE = "#4a5568" # Lighter outline for input visibility
     _PRIMARY = "#93ccff"
     _ON_PRIMARY = "#003351"
-    _TEXT_MUTED = "#bfc7d2"
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -1130,7 +1160,6 @@ class LoginDialog(QDialog):
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.setObjectName("loginDialog")
         
-        # Fixed styling for inputs, scrollbars, and explicitly targeted QFrames
         self.setStyleSheet(f"""
             QDialog#loginDialog {{ background-color: {self._BG}; }}
             
@@ -1139,6 +1168,21 @@ class LoginDialog(QDialog):
                 background-color: #1a1c20; 
                 border: 1px solid {self._OUTLINE}; 
                 border-radius: 6px; 
+            }}
+            
+            /* Fix for QMessageBox popups inheriting white text on default white bg */
+            QMessageBox {{
+                background-color: {self._CARD};
+            }}
+            QMessageBox QLabel {{
+                color: #ffffff;
+            }}
+            QMessageBox QPushButton {{
+                background-color: {self._PRIMARY};
+                color: {self._ON_PRIMARY};
+                padding: 6px 16px;
+                border-radius: 4px;
+                font-weight: bold;
             }}
             
             QLabel {{ color: #ffffff; font-family: 'Inter', 'Segoe UI', sans-serif; }}
@@ -1194,11 +1238,11 @@ class LoginDialog(QDialog):
         outer.setContentsMargins(0, 0, 0, 0)
         outer.setSpacing(0)
 
-        # MAIN 2-COLUMN CONTENT
+        # 1. MAIN 2-COLUMN CONTENT
         content_area = QWidget()
         content_layout = QHBoxLayout(content_area)
         # Squeeze margins slightly to allow plenty of vertical room for right-side card
-        content_layout.setContentsMargins(40, 20, 40, 20)
+        content_layout.setContentsMargins(40, 30, 40, 30)
         content_layout.setSpacing(40)
 
         # --- LEFT COLUMN (Branding) ---
@@ -1247,8 +1291,8 @@ class LoginDialog(QDialog):
         """)
         f_layout = QVBoxLayout(form_card)
         # Reduced vertical spacing and margins to ensure checkbox fits securely inside
-        f_layout.setContentsMargins(30, 25, 30, 25)
-        f_layout.setSpacing(14)
+        f_layout.setContentsMargins(30, 30, 30, 30)
+        f_layout.setSpacing(15)
 
         # Terminal Access Heading
         lbl_form_title = QLabel("Terminal Access")
@@ -1313,7 +1357,7 @@ class LoginDialog(QDialog):
         self.txt_disclaimer = QTextEdit()
         self.txt_disclaimer.setReadOnly(True)
         self.txt_disclaimer.setPlainText(DISCLAIMER_TEXT)
-        self.txt_disclaimer.setFixedHeight(60) # Shorter height leaves plenty of room for checkbox
+        self.txt_disclaimer.setFixedHeight(65) # Shorter height leaves plenty of room for checkbox
         consent_layout.addWidget(self.txt_disclaimer)
 
         self.chk_consent = QCheckBox("I acknowledge and agree to the Terms.")
@@ -1383,7 +1427,7 @@ class LoginDialog(QDialog):
         content_layout.addWidget(right_col, stretch=1)
         outer.addWidget(content_area, stretch=1)
 
-        # FOOTER
+        # 2. FOOTER
         footer = QWidget()
         footer.setFixedHeight(40)
         footer_layout = QHBoxLayout(footer)
