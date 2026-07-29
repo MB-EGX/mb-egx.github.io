@@ -1255,6 +1255,7 @@ By accessing, subscribing to, or using this application, you explicitly acknowle
             btn.classList.toggle('text-slate-500', !checked);
             btn.classList.toggle('text-slate-300', checked);
             btn.classList.toggle('hover:bg-[#222730]', checked);
+            if (checked) clearAuthError();
         }
 
         // Best-effort client-reported IP for the audit trail. This is NOT a
