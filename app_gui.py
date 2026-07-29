@@ -91,15 +91,6 @@ DISCLAIMER_TEXT = (
 
 
 def fetch_client_ip():
-    """Best-effort client-reported IP for the audit trail.
-
-    NOT server-verified - a desktop process asking a third-party service
-    "what does my traffic look like from the outside" is the same kind of
-    self-report a browser does, not an authoritative capture. True
-    server-captured IP would need the write to go through a server we
-    control (e.g. a Cloud Function reading the request), which this app's
-    Firebase-REST-direct architecture doesn't have. Never blocks sign-up.
-    """
     if requests is None:
         return None
     try:
@@ -112,17 +103,6 @@ def fetch_client_ip():
 
 
 def write_consent_doc(id_token, uid, ip_address):
-    """Merges consent + fresh-account defaults onto users/{uid}. Mirrors what
-    index.html's handleEmailSignUp/handleGoogleSignIn write, so an account
-    created on desktop looks identical to one created on the website.
-
-    firestore.rules is the actual enforcement boundary (server-side); this
-    call can fail (network, rules rejection, etc.) without this function
-    raising, since offering a working desktop sign-up experience matters
-    more than a merge succeeding on the first try - the rules will simply
-    keep blocking cloud reads/writes for that uid's data until a valid
-    consent doc exists.
-    """
     if requests is None:
         return
     now = _now_iso()
@@ -144,7 +124,6 @@ def write_consent_doc(id_token, uid, ip_address):
 
 
 def _from_firestore_value(v):
-    """Decode one Firestore REST 'Value' object into a plain Python value."""
     if "stringValue" in v:
         return v["stringValue"]
     if "integerValue" in v:
@@ -154,7 +133,7 @@ def _from_firestore_value(v):
     if "booleanValue" in v:
         return v["booleanValue"]
     if "timestampValue" in v:
-        return v["timestampValue"]  # RFC3339 string; parsed by callers as needed
+        return v["timestampValue"] 
     if "nullValue" in v:
         return None
     if "mapValue" in v:
@@ -178,7 +157,6 @@ def _parse_ts(ts):
 
 
 def list_recent_sessions(id_token, limit=1000):
-    """Reads the most recent session docs (paginated, 300/request)."""
     headers = {"Authorization": f"Bearer {id_token}"}
     docs = []
     page_token = None
@@ -210,9 +188,6 @@ def get_user_doc(id_token, uid):
 
 
 def compute_usage_analytics(id_token):
-    """Combines sessions (web + desktop) with the trade/portfolio stats each
-    app pushes to users/{uid}, into one per-user summary. Mirrors the
-    website's Usage Analytics panel."""
     sessions = list_recent_sessions(id_token, limit=1000)
     per_user = {}
     total_duration = 0.0
@@ -273,7 +248,6 @@ def _format_duration(total_seconds):
 
 
 def _now_iso():
-    """RFC3339 UTC timestamp in the form Firestore's REST API expects."""
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
 
@@ -300,9 +274,6 @@ def firebase_sign_up(email, password):
 
 
 def firebase_send_password_reset(email):
-    """Sends a 'set/reset your password' email. Works even for accounts that
-    signed up via Google only (no password yet) - following the link lets
-    them set one, after which email/password sign-in (e.g. on desktop) works."""
     if requests is None:
         raise RuntimeError("The 'requests' package is required. Install it with: pip install requests")
     url = f"https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key={FIREBASE_API_KEY}"
@@ -314,8 +285,6 @@ def firebase_send_password_reset(email):
 
 
 def create_session_doc(id_token, uid, email, name):
-    """Logs a new login as a 'sessions' doc, tagged source=desktop, so the
-    website's Usage Analytics panel can report on desktop usage too."""
     session_id = f"{uid}_{int(time.time() * 1000)}"
     now = _now_iso()
     url = f"{FIRESTORE_BASE}/sessions?documentId={session_id}"
@@ -333,7 +302,6 @@ def create_session_doc(id_token, uid, email, name):
 
 
 def touch_session_doc(id_token, session_id):
-    """Heartbeat: bumps lastSeen so session length can be measured later."""
     url = f"{FIRESTORE_BASE}/sessions/{session_id}?updateMask.fieldPaths=lastSeen"
     body = {"fields": {"lastSeen": {"timestampValue": _now_iso()}}}
     headers = {"Authorization": f"Bearer {id_token}", "Content-Type": "application/json"}
@@ -341,9 +309,6 @@ def touch_session_doc(id_token, session_id):
 
 
 def push_dealing_stats(id_token, uid, stats):
-    """Merges trade_count / total_trade_value_egp / portfolio_value_egp
-    onto users/{uid}.desktop_stats without touching any other field on
-    that document (e.g. the website's own cash/portfolio/history)."""
     url = f"{FIRESTORE_BASE}/users/{uid}?updateMask.fieldPaths=desktop_stats"
     body = {"fields": {
         "desktop_stats": {"mapValue": {"fields": {
@@ -358,8 +323,6 @@ def push_dealing_stats(id_token, uid, stats):
 
 
 class _CloudWorker(QThread):
-    """Runs one Firebase/Firestore network call off the UI thread so a slow
-    or failed connection never freezes the dashboard. Fire-and-forget."""
     finished_result = pyqtSignal(object)
 
     def __init__(self, fn, *args, **kwargs):
@@ -442,88 +405,152 @@ TRANSLATIONS = {
 }
 
 THEME_DARK = """
-    QMainWindow, QDialog, QWidget { background-color: #0f1115; color: #e2e2e8; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
-    QTabWidget::pane { border: 1px solid #2d3748; background-color: #0f1115; }
-    QTabBar::tab { background-color: #1a1d24; color: #a0aec0; padding: 8px 16px; border-top-left-radius: 4px; border-top-right-radius: 4px; font-weight: bold; }
-    QTabBar::tab:selected { background-color: #3198dc; color: #ffffff; }
-    QTableWidget, QTableView { background-color: #0f1115; alternate-background-color: #1a1d24; color: #e2e2e8; gridline-color: #2d3748; border: none; selection-background-color: #2b6cb0; }
-    QHeaderView::section { background-color: #1a1d24; color: #93ccff; padding: 6px; font-weight: bold; border: 1px solid #0f1115; }
-    QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #1a1d24; color: #ffffff; border: 1px solid #2d3748; padding: 6px; border-radius: 4px; }
-    QPushButton { background-color: #2d3748; color: #ffffff; border: 1px solid #3f4850; border-radius: 6px; padding: 8px 14px; font-weight: bold; }
-    QPushButton:hover { background-color: #3a4557; border: 1px solid #93ccff; }
-    QPushButton:pressed { background-color: #232b38; }
-    QPushButton:checked { background-color: #3198dc; color: #ffffff; border: 1px solid #93ccff; }
-    QPushButton:disabled { background-color: #1a1d24; color: #4a5568; border: 1px solid #2d3748; }
-    QProgressBar { border: 1px solid #2d3748; border-radius: 4px; text-align: center; background-color: #1a1d24; color: white; }
-    QProgressBar::chunk { background-color: #3198dc; }
+    QMainWindow, QDialog, QWidget { 
+        background-color: #0f1115; 
+        color: #e2e2e8; 
+        font-family: 'Inter', 'Segoe UI', Arial, sans-serif; 
+    }
+    QTabWidget::pane { 
+        border: 1px solid #2d3748; 
+        background-color: #1a1d24; 
+        border-radius: 12px;
+        margin-top: -1px;
+    }
+    QTabBar::tab { 
+        background-color: #0f1115; 
+        color: #a0aec0; 
+        padding: 10px 20px; 
+        border-top-left-radius: 8px; 
+        border-top-right-radius: 8px; 
+        margin-right: 4px;
+        font-weight: bold; 
+        border: 1px solid transparent;
+    }
+    QTabBar::tab:selected { 
+        background-color: #3198dc; 
+        color: #ffffff; 
+        border: 1px solid #2d3748;
+        border-bottom: none;
+    }
+    QTabBar::tab:hover:!selected {
+        color: #e2e2e8;
+    }
+    QTableWidget, QTableView { 
+        background-color: #1a1d24; 
+        alternate-background-color: #15181e; 
+        color: #e2e2e8; 
+        gridline-color: #2d3748; 
+        border: 1px solid #2d3748; 
+        border-radius: 12px;
+        selection-background-color: rgba(49, 152, 220, 0.2); 
+        selection-color: #ffffff;
+        outline: none;
+    }
+    QHeaderView::section { 
+        background-color: #2d3748; 
+        color: #93ccff; 
+        padding: 8px; 
+        font-weight: bold; 
+        font-family: 'JetBrains Mono', monospace; 
+        border: none;
+        border-bottom: 2px solid #0f1115;
+    }
+    QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { 
+        background-color: #0f1115; 
+        color: #ffffff; 
+        border: 1px solid #2d3748; 
+        padding: 8px 12px; 
+        border-radius: 6px; 
+    }
+    QLineEdit:focus, QComboBox:focus {
+        border: 1px solid #3198dc;
+    }
+    QPushButton { 
+        background-color: #2d3748; 
+        color: #ffffff; 
+        border: none; 
+        border-radius: 8px; 
+        padding: 10px 16px; 
+        font-weight: bold; 
+    }
+    QPushButton:hover { 
+        background-color: #3a4557; 
+    }
+    QPushButton:pressed { 
+        background-color: #232b38; 
+    }
+    QProgressBar { 
+        border: 1px solid #2d3748; 
+        border-radius: 6px; 
+        text-align: center; 
+        background-color: #0f1115; 
+        color: white; 
+        height: 18px;
+    }
+    QProgressBar::chunk { 
+        background-color: #3198dc; 
+        border-radius: 4px;
+    }
 """
 
 THEME_LIGHT = """
     QMainWindow, QDialog, QWidget { background-color: #f8fafc; color: #1a202c; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
-    QTabWidget::pane { border: 1px solid #cbd5e0; background-color: #ffffff; }
-    QTabBar::tab { background-color: #e2e8f0; color: #4a5568; padding: 8px 16px; border-top-left-radius: 4px; border-top-right-radius: 4px; font-weight: bold; }
-    QTabBar::tab:selected { background-color: #2b6cb0; color: #ffffff; }
-    QTableWidget, QTableView { background-color: #ffffff; alternate-background-color: #f1f5f9; color: #1a202c; gridline-color: #e2e8f0; border: none; selection-background-color: #bee3f8; selection-color: #1a202c; }
-    QHeaderView::section { background-color: #2d3748; color: #ffffff; padding: 6px; font-weight: bold; border: 1px solid #cbd5e0; }
-    QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #ffffff; color: #1a202c; border: 1px solid #a0aec0; padding: 6px; border-radius: 4px; }
-    QPushButton { background-color: #e2e8f0; color: #1a202c; border: 1px solid #a0aec0; border-radius: 4px; padding: 8px 14px; font-weight: bold; }
-    QPushButton:hover { background-color: #cbd5e0; border: 1px solid #2b6cb0; }
+    QTabWidget::pane { border: 1px solid #cbd5e0; background-color: #ffffff; border-radius: 12px; margin-top: -1px; }
+    QTabBar::tab { background-color: #f8fafc; color: #4a5568; padding: 10px 20px; border-top-left-radius: 8px; border-top-right-radius: 8px; margin-right: 4px; font-weight: bold; border: 1px solid transparent; }
+    QTabBar::tab:selected { background-color: #2b6cb0; color: #ffffff; border: 1px solid #cbd5e0; border-bottom: none; }
+    QTableWidget, QTableView { background-color: #ffffff; alternate-background-color: #f1f5f9; color: #1a202c; gridline-color: #e2e8f0; border: 1px solid #cbd5e0; border-radius: 12px; selection-background-color: #bee3f8; selection-color: #1a202c; }
+    QHeaderView::section { background-color: #2d3748; color: #ffffff; padding: 8px; font-weight: bold; font-family: 'JetBrains Mono', monospace; border: none; border-bottom: 2px solid #f8fafc; }
+    QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #ffffff; color: #1a202c; border: 1px solid #a0aec0; padding: 8px 12px; border-radius: 6px; }
+    QPushButton { background-color: #e2e8f0; color: #1a202c; border: none; border-radius: 8px; padding: 10px 16px; font-weight: bold; }
+    QPushButton:hover { background-color: #cbd5e0; }
     QPushButton:pressed { background-color: #b8c4d4; }
-    QPushButton:checked { background-color: #2b6cb0; color: #ffffff; border: 1px solid #2b6cb0; }
-    QPushButton:disabled { background-color: #f1f5f9; color: #a0aec0; border: 1px solid #e2e8f0; }
-    QProgressBar { border: 1px solid #cbd5e0; border-radius: 4px; text-align: center; background-color: #e2e8f0; color: #1a202c; }
-    QProgressBar::chunk { background-color: #3182ce; }
+    QProgressBar { border: 1px solid #cbd5e0; border-radius: 6px; text-align: center; background-color: #e2e8f0; color: #1a202c; height: 18px; }
+    QProgressBar::chunk { background-color: #3182ce; border-radius: 4px; }
 """
 
 THEME_BLUE = """
     QMainWindow, QDialog, QWidget { background-color: #0f172a; color: #e2e8f0; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
-    QTabWidget::pane { border: 1px solid #1e293b; background-color: #0f172a; }
-    QTabBar::tab { background-color: #1e293b; color: #94a3b8; padding: 8px 16px; border-top-left-radius: 4px; border-top-right-radius: 4px; font-weight: bold; }
-    QTabBar::tab:selected { background-color: #0284c7; color: #ffffff; }
-    QTableWidget, QTableView { background-color: #0f172a; alternate-background-color: #1e293b; color: #f8fafc; gridline-color: #334155; border: none; selection-background-color: #0369a1; }
-    QHeaderView::section { background-color: #1e293b; color: #38bdf8; padding: 6px; font-weight: bold; border: 1px solid #0f172a; }
-    QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #1e293b; color: #f8fafc; border: 1px solid #475569; padding: 6px; border-radius: 4px; }
-    QPushButton { background-color: #1e293b; color: #f8fafc; border: 1px solid #475569; border-radius: 4px; padding: 8px 14px; font-weight: bold; }
-    QPushButton:hover { background-color: #334155; border: 1px solid #38bdf8; }
+    QTabWidget::pane { border: 1px solid #1e293b; background-color: #0f172a; border-radius: 12px; margin-top: -1px; }
+    QTabBar::tab { background-color: #0f172a; color: #94a3b8; padding: 10px 20px; border-top-left-radius: 8px; border-top-right-radius: 8px; margin-right: 4px; font-weight: bold; border: 1px solid transparent; }
+    QTabBar::tab:selected { background-color: #0284c7; color: #ffffff; border: 1px solid #1e293b; border-bottom: none; }
+    QTableWidget, QTableView { background-color: #0f172a; alternate-background-color: #1e293b; color: #f8fafc; gridline-color: #334155; border: 1px solid #334155; border-radius: 12px; selection-background-color: #0369a1; }
+    QHeaderView::section { background-color: #1e293b; color: #38bdf8; padding: 8px; font-weight: bold; font-family: 'JetBrains Mono', monospace; border: none; border-bottom: 2px solid #0f172a; }
+    QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #1e293b; color: #f8fafc; border: 1px solid #475569; padding: 8px 12px; border-radius: 6px; }
+    QPushButton { background-color: #1e293b; color: #f8fafc; border: none; border-radius: 8px; padding: 10px 16px; font-weight: bold; }
+    QPushButton:hover { background-color: #334155; }
     QPushButton:pressed { background-color: #16202f; }
-    QPushButton:checked { background-color: #0284c7; color: #ffffff; border: 1px solid #38bdf8; }
-    QPushButton:disabled { background-color: #0f172a; color: #475569; border: 1px solid #1e293b; }
-    QProgressBar { border: 1px solid #334155; border-radius: 4px; text-align: center; background-color: #1e293b; color: white; }
-    QProgressBar::chunk { background-color: #0284c7; }
+    QProgressBar { border: 1px solid #334155; border-radius: 6px; text-align: center; background-color: #1e293b; color: white; height: 18px; }
+    QProgressBar::chunk { background-color: #0284c7; border-radius: 4px; }
 """
 
 THEME_BLUSH_ROSE = """
     QMainWindow, QDialog, QWidget { background-color: #fdf2f8; color: #500724; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
-    QTabWidget::pane { border: 1px solid #fbcfe8; background-color: #ffffff; }
-    QTabBar::tab { background-color: #fce7f3; color: #831843; padding: 8px 16px; border-top-left-radius: 4px; border-top-right-radius: 4px; font-weight: bold; }
-    QTabBar::tab:selected { background-color: #ec4899; color: #ffffff; }
-    QTableWidget, QTableView { background-color: #ffffff; alternate-background-color: #fef6fb; color: #500724; gridline-color: #fbcfe8; border: none; selection-background-color: #f472b6; selection-color: #ffffff; }
-    QHeaderView::section { background-color: #be185d; color: #ffffff; padding: 6px; font-weight: bold; border: 1px solid #fbcfe8; }
-    QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #ffffff; color: #500724; border: 1px solid #f472b6; padding: 6px; border-radius: 4px; }
-    QPushButton { background-color: #fce7f3; color: #831843; border: 1px solid #f472b6; border-radius: 4px; padding: 8px 14px; font-weight: bold; }
-    QPushButton:hover { background-color: #fbcfe8; border: 1px solid #ec4899; }
+    QTabWidget::pane { border: 1px solid #fbcfe8; background-color: #ffffff; border-radius: 12px; margin-top: -1px; }
+    QTabBar::tab { background-color: #fdf2f8; color: #831843; padding: 10px 20px; border-top-left-radius: 8px; border-top-right-radius: 8px; margin-right: 4px; font-weight: bold; border: 1px solid transparent; }
+    QTabBar::tab:selected { background-color: #ec4899; color: #ffffff; border: 1px solid #fbcfe8; border-bottom: none; }
+    QTableWidget, QTableView { background-color: #ffffff; alternate-background-color: #fef6fb; color: #500724; gridline-color: #fbcfe8; border: 1px solid #fbcfe8; border-radius: 12px; selection-background-color: #f472b6; selection-color: #ffffff; }
+    QHeaderView::section { background-color: #be185d; color: #ffffff; padding: 8px; font-weight: bold; font-family: 'JetBrains Mono', monospace; border: none; border-bottom: 2px solid #fdf2f8; }
+    QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #ffffff; color: #500724; border: 1px solid #f472b6; padding: 8px 12px; border-radius: 6px; }
+    QPushButton { background-color: #fce7f3; color: #831843; border: none; border-radius: 8px; padding: 10px 16px; font-weight: bold; }
+    QPushButton:hover { background-color: #fbcfe8; }
     QPushButton:pressed { background-color: #f9a8d4; }
-    QPushButton:checked { background-color: #ec4899; color: #ffffff; border: 1px solid #ec4899; }
-    QPushButton:disabled { background-color: #fdf2f8; color: #f0abc4; border: 1px solid #fce7f3; }
-    QProgressBar { border: 1px solid #fbcfe8; border-radius: 4px; text-align: center; background-color: #fce7f3; color: #500724; }
-    QProgressBar::chunk { background-color: #ec4899; }
+    QProgressBar { border: 1px solid #fbcfe8; border-radius: 6px; text-align: center; background-color: #fce7f3; color: #500724; height: 18px; }
+    QProgressBar::chunk { background-color: #ec4899; border-radius: 4px; }
 """
 
 THEME_VELVET_ROSE = """
     QMainWindow, QDialog, QWidget { background-color: #20131a; color: #ffe4e6; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
-    QTabWidget::pane { border: 1px solid #3f2231; background-color: #20131a; }
-    QTabBar::tab { background-color: #311825; color: #f472b6; padding: 8px 16px; border-top-left-radius: 4px; border-top-right-radius: 4px; font-weight: bold; }
-    QTabBar::tab:selected { background-color: #e11d48; color: #ffffff; }
-    QTableWidget, QTableView { background-color: #20131a; alternate-background-color: #2a1822; color: #fff1f2; gridline-color: #3f2231; border: none; selection-background-color: #be185d; }
-    QHeaderView::section { background-color: #3f2231; color: #fb7185; padding: 6px; font-weight: bold; border: 1px solid #20131a; }
-    QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #311825; color: #fff1f2; border: 1px solid #9f1239; padding: 6px; border-radius: 4px; }
-    QPushButton { background-color: #311825; color: #fecdd3; border: 1px solid #9f1239; border-radius: 4px; padding: 8px 14px; font-weight: bold; }
-    QPushButton:hover { background-color: #3f2231; border: 1px solid #fb7185; }
+    QTabWidget::pane { border: 1px solid #3f2231; background-color: #20131a; border-radius: 12px; margin-top: -1px; }
+    QTabBar::tab { background-color: #20131a; color: #f472b6; padding: 10px 20px; border-top-left-radius: 8px; border-top-right-radius: 8px; margin-right: 4px; font-weight: bold; border: 1px solid transparent; }
+    QTabBar::tab:selected { background-color: #e11d48; color: #ffffff; border: 1px solid #3f2231; border-bottom: none; }
+    QTableWidget, QTableView { background-color: #20131a; alternate-background-color: #2a1822; color: #fff1f2; gridline-color: #3f2231; border: 1px solid #3f2231; border-radius: 12px; selection-background-color: #be185d; }
+    QHeaderView::section { background-color: #3f2231; color: #fb7185; padding: 8px; font-weight: bold; font-family: 'JetBrains Mono', monospace; border: none; border-bottom: 2px solid #20131a; }
+    QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #311825; color: #fff1f2; border: 1px solid #9f1239; padding: 8px 12px; border-radius: 6px; }
+    QPushButton { background-color: #311825; color: #fecdd3; border: none; border-radius: 8px; padding: 10px 16px; font-weight: bold; }
+    QPushButton:hover { background-color: #3f2231; }
     QPushButton:pressed { background-color: #26121b; }
-    QPushButton:checked { background-color: #e11d48; color: #ffffff; border: 1px solid #fb7185; }
-    QPushButton:disabled { background-color: #20131a; color: #6b3a48; border: 1px solid #3f2231; }
-    QProgressBar { border: 1px solid #9f1239; border-radius: 4px; text-align: center; background-color: #311825; color: white; }
-    QProgressBar::chunk { background-color: #e11d48; }
+    QProgressBar { border: 1px solid #9f1239; border-radius: 6px; text-align: center; background-color: #311825; color: white; height: 18px; }
+    QProgressBar::chunk { background-color: #e11d48; border-radius: 4px; }
 """
 
 THEMES_MAP = {
@@ -536,7 +563,6 @@ THEMES_MAP = {
 
 
 class ColumnChooserDialog(QDialog):
-    """Interactive Dialog to show/hide table columns."""
     def __init__(self, table_view, lang="EN", parent=None):
         super().__init__(parent)
         self.table_view = table_view
@@ -1023,11 +1049,6 @@ class AnalysisWorker(QThread):
 
 
 class LoginDialog(QDialog):
-    """Blocks app startup until the user signs in with the same Firebase
-    account system as the website. Sets self.user_info on success:
-    {"uid", "email", "idToken", "name"}."""
-
-    # Same palette as the web login page (log.html) so both surfaces match.
     _BG = "#0f1115"
     _CARD = "#1a1d24"
     _CARD_LOWEST = "#0c0e12"
@@ -1061,7 +1082,6 @@ class LoginDialog(QDialog):
         outer = QVBoxLayout(self)
         outer.setContentsMargins(0, 0, 0, 0)
 
-        # ----- Branded top strip, mirrors the web header -----
         header = QWidget()
         header.setStyleSheet(f"background-color: {self._CARD}; border-bottom: 1px solid {self._OUTLINE};")
         header_layout = QHBoxLayout(header)
@@ -1075,7 +1095,6 @@ class LoginDialog(QDialog):
         header_layout.addWidget(lbl_header_tag)
         outer.addWidget(header)
 
-        # ----- Scrollable card body -----
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setStyleSheet("QScrollArea { border: none; background: transparent; }")
@@ -1132,8 +1151,6 @@ class LoginDialog(QDialog):
         self.txt_password.returnPressed.connect(self.do_sign_in)
         layout.addWidget(self.txt_password)
 
-        # ===== End-User Consent and Legal Disclaimer (required to create a
-        # new account; not required to sign in to an existing one) =====
         consent_box = QWidget()
         consent_box.setStyleSheet(f"background-color: {self._CARD}; border: 1px solid {self._OUTLINE}; border-radius: 6px;")
         consent_layout = QVBoxLayout(consent_box)
@@ -1204,8 +1221,6 @@ class LoginDialog(QDialog):
         if min_password_len and len(password) < min_password_len:
             self.lbl_error.setText(f"Password must be at least {min_password_len} characters.")
             return
-        # Defensive re-check: the button is disabled while unchecked, but this
-        # guards direct calls (e.g. returnPressed) too.
         if require_consent and not self.chk_consent.isChecked():
             self.lbl_error.setText("You must agree to the legal terms to create an account.")
             return
@@ -1222,8 +1237,6 @@ class LoginDialog(QDialog):
                 "name": self._friendly_name(data, email),
             }
             if require_consent:
-                # Best-effort: firestore.rules is the real enforcement boundary
-                # (see firestore.rules), so a failure here doesn't block sign-up.
                 ip_address = fetch_client_ip()
                 write_consent_doc(data["idToken"], data["localId"], ip_address)
             self.accept()
@@ -1265,9 +1278,6 @@ class LoginDialog(QDialog):
 
 
 class AnalyticsDialog(QDialog):
-    """Admin-only viewer: sessions + trading activity combined across the
-    website and desktop app, read straight from Firestore."""
-
     def __init__(self, id_token, parent=None):
         super().__init__(parent)
         self.setWindowTitle("📊 Usage Analytics")
@@ -1375,8 +1385,6 @@ class QuantDashboard(QMainWindow):
         self._start_cloud_session()
 
     def _run_cloud(self, fn, *args, on_result=None, **kwargs):
-        """Fire a Firebase/Firestore call on a background thread; keeps a
-        reference until it finishes so Qt doesn't garbage-collect it mid-flight."""
         if requests is None or not self.user_info:
             return
         worker = _CloudWorker(fn, *args, **kwargs)
@@ -1407,8 +1415,6 @@ class QuantDashboard(QMainWindow):
             self._run_cloud(touch_session_doc, self.user_info["idToken"], self._session_id)
 
     def _compute_dealing_stats(self, exits, closed_trades, fin_stmt):
-        """Total EGP value of trades (buys+sells), trade count, and current
-        portfolio value — pushed to Firestore for the Usage Analytics panel."""
         trade_count = len(exits) + len(closed_trades)
         total_value = 0.0
         for pos in exits:
@@ -1458,65 +1464,81 @@ class QuantDashboard(QMainWindow):
             if QApplication.instance():
                 QApplication.instance().setStyleSheet(stylesheet)
 
+            # Define standard button border-radius and padding for the modern web look
+            btn_base_style = "color: white; border-radius: 8px; font-weight: bold; padding: 10px 14px;"
+
             if "Blush Rose" in theme_name:
                 self.theme_highlight = QColor("#be185d")
-                self.btn_ingest.setStyleSheet("background-color: #db2777; color: white;")
-                self.btn_analyze.setStyleSheet("background-color: #be185d; color: white;")
-                self.btn_manage_portfolio.setStyleSheet("background-color: #9d174d; color: white;")
-                self.btn_calc.setStyleSheet("background-color: #e11d48; color: white;")
-                self.btn_set_cash.setStyleSheet("background-color: #831843; color: white;")
-                self.btn_settings.setStyleSheet("background-color: #f472b6; color: #500724; font-weight: bold;")
-                self.lbl_account_header.setStyleSheet("font-size: 14px; font-weight: bold; background-color: #fce7f3; color: #831843; padding: 10px; border-radius: 4px; border: 1px solid #fbcfe8;")
+                self.btn_ingest.setStyleSheet(f"background-color: #db2777; {btn_base_style}")
+                self.btn_analyze.setStyleSheet(f"background-color: #be185d; {btn_base_style}")
+                self.btn_manage_portfolio.setStyleSheet(f"background-color: #9d174d; {btn_base_style}")
+                self.btn_calc.setStyleSheet(f"background-color: #e11d48; {btn_base_style}")
+                self.btn_set_cash.setStyleSheet(f"background-color: #831843; {btn_base_style}")
+                self.btn_settings.setStyleSheet(f"background-color: #f472b6; color: #500724; font-weight: bold; border-radius: 8px; padding: 10px 14px;")
+                self.btn_top10.setStyleSheet(f"background-color: #be185d; {btn_base_style}")
+                self.lbl_account_header.setStyleSheet("font-size: 13px; font-weight: bold; background-color: #fce7f3; color: #831843; padding: 12px; border-radius: 8px; border: 1px solid #fbcfe8;")
                 self.lbl_disclosure.setStyleSheet("font-size: 11px; color: #9d174d; background-color: #fef6fb; padding: 6px; border: 1px solid #f472b6; border-radius: 4px;")
+                
             elif "Velvet Rose" in theme_name:
                 self.theme_highlight = QColor("#e11d48")
-                self.btn_ingest.setStyleSheet("background-color: #e11d48; color: white;")
-                self.btn_analyze.setStyleSheet("background-color: #be185d; color: white;")
-                self.btn_manage_portfolio.setStyleSheet("background-color: #9f1239; color: white;")
-                self.btn_calc.setStyleSheet("background-color: #fb7185; color: #20131a; font-weight: bold;")
-                self.btn_set_cash.setStyleSheet("background-color: #881337; color: white;")
-                self.btn_settings.setStyleSheet("background-color: #4c1d32; color: #ffe4e6;")
-                self.lbl_account_header.setStyleSheet("font-size: 14px; font-weight: bold; background-color: #311825; color: #fb7185; padding: 10px; border-radius: 4px; border: 1px solid #9f1239;")
+                self.btn_ingest.setStyleSheet(f"background-color: #e11d48; {btn_base_style}")
+                self.btn_analyze.setStyleSheet(f"background-color: #be185d; {btn_base_style}")
+                self.btn_manage_portfolio.setStyleSheet(f"background-color: #9f1239; {btn_base_style}")
+                self.btn_calc.setStyleSheet(f"background-color: #fb7185; color: #20131a; font-weight: bold; border-radius: 8px; padding: 10px 14px;")
+                self.btn_set_cash.setStyleSheet(f"background-color: #881337; {btn_base_style}")
+                self.btn_settings.setStyleSheet(f"background-color: #4c1d32; color: #ffe4e6; border-radius: 8px; padding: 10px 14px;")
+                self.btn_top10.setStyleSheet(f"background-color: #e11d48; {btn_base_style}")
+                self.lbl_account_header.setStyleSheet("font-size: 13px; font-weight: bold; background-color: #311825; color: #fb7185; padding: 12px; border-radius: 8px; border: 1px solid #9f1239;")
                 self.lbl_disclosure.setStyleSheet("font-size: 11px; color: #fecdd3; background-color: #2a1822; padding: 6px; border: 1px solid #e11d48; border-radius: 4px;")
+                
             elif "Light" in theme_name:
                 self.theme_highlight = QColor("#3182ce")
-                self.btn_ingest.setStyleSheet("background-color: #3182ce; color: white;")
-                self.btn_analyze.setStyleSheet("background-color: #38a169; color: white;")
-                self.btn_manage_portfolio.setStyleSheet("background-color: #805ad5; color: white;")
-                self.btn_calc.setStyleSheet("background-color: #dd6b20; color: white;")
-                self.btn_set_cash.setStyleSheet("background-color: #d69e2e; color: white;")
-                self.btn_settings.setStyleSheet("background-color: #4a5568; color: white;")
-                self.lbl_account_header.setStyleSheet("font-size: 14px; font-weight: bold; background-color: #edf2f7; color: #2b6cb0; padding: 10px; border-radius: 4px; border: 1px solid #cbd5e0;")
+                self.btn_ingest.setStyleSheet(f"background-color: #3182ce; {btn_base_style}")
+                self.btn_analyze.setStyleSheet(f"background-color: #38a169; {btn_base_style}")
+                self.btn_manage_portfolio.setStyleSheet(f"background-color: #805ad5; {btn_base_style}")
+                self.btn_calc.setStyleSheet(f"background-color: #dd6b20; {btn_base_style}")
+                self.btn_set_cash.setStyleSheet(f"background-color: #d69e2e; {btn_base_style}")
+                self.btn_settings.setStyleSheet(f"background-color: #4a5568; {btn_base_style}")
+                self.btn_top10.setStyleSheet(f"background-color: #3182ce; {btn_base_style}")
+                self.lbl_account_header.setStyleSheet("font-size: 13px; font-weight: bold; background-color: #ffffff; color: #2b6cb0; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e0;")
                 self.lbl_disclosure.setStyleSheet("font-size: 11px; color: #744210; background-color: #fffaf0; padding: 6px; border: 1px solid #ecc94b; border-radius: 4px;")
+                
             elif "Midnight" in theme_name:
                 self.theme_highlight = QColor("#0284c7")
-                self.btn_ingest.setStyleSheet("background-color: #0284c7; color: white;")
-                self.btn_analyze.setStyleSheet("background-color: #059669; color: white;")
-                self.btn_manage_portfolio.setStyleSheet("background-color: #7c3aed; color: white;")
-                self.btn_calc.setStyleSheet("background-color: #ea580c; color: white;")
-                self.btn_set_cash.setStyleSheet("background-color: #d97706; color: white;")
-                self.btn_settings.setStyleSheet("background-color: #475569; color: white;")
-                self.lbl_account_header.setStyleSheet("font-size: 14px; font-weight: bold; background-color: #1e293b; color: #38bdf8; padding: 10px; border-radius: 4px; border: 1px solid #334155;")
+                self.btn_ingest.setStyleSheet(f"background-color: #0284c7; {btn_base_style}")
+                self.btn_analyze.setStyleSheet(f"background-color: #059669; {btn_base_style}")
+                self.btn_manage_portfolio.setStyleSheet(f"background-color: #7c3aed; {btn_base_style}")
+                self.btn_calc.setStyleSheet(f"background-color: #ea580c; {btn_base_style}")
+                self.btn_set_cash.setStyleSheet(f"background-color: #d97706; {btn_base_style}")
+                self.btn_settings.setStyleSheet(f"background-color: #475569; {btn_base_style}")
+                self.btn_top10.setStyleSheet(f"background-color: #0284c7; {btn_base_style}")
+                self.lbl_account_header.setStyleSheet("font-size: 13px; font-weight: bold; background-color: #1e293b; color: #38bdf8; padding: 12px; border-radius: 8px; border: 1px solid #334155;")
                 self.lbl_disclosure.setStyleSheet("font-size: 11px; color: #fde68a; background-color: #451a03; padding: 6px; border: 1px solid #d97706; border-radius: 4px;")
+                
             else:
+                # Default "Institutional Dark" mapping to exactly match the Web App Tailwind Colors
                 self.theme_highlight = QColor("#3198dc")
-                self.btn_ingest.setStyleSheet("background-color: #3198dc; color: white;")
-                self.btn_analyze.setStyleSheet("background-color: #2f855a; color: white;")
-                self.btn_manage_portfolio.setStyleSheet("background-color: #6b46c1; color: white;")
-                self.btn_calc.setStyleSheet("background-color: #c05621; color: white;")
-                self.btn_set_cash.setStyleSheet("background-color: #b7791f; color: white;")
-                self.btn_settings.setStyleSheet("background-color: #4a5568; color: white;")
-                self.lbl_account_header.setStyleSheet("font-size: 14px; font-weight: bold; background-color: #1a1d24; color: #93ccff; padding: 10px; border-radius: 4px; border: 1px solid #2d3748;")
+                self.btn_ingest.setStyleSheet(f"background-color: #059669; {btn_base_style}") # Emerald-600
+                self.btn_analyze.setStyleSheet(f"background-color: #0d9488; {btn_base_style}") # Teal-600
+                self.btn_manage_portfolio.setStyleSheet(f"background-color: #9333ea; {btn_base_style}") # Purple-600
+                self.btn_calc.setStyleSheet(f"background-color: #d97706; {btn_base_style}") # Amber-600
+                self.btn_set_cash.setStyleSheet(f"background-color: #2563eb; {btn_base_style}") # Blue-600
+                self.btn_settings.setStyleSheet(f"background-color: #334155; {btn_base_style}") # Slate-700
+                self.btn_top10.setStyleSheet(f"background-color: #ca8a04; {btn_base_style}") # Yellow-600
+                
+                # Account Header mimicking the Web's "Account Equity Bar"
+                self.lbl_account_header.setStyleSheet("font-size: 13px; font-weight: bold; background-color: #1a1d24; color: #e2e2e8; padding: 14px; border-radius: 10px; border: 1px solid #2d3748;")
                 self.lbl_disclosure.setStyleSheet("font-size: 11px; color: #fbd38d; background-color: #744210; padding: 6px; border: 1px solid #b7791f; border-radius: 4px;")
 
     def _init_ui(self):
         main_widget = QWidget()
         self.setCentralWidget(main_widget)
         layout = QVBoxLayout(main_widget)
+        
+        # Add the margins and spacing here for better web-like padding
+        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setSpacing(16)
 
-        # ===== Brand header: logo + app name + tagline. Kept as its own
-        # widget (not just window title text) so it is always visible in
-        # the client area regardless of theme/stylesheet changes. =====
         brand_bar = QWidget()
         brand_bar.setObjectName("brandBar")
         brand_bar.setStyleSheet(
@@ -2241,9 +2263,6 @@ class QuantDashboard(QMainWindow):
 
 
 def _show_fatal_error(title, message):
-    """Surfaces a fatal error even when launched via pythonw.exe, which has
-    no console to print a traceback to. Tries a Qt dialog first, then falls
-    back to a raw Windows message box as a last resort."""
     try:
         QMessageBox.critical(None, title, message)
         return
@@ -2269,7 +2288,7 @@ def _install_excepthook():
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    _install_excepthook()  # catches crashes during the Qt event loop
+    _install_excepthook() 
 
     try:
         login = LoginDialog()
@@ -2282,7 +2301,6 @@ if __name__ == "__main__":
     except SystemExit:
         raise
     except Exception:
-        # Catches crashes during startup itself (before the event loop runs).
         tb_text = traceback.format_exc()
         logger.error(f"Fatal startup error:\n{tb_text}")
         _show_fatal_error(
