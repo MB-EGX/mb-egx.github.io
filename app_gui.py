@@ -29,7 +29,6 @@ from PyQt6.QtWidgets import (
 logger = get_logger("app_gui")
 
 LOGO_PATH = Path(__file__).resolve().parent / "assets" / "mb-egx-logo.png"
-# Fallback to jpg if png doesn't exist based on your structure
 if not LOGO_PATH.exists():
     LOGO_PATH = Path(__file__).resolve().parent / "mb-egx-logo.jpg"
 if not LOGO_PATH.exists():
@@ -281,7 +280,6 @@ class _CloudWorker(QThread):
             result = None
         self.finished_result.emit(result)
 
-# Translations and Themes truncated for brevity but they remain identical to your version
 TRANSLATIONS = {
     "EN": {
         "title": "MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard",
@@ -726,7 +724,7 @@ class AnalysisWorker(QThread):
         self.results_signal.emit(buys, exits, top10, closed, fin_stmt, sectors, breakout_watchlist)
 
 # =============================================================================
-# REDESIGNED LOGIN DIALOG (2-COLUMN LAYOUT)
+# REDESIGNED FULL-SCREEN LOGIN DIALOG
 # =============================================================================
 class LoginDialog(QDialog):
     _BG = "#0f1115"
@@ -739,8 +737,11 @@ class LoginDialog(QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        
+        # APPLYING THE WINDOW TYPE FLAG MAKES THIS BEHAVE LIKE A FULL DESKTOP WINDOW
+        self.setWindowFlags(Qt.WindowType.Window)
         self.setWindowTitle("MB-EGX Alpha — Terminal Access")
-        self.showMaximized()
+        
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.setObjectName("loginDialog")
         
@@ -768,6 +769,9 @@ class LoginDialog(QDialog):
             self.setWindowIcon(QIcon(str(LOGO_PATH)))
         self.user_info = None
         self._init_ui()
+        
+        # CALL SHOW MAXIMIZED AT THE END OF INIT TO FORCE FULL WINDOW EXPANSION
+        self.showMaximized()
 
     def _init_ui(self):
         # Master Layout (No margins so header can go edge-to-edge)
