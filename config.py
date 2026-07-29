@@ -102,6 +102,21 @@ ACTION_THRESHOLDS = {
     "sector_accumulate_5d": 2.0,
     "sector_accumulate_breadth": 50.0,
     "sector_heavy_dist_1d": -1.5,
+    # Pre-breakout screening (decision_matrix.scan for "🎯 Breakout Watchlist")
+    # This is deliberately separate from the reactive BREAKOUT BUY labels
+    # above: those confirm a move that's already happening (crossover fired,
+    # momentum fired). This instead flags stocks that look like they're
+    # COILING - i.e. still setting up, not yet fired - so it answers a
+    # different question: "what might break out next session/week", not
+    # "what broke out today".
+    "breakout_watch_adx_min": 15.0,   # ADX floor: some trend forming, not flat
+    "breakout_watch_adx_max": 25.0,   # ADX ceiling: below the "already trending hard" zone
+    "breakout_watch_rsi_min": 50.0,   # RSI floor: bullish bias
+    "breakout_watch_rsi_max": 65.0,   # RSI ceiling: room to run before overbought
+    "breakout_watch_range_pos_min": 80.0,  # % of 250-day range: near resistance
+    "breakout_watch_volume_build_ratio": 1.1,  # last 5D avg vol vs prior 5D avg vol
+    "breakout_watch_min_score": 45.0,  # minimum composite score to qualify
+    "breakout_watch_max_results": 25,
 }
 
 # --- Data-confidence weighting ---

@@ -85,6 +85,7 @@ class DecisionMatrix:
 
         buy_recommendations = []
         exit_strategies = []
+        breakout_watchlist = []
         processed_tickers_dict: dict = {}
 
         total_invested = 0.0
@@ -111,6 +112,7 @@ class DecisionMatrix:
                 closed_trades,
                 empty_stmt,
                 [],
+                breakout_watchlist,
             )
 
         eligible = []
@@ -387,6 +389,78 @@ class DecisionMatrix:
                     action_cmd = f"🚫 ILLIQUID - {action_cmd}"
                     trend_bonus += SCORE_WEIGHTS["illiquid_penalty"]
 
+                # -------------------------------------------------------------
+                # Pre-breakout screening: "what might break out NEXT session/
+                # week", separate from the reactive BREAKOUT BUY labels above
+                # (which confirm a move already in progress). A stock only
+                # qualifies here if it's still coiling - not already fired.
+                # -------------------------------------------------------------
+                if is_liquid and n_bars >= 20:
+                    bw_score = 0.0
+                    bw_reasons = []
+
+                    if is_squeezed:
+                        bw_score += 25.0
+                        bw_reasons.append("Volatility squeeze")
+
+                    adx_series = df_ind["adx_14"]
+                    adx_prior = adx_series.iloc[-6] if len(adx_series) > 6 else adx
+                    adx_rising = pd.notna(adx_prior) and adx > adx_prior
+                    if (
+                        ACTION_THRESHOLDS["breakout_watch_adx_min"] <= adx < ACTION_THRESHOLDS["breakout_watch_adx_max"]
+                        and adx_rising
+                    ):
+                        bw_score += 20.0
+                        bw_reasons.append("ADX trend just building")
+
+                    if ACTION_THRESHOLDS["breakout_watch_rsi_min"] <= rsi <= ACTION_THRESHOLDS["breakout_watch_rsi_max"]:
+                        bw_score += 15.0
+                        bw_reasons.append("RSI bullish with room to run")
+
+                    vol_recent = df_ind["volume"].iloc[-5:].mean() if n_bars >= 10 else avg_volume_20
+                    vol_prior = df_ind["volume"].iloc[-10:-5].mean() if n_bars >= 10 else avg_volume_20
+                    volume_building = (
+                        pd.notna(vol_recent) and pd.notna(vol_prior) and vol_prior > 0
+                        and vol_recent > vol_prior * ACTION_THRESHOLDS["breakout_watch_volume_build_ratio"]
+                    )
+                    if volume_building:
+                        bw_score += 15.0
+                        bw_reasons.append("Volume trending up")
+
+                    if range_pos_pct >= ACTION_THRESHOLDS["breakout_watch_range_pos_min"]:
+                        bw_score += 15.0
+                        bw_reasons.append("Near recent high (resistance test)")
+
+                    if cmf > 0:
+                        bw_score += 10.0
+                        bw_reasons.append("Positive money flow")
+
+                    if weekly_aligned:
+                        bw_score += 10.0
+                        bw_reasons.append("Weekly trend aligned")
+
+                    already_fired = (
+                        "STRONG BUY" in raw_action or "BREAKOUT BUY" in raw_action or "SELL" in raw_action
+                    )
+                    if bw_score >= ACTION_THRESHOLDS["breakout_watch_min_score"] and not already_fired:
+                        dist_to_resistance = (
+                            round(max(0.0, ((range_high - curr_price) / curr_price) * 100), 2)
+                            if curr_price > 0 else None
+                        )
+                        breakout_watchlist.append({
+                            "Ticker": norm_ticker,
+                            "Breakout Score": round(bw_score, 1),
+                            "Current Price": round(curr_price, 4),
+                            "Dist. to Resistance (%)": dist_to_resistance,
+                            "RSI-14": round(rsi, 1),
+                            "ADX-14": round(adx, 1),
+                            "Squeeze Active": bool(is_squeezed),
+                            "Volume Trend": "Rising" if volume_building else "Flat/Falling",
+                            "Trend Class": trend_latest,
+                            "Signals": ", ".join(bw_reasons),
+                            "Data Confidence": data_conf_tier,
+                        })
+
                 pattern_component = (
                     pattern_data["confidence"] * SCORE_WEIGHTS["pattern_confidence_weight"]
                     if pattern_data["match_found"]
@@ -512,6 +586,9 @@ class DecisionMatrix:
 
         sector_summary = self.qe.compute_sector_analytics(processed_tickers_dict, sector_map)
 
+        breakout_watchlist.sort(key=lambda x: x["Breakout Score"], reverse=True)
+        breakout_watchlist = breakout_watchlist[: ACTION_THRESHOLDS["breakout_watch_max_results"]]
+
         if progress_callback:
             progress_callback(100, "Multi-factor confirmation matrix scan complete.")
         return (
@@ -521,4 +598,5 @@ class DecisionMatrix:
             closed_trades,
             financial_statement,
             sector_summary,
+            breakout_watchlist,
         )

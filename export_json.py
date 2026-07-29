@@ -120,7 +120,7 @@ def export_market_matrix():
     dbm = DatabaseManager()
     sector_map = dbm.get_sector_map()
 
-    buys, exits, top10, closed_trades, fin_stmt, sectors = matrix.analyze_market()
+    buys, exits, top10, closed_trades, fin_stmt, sectors, breakout_watchlist = matrix.analyze_market()
     last_data_date = dbm.get_latest_market_date()
 
     # PRIVACY: strip the cash-derived "Suggested Shares (1% Risk)" column
@@ -140,6 +140,7 @@ def export_market_matrix():
         "market_matrix": buys,
         "sectors": sectors,
         "top_10": top10,
+        "breakout_watchlist": breakout_watchlist,
         "chart_history": chart_history,
     }
 

@@ -891,14 +891,14 @@ class IngestionWorker(QThread):
 
 class AnalysisWorker(QThread):
     progress_signal = pyqtSignal(int, str)
-    results_signal = pyqtSignal(list, list, dict, list, dict, list)
+    results_signal = pyqtSignal(list, list, dict, list, dict, list, list)
 
     def run(self):
         matrix = DecisionMatrix()
-        buys, exits, top10, closed, fin_stmt, sectors = matrix.analyze_market(
+        buys, exits, top10, closed, fin_stmt, sectors, breakout_watchlist = matrix.analyze_market(
             progress_callback=lambda pct, msg: self.progress_signal.emit(pct, msg)
         )
-        self.results_signal.emit(buys, exits, top10, closed, fin_stmt, sectors)
+        self.results_signal.emit(buys, exits, top10, closed, fin_stmt, sectors, breakout_watchlist)
 
 
 class LoginDialog(QDialog):
@@ -1462,6 +1462,28 @@ class QuantDashboard(QMainWindow):
         self.tbl_exits.horizontalHeader().setMinimumSectionSize(70)
         self.tabs.addTab(self.tbl_exits, "🛡️ Owned Portfolio Exit Strategy")
 
+        self.tbl_breakout_watch = QTableWidget()
+        breakout_watch_columns = [
+            ("Ticker", "Stock ticker symbol"),
+            ("Breakout Score", "0-100 composite pre-breakout score (higher = more setup elements aligned)"),
+            ("Price", "Current close price"),
+            ("Dist. to Resistance %", "% move still needed to reach the recent high"),
+            ("RSI-14", "14-period Relative Strength Index"),
+            ("ADX-14", "14-period trend-strength index"),
+            ("Squeeze", "Bollinger Bands inside Keltner Channels — volatility compression, often precedes a move"),
+            ("Volume Trend", "Is 5-day average volume rising vs. the prior 5 days"),
+            ("Trend", "Trend classification"),
+            ("Signals", "Which setup elements fired for this ticker"),
+        ]
+        self.tbl_breakout_watch.setColumnCount(len(breakout_watch_columns))
+        for idx, (header, tooltip) in enumerate(breakout_watch_columns):
+            item = QTableWidgetItem(header)
+            item.setToolTip(tooltip)
+            self.tbl_breakout_watch.setHorizontalHeaderItem(idx, item)
+        self.tbl_breakout_watch.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
+        self.tbl_breakout_watch.horizontalHeader().setMinimumSectionSize(70)
+        self.tabs.addTab(self.tbl_breakout_watch, "🎯 Breakout Watchlist")
+
         tab_history_widget = QWidget()
         history_layout = QVBoxLayout(tab_history_widget)
         
@@ -1737,7 +1759,8 @@ class QuantDashboard(QMainWindow):
         self.progress_bar.setValue(pct)
         self.lbl_status.setText(msg)
 
-    def populate_tables(self, buys, exits, top10, closed_trades, fin_stmt, sector_summary):
+    def populate_tables(self, buys, exits, top10, closed_trades, fin_stmt, sector_summary, breakout_watchlist=None):
+        breakout_watchlist = breakout_watchlist or []
         self._set_ui_controls_enabled(True)
         self.lbl_status.setText("✅ Quantitative signal matrix & sector heatmaps successfully updated.")
         self.refresh_account_header(fin_stmt)
@@ -1748,7 +1771,7 @@ class QuantDashboard(QMainWindow):
             stats = self._compute_dealing_stats(exits, closed_trades, fin_stmt)
             self._run_cloud(push_dealing_stats, self.user_info["idToken"], self.user_info["uid"], stats)
 
-        for tbl in [self.tbl_sectors, self.tbl_exits, self.tbl_closed, self.tbl_fin_stmt]:
+        for tbl in [self.tbl_sectors, self.tbl_exits, self.tbl_closed, self.tbl_fin_stmt, self.tbl_breakout_watch]:
             tbl.setUpdatesEnabled(False)
 
         try:
@@ -1877,8 +1900,38 @@ class QuantDashboard(QMainWindow):
 
                 self.tbl_fin_stmt.setItem(row_idx, 0, item_name)
                 self.tbl_fin_stmt.setItem(row_idx, 1, item_val)
+
+            self.tbl_breakout_watch.setRowCount(len(breakout_watchlist))
+            for row_idx, row_data in enumerate(breakout_watchlist):
+                for col_idx, key in enumerate([
+                    "Ticker", "Breakout Score", "Current Price", "Dist. to Resistance (%)",
+                    "RSI-14", "ADX-14", "Squeeze Active", "Volume Trend", "Trend Class", "Signals",
+                ]):
+                    val = row_data.get(key, "")
+                    if key == "Squeeze Active":
+                        val_str = "✅ Yes" if val else "—"
+                    else:
+                        val_str = str(val)
+                    item = QTableWidgetItem(val_str)
+                    item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
+                    if key != "Signals":
+                        item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+
+                    if key == "Breakout Score":
+                        try:
+                            score_num = float(val)
+                            if score_num >= 70:
+                                item.setBackground(QColor("#276749"))
+                                item.setForeground(Qt.GlobalColor.white)
+                            elif score_num >= 55:
+                                item.setBackground(QColor("#2b6cb0"))
+                                item.setForeground(Qt.GlobalColor.white)
+                        except (TypeError, ValueError):
+                            pass
+
+                    self.tbl_breakout_watch.setItem(row_idx, col_idx, item)
         finally:
-            for tbl in [self.tbl_sectors, self.tbl_exits, self.tbl_closed, self.tbl_fin_stmt]:
+            for tbl in [self.tbl_sectors, self.tbl_exits, self.tbl_closed, self.tbl_fin_stmt, self.tbl_breakout_watch]:
                 tbl.setUpdatesEnabled(True)
 
         if hasattr(self, "chart_widget"):
