@@ -8,12 +8,22 @@ statement, plus 1 year of OHLC + VWAP history per ticker) into a single
 
 CHANGELOG vs the original:
   * Output path is anchored to the script's own directory (was CWD-relative).
-  * Closed trades are filtered to non-demo rows so the public web export
-    does not leak fake book-keeping entries (the GUI's audit-ledger export
-    already did this; the JSON path was inconsistent).
   * The 365-day chart slice is now pushed into DuckDB via
     ``qe.get_all_market_data_bulk(days=CHART_HISTORY_DAYS)`` instead of
     pulling every bar of every ticker just to tail-trim in pandas.
+  * PRIVACY FIX: cash_balance, financial_statement, and closed_trades are
+    no longer written to the public JSON at all. These are real personal
+    account figures (actual cash, actual realized/unrealized P&L, actual
+    trade history) and the web dashboard's own JS never reads any of
+    these three fields anyway — the site computes each visitor's own
+    portfolio view from their private per-user Firestore/localStorage
+    data instead. Publishing them here served no purpose except exposing
+    real account data on a public, unauthenticated static file.
+  * PRIVACY FIX: "Suggested Shares (1% Risk)" is stripped from every row
+    of market_matrix / top_10 before export. That figure is computed as
+    cash_balance * RISK_PER_TRADE_PCT / entry_price, so publishing it
+    lets anyone back-calculate the exact real cash_balance from a single
+    row even with the cash_balance field itself removed.
 """
 from __future__ import annotations
 
@@ -26,6 +36,18 @@ import pandas as pd
 from decision_matrix import DecisionMatrix
 from db_manager import DatabaseManager
 from config import CHART_HISTORY_DAYS
+
+# Any of these keys, if present on a market_matrix/top_10 row, are derived
+# from the real cash balance and must never reach the public JSON.
+_PRIVATE_ROW_KEYS = ("Suggested Shares (1% Risk)",)
+
+
+def _strip_private_row_fields(rows):
+    """Remove cash-balance-derived fields from a list of signal-row dicts."""
+    for row in rows:
+        for key in _PRIVATE_ROW_KEYS:
+            row.pop(key, None)
+    return rows
 
 
 def sanitize_for_json(obj):
@@ -99,14 +121,13 @@ def export_market_matrix():
     sector_map = dbm.get_sector_map()
 
     buys, exits, top10, closed_trades, fin_stmt, sectors = matrix.analyze_market()
-    cash = dbm.get_cash_balance()
     last_data_date = dbm.get_latest_market_date()
 
-    # Filter demo trades so the public web export doesn't leak them
-    real_closed = [t for t in closed_trades if not t.get("is_demo")]
-    n_demo_excluded = len(closed_trades) - len(real_closed)
-    if n_demo_excluded:
-        print(f"   Excluding {n_demo_excluded} demo trade(s) from the public export.")
+    # PRIVACY: strip the cash-derived "Suggested Shares (1% Risk)" column
+    # from every row before it can reach the public JSON.
+    _strip_private_row_fields(buys)
+    for rows in top10.values():
+        _strip_private_row_fields(rows)
 
     print(
         f"📊 Extracting up to {CHART_HISTORY_DAYS} days of historical chart data "
@@ -115,13 +136,10 @@ def export_market_matrix():
     chart_history = build_chart_history(matrix.qe, dbm, sector_map)
 
     payload = {
-        "cash_balance": cash,
         "last_data_date": last_data_date,
-        "financial_statement": fin_stmt,
         "market_matrix": buys,
         "sectors": sectors,
         "top_10": top10,
-        "closed_trades": real_closed,
         "chart_history": chart_history,
     }
 
