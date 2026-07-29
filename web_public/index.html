@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard</title>
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <!-- Chart.js for Trendline & VWAP Charting -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Firebase (Auth + Firestore) for per-user accounts -->
@@ -13,26 +13,43 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
-    <!-- MB-EGX Alpha design system fonts (matches Dash/Port/log/sector.html) -->
+    <!-- MB-EGX Alpha design system fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Hanken+Grotesk:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap">
-    <script>
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
+                        /* Original Dashboard Colors */
                         darkbg: 'var(--bg-main)',
                         panelbg: 'var(--bg-panel)',
                         bordercol: 'var(--border-col)',
                         accent: 'var(--accent-col)',
                         textmain: 'var(--text-main)',
                         textmuted: 'var(--text-muted)',
+                        /* New Login Screen Colors */
+                        "primary": "#93ccff",
+                        "on-primary": "#003351",
+                        "surface-elevated": "#1A1D24",
+                        "surface-container-lowest": "#0c0e12",
+                        "outline-variant": "#3f4850",
+                        "on-surface-variant": "#bfc7d2",
+                        "on-surface": "#e2e2e8",
+                        "background": "#111317",
+                        "on-background": "#e2e2e8",
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
                         mono: ['JetBrains Mono', 'monospace'],
                         headline: ['Hanken Grotesk', 'sans-serif'],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "headline-xl": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "label-mono": ["JetBrains Mono"],
+                        "stat-lg": ["JetBrains Mono"]
                     }
                 }
             }
@@ -65,23 +82,30 @@
         ::-webkit-scrollbar-thumb:hover { background: var(--accent-col); }
         .tab-active { background-color: var(--accent-col) !important; color: #ffffff !important; font-weight: bold; box-shadow: 0 2px 10px -2px rgba(49,152,220,0.5); }
 
-        /* ===== MB-EGX Alpha design system polish (matches Dash/Port/log/sector.html) ===== */
+        /* Login Screen specific styles */
+        .ambient-glow { box-shadow: 0 0 24px 0 rgba(147, 204, 255, 0.15); }
+        .card-edge { border: 1px solid rgba(255, 255, 255, 0.05); }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #1e2024; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #3f4850; border-radius: 4px; }
+
+        /* ===== MB-EGX Alpha design system polish ===== */
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
         body { background-image: radial-gradient(circle at top, color-mix(in srgb, var(--bg-panel) 55%, transparent), var(--bg-main) 65%); background-attachment: fixed; }
         h1, h2, h3, .font-headline { font-family: 'Hanken Grotesk', sans-serif; letter-spacing: -0.01em; }
         .text-sky-400 { color: var(--accent-text) !important; }
 
-        /* Sticky, glassy header like the Stitch nav bar */
+        /* Sticky, glassy header */
         header#main-header { position: sticky; top: 0; z-index: 30; background-color: color-mix(in srgb, var(--bg-panel) 92%, transparent); backdrop-filter: blur(10px); }
 
-        /* Card panels: subtle depth + hairline glow, echoing the bento-grid cards */
+        /* Card panels: subtle depth + hairline glow */
         .bg-panelbg { box-shadow: 0 1px 0 0 rgba(255,255,255,0.04) inset, 0 10px 24px -12px rgba(0,0,0,0.5); }
 
-        /* Buttons: ambient glow + gentle lift, matching Stitch's CTA styling */
+        /* Buttons: ambient glow + gentle lift */
         header button, .modal-body button { transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease; }
         header button:hover, .modal-body button:hover { transform: translateY(-1px); filter: brightness(1.08); }
 
-        /* Table headers: uppercase mono label style instead of flat slate bar */
+        /* Table headers */
         table thead { background: var(--bg-panel) !important; color: var(--accent-text) !important; }
         table thead th, table thead td {
             font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
@@ -145,7 +169,7 @@
             </div>
         </header>
 
-        <!-- Welcome toast (shown briefly right after a successful login) -->
+        <!-- Welcome toast -->
         <div id="welcome-toast" style="display:none;" class="fixed top-4 right-4 z-[10000] bg-emerald-600 text-white px-4 py-3 rounded-lg shadow-2xl font-semibold text-sm transition-opacity duration-500"></div>
 
         <!-- Account Equity Bar -->
@@ -783,10 +807,7 @@
         let hiddenCols = JSON.parse(localStorage.getItem('quant_hidden_cols')) || [];
 
         // Saves cash/portfolio/history to this browser AND, if the user is
-        // logged in, to their private Firestore account (see the auth
-        // block near the end of <body>). Kept local-first so the app still
-        // works instantly even on a slow connection - the cloud write is
-        // fire-and-forget in the background.
+        // logged in, to their private Firestore account.
         function syncUserData() {
             localStorage.setItem('quant_cash', userCash);
             localStorage.setItem('quant_portfolio', JSON.stringify(userPortfolio));
@@ -888,8 +909,6 @@
         }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-        // Signal & Terminology Guide - internal EN/AR toggle (independent of the
-        // main app language, but defaults to match it when the modal opens)
         function setGuideLang(lang) {
             const modal = document.getElementById('modal-guide');
             modal.querySelectorAll('[data-lang="en"]').forEach(el => el.style.display = (lang === 'en') ? '' : 'none');
@@ -1023,7 +1042,7 @@
                 }
             }
 
-            // Time Horizon Zoom Slicing (Trading Days: 1W=5, 2W=10, 1M=22, 3M=66, 6M=130, 1Y=260)
+            // Time Horizon Zoom Slicing
             let barCount = prices.length;
             if (currentTimeFrame === '1W') barCount = 5;
             else if (currentTimeFrame === '2W') barCount = 10;
@@ -1393,85 +1412,135 @@
         loadMarketData();
     </script>
 
-    <!-- ===================== LOGIN GATE (Firebase Auth) ===================== -->
-    <!-- Covers the whole screen until the visitor signs in. Market data still
-         loads in the background (harmless, public data), but nobody can see
-         or touch the dashboard - or any portfolio data - while this is up. -->
-    <div id="auth-gate" style="display:none;" class="fixed inset-0 z-[9999] bg-[#0f1115] flex items-center justify-center p-4">
-        <div class="w-full max-w-md bg-[#1a1d24] border border-[#2d3748] rounded-xl p-8 shadow-2xl">
-            <div class="flex items-center justify-center gap-2 mb-1">
-                <span class="text-base font-black text-sky-400 tracking-wide">MB-EGX Alpha</span>
+    <!-- ===================== NEW DUAL-COLUMN LOGIN GATE (Firebase Auth) ===================== -->
+    <div id="auth-gate" style="display:none;" class="fixed inset-0 z-[9999] bg-[#0F1115] flex flex-col lg:flex-row relative overflow-y-auto w-full min-h-screen">
+        
+        <!-- Background Egyptian Architectural Motif Integration -->
+        <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-20">
+            <div class="w-full h-full bg-cover bg-fixed opacity-10" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBPg6bmzgKHgnVpZdcgH8uKJdjbU4eC57mN-ebTPzaoVA7vr3vIphW8PhwCNNgg7hPcCfkWbMEPdbVi0oVLHKbpHxweHgB50r6rVsx4rSwZX8vvOcKhXRjNExda7BAj62kXdyZQjy6Sb1whl1VJasunx9S6dctn2cYX1fOL_en4Gz30ewVqJ7FmvGwbTCra5MzBX81k6jmRuyR6UhuoiFrwPCt2V5uqfS5jfVGX16FIcee-c2Q3Ogthyg')"></div>
+        </div>
+
+        <!-- Left Column: Hero & Branding -->
+        <div class="flex-1 flex flex-col justify-center items-center px-6 md:px-16 py-12 relative z-10 lg:min-h-screen">
+            <div class="max-w-xl w-full text-center lg:text-left">
+                <div class="mb-8 inline-block">
+                    <img alt="MB-EGX Metallic Logo" class="w-72 md:w-96 h-auto drop-shadow-[0_0_30px_rgba(147,204,255,0.2)]" src="mb-egx-logo.jpg"/>
+                </div>
+                <h1 class="font-headline-xl text-4xl md:text-[48px] font-bold text-primary mt-8 mb-4 leading-tight">
+                    Ancient Legacy meets <span class="text-on-background">Digital Future</span>
+                </h1>
+                <p class="font-body-md text-on-surface-variant mb-8 leading-relaxed max-w-lg">
+                    Experience the synergy of millenia-old strategic wisdom and hyper-modern algorithmic execution. MB-EGX provides the precision wealth tools required for the high-net-worth Egyptian investor.
+                </p>
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="bg-surface-elevated p-4 rounded-xl card-edge ambient-glow">
+                        <div class="text-primary font-stat-lg text-[24px] font-semibold mb-1">20ms</div>
+                        <div class="text-on-surface-variant font-label-mono text-[12px] uppercase tracking-widest">Execution Speed</div>
+                    </div>
+                    <div class="bg-surface-elevated p-4 rounded-xl card-edge ambient-glow">
+                        <div class="text-primary font-stat-lg text-[24px] font-semibold mb-1">0.01%</div>
+                        <div class="text-on-surface-variant font-label-mono text-[12px] uppercase tracking-widest">Alpha Precision</div>
+                    </div>
+                </div>
             </div>
-            <img src="assets/mb-egx-logo.png" alt="MB-EGX Logo" class="w-28 h-28 object-contain mx-auto mb-2 drop-shadow-[0_0_20px_rgba(147,204,255,0.25)]">
-            <h2 class="text-xl font-bold text-white mb-1 text-center">Terminal Access</h2>
-            <p class="text-xs text-slate-400 mb-6 text-center">Sign in to view your private dashboard</p>
+        </div>
 
-            <div id="auth-error" class="hidden mb-4 text-xs text-rose-400 bg-rose-950/40 border border-rose-800 rounded p-2"></div>
+        <!-- Right Column: Sign In Form -->
+        <div class="flex-1 flex justify-center items-center px-6 md:px-16 py-12 relative z-10 lg:min-h-screen">
+            <div class="w-full max-w-md bg-surface-elevated p-8 rounded-xl card-edge shadow-2xl relative overflow-hidden">
+                <!-- Subtle internal shader effect for form depth -->
+                <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                <div class="relative z-10">
+                    <h2 class="font-headline-lg text-[32px] font-semibold text-on-background mb-2">Terminal Access</h2>
+                    <p class="font-body-sm text-sm text-on-surface-variant mb-8">Sign in to view your private dashboard</p>
 
-            <label class="block text-[10px] font-semibold tracking-widest text-slate-400 uppercase mb-1">Email Address</label>
-            <input id="auth-email" type="email" placeholder="investor@mb-egx.ai" autocomplete="email"
-                   class="w-full mb-3 px-3 py-2 rounded bg-[#0f1115] border border-[#2d3748] text-sm text-slate-200 focus:outline-none focus:border-sky-500">
-            <label class="block text-[10px] font-semibold tracking-widest text-slate-400 uppercase mb-1">Password</label>
-            <input id="auth-password" type="password" placeholder="••••••••" autocomplete="current-password"
-                   class="w-full mb-4 px-3 py-2 rounded bg-[#0f1115] border border-[#2d3748] text-sm text-slate-200 focus:outline-none focus:border-sky-500">
+                    <!-- Auth Error Container -->
+                    <div id="auth-error" class="hidden mb-4 text-xs text-rose-400 bg-rose-950/40 border border-rose-800 rounded-lg p-3 shadow"></div>
+                    
+                    <form class="space-y-6" id="loginForm" onsubmit="event.preventDefault();">
+                        <div>
+                            <label class="block font-label-mono text-[12px] text-on-surface-variant uppercase mb-2 font-medium tracking-wide">Email Address</label>
+                            <input id="auth-email" autocomplete="email" class="w-full bg-surface-container-lowest border border-outline-variant text-on-surface rounded-lg p-3 font-body-md focus:ring-0 focus:border-primary focus:outline-none transition-all" placeholder="investor@mb-egx.ai" type="email"/>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <label class="block font-label-mono text-[12px] text-on-surface-variant uppercase font-medium tracking-wide">Password</label>
+                                <a class="text-label-mono text-[12px] text-primary hover:underline font-medium" href="#">Forgot Access?</a>
+                            </div>
+                            <input id="auth-password" autocomplete="current-password" class="w-full bg-surface-container-lowest border border-outline-variant text-on-surface rounded-lg p-3 font-body-md focus:ring-0 focus:border-primary focus:outline-none transition-all" placeholder="••••••••" type="password"/>
+                        </div>
 
-            <!-- ===== End-User Consent and Legal Disclaimer (required for NEW accounts) ===== -->
-            <div class="mb-4">
-                <div class="text-[10px] text-slate-500 mb-1">Required to create a new account:</div>
-                <div id="consent-disclaimer-text"
-                     class="h-32 overflow-y-auto text-[10px] leading-relaxed text-slate-400 bg-[#0f1115] border border-[#2d3748] rounded p-2 mb-2 whitespace-pre-line">End-User Consent and Legal Disclaimer:
+                        <!-- Required Consent Disclaimer Section -->
+                        <div class="bg-[#1a1c20] rounded-lg p-4 card-edge">
+                            <h3 class="font-label-mono text-[10px] text-on-surface-variant uppercase mb-2 border-b border-outline-variant pb-1 font-semibold">End-User Consent and Legal Disclaimer</h3>
+                            <div class="h-32 overflow-y-auto pr-2 custom-scrollbar">
+                                <p class="font-body-sm text-[11px] leading-relaxed text-on-surface-variant text-justify whitespace-pre-line">By accessing, subscribing to, or using this application, you explicitly acknowledge, understand, and agree to the following terms: 
 
-By accessing, subscribing to, or using this application, you explicitly acknowledge, understand, and agree to the following terms:
+• <strong>Informational and Educational Use Only:</strong> This app is for informational and educational purposes only. It does not constitute financial or investment advice. 
 
-• Informational and Educational Use Only: This app is for informational and educational purposes only. It does not constitute financial or investment advice.
+• <strong>Nature of the Tools:</strong> The service operates by providing educational and analytical tools, effectively giving you a mirror to look at the market. The outputs are generated via raw data, charts, historical trends, mathematical calculations, quantitative indicators, and automated technical screening tools. 
 
-• Nature of the Tools: The service operates by providing educational and analytical tools, effectively giving you a mirror to look at the market. The outputs are generated via raw data, charts, historical trends, mathematical calculations, quantitative indicators, and automated technical screening tools.
+• <strong>No Unlicensed Financial Advisory:</strong> The application and its creators do not direct a user's specific actions, nor do they act as a portfolio manager. Giving direct investment advice or portfolio management requires rigorous licensing from the Egyptian Financial Regulatory Authority (FRA), which this software does not provide. 
 
-• No Unlicensed Financial Advisory: The application and its creators do not direct a user's specific actions, nor do they act as a portfolio manager. Giving direct investment advice or portfolio management requires rigorous licensing from the Egyptian Financial Regulatory Authority (FRA), which this software does not provide.
+• <strong>Analytics, Not Commands:</strong> All signals and feature outputs provided by the software are strictly classified as analytics, such as a 'Quantitative Indicator Output' or 'Technical Pattern Matcher'. They are never to be interpreted as direct 'Buy/Sell Recommendations' or market commands. The application provides the data, and you must independently decide what to do with it. 
 
-• Analytics, Not Commands: All signals and feature outputs provided by the software are strictly classified as analytics, such as a 'Quantitative Indicator Output' or 'Technical Pattern Matcher'. They are never to be interpreted as direct 'Buy/Sell Recommendations' or market commands. The application provides the data, and you must independently decide what to do with it.
+• <strong>Assumption of Risk:</strong> Users are solely responsible for their own trading decisions. 
 
-• Assumption of Risk: Users are solely responsible for their own trading decisions.
+• <strong>No Handling of Client Funds:</strong> This application functions strictly as a Software as a Service (SaaS) analytics tool. We will never request, hold, or allow users to deposit trading capital or funds into our bank accounts or app wallets. 
 
-• No Handling of Client Funds: This application functions strictly as a Software as a Service (SaaS) analytics tool. We will never request, hold, or allow users to deposit trading capital or funds into our bank accounts or app wallets.
-
-• Third-Party Trade Execution: You cannot execute trades independently through this app; all users must execute their actual trades through approved and licensed EGX brokers (such as Thndr, EFG Hermes, etc.).</div>
-                <label class="flex items-start gap-2 text-[11px] text-slate-300 cursor-pointer select-none">
-                    <input type="checkbox" id="consent-checkbox" onchange="onConsentToggle()" class="mt-0.5 accent-sky-600">
-                    <span>I acknowledge and agree to the End-User Consent and Legal Disclaimer.</span>
-                </label>
+• <strong>Third-Party Trade Execution:</strong> You cannot execute trades independently through this app; all users must execute their actual trades through approved and licensed EGX brokers (such as Thndr, EFG Hermes, etc.).</p>
+                            </div>
+                            <label class="flex items-start gap-3 mt-3 cursor-pointer group select-none">
+                                <input class="mt-1 rounded bg-[#1e2024] border-outline-variant text-primary focus:ring-offset-surface-elevated accent-primary" id="consent-checkbox" onchange="onConsentToggle()" type="checkbox"/>
+                                <span class="font-body-sm text-[14px] text-on-surface group-hover:text-primary transition-colors">I acknowledge and agree to the End-User Consent and Legal Disclaimer.</span>
+                            </label>
+                        </div>
+                        
+                        <button id="btn-auth-signin" onclick="handleEmailSignIn()" class="w-full bg-primary text-on-primary font-bold py-4 rounded-lg hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                            <span>Sign In</span>
+                            <span class="material-symbols-outlined text-[20px]">login</span>
+                        </button>
+                        
+                        <button id="btn-auth-signup" onclick="handleEmailSignUp()" disabled class="w-full py-3 rounded-lg bg-transparent border border-outline-variant text-sm text-outline transition cursor-not-allowed opacity-50 hover:bg-[#1a1c20]">
+                            Create Account
+                        </button>
+                    </form>
+                    
+                    <div class="flex items-center gap-4 my-6">
+                        <div class="h-px flex-1 bg-outline-variant/30"></div>
+                        <span class="font-label-mono text-[12px] text-on-surface-variant uppercase font-medium">OR</span>
+                        <div class="h-px flex-1 bg-outline-variant/30"></div>
+                    </div>
+                    
+                    <button onclick="handleGoogleSignIn()" class="w-full bg-[#282a2e] text-on-surface py-3 rounded-lg border border-outline-variant hover:bg-[#37393e] transition-all flex items-center justify-center gap-3">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24">
+                            <path d="M12 5.04c1.74 0 3.3.6 4.53 1.77l3.39-3.39C17.85 1.5 15.17 0 12 0 7.31 0 3.26 2.69 1.25 6.61l3.96 3.07c.95-2.85 3.61-4.64 6.79-4.64z" fill="#EA4335"></path>
+                            <path d="M23.49 12.27c0-.82-.07-1.61-.21-2.37H12v4.51h6.44c-.28 1.48-1.13 2.74-2.39 3.58l3.71 2.88c2.17-2 3.43-4.94 3.43-8.6z" fill="#4285F4"></path>
+                            <path d="M5.21 14.34c-.24-.72-.37-1.49-.37-2.34s.13-1.62.37-2.34L1.25 6.61C.45 8.23 0 10.06 0 12c0 1.94.45 3.77 1.25 5.39l3.96-3.05z" fill="#FBBC05"></path>
+                            <path d="M12 24c3.24 0 5.97-1.07 7.96-2.91l-3.71-2.88c-1.1.74-2.51 1.18-4.25 1.18-3.18 0-5.84-2.14-6.8-5.04l-3.96 3.07C3.26 21.31 7.31 24 12 24z" fill="#34A853"></path>
+                        </svg>
+                        <span class="font-body-md font-medium text-sm">Sign in with Google</span>
+                    </button>
+                    
+                    <p class="mt-4 text-center font-body-sm text-[11px] text-on-surface-variant/80">
+                        Continuing with Google to create a new account also requires the agreement checkbox above to be checked.
+                    </p>
+                </div>
             </div>
-
-            <button onclick="handleEmailSignIn()" id="btn-auth-signin"
-                    class="w-full mb-2 py-2 rounded bg-sky-600 hover:bg-sky-500 text-sm font-semibold text-white transition">Sign In  →</button>
-            <button onclick="handleEmailSignUp()" id="btn-auth-signup" disabled
-                    class="w-full mb-4 py-2 rounded bg-transparent border border-[#2d3748] text-sm text-slate-500 transition cursor-not-allowed opacity-50">Create Account</button>
-
-            <div class="flex items-center gap-2 mb-4">
-                <div class="h-px flex-1 bg-[#2d3748]"></div>
-                <span class="text-[10px] text-slate-500">OR</span>
-                <div class="h-px flex-1 bg-[#2d3748]"></div>
+            
+            <!-- Footer Security Message inside Right Column on Desktop -->
+            <div class="absolute bottom-6 left-0 w-full flex justify-center items-center pointer-events-none z-0">
+                <div class="bg-surface-container-lowest/50 backdrop-blur-sm px-6 py-2 rounded-full border border-outline-variant/30 flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary text-[16px]">verified_user</span>
+                    <span class="font-label-mono text-[10px] uppercase text-on-surface-variant tracking-wider">AES-256 Bank Grade Encryption Matrix Enabled</span>
+                </div>
             </div>
-
-            <button onclick="handleGoogleSignIn()"
-                    class="w-full py-2 rounded bg-white hover:bg-slate-100 text-sm font-semibold text-slate-800 flex items-center justify-center gap-2 transition">
-                <svg width="16" height="16" viewBox="0 0 48 48">
-                    <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.6-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"/>
-                    <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6 29.6 4 24 4c-7.6 0-14.1 4.3-17.4 10.7z"/>
-                    <path fill="#4CAF50" d="M24 44c5.5 0 10.4-1.9 14.2-5.1l-6.6-5.4C29.6 35.5 27 36.5 24 36.5c-5.3 0-9.6-3.4-11.3-8l-6.6 5.1C9.9 39.7 16.4 44 24 44z"/>
-                    <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.3-4.1 5.6l6.6 5.4C41.7 35.6 44 30.2 44 24c0-1.3-.1-2.7-.4-3.5z"/>
-                </svg>
-                Sign in with Google
-            </button>
-            <p class="text-[9px] text-slate-500 mt-2 text-center">Continuing with Google to create a new account also requires the agreement checkbox above to be checked.</p>
         </div>
     </div>
 
     <script>
         // --- Firebase setup ---
-        // These are PUBLIC client identifiers (not secrets) - safe to be
-        // visible in page source. Real access control happens server-side
-        // via Firestore security rules, not by hiding this config.
         const firebaseConfig = {
             apiKey: "AIzaSyBCC4D61IHTEFNsgO6i8H_BdixwArE-VRo",
             authDomain: "mb-egx-12d11.firebaseapp.com",
@@ -1483,20 +1552,10 @@ By accessing, subscribing to, or using this application, you explicitly acknowle
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
-        // Requires Google Analytics to be linked to this Firebase project
-        // (Firebase console -> Project settings -> Integrations). If it
-        // isn't linked yet, this just no-ops instead of throwing.
         let analytics = null;
         try { analytics = firebase.analytics(); } catch (e) { console.warn('Firebase Analytics not available:', e); }
 
-        // Emails allowed to see the in-app "Usage Analytics" panel.
-        // TODO: replace with your real email address(es).
         const ADMIN_EMAILS = ["drmo071990@gmail.com"];
-
-        // --- End-User Consent and Legal Disclaimer ---
-        // Bump this whenever the disclaimer text materially changes; existing
-        // users are NOT re-prompted automatically by this alone - that would
-        // need its own "re-consent" flow, out of scope here.
         const TERMS_VERSION = "1.0";
 
         function showAuthError(msg) {
@@ -1512,21 +1571,17 @@ By accessing, subscribing to, or using this application, you explicitly acknowle
             const checked = document.getElementById('consent-checkbox').checked;
             const btn = document.getElementById('btn-auth-signup');
             btn.disabled = !checked;
-            btn.classList.toggle('opacity-50', !checked);
-            btn.classList.toggle('cursor-not-allowed', !checked);
-            btn.classList.toggle('bg-transparent', !checked);
-            btn.classList.toggle('text-slate-500', !checked);
-            btn.classList.toggle('text-slate-300', checked);
-            btn.classList.toggle('hover:bg-[#222730]', checked);
-            if (checked) clearAuthError();
+            
+            if (checked) {
+                btn.classList.remove('opacity-50', 'cursor-not-allowed', 'text-outline', 'bg-transparent');
+                btn.classList.add('bg-surface-container-highest', 'text-white', 'hover:bg-[#37393e]');
+                clearAuthError();
+            } else {
+                btn.classList.add('opacity-50', 'cursor-not-allowed', 'text-outline', 'bg-transparent');
+                btn.classList.remove('bg-surface-container-highest', 'text-white', 'hover:bg-[#37393e]');
+            }
         }
 
-        // Best-effort client-reported IP for the audit trail. This is NOT a
-        // server-verified value (a browser can't authoritatively know its own
-        // public IP) - it's a third-party lookup the client performs and
-        // reports about itself. True server-captured IP would require a
-        // Cloud Function reading the request, which this static site doesn't
-        // have. Never blocks sign-up if it fails.
         async function fetchClientIp() {
             try {
                 const resp = await fetch('https://api.ipify.org?format=json');
@@ -1567,9 +1622,6 @@ By accessing, subscribing to, or using this application, you explicitly acknowle
             try {
                 const cred = await auth.createUserWithEmailAndPassword(email, password);
                 const ip = await fetchClientIp();
-                // Firestore Security Rules (see firestore.rules) independently
-                // require these fields to be present and valid on create - this
-                // client write is convenience, not the enforcement boundary.
                 await db.collection('users').doc(cred.user.uid).set({
                     cash: 0, portfolio: [], history: [],
                     ...buildConsentFields(ip),
@@ -1587,11 +1639,6 @@ By accessing, subscribing to, or using this application, you explicitly acknowle
                 const isNewUser = !!(result.additionalUserInfo && result.additionalUserInfo.isNewUser);
                 if (isNewUser) {
                     if (!document.getElementById('consent-checkbox').checked) {
-                        // Can't un-create the Google/Firebase Auth identity from the
-                        // client, but we sign them straight back out and never write
-                        // an app-data doc - Firestore rules also block that doc from
-                        // ever being created without valid consent fields, so no
-                        // account "activates" in this app without agreement.
                         await auth.signOut();
                         showAuthError("You must agree to the legal terms to create an account.");
                         return;
@@ -1611,10 +1658,6 @@ By accessing, subscribing to, or using this application, you explicitly acknowle
             auth.signOut();
         }
 
-        // Pulls this user's private cash/portfolio/history from Firestore.
-        // If this is their very first login and they already had local
-        // browser data (from using the site before signing up), that data
-        // is migrated up to their new account instead of being discarded.
         async function loadUserDataFromCloud(uid) {
             const docRef = db.collection('users').doc(uid);
             const snap = await docRef.get();
@@ -1634,9 +1677,6 @@ By accessing, subscribing to, or using this application, you explicitly acknowle
             if (typeof renderHistory === 'function') renderHistory();
         }
 
-        // Trade count / EGP value dealt / portfolio value — mirrors the
-        // same fields the desktop app pushes, so the admin Usage Analytics
-        // panel can show one combined number per user across both apps.
         function computeWebDealingStats() {
             const tradeCount = userPortfolio.length + userHistory.length;
             let totalValue = 0;
@@ -1653,9 +1693,6 @@ By accessing, subscribing to, or using this application, you explicitly acknowle
             };
         }
 
-        // Called by syncUserData() (defined earlier in the core script)
-        // every time cash/portfolio/history changes, so it's always backed
-        // up to the user's account - not just this one browser.
         window.cloudSyncUserData = function () {
             if (!auth.currentUser) return;
             db.collection('users').doc(auth.currentUser.uid).set({
@@ -1664,9 +1701,6 @@ By accessing, subscribing to, or using this application, you explicitly acknowle
             }, { merge: true }).catch(err => console.error('Cloud sync failed:', err));
         };
 
-        // Turns "jane.doe@example.com" into "Jane.doe" when no display
-        // name is set (e.g. email/password accounts, which Firebase
-        // doesn't attach a name to unless the user typed one in).
         function getFriendlyName(user) {
             if (user.displayName && user.displayName.trim()) return user.displayName.trim();
             if (user.email) {
@@ -1686,13 +1720,6 @@ By accessing, subscribing to, or using this application, you explicitly acknowle
         }
 
         let _welcomedThisSession = false;
-
-        // --- Session tracking (for the "how long do users stay" question) ---
-        // Each sign-in creates one doc in `sessions`. While the tab is open
-        // and visible, `lastSeen` is bumped every 30s. Session length is
-        // then just (lastSeen - start) - this is an approximation (it can't
-        // capture the exact close time if someone just closes the tab), but
-        // the heartbeat keeps the error small in practice.
         let _currentSessionRef = null;
         let _heartbeatTimer = null;
 
@@ -1732,7 +1759,6 @@ By accessing, subscribing to, or using this application, you explicitly acknowle
         });
         window.addEventListener('beforeunload', () => _touchSession());
 
-        // --- Admin "Usage Analytics" panel ---
         function _formatDuration(totalSeconds) {
             if (!isFinite(totalSeconds) || totalSeconds < 0) return '—';
             const mins = Math.round(totalSeconds / 60);
@@ -1748,7 +1774,6 @@ By accessing, subscribing to, or using this application, you explicitly acknowle
             document.getElementById('analytics-table-wrap').classList.add('hidden');
 
             try {
-                // Most recent 1000 sessions - raise this if you need deeper history.
                 const snap = await db.collection('sessions').orderBy('start', 'desc').limit(1000).get();
                 const perUser = {};
                 let totalDurationSec = 0;
@@ -1756,7 +1781,7 @@ By accessing, subscribing to, or using this application, you explicitly acknowle
 
                 snap.forEach(doc => {
                     const d = doc.data();
-                    if (!d.start || !d.lastSeen) return; // still-open or malformed session
+                    if (!d.start || !d.lastSeen) return;
                     const startMs = d.start.toMillis();
                     const lastMs = d.lastSeen.toMillis();
                     const durSec = Math.max(0, (lastMs - startMs) / 1000);
@@ -1778,8 +1803,6 @@ By accessing, subscribing to, or using this application, you explicitly acknowle
                     if (lastMs > perUser[key].lastSeen) perUser[key].lastSeen = lastMs;
                 });
 
-                // Pull dealing stats (trade count / EGP value / portfolio value) that
-                // each app pushes onto users/{uid}.web_stats and .desktop_stats.
                 document.getElementById('analytics-loading').textContent = 'Loading trading activity…';
                 const uids = Object.values(perUser).map(u => u.uid).filter(Boolean);
                 await Promise.all(uids.map(async uid => {
@@ -1797,7 +1820,7 @@ By accessing, subscribing to, or using this application, you explicitly acknowle
                                 entry.portfolioValueEgp += s.portfolio_value_egp || 0;
                             }
                         });
-                    } catch (e) { /* rules may block reading other users' docs for non-admins - ignore */ }
+                    } catch (e) {}
                 }));
 
                 const uniqueUsers = Object.keys(perUser).length;

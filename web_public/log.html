@@ -1,106 +1,49 @@
 <!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Welcome to MB-EGX Alpha | Precision Wealth Alpha</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;900&family=Inter:wght@400;500&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
+    <!-- Firebase (Auth + Firestore) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
 
-<html class="dark" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Welcome to MB-EGX Alpha | Precision Wealth Alpha</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;900&amp;family=Inter:wght@400;500&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
-                    "colors": {
-                        "on-tertiary-container": "#412200",
-                        "inverse-surface": "#e2e2e8",
-                        "primary-fixed": "#cce5ff",
-                        "inverse-on-surface": "#2f3035",
-                        "on-tertiary-fixed-variant": "#6b3b00",
-                        "text-muted": "#A0AEC0",
-                        "on-primary-fixed": "#001d31",
-                        "surface": "#111317",
-                        "tertiary-fixed": "#ffdcc0",
-                        "secondary-container": "#3d4759",
-                        "secondary": "#bdc7dc",
-                        "surface-variant": "#333539",
-                        "primary-container": "#3198dc",
-                        "on-secondary-fixed": "#121c2c",
-                        "outline-variant": "#3f4850",
-                        "tertiary-container": "#d07d1c",
-                        "primary-fixed-dim": "#93ccff",
-                        "background": "#111317",
-                        "outline": "#89929b",
-                        "surface-container-highest": "#333539",
-                        "error-container": "#93000a",
+                    colors: {
                         "primary": "#93ccff",
-                        "on-secondary-container": "#abb5cb",
-                        "tertiary": "#ffb875",
-                        "on-background": "#e2e2e8",
-                        "surface-container-low": "#1a1c20",
-                        "text-primary": "#FFFFFF",
-                        "surface-elevated": "#1A1D24",
-                        "on-secondary": "#273141",
-                        "on-surface": "#e2e2e8",
-                        "surface-container-high": "#282a2e",
-                        "inverse-primary": "#006398",
-                        "tertiary-fixed-dim": "#ffb875",
-                        "surface-container-lowest": "#0c0e12",
-                        "secondary-fixed-dim": "#bdc7dc",
-                        "on-surface-variant": "#bfc7d2",
-                        "error": "#ffb4ab",
-                        "surface-tint": "#93ccff",
-                        "on-secondary-fixed-variant": "#3d4759",
-                        "on-error": "#690005",
                         "on-primary": "#003351",
-                        "on-tertiary": "#4b2800",
-                        "surface-bright": "#37393e",
-                        "surface-dim": "#111317",
-                        "on-tertiary-fixed": "#2d1600",
-                        "on-error-container": "#ffdad6",
-                        "surface-container": "#1e2024",
-                        "on-primary-container": "#002c47",
-                        "secondary-fixed": "#d9e3f9",
-                        "on-primary-fixed-variant": "#004b73"
+                        "surface-elevated": "#1A1D24",
+                        "surface-container-highest": "#333539",
+                        "surface-container-lowest": "#0c0e12",
+                        "outline-variant": "#3f4850",
+                        "on-surface-variant": "#bfc7d2",
+                        "on-surface": "#e2e2e8",
+                        "background": "#111317",
+                        "on-background": "#e2e2e8",
                     },
-                    "borderRadius": {
-                        "DEFAULT": "0.125rem",
-                        "lg": "0.25rem",
-                        "xl": "0.5rem",
-                        "full": "0.75rem"
-                    },
-                    "spacing": {
-                        "unit": "8px",
-                        "margin-mobile": "20px",
-                        "max-width": "1280px",
-                        "margin-desktop": "64px",
-                        "gutter": "24px"
-                    },
-                    "fontFamily": {
+                    fontFamily: {
                         "headline-lg": ["Hanken Grotesk"],
-                        "label-mono": ["JetBrains Mono"],
-                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "headline-xl": ["Hanken Grotesk"],
                         "body-md": ["Inter"],
                         "body-sm": ["Inter"],
-                        "headline-xl": ["Hanken Grotesk"],
+                        "label-mono": ["JetBrains Mono"],
                         "stat-lg": ["JetBrains Mono"]
-                    },
-                    "fontSize": {
-                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-                        "label-mono": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
-                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
-                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                        "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                        "stat-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
                     }
                 }
             }
         }
     </script>
-<style>
+    <style>
         body {
             background-color: #0F1115;
             color: #e2e2e8;
@@ -112,161 +55,336 @@
         .card-edge {
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .glass-panel {
-            background: rgba(26, 29, 36, 0.8);
-            backdrop-filter: blur(12px);
-        }
         input:focus {
             box-shadow: 0 0 0 2px rgba(147, 204, 255, 0.3);
+            outline: none;
         }
-        ::-webkit-scrollbar {
+        .custom-scrollbar::-webkit-scrollbar {
             width: 4px;
         }
-        ::-webkit-scrollbar-track {
-            background: #0F1115;
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1e2024;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #2D3748;
-            border-radius: 10px;
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #3f4850;
+            border-radius: 4px;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        .animate-shake {
+            animation: shake 0.2s ease-in-out 0s 2;
         }
     </style>
 </head>
-<body class="font-body-md antialiased">
-<!-- Top Bar Anchor -->
-<header class="flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 w-full fixed top-0 z-50 bg-surface/95 backdrop-blur-md border-b border-outline-variant shadow-sm">
-<div class="font-headline-lg text-headline-lg font-bold tracking-tighter text-primary">MB-EGX Alpha</div>
-<div class="hidden md:flex gap-6 items-center">
-<div class="text-on-surface-variant font-medium font-body-sm">Precision Wealth Alpha</div>
-<div class="flex gap-4">
-<span class="material-symbols-outlined text-primary cursor-pointer hover:opacity-80 transition-opacity">language</span>
-<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">help</span>
-</div>
-</div>
-</header>
-<main class="min-h-screen pt-16 flex flex-col lg:flex-row relative">
-<!-- Background Egyptian Architectural Motif Integration -->
-<div class="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-20">
-<div class="w-full h-full bg-cover bg-fixed opacity-10" data-alt="Faded technical blueprints of ancient Egyptian pyramids and obelisks overlaid with digital circuit board traces and stock market grid lines in a deep charcoal and primary blue palette." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBPg6bmzgKHgnVpZdcgH8uKJdjbU4eC57mN-ebTPzaoVA7vr3vIphW8PhwCNNgg7hPcCfkWbMEPdbVi0oVLHKbpHxweHgB50r6rVsx4rSwZX8vvOcKhXRjNExda7BAj62kXdyZQjy6Sb1whl1VJasunx9S6dctn2cYX1fOL_en4Gz30ewVqJ7FmvGwbTCra5MzBX81k6jmRuyR6UhuoiFrwPCt2V5uqfS5jfVGX16FIcee-c2Q3Ogthyg')"></div>
-</div>
-<!-- Left Column: Hero & Branding -->
-<section class="flex-1 flex flex-col justify-center items-center px-margin-mobile md:px-margin-desktop py-12 relative z-10">
-<div class="max-w-xl w-full text-center lg:text-left">
-<div class="mb- unit*4 inline-block">
-<img alt="MB-EGX Metallic Logo" class="w-72 md:w-96 h-auto drop-shadow-[0_0_30px_rgba(147,204,255,0.2)]" src="assets/mb-egx-logo.png"/>
-</div>
-<h1 class="font-headline-xl text-headline-xl text-primary mt-8 mb-4 leading-tight">
-                    Ancient Legacy meets <span class="text-on-background">Digital Future</span>
-</h1>
-<p class="font-body-md text-body-md text-on-surface-variant mb-8 leading-relaxed max-w-lg">
+<body class="font-body-md antialiased min-h-screen flex flex-col relative">
+
+    <!-- Top Bar Anchor -->
+    <header class="flex justify-between items-center px-6 md:px-16 h-16 w-full fixed top-0 z-50 bg-[#111317]/95 backdrop-blur-md border-b border-outline-variant shadow-sm">
+        <div class="font-headline-lg text-2xl font-bold tracking-tighter text-primary">MB-EGX Alpha</div>
+        <div class="hidden md:flex gap-6 items-center">
+            <div class="text-on-surface-variant font-medium font-body-sm text-sm">Precision Wealth Alpha</div>
+            <div class="flex gap-4">
+                <span class="material-symbols-outlined text-primary cursor-pointer hover:opacity-80 transition-opacity">language</span>
+                <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">help</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 flex flex-col lg:flex-row relative pt-16">
+        <!-- Background Egyptian Architectural Motif Integration -->
+        <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-20">
+            <div class="w-full h-full bg-cover bg-fixed opacity-10" data-alt="Faded technical blueprints of ancient Egyptian pyramids and obelisks overlaid with digital circuit board traces and stock market grid lines in a deep charcoal and primary blue palette." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBPg6bmzgKHgnVpZdcgH8uKJdjbU4eC57mN-ebTPzaoVA7vr3vIphW8PhwCNNgg7hPcCfkWbMEPdbVi0oVLHKbpHxweHgB50r6rVsx4rSwZX8vvOcKhXRjNExda7BAj62kXdyZQjy6Sb1whl1VJasunx9S6dctn2cYX1fOL_en4Gz30ewVqJ7FmvGwbTCra5MzBX81k6jmRuyR6UhuoiFrwPCt2V5uqfS5jfVGX16FIcee-c2Q3Ogthyg')"></div>
+        </div>
+
+        <!-- Left Column: Hero & Branding -->
+        <section class="flex-1 flex flex-col justify-center items-center px-6 md:px-16 py-12 relative z-10">
+            <div class="max-w-xl w-full text-center lg:text-left">
+                <div class="mb-8 inline-block">
+                    <img alt="MB-EGX Metallic Logo" id="interactive-logo" class="w-72 md:w-96 h-auto drop-shadow-[0_0_30px_rgba(147,204,255,0.2)]" src="mb-egx-logo.jpg"/>
+                </div>
+                <h1 class="font-headline-xl text-4xl md:text-[48px] text-primary mt-8 mb-4 leading-tight font-bold">
+                    Ancient Legacy meets <br class="hidden md:block"/><span class="text-on-background">Digital Future</span>
+                </h1>
+                <p class="font-body-md text-[16px] text-on-surface-variant mb-8 leading-relaxed max-w-lg">
                     Experience the synergy of millenia-old strategic wisdom and hyper-modern algorithmic execution. MB-EGX provides the precision wealth tools required for the high-net-worth Egyptian investor.
                 </p>
-<div class="grid grid-cols-2 gap-4 mb-8">
-<div class="bg-surface-elevated p-4 rounded-xl card-edge ambient-glow">
-<div class="text-primary font-stat-lg text-stat-lg mb-1">20ms</div>
-<div class="text-on-surface-variant font-label-mono text-label-mono uppercase tracking-widest">Execution Speed</div>
-</div>
-<div class="bg-surface-elevated p-4 rounded-xl card-edge ambient-glow">
-<div class="text-primary font-stat-lg text-stat-lg mb-1">0.01%</div>
-<div class="text-on-surface-variant font-label-mono text-label-mono uppercase tracking-widest">Alpha Precision</div>
-</div>
-</div>
-</div>
-</section>
-<!-- Right Column: Sign In Form -->
-<section class="flex-1 flex justify-center items-center px-margin-mobile md:px-margin-desktop py-12 relative z-10">
-<div class="w-full max-w-md bg-surface-elevated p-8 rounded-xl card-edge shadow-2xl relative overflow-hidden">
-<!-- Subtle internal shader effect for form depth -->
-<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16"></div>
-<div class="relative z-10">
-<h2 class="font-headline-lg text-headline-lg text-on-background mb-2">Terminal Access</h2>
-<p class="font-body-sm text-body-sm text-on-surface-variant mb-8">Sign in to view your private dashboard</p>
-<form class="space-y-6" id="loginForm">
-<div>
-<label class="block font-label-mono text-label-mono text-on-surface-variant uppercase mb-2">Email Address</label>
-<input class="w-full bg-surface-container-lowest border-outline-variant text-on-surface rounded-lg p-3 font-body-md focus:ring-0 focus:border-primary transition-all" placeholder="investor@mb-egx.ai" type="email"/>
-</div>
-<div>
-<div class="flex justify-between mb-2">
-<label class="block font-label-mono text-label-mono text-on-surface-variant uppercase">Password</label>
-<a class="text-label-mono text-primary hover:underline" href="#">Forgot Access?</a>
-</div>
-<input class="w-full bg-surface-container-lowest border-outline-variant text-on-surface rounded-lg p-3 font-body-md focus:ring-0 focus:border-primary transition-all" placeholder="••••••••" type="password"/>
-</div>
-<!-- Required Consent Disclaimer Section -->
-<div class="bg-surface-container-low rounded-lg p-4 card-edge">
-<h3 class="font-label-mono text-[10px] text-on-surface-variant uppercase mb-2 border-b border-outline-variant pb-1">End-User Consent and Legal Disclaimer</h3>
-<div class="h-32 overflow-y-auto pr-2 custom-scrollbar">
-<p class="font-body-sm text-[11px] leading-relaxed text-on-surface-variant text-justify">
-                                    By accessing, subscribing to, or using this application, you explicitly acknowledge, understand, and agree to the following terms: 
-                                    <br/><br/>
-                                    • <strong>Informational and Educational Use Only:</strong> This app is for informational and educational purposes only. It does not constitute financial or investment advice. 
-                                    <br/>• <strong>Nature of the Tools:</strong> The service operates by providing educational and analytical tools, effectively giving you a mirror to look at the market. The outputs are generated via raw data, charts, historical trends, mathematical calculations, quantitative indicators, and automated technical screening tools. 
-                                    <br/>• <strong>No Unlicensed Financial Advisory:</strong> The application and its creators do not direct a user's specific actions, nor do they act as a portfolio manager. Giving direct investment advice or portfolio management requires rigorous licensing from the Egyptian Financial Regulatory Authority (FRA), which this software does not provide. 
-                                    <br/>• <strong>Analytics, Not Commands:</strong> All signals and feature outputs provided by the software are strictly classified as analytics, such as a 'Quantitative Indicator Output' or 'Technical Pattern Matcher'. They are never to be interpreted as direct 'Buy/Sell Recommendations' or market commands. The application provides the data, and you must independently decide what to do with it. 
-                                    <br/>• <strong>Assumption of Risk:</strong> Users are solely responsible for their own trading decisions. 
-                                    <br/>• <strong>No Handling of Client Funds:</strong> This application functions strictly as a Software as a Service (SaaS) analytics tool. We will never request, hold, or allow users to deposit trading capital or funds into our bank accounts or app wallets. 
-                                    <br/>• <strong>Third-Party Trade Execution:</strong> You cannot execute trades independently through this app; all users must execute their actual trades through approved and licensed EGX brokers (such as Thndr, EFG Hermes, etc.).
-                                </p>
-</div>
-<label class="flex items-start gap-3 mt-3 cursor-pointer group">
-<input class="mt-1 rounded bg-surface-container border-outline-variant text-primary focus:ring-offset-surface-elevated" id="consent_checkbox" type="checkbox"/>
-<span class="font-body-sm text-body-sm text-on-surface select-none group-hover:text-primary-fixed-dim transition-colors">I acknowledge and agree to the End-User Consent and Legal Disclaimer.</span>
-</label>
-</div>
-<button class="w-full bg-primary text-on-primary font-bold py-4 rounded-lg hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2" type="submit">
-<span>Sign In</span>
-<span class="material-symbols-outlined text-[20px]">login</span>
-</button>
-</form>
-<div class="flex items-center gap-4 my-6">
-<div class="h-px flex-1 bg-outline-variant/30"></div>
-<span class="font-label-mono text-label-mono text-on-surface-variant uppercase">OR</span>
-<div class="h-px flex-1 bg-outline-variant/30"></div>
-</div>
-<button class="w-full bg-surface-container-high text-on-surface py-3 rounded-lg border border-outline-variant hover:bg-surface-bright transition-all flex items-center justify-center gap-3">
-<svg class="w-5 h-5" viewbox="0 0 24 24">
-<path d="M12 5.04c1.74 0 3.3.6 4.53 1.77l3.39-3.39C17.85 1.5 15.17 0 12 0 7.31 0 3.26 2.69 1.25 6.61l3.96 3.07c.95-2.85 3.61-4.64 6.79-4.64z" fill="#EA4335"></path>
-<path d="M23.49 12.27c0-.82-.07-1.61-.21-2.37H12v4.51h6.44c-.28 1.48-1.13 2.74-2.39 3.58l3.71 2.88c2.17-2 3.43-4.94 3.43-8.6z" fill="#4285F4"></path>
-<path d="M5.21 14.34c-.24-.72-.37-1.49-.37-2.34s.13-1.62.37-2.34L1.25 6.61C.45 8.23 0 10.06 0 12c0 1.94.45 3.77 1.25 5.39l3.96-3.05z" fill="#FBBC05"></path>
-<path d="M12 24c3.24 0 5.97-1.07 7.96-2.91l-3.71-2.88c-1.1.74-2.51 1.18-4.25 1.18-3.18 0-5.84-2.14-6.8-5.04l-3.96 3.07C3.26 21.31 7.31 24 12 24z" fill="#34A853"></path>
-</svg>
-<span class="font-body-md font-medium">Sign in with Google</span>
-</button>
-<p class="mt-6 text-center font-body-sm text-body-sm text-on-surface-variant">
-                        Don't have an account? <a class="text-primary font-bold hover:underline" href="#">Create Account</a>
-</p>
-</div>
-</div>
-</section>
-</main>
-<!-- Footer Security Message -->
-<footer class="fixed bottom-0 left-0 w-full p-4 flex justify-center items-center pointer-events-none">
-<div class="bg-surface-container-lowest/50 backdrop-blur-sm px-6 py-2 rounded-full border border-outline-variant/30 flex items-center gap-3">
-<span class="material-symbols-outlined text-primary text-[16px]">verified_user</span>
-<span class="font-label-mono text-[10px] uppercase text-on-surface-variant tracking-wider">AES-256 Bank Grade Encryption Matrix Enabled</span>
-</div>
-</footer>
-<script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            const checkbox = document.getElementById('consent_checkbox');
-            if (!checkbox.checked) {
-                e.preventDefault();
-                checkbox.parentElement.classList.add('animate-shake');
-                const warning = document.createElement('div');
-                warning.className = 'text-error font-label-mono text-[10px] mt-2';
-                warning.innerText = 'REQUIRES ACKNOWLEDGEMENT';
-                if(!checkbox.parentElement.nextElementSibling?.innerText.includes('REQUIRES')) {
-                    checkbox.parentElement.after(warning);
-                    setTimeout(() => warning.remove(), 2000);
-                }
-            } else {
-                // Procedural form handling logic would go here
-                console.log("Terminal Authentication Proceeding...");
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="bg-surface-elevated p-4 rounded-xl card-edge ambient-glow">
+                        <div class="text-primary font-stat-lg text-[24px] font-semibold mb-1">20ms</div>
+                        <div class="text-on-surface-variant font-label-mono text-[12px] uppercase tracking-widest">Execution Speed</div>
+                    </div>
+                    <div class="bg-surface-elevated p-4 rounded-xl card-edge ambient-glow">
+                        <div class="text-primary font-stat-lg text-[24px] font-semibold mb-1">0.01%</div>
+                        <div class="text-on-surface-variant font-label-mono text-[12px] uppercase tracking-widest">Alpha Precision</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Column: Sign In Form -->
+        <section class="flex-1 flex justify-center items-center px-6 md:px-16 py-12 relative z-10">
+            <div class="w-full max-w-md bg-surface-elevated p-8 rounded-xl card-edge shadow-2xl relative overflow-hidden">
+                <!-- Subtle internal shader effect for form depth -->
+                <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                <div class="relative z-10">
+                    <h2 class="font-headline-lg text-[32px] text-on-background font-semibold mb-2">Terminal Access</h2>
+                    <p class="font-body-sm text-sm text-on-surface-variant mb-8">Sign in to view your private dashboard</p>
+                    
+                    <!-- Auth Error Container -->
+                    <div id="auth-error" class="hidden mb-4 text-xs text-rose-400 bg-rose-950/40 border border-rose-800 rounded-lg p-3 shadow"></div>
+
+                    <form class="space-y-6" id="loginForm" onsubmit="event.preventDefault();">
+                        <div>
+                            <label class="block font-label-mono text-[12px] text-on-surface-variant uppercase mb-2 font-medium">Email Address</label>
+                            <input id="auth-email" autocomplete="email" class="w-full bg-surface-container-lowest border border-outline-variant text-on-surface rounded-lg p-3 font-body-md focus:border-primary transition-all" placeholder="investor@mb-egx.ai" type="email"/>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <label class="block font-label-mono text-[12px] text-on-surface-variant uppercase font-medium">Password</label>
+                                <a class="text-label-mono text-[12px] text-primary hover:underline font-medium cursor-pointer" onclick="handlePasswordReset()">Forgot Access?</a>
+                            </div>
+                            <input id="auth-password" autocomplete="current-password" class="w-full bg-surface-container-lowest border border-outline-variant text-on-surface rounded-lg p-3 font-body-md focus:border-primary transition-all" placeholder="••••••••" type="password"/>
+                        </div>
+
+                        <!-- Required Consent Disclaimer Section -->
+                        <div class="bg-[#1a1c20] rounded-lg p-4 card-edge">
+                            <h3 class="font-label-mono text-[10px] text-on-surface-variant uppercase mb-2 border-b border-outline-variant pb-1 font-semibold">End-User Consent and Legal Disclaimer</h3>
+                            <div class="h-32 overflow-y-auto pr-2 custom-scrollbar">
+                                <p class="font-body-sm text-[11px] leading-relaxed text-on-surface-variant text-justify whitespace-pre-line">By accessing, subscribing to, or using this application, you explicitly acknowledge, understand, and agree to the following terms: 
+
+• <strong>Informational and Educational Use Only:</strong> This app is for informational and educational purposes only. It does not constitute financial or investment advice. 
+
+• <strong>Nature of the Tools:</strong> The service operates by providing educational and analytical tools, effectively giving you a mirror to look at the market. The outputs are generated via raw data, charts, historical trends, mathematical calculations, quantitative indicators, and automated technical screening tools. 
+
+• <strong>No Unlicensed Financial Advisory:</strong> The application and its creators do not direct a user's specific actions, nor do they act as a portfolio manager. Giving direct investment advice or portfolio management requires rigorous licensing from the Egyptian Financial Regulatory Authority (FRA), which this software does not provide. 
+
+• <strong>Analytics, Not Commands:</strong> All signals and feature outputs provided by the software are strictly classified as analytics, such as a 'Quantitative Indicator Output' or 'Technical Pattern Matcher'. They are never to be interpreted as direct 'Buy/Sell Recommendations' or market commands. The application provides the data, and you must independently decide what to do with it. 
+
+• <strong>Assumption of Risk:</strong> Users are solely responsible for their own trading decisions. 
+
+• <strong>No Handling of Client Funds:</strong> This application functions strictly as a Software as a Service (SaaS) analytics tool. We will never request, hold, or allow users to deposit trading capital or funds into our bank accounts or app wallets. 
+
+• <strong>Third-Party Trade Execution:</strong> You cannot execute trades independently through this app; all users must execute their actual trades through approved and licensed EGX brokers (such as Thndr, EFG Hermes, etc.).</p>
+                            </div>
+                            <label class="flex items-start gap-3 mt-3 cursor-pointer group select-none" id="consent-label">
+                                <input class="mt-1 rounded bg-[#1e2024] border-outline-variant text-primary focus:ring-offset-surface-elevated accent-primary" id="consent-checkbox" onchange="onConsentToggle()" type="checkbox"/>
+                                <span class="font-body-sm text-[14px] text-on-surface group-hover:text-primary transition-colors">I acknowledge and agree to the End-User Consent and Legal Disclaimer.</span>
+                            </label>
+                        </div>
+
+                        <button id="btn-auth-signin" onclick="handleEmailSignIn()" class="w-full bg-primary text-on-primary font-bold py-4 rounded-lg hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                            <span>Sign In</span>
+                            <span class="material-symbols-outlined text-[20px]">login</span>
+                        </button>
+                        
+                        <button id="btn-auth-signup" onclick="handleEmailSignUp()" disabled class="w-full py-3 rounded-lg bg-transparent border border-outline-variant text-sm text-[#89929b] transition cursor-not-allowed opacity-50 hover:bg-[#1a1c20]">
+                            Create Account
+                        </button>
+                    </form>
+
+                    <div class="flex items-center gap-4 my-6">
+                        <div class="h-px flex-1 bg-outline-variant/30"></div>
+                        <span class="font-label-mono text-[12px] text-on-surface-variant uppercase font-medium">OR</span>
+                        <div class="h-px flex-1 bg-outline-variant/30"></div>
+                    </div>
+
+                    <button onclick="handleGoogleSignIn()" class="w-full bg-[#282a2e] text-on-surface py-3 rounded-lg border border-outline-variant hover:bg-[#37393e] transition-all flex items-center justify-center gap-3">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24">
+                            <path d="M12 5.04c1.74 0 3.3.6 4.53 1.77l3.39-3.39C17.85 1.5 15.17 0 12 0 7.31 0 3.26 2.69 1.25 6.61l3.96 3.07c.95-2.85 3.61-4.64 6.79-4.64z" fill="#EA4335"></path>
+                            <path d="M23.49 12.27c0-.82-.07-1.61-.21-2.37H12v4.51h6.44c-.28 1.48-1.13 2.74-2.39 3.58l3.71 2.88c2.17-2 3.43-4.94 3.43-8.6z" fill="#4285F4"></path>
+                            <path d="M5.21 14.34c-.24-.72-.37-1.49-.37-2.34s.13-1.62.37-2.34L1.25 6.61C.45 8.23 0 10.06 0 12c0 1.94.45 3.77 1.25 5.39l3.96-3.05z" fill="#FBBC05"></path>
+                            <path d="M12 24c3.24 0 5.97-1.07 7.96-2.91l-3.71-2.88c-1.1.74-2.51 1.18-4.25 1.18-3.18 0-5.84-2.14-6.8-5.04l-3.96 3.07C3.26 21.31 7.31 24 12 24z" fill="#34A853"></path>
+                        </svg>
+                        <span class="font-body-md font-medium text-sm">Sign in with Google</span>
+                    </button>
+                    
+                    <p class="mt-4 text-center font-body-sm text-[11px] text-on-surface-variant/80">
+                        Continuing with Google to create a new account also requires the agreement checkbox above to be checked.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Security Message -->
+    <footer class="fixed bottom-0 left-0 w-full p-4 flex justify-center items-center pointer-events-none z-0 hidden lg:flex">
+        <div class="bg-surface-container-lowest/50 backdrop-blur-sm px-6 py-2 rounded-full border border-outline-variant/30 flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary text-[16px]">verified_user</span>
+            <span class="font-label-mono text-[10px] uppercase text-on-surface-variant tracking-wider">AES-256 Bank Grade Encryption Matrix Enabled</span>
+        </div>
+    </footer>
+
+    <!-- Firebase Auth & Interaction Logic -->
+    <script>
+        // --- Firebase Configuration ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyBCC4D61IHTEFNsgO6i8H_BdixwArE-VRo",
+            authDomain: "mb-egx-12d11.firebaseapp.com",
+            projectId: "mb-egx-12d11",
+            storageBucket: "mb-egx-12d11.firebasestorage.app",
+            messagingSenderId: "739444696466",
+            appId: "1:739444696466:web:6947bf8d9198e799410d4b"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        let analytics = null;
+        try { analytics = firebase.analytics(); } catch (e) { console.warn('Firebase Analytics not available:', e); }
+
+        const TERMS_VERSION = "1.0";
+
+        // Listen for authentication state changes
+        auth.onAuthStateChanged(function (user) {
+            if (user) {
+                // If the user is successfully authenticated, redirect them to the main dashboard
+                window.location.href = "index.html";
             }
         });
 
+        function showAuthError(msg) {
+            const el = document.getElementById('auth-error');
+            el.textContent = msg;
+            el.classList.remove('hidden');
+        }
+
+        function clearAuthError() {
+            document.getElementById('auth-error').classList.add('hidden');
+            
+            // Remove any shake warnings
+            const warningEl = document.getElementById('consent-warning');
+            if (warningEl) warningEl.remove();
+        }
+
+        function triggerConsentShake() {
+            const label = document.getElementById('consent-label');
+            label.classList.add('animate-shake');
+            
+            if(!document.getElementById('consent-warning')) {
+                const warning = document.createElement('div');
+                warning.id = 'consent-warning';
+                warning.className = 'text-[#ffb4ab] font-label-mono text-[10px] mt-2 font-bold';
+                warning.innerText = '⚠️ REQUIRES ACKNOWLEDGEMENT';
+                label.after(warning);
+                setTimeout(() => warning.remove(), 3000);
+            }
+            
+            setTimeout(() => label.classList.remove('animate-shake'), 400);
+        }
+
+        function onConsentToggle() {
+            const checked = document.getElementById('consent-checkbox').checked;
+            const btn = document.getElementById('btn-auth-signup');
+            btn.disabled = !checked;
+            
+            if (checked) {
+                btn.classList.remove('opacity-50', 'cursor-not-allowed', 'text-[#89929b]', 'bg-transparent');
+                btn.classList.add('bg-[#333539]', 'text-white', 'hover:bg-[#37393e]');
+                clearAuthError();
+            } else {
+                btn.classList.add('opacity-50', 'cursor-not-allowed', 'text-[#89929b]', 'bg-transparent');
+                btn.classList.remove('bg-[#333539]', 'text-white', 'hover:bg-[#37393e]');
+            }
+        }
+
+        async function fetchClientIp() {
+            try {
+                const resp = await fetch('https://api.ipify.org?format=json');
+                const data = await resp.json();
+                return data.ip || null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function buildConsentFields(ip) {
+            return {
+                agreed_to_terms: true,
+                terms_version: TERMS_VERSION,
+                agreed_at: firebase.firestore.FieldValue.serverTimestamp(),
+                ip_address: ip || null,
+            };
+        }
+
+        function handleEmailSignIn() {
+            clearAuthError();
+            const email = document.getElementById('auth-email').value.trim();
+            const password = document.getElementById('auth-password').value;
+            if (!email || !password) { showAuthError("Enter both email and password."); return; }
+            
+            auth.signInWithEmailAndPassword(email, password).catch(err => showAuthError(err.message));
+        }
+
+        async function handleEmailSignUp() {
+            clearAuthError();
+            const email = document.getElementById('auth-email').value.trim();
+            const password = document.getElementById('auth-password').value;
+            
+            if (!email || !password) { showAuthError("Enter both email and password."); return; }
+            if (password.length < 6) { showAuthError("Password must be at least 6 characters."); return; }
+            if (!document.getElementById('consent-checkbox').checked) {
+                triggerConsentShake();
+                return;
+            }
+            
+            try {
+                const cred = await auth.createUserWithEmailAndPassword(email, password);
+                const ip = await fetchClientIp();
+                await db.collection('users').doc(cred.user.uid).set({
+                    cash: 0, portfolio: [], history: [],
+                    ...buildConsentFields(ip),
+                }, { merge: true });
+            } catch (err) {
+                showAuthError(err.message);
+            }
+        }
+
+        async function handleGoogleSignIn() {
+            clearAuthError();
+            const provider = new firebase.auth.GoogleAuthProvider();
+            try {
+                const result = await auth.signInWithPopup(provider);
+                const isNewUser = !!(result.additionalUserInfo && result.additionalUserInfo.isNewUser);
+                
+                if (isNewUser) {
+                    if (!document.getElementById('consent-checkbox').checked) {
+                        await auth.signOut();
+                        triggerConsentShake();
+                        showAuthError("You must agree to the legal terms to create a new account.");
+                        return;
+                    }
+                    const ip = await fetchClientIp();
+                    await db.collection('users').doc(result.user.uid).set({
+                        cash: 0, portfolio: [], history: [],
+                        ...buildConsentFields(ip),
+                    }, { merge: true });
+                }
+            } catch (err) {
+                showAuthError(err.message);
+            }
+        }
+
+        async function handlePasswordReset() {
+            clearAuthError();
+            const email = document.getElementById('auth-email').value.trim();
+            
+            if (!email) {
+                showAuthError("Please type your email address above first, then click 'Forgot Access?'.");
+                return;
+            }
+            
+            try {
+                await auth.sendPasswordResetEmail(email);
+                alert(`If an account exists for ${email}, a password reset link has been sent.`);
+            } catch (err) {
+                showAuthError(err.message);
+            }
+        }
+
         // Simple interactive hover effect for the metallic logo
-        const logo = document.querySelector('img[src="assets/mb-egx-logo.png"]');
+        const logo = document.getElementById('interactive-logo');
         if(logo) {
             logo.addEventListener('mousemove', (e) => {
                 const { left, top, width, height } = logo.getBoundingClientRect();
@@ -280,24 +398,5 @@
             logo.style.transition = 'transform 0.2s ease-out';
         }
     </script>
-<style>
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-        .animate-shake {
-            animation: shake 0.2s ease-in-out 0s 2;
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #1e2024;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #3f4850;
-            border-radius: 4px;
-        }
-    </style>
-</body></html>
+</body>
+</html>
