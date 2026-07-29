@@ -724,51 +724,76 @@ class AnalysisWorker(QThread):
         self.results_signal.emit(buys, exits, top10, closed, fin_stmt, sectors, breakout_watchlist)
 
 # =============================================================================
-# REDESIGNED FULL-SCREEN LOGIN DIALOG
+# REDESIGNED FULL-SCREEN LOGIN DIALOG (Layout Fixes)
 # =============================================================================
 class LoginDialog(QDialog):
     _BG = "#0f1115"
     _CARD = "#1a1d24"
     _CARD_LOWEST = "#0c0e12"
-    _OUTLINE = "#3f4850"
+    _OUTLINE = "#4a5568" # Lighter outline for input visibility
     _PRIMARY = "#93ccff"
     _ON_PRIMARY = "#003351"
-    _TEXT_MUTED = "#bfc7d2"
 
     def __init__(self, parent=None):
         super().__init__(parent)
         
+        # Set as full standalone window
         self.setWindowFlags(Qt.WindowType.Window)
         self.setWindowTitle("MB-EGX Alpha — Terminal Access")
         
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.setObjectName("loginDialog")
         
+        # Fixed styling for inputs, scrollbars, and explicitly targeted QFrames
         self.setStyleSheet(f"""
             QDialog#loginDialog {{ background-color: {self._BG}; }}
-            QWidget#consentBox {{ background-color: #1a1c20; border: 1px solid {self._OUTLINE}; border-radius: 8px; }}
+            
+            /* Target the consent box specifically as a QFrame to ensure rendering */
+            QFrame#consentBox {{ 
+                background-color: #1a1c20; 
+                border: 1px solid {self._OUTLINE}; 
+                border-radius: 6px; 
+            }}
+            
             QLabel {{ color: #ffffff; font-family: 'Inter', 'Segoe UI', sans-serif; }}
+            
+            /* Fixed Input Boxes */
             QLineEdit {{
-                background-color: {self._CARD_LOWEST}; color: #ffffff;
-                border: 1px solid {self._OUTLINE}; border-radius: 8px; 
-                padding: 12px 14px; /* Increased padding */
-                font-size: 16px; /* Larger, clearer text */
+                background-color: {self._CARD_LOWEST}; 
+                color: #ffffff;
+                border: 1px solid {self._OUTLINE}; 
+                border-radius: 6px; 
+                padding: 0px 14px; 
+                font-size: 15px;
             }}
             QLineEdit:focus {{ border: 1px solid {self._PRIMARY}; }}
             
-            /* Custom Scrollbar for Disclaimer */
+            /* Disclaimer Text */
             QTextEdit {{
-                background-color: transparent; color: {self._TEXT_MUTED};
-                border: none; font-size: 12px; padding: 0px;
+                background-color: transparent; 
+                color: #a0aec0;
+                border: none; 
+                font-size: 11px; 
+                padding: 0px;
             }}
-            QScrollBar:vertical {{ background: transparent; width: 6px; margin: 0px; }}
-            QScrollBar::handle:vertical {{ background: {self._OUTLINE}; border-radius: 3px; min-height: 20px; }}
+            
+            /* Dark Scrollbar for Disclaimer */
+            QScrollBar:vertical {{ background: #1a1c20; width: 6px; margin: 0px; }}
+            QScrollBar::handle:vertical {{ background: #3f4850; border-radius: 3px; min-height: 20px; }}
             QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {{ height: 0px; }}
             
-            /* Explicit Checkbox Styling */
-            QCheckBox {{ color: #e2e2e8; font-size: 14px; margin-top: 4px; }}
-            QCheckBox::indicator {{ width: 18px; height: 18px; border-radius: 4px; border: 1px solid {self._OUTLINE}; background-color: {self._CARD_LOWEST}; }}
-            QCheckBox::indicator:checked {{ background-color: {self._PRIMARY}; border: 1px solid {self._PRIMARY}; }}
+            /* Checkbox Styling */
+            QCheckBox {{ color: #e2e2e8; font-size: 13px; }}
+            QCheckBox::indicator {{ 
+                width: 16px; height: 16px; 
+                border-radius: 4px; 
+                border: 1px solid {self._OUTLINE}; 
+                background-color: {self._CARD_LOWEST}; 
+            }}
+            QCheckBox::indicator:checked {{ 
+                background-color: {self._PRIMARY}; 
+                border: 1px solid {self._PRIMARY}; 
+            }}
         """)
         
         if LOGO_PATH.exists():
@@ -778,7 +803,7 @@ class LoginDialog(QDialog):
         self.showMaximized()
 
     def _init_ui(self):
-        # Master Layout
+        # Master Layout (No margins so background touches edges)
         outer = QVBoxLayout(self)
         outer.setContentsMargins(0, 0, 0, 0)
         outer.setSpacing(0)
@@ -786,7 +811,8 @@ class LoginDialog(QDialog):
         # 1. MAIN 2-COLUMN CONTENT
         content_area = QWidget()
         content_layout = QHBoxLayout(content_area)
-        content_layout.setContentsMargins(60, 40, 60, 40)
+        # Squeeze margins slightly to allow plenty of vertical room for right-side card
+        content_layout.setContentsMargins(40, 30, 40, 30)
         content_layout.setSpacing(40)
 
         # --- LEFT COLUMN (Branding) ---
@@ -809,7 +835,7 @@ class LoginDialog(QDialog):
 
         # Description
         lbl_desc = QLabel("Experience the synergy of millenia-old strategic wisdom and hyper-modern algorithmic execution. MB-EGX provides the precision wealth tools required for the high-net-worth Egyptian investor.")
-        lbl_desc.setStyleSheet(f"color: {self._TEXT_MUTED}; font-size: 15px; line-height: 1.6;")
+        lbl_desc.setStyleSheet("color: #bfc7d2; font-size: 15px; line-height: 1.6;")
         lbl_desc.setWordWrap(True)
         lbl_desc.setMaximumWidth(500)
         left_layout.addWidget(lbl_desc)
@@ -823,17 +849,20 @@ class LoginDialog(QDialog):
 
         form_card = QFrame()
         form_card.setObjectName("formCard")
-        form_card.setFixedWidth(440)
+        # Ensure card doesn't stretch infinitely but stays contained
+        form_card.setMinimumWidth(400)
+        form_card.setMaximumWidth(460)
         form_card.setStyleSheet(f"""
             QFrame#formCard {{
                 background-color: {self._CARD};
-                border: 1px solid rgba(255,255,255,0.05);
+                border: 1px solid #2d3748;
                 border-radius: 12px;
             }}
         """)
         f_layout = QVBoxLayout(form_card)
-        f_layout.setContentsMargins(35, 40, 35, 40)
-        f_layout.setSpacing(18)
+        # Reduced vertical spacing and margins to ensure checkbox fits securely inside
+        f_layout.setContentsMargins(30, 30, 30, 30)
+        f_layout.setSpacing(15)
 
         # Terminal Access Heading
         lbl_form_title = QLabel("Terminal Access")
@@ -841,7 +870,7 @@ class LoginDialog(QDialog):
         f_layout.addWidget(lbl_form_title)
 
         lbl_form_sub = QLabel("Sign in to view your private dashboard")
-        lbl_form_sub.setStyleSheet(f"color: {self._TEXT_MUTED}; font-size: 14px; margin-bottom: 5px; border: none;")
+        lbl_form_sub.setStyleSheet("color: #bfc7d2; font-size: 13px; margin-bottom: 5px; border: none;")
         f_layout.addWidget(lbl_form_sub)
 
         # Email
@@ -852,9 +881,10 @@ class LoginDialog(QDialog):
         lbl_email_hdr = QLabel("EMAIL ADDRESS")
         lbl_email_hdr.setStyleSheet("color: #89929b; font-size: 11px; font-weight: bold; letter-spacing: 1px; border: none;")
         email_layout.addWidget(lbl_email_hdr)
+        
         self.txt_email = QLineEdit()
         self.txt_email.setPlaceholderText("investor@mb-egx.ai")
-        self.txt_email.setMinimumHeight(50) # Force height to prevent squishing
+        self.txt_email.setFixedHeight(45) # Force robust vertical height
         email_layout.addWidget(self.txt_email)
         f_layout.addWidget(email_container)
 
@@ -882,26 +912,22 @@ class LoginDialog(QDialog):
         self.txt_password = QLineEdit()
         self.txt_password.setPlaceholderText("••••••••")
         self.txt_password.setEchoMode(QLineEdit.EchoMode.Password)
-        self.txt_password.setMinimumHeight(50) # Force height to prevent squishing
+        self.txt_password.setFixedHeight(45) # Force robust vertical height
         self.txt_password.returnPressed.connect(self.do_sign_in)
         pw_layout.addWidget(self.txt_password)
         f_layout.addWidget(pw_container)
 
-        # Consent Box
-        consent_box = QWidget()
+        # Consent Box (Using QFrame for guaranteed background render)
+        consent_box = QFrame()
         consent_box.setObjectName("consentBox")
         consent_layout = QVBoxLayout(consent_box)
-        consent_layout.setContentsMargins(15, 15, 15, 15)
-        consent_layout.setSpacing(10)
-
-        lbl_consent_hdr = QLabel("END-USER CONSENT AND LEGAL DISCLAIMER")
-        lbl_consent_hdr.setStyleSheet("color: #89929b; font-size: 10px; font-weight: bold; letter-spacing: 1px; border-bottom: 1px solid #3f4850; padding-bottom: 6px;")
-        consent_layout.addWidget(lbl_consent_hdr)
+        consent_layout.setContentsMargins(12, 12, 12, 12)
+        consent_layout.setSpacing(8)
 
         self.txt_disclaimer = QTextEdit()
         self.txt_disclaimer.setReadOnly(True)
         self.txt_disclaimer.setPlainText(DISCLAIMER_TEXT)
-        self.txt_disclaimer.setFixedHeight(65) # Shorter height leaves plenty of room for checkbox
+        self.txt_disclaimer.setFixedHeight(80) # Locked height prevents squishing
         consent_layout.addWidget(self.txt_disclaimer)
 
         self.chk_consent = QCheckBox("I acknowledge and agree to the Terms.")
@@ -909,10 +935,11 @@ class LoginDialog(QDialog):
         consent_layout.addWidget(self.chk_consent)
         f_layout.addWidget(consent_box)
 
-        # Error Label
+        # Error Label - Hidden by default to save layout space
         self.lbl_error = QLabel("")
-        self.lbl_error.setStyleSheet("color: #ffb4ab; font-size: 13px; border: none; background: transparent;")
+        self.lbl_error.setStyleSheet("color: #ffb4ab; font-size: 13px; border: none; background: transparent; font-weight: bold;")
         self.lbl_error.setWordWrap(True)
+        self.lbl_error.setVisible(False)
         f_layout.addWidget(self.lbl_error)
 
         # Sign In Button
@@ -920,7 +947,7 @@ class LoginDialog(QDialog):
         self.btn_signin.setCursor(Qt.CursorShape.PointingHandCursor)
         self.btn_signin.setStyleSheet(
             f"background-color: {self._PRIMARY}; color: {self._ON_PRIMARY}; "
-            "padding: 14px; font-weight: bold; font-size: 16px; border: none; border-radius: 8px;"
+            "padding: 12px; font-weight: bold; font-size: 15px; border: none; border-radius: 8px;"
         )
         self.btn_signin.clicked.connect(self.do_sign_in)
         f_layout.addWidget(self.btn_signin)
@@ -945,7 +972,7 @@ class LoginDialog(QDialog):
         self.btn_google = QPushButton("Sign in with Google")
         self.btn_google.setCursor(Qt.CursorShape.PointingHandCursor)
         self.btn_google.setStyleSheet(
-            "background-color: #282a2e; color: #e2e2e8; padding: 12px; font-size: 14px; font-weight: 500; border-radius: 8px; border: 1px solid #3f4850;"
+            "background-color: #282a2e; color: #e2e2e8; padding: 12px; font-size: 14px; font-weight: bold; border-radius: 8px; border: 1px solid #4a5568;"
         )
         self.btn_google.clicked.connect(lambda: QMessageBox.information(self, "Google Sign In", "In the desktop client, please use your Email/Password. If you created your account with Google on the web, click 'Forgot Access?' to set a password for desktop use."))
         f_layout.addWidget(self.btn_google)
@@ -981,10 +1008,13 @@ class LoginDialog(QDialog):
         footer_layout.addWidget(lbl_footer)
         outer.addWidget(footer)
 
+    def _show_error(self, msg):
+        self.lbl_error.setText(msg)
+        self.lbl_error.setVisible(bool(msg))
+
     def _on_consent_toggled(self, _state):
-        checked = self.chk_consent.isChecked()
-        if checked:
-            self.lbl_error.setText("")
+        if self.chk_consent.isChecked():
+            self._show_error("")
 
     def _friendly_name(self, data, email):
         display_name = (data.get("displayName") or "").strip()
@@ -996,16 +1026,16 @@ class LoginDialog(QDialog):
         email = self.txt_email.text().strip()
         password = self.txt_password.text()
         if not email or not password:
-            self.lbl_error.setText("Enter both email and password.")
+            self._show_error("Enter both email and password.")
             return
         if min_password_len and len(password) < min_password_len:
-            self.lbl_error.setText(f"Password must be at least {min_password_len} characters.")
+            self._show_error(f"Password must be at least {min_password_len} characters.")
             return
         if require_consent and not self.chk_consent.isChecked():
-            self.lbl_error.setText("You must agree to the legal terms to create an account.")
+            self._show_error("You must explicitly agree to the legal terms to create an account.")
             return
 
-        self.lbl_error.setText("")
+        self._show_error("")
         self.setEnabled(False)
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         try:
@@ -1021,7 +1051,7 @@ class LoginDialog(QDialog):
                 write_consent_doc(data["idToken"], data["localId"], ip_address)
             self.accept()
         except Exception as e:
-            self.lbl_error.setText(str(e))
+            self._show_error(str(e))
         finally:
             QApplication.restoreOverrideCursor()
             self.setEnabled(True)
@@ -1035,10 +1065,10 @@ class LoginDialog(QDialog):
     def do_forgot_password(self):
         email = self.txt_email.text().strip()
         if not email:
-            self.lbl_error.setText("Type your email above first, then click this link.")
+            self._show_error("Type your email above first, then click this link.")
             return
 
-        self.lbl_error.setText("")
+        self._show_error("")
         self.setEnabled(False)
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         try:
@@ -1051,7 +1081,7 @@ class LoginDialog(QDialog):
                 "you can sign in here on desktop too."
             )
         except Exception as e:
-            self.lbl_error.setText(str(e))
+            self._show_error(str(e))
         finally:
             QApplication.restoreOverrideCursor()
             self.setEnabled(True)
