@@ -93,8 +93,16 @@
                     <option value="EN">🇬🇧 English</option>
                     <option value="AR">🇪🇬 العربية</option>
                 </select>
+                <div id="user-badge" style="display:none;" class="flex items-center gap-2 bg-darkbg border border-bordercol rounded-lg px-3 py-2">
+                    <span class="text-textmuted">👋</span>
+                    <span id="lbl-welcome-user" class="font-semibold text-sky-400"></span>
+                    <button onclick="handleSignOut()" title="Sign out" class="text-textmuted hover:text-rose-400 transition text-xs font-bold ml-1">✕</button>
+                </div>
             </div>
         </header>
+
+        <!-- Welcome toast (shown briefly right after a successful login) -->
+        <div id="welcome-toast" style="display:none;" class="fixed top-4 right-4 z-[10000] bg-emerald-600 text-white px-4 py-3 rounded-lg shadow-2xl font-semibold text-sm transition-opacity duration-500"></div>
 
         <!-- Account Equity Bar -->
         <div class="bg-panelbg px-4 py-2.5 rounded-lg border border-bordercol shadow flex flex-col md:flex-row justify-between items-center text-center font-semibold tracking-wide text-xs md:text-sm gap-2" id="account-bar">
@@ -1207,13 +1215,46 @@
             }).catch(err => console.error('Cloud sync failed:', err));
         };
 
+        // Turns "jane.doe@example.com" into "Jane.doe" when no display
+        // name is set (e.g. email/password accounts, which Firebase
+        // doesn't attach a name to unless the user typed one in).
+        function getFriendlyName(user) {
+            if (user.displayName && user.displayName.trim()) return user.displayName.trim();
+            if (user.email) {
+                const local = user.email.split('@')[0];
+                return local.charAt(0).toUpperCase() + local.slice(1);
+            }
+            return 'there';
+        }
+
+        function showWelcomeToast(name) {
+            const toast = document.getElementById('welcome-toast');
+            toast.textContent = `👋 Welcome back, ${name}!`;
+            toast.style.display = 'block';
+            toast.style.opacity = '1';
+            setTimeout(() => { toast.style.opacity = '0'; }, 3000);
+            setTimeout(() => { toast.style.display = 'none'; }, 3500);
+        }
+
+        let _welcomedThisSession = false;
+
         auth.onAuthStateChanged(function (user) {
             const gate = document.getElementById('auth-gate');
+            const badge = document.getElementById('user-badge');
             if (user) {
                 gate.style.display = 'none';
+                const name = getFriendlyName(user);
+                document.getElementById('lbl-welcome-user').textContent = name;
+                badge.style.display = 'flex';
+                if (!_welcomedThisSession) {
+                    showWelcomeToast(name);
+                    _welcomedThisSession = true;
+                }
                 loadUserDataFromCloud(user.uid);
             } else {
                 gate.style.display = 'flex';
+                badge.style.display = 'none';
+                _welcomedThisSession = false;
             }
         });
     </script>
