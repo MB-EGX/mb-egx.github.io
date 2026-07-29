@@ -1245,7 +1245,7 @@ class LoginDialog(QDialog):
         content_layout.setContentsMargins(40, 30, 40, 30)
         content_layout.setSpacing(40)
 
-        # --- LEFT COLUMN (Branding) ---
+        # --- LEFT COLUMN (Branding & Vision/Mission) ---
         left_col = QWidget()
         left_layout = QVBoxLayout(left_col)
         left_layout.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
@@ -1263,12 +1263,16 @@ class LoginDialog(QDialog):
         lbl_hero.setStyleSheet("font-family: 'Hanken Grotesk', sans-serif; font-size: 42px; font-weight: bold; line-height: 1.2;")
         left_layout.addWidget(lbl_hero)
 
-        # Description
-        lbl_desc = QLabel("Experience the synergy of millenia-old strategic wisdom and hyper-modern algorithmic execution. MB-EGX provides the precision wealth tools required for the high-net-worth Egyptian investor.")
-        lbl_desc.setStyleSheet("color: #bfc7d2; font-size: 15px; line-height: 1.6;")
-        lbl_desc.setWordWrap(True)
-        lbl_desc.setMaximumWidth(500)
-        left_layout.addWidget(lbl_desc)
+        # Vision & Mission text replacing the old description
+        vm_text = (
+            "<b>Vision:</b> A transparent stock market where every investor has the insights to succeed.<br><br>"
+            "<b>Mission:</b> We build seamless analytical platforms that decode EGX data, cut through the noise, and empower you to trade smarter."
+        )
+        lbl_vm = QLabel(vm_text)
+        lbl_vm.setStyleSheet("color: #bfc7d2; font-size: 15px; line-height: 1.6;")
+        lbl_vm.setWordWrap(True)
+        lbl_vm.setMaximumWidth(520)
+        left_layout.addWidget(lbl_vm)
 
         content_layout.addWidget(left_col, stretch=1)
 
