@@ -64,6 +64,20 @@ def firebase_sign_up(email, password):
     return data
 
 
+def firebase_send_password_reset(email):
+    """Sends a 'set/reset your password' email. Works even for accounts that
+    signed up via Google only (no password yet) - following the link lets
+    them set one, after which email/password sign-in (e.g. on desktop) works."""
+    if requests is None:
+        raise RuntimeError("The 'requests' package is required. Install it with: pip install requests")
+    url = f"https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key={FIREBASE_API_KEY}"
+    resp = requests.post(url, json={"requestType": "PASSWORD_RESET", "email": email}, timeout=10)
+    data = resp.json()
+    if resp.status_code != 200:
+        raise RuntimeError(data.get("error", {}).get("message", "Could not send reset email."))
+    return data
+
+
 def create_session_doc(id_token, uid, email, name):
     """Logs a new login as a 'sessions' doc, tagged source=desktop, so the
     website's Usage Analytics panel can report on desktop usage too."""
@@ -790,6 +804,15 @@ class LoginDialog(QDialog):
         self.txt_password.returnPressed.connect(self.do_sign_in)
         layout.addWidget(self.txt_password)
 
+        self.btn_forgot = QPushButton("Forgot password? / Signed in with Google on the website?")
+        self.btn_forgot.setFlat(True)
+        self.btn_forgot.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.btn_forgot.setStyleSheet(
+            "text-align: left; border: none; color: #63b3ed; font-size: 11px; padding: 0;"
+        )
+        self.btn_forgot.clicked.connect(self.do_forgot_password)
+        layout.addWidget(self.btn_forgot)
+
         self.lbl_error = QLabel("")
         self.lbl_error.setStyleSheet("color: #e53e3e; font-size: 11px;")
         self.lbl_error.setWordWrap(True)
@@ -846,6 +869,30 @@ class LoginDialog(QDialog):
 
     def do_sign_up(self):
         self._attempt(firebase_sign_up, min_password_len=6)
+
+    def do_forgot_password(self):
+        email = self.txt_email.text().strip()
+        if not email:
+            self.lbl_error.setText("Type your email above first, then click this link.")
+            return
+
+        self.lbl_error.setText("")
+        self.setEnabled(False)
+        QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
+        try:
+            firebase_send_password_reset(email)
+            QMessageBox.information(
+                self, "Check Your Email",
+                f"If an account exists for {email}, a password-set/reset link has just been sent.\n\n"
+                "This also works if you originally signed up with 'Sign in with Google' on the "
+                "website — that account has no password yet, and this link lets you set one so "
+                "you can sign in here on desktop too."
+            )
+        except Exception as e:
+            self.lbl_error.setText(str(e))
+        finally:
+            QApplication.restoreOverrideCursor()
+            self.setEnabled(True)
 
 
 class QuantDashboard(QMainWindow):
