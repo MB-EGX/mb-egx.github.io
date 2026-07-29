@@ -37,6 +37,7 @@ from config import (
     CONFIDENCE_FLOOR_WEIGHT,
     CONFIDENCE_FULL_TRUST_BARS,
     MAX_WORKERS,
+    MATRIX_LOOKBACK_DAYS,
     get_logger,
 )
 
@@ -75,7 +76,12 @@ class DecisionMatrix:
         self.qe = QuantitativeEngine()
 
     def analyze_market(self, progress_callback=None):
-        market_data_bulk = self.qe.get_all_market_data_bulk()
+        # Was an unbounded pull of EVERY bar ever ingested, for every ticker,
+        # on every single analysis run. Nothing in the scoring below looks
+        # back more than ~250 trading days, so capping this cuts the data
+        # volume (and the indicator recompute cost) substantially without
+        # changing any signal.
+        market_data_bulk = self.qe.get_all_market_data_bulk(days=MATRIX_LOOKBACK_DAYS)
         tickers = list(market_data_bulk.keys())
 
         owned_dict = self.dbm.get_all_owned_stocks()

@@ -126,6 +126,14 @@ CONFIDENCE_FULL_TRUST_BARS = 250
 # --- Chart history export (used by export_json.py) ---
 CHART_HISTORY_DAYS = 365
 
+# --- Decision matrix data pull (used by decision_matrix.analyze_market) ---
+# Nothing in the scoring logic looks back further than ~250 trading days
+# (the 52-week range lookback, and the weekly SMA-50/RSI resample). 400
+# calendar days gives a comfortable buffer over that for holidays/gaps,
+# while avoiding pulling and recomputing indicators over a ticker's ENTIRE
+# multi-year history on every single "Execute Matrix" run.
+MATRIX_LOOKBACK_DAYS = 400
+
 
 def get_logger(name: str) -> logging.Logger:
     """Return a process-wide logger writing UTF-8 to ``quant_app.log``."""
