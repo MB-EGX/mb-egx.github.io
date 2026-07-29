@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+import traceback
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -1916,13 +1917,53 @@ class QuantDashboard(QMainWindow):
             self._fill_matrix_table(self.tbl_buys, filtered_list)
 
 
+def _show_fatal_error(title, message):
+    """Surfaces a fatal error even when launched via pythonw.exe, which has
+    no console to print a traceback to. Tries a Qt dialog first, then falls
+    back to a raw Windows message box as a last resort."""
+    try:
+        QMessageBox.critical(None, title, message)
+        return
+    except Exception:
+        pass
+    try:
+        import ctypes
+        ctypes.windll.user32.MessageBoxW(0, message, title, 0x10)
+    except Exception:
+        pass
+
+
+def _install_excepthook():
+    def _hook(exc_type, exc_value, exc_tb):
+        tb_text = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
+        logger.error(f"Unhandled exception:\n{tb_text}")
+        _show_fatal_error(
+            "MB-EGX — Unexpected Error",
+            f"{exc_value}\n\nFull details were written to quant_app.log."
+        )
+    sys.excepthook = _hook
+
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    _install_excepthook()  # catches crashes during the Qt event loop
 
-    login = LoginDialog()
-    if login.exec() != QDialog.DialogCode.Accepted or not login.user_info:
-        sys.exit(0)
+    try:
+        login = LoginDialog()
+        if login.exec() != QDialog.DialogCode.Accepted or not login.user_info:
+            sys.exit(0)
 
-    window = QuantDashboard(user_info=login.user_info)
-    window.show()
-    sys.exit(app.exec())
+        window = QuantDashboard(user_info=login.user_info)
+        window.show()
+        sys.exit(app.exec())
+    except SystemExit:
+        raise
+    except Exception:
+        # Catches crashes during startup itself (before the event loop runs).
+        tb_text = traceback.format_exc()
+        logger.error(f"Fatal startup error:\n{tb_text}")
+        _show_fatal_error(
+            "MB-EGX — Failed to Start",
+            f"{tb_text[-1200:]}\n\nFull details were written to quant_app.log."
+        )
+        sys.exit(1)

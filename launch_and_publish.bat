@@ -3,10 +3,11 @@ REM ===================================================================
 REM launch_and_publish.bat
 REM
 REM Double-click this to:
-REM   1) Open the desktop app (app_gui.py) right away.
-REM   2) At the same time, run publish.py in this window, which
-REM      ingests new data, rebuilds market_data.json, and pushes
-REM      everything to GitHub so the live website updates.
+REM   1) Run publish.py (ingest -> recompute -> export -> git push).
+REM   2) Then open the desktop app (app_gui.py) with NO console window.
+REM
+REM This window auto-closes once publish.py finishes successfully -
+REM it only stays open (so you can read the error) if something failed.
 REM
 REM Place this file in the same folder as app_gui.py / publish.py
 REM (the repo root — same place as export_json.py / config.py).
@@ -20,6 +21,13 @@ if exist "venv\Scripts\python.exe" (
     set "PY=venv\Scripts\python.exe"
 ) else (
     set "PY=python"
+)
+REM pythonw.exe = same interpreter, but with no console window attached.
+REM Used only for launching the GUI app itself.
+if exist "venv\Scripts\pythonw.exe" (
+    set "PYW=venv\Scripts\pythonw.exe"
+) else (
+    set "PYW=pythonw"
 )
 
 REM --- app_gui.py's Firebase sign-in / usage-analytics sync needs the
@@ -53,19 +61,24 @@ echo  Publishing latest data to the website...
 echo  (ingest -^> recompute -^> export -^> git push)
 echo ============================================
 "%PY%" publish.py
+set "PUBLISH_RC=%ERRORLEVEL%"
 
-echo.
-echo ============================================
-echo  Starting Stock-Web desktop app...
-echo ============================================
-REM Launched with python.exe (not pythonw) in its own console window and
-REM /k so that window stays open if the app crashes on startup — that
-REM way any error/traceback is visible instead of silently disappearing.
-start "Stock-Web App" cmd /k ""%PY%" app_gui.py"
+if not "%PUBLISH_RC%"=="0" (
+    echo.
+    echo ============================================
+    echo  [!] publish.py failed - see the messages above.
+    echo      The app will still open, but the website
+    echo      may not reflect the latest data.
+    echo ============================================
+    pause
+)
 
-echo.
-echo ============================================
-echo  Done. This window will stay open so you can
-echo  read any messages/errors above.
-echo ============================================
-pause >nul
+REM Launched with pythonw.exe: no console window at all, just the app
+REM itself. Startup errors are caught inside app_gui.py and shown as a
+REM message box (and logged to quant_app.log) instead of a traceback in
+REM a console, since pythonw has none.
+start "" "%PYW%" app_gui.py
+
+REM This window closes itself once the app has launched - nothing left
+REM on screen but the Stock-Web dashboard.
+exit
