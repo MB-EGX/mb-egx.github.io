@@ -22,6 +22,25 @@ if exist "venv\Scripts\python.exe" (
     set "PY=python"
 )
 
+REM --- app_gui.py's Firebase sign-in / usage-analytics sync needs the
+REM     'requests' package. Check once here and auto-install it if it's
+REM     missing, so a fresh machine doesn't fail with ImportError later. ---
+"%PY%" -c "import requests" >nul 2>&1
+if errorlevel 1 (
+    echo ============================================
+    echo  Installing missing dependency: requests...
+    echo ============================================
+    "%PY%" -m pip install requests
+    if errorlevel 1 (
+        echo.
+        echo  [!] Failed to install 'requests' automatically.
+        echo      Run this manually then re-launch:  "%PY%" -m pip install requests
+        echo.
+        pause
+        exit /b 1
+    )
+)
+
 REM NOTE: publish.py and app_gui.py both open quant_master.duckdb, and
 REM DuckDB (like SQLite) only allows ONE process to hold that file open
 REM at a time. Running them truly in parallel causes:

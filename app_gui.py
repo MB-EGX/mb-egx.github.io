@@ -1,13 +1,21 @@
 import os
 import sys
+import time
+from datetime import datetime, timezone
 from pathlib import Path
-from config import WATCH_DIR, TRANSACTION_FEE_PCT
+
+try:
+    import requests
+except ImportError:
+    requests = None
+
+from config import WATCH_DIR, TRANSACTION_FEE_PCT, get_logger
 from db_manager import DatabaseManager
 from decision_matrix import DecisionMatrix
 from analytics import QuantitativeEngine
 from chart_widget import StockSectorChartWidget
 from ingestion import IngestionPipeline
-from PyQt6.QtCore import QDate, Qt, QThread, pyqtSignal, QAbstractTableModel, QModelIndex
+from PyQt6.QtCore import QDate, Qt, QThread, QTimer, pyqtSignal, QAbstractTableModel, QModelIndex
 from PyQt6.QtGui import QFont, QColor
 from PyQt6.QtWidgets import (
     QApplication, QComboBox, QCompleter, QDateEdit, QDialog, QDoubleSpinBox,
@@ -16,6 +24,108 @@ from PyQt6.QtWidgets import (
     QTableWidget, QTableWidgetItem, QTableView, QTabWidget, QVBoxLayout, QWidget,
     QCheckBox
 )
+
+logger = get_logger("app_gui")
+
+# =============================================================================
+# FIREBASE AUTH + FIRESTORE (REST) — same project as the web dashboard, so
+# desktop sign-ins and website sign-ins share one user base and one
+# `sessions` collection for usage analytics.
+# =============================================================================
+FIREBASE_API_KEY = "AIzaSyBCC4D61IHTEFNsgO6i8H_BdixwArE-VRo"
+FIREBASE_PROJECT_ID = "mb-egx-12d11"
+FIRESTORE_BASE = f"https://firestore.googleapis.com/v1/projects/{FIREBASE_PROJECT_ID}/databases/(default)/documents"
+
+
+def _now_iso():
+    """RFC3339 UTC timestamp in the form Firestore's REST API expects."""
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
+
+
+def firebase_sign_in(email, password):
+    if requests is None:
+        raise RuntimeError("The 'requests' package is required for sign-in. Install it with: pip install requests")
+    url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={FIREBASE_API_KEY}"
+    resp = requests.post(url, json={"email": email, "password": password, "returnSecureToken": True}, timeout=10)
+    data = resp.json()
+    if resp.status_code != 200:
+        raise RuntimeError(data.get("error", {}).get("message", "Sign-in failed."))
+    return data
+
+
+def firebase_sign_up(email, password):
+    if requests is None:
+        raise RuntimeError("The 'requests' package is required for sign-up. Install it with: pip install requests")
+    url = f"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={FIREBASE_API_KEY}"
+    resp = requests.post(url, json={"email": email, "password": password, "returnSecureToken": True}, timeout=10)
+    data = resp.json()
+    if resp.status_code != 200:
+        raise RuntimeError(data.get("error", {}).get("message", "Sign-up failed."))
+    return data
+
+
+def create_session_doc(id_token, uid, email, name):
+    """Logs a new login as a 'sessions' doc, tagged source=desktop, so the
+    website's Usage Analytics panel can report on desktop usage too."""
+    session_id = f"{uid}_{int(time.time() * 1000)}"
+    now = _now_iso()
+    url = f"{FIRESTORE_BASE}/sessions?documentId={session_id}"
+    body = {"fields": {
+        "uid": {"stringValue": uid},
+        "email": {"stringValue": email or ""},
+        "name": {"stringValue": name},
+        "source": {"stringValue": "desktop"},
+        "start": {"timestampValue": now},
+        "lastSeen": {"timestampValue": now},
+    }}
+    headers = {"Authorization": f"Bearer {id_token}", "Content-Type": "application/json"}
+    requests.post(url, headers=headers, json=body, timeout=10)
+    return session_id
+
+
+def touch_session_doc(id_token, session_id):
+    """Heartbeat: bumps lastSeen so session length can be measured later."""
+    url = f"{FIRESTORE_BASE}/sessions/{session_id}?updateMask.fieldPaths=lastSeen"
+    body = {"fields": {"lastSeen": {"timestampValue": _now_iso()}}}
+    headers = {"Authorization": f"Bearer {id_token}", "Content-Type": "application/json"}
+    requests.patch(url, headers=headers, json=body, timeout=10)
+
+
+def push_dealing_stats(id_token, uid, stats):
+    """Merges trade_count / total_trade_value_egp / portfolio_value_egp
+    onto users/{uid}.desktop_stats without touching any other field on
+    that document (e.g. the website's own cash/portfolio/history)."""
+    url = f"{FIRESTORE_BASE}/users/{uid}?updateMask.fieldPaths=desktop_stats"
+    body = {"fields": {
+        "desktop_stats": {"mapValue": {"fields": {
+            "trade_count": {"integerValue": str(int(stats.get("trade_count", 0)))},
+            "total_trade_value_egp": {"doubleValue": float(stats.get("total_trade_value_egp", 0.0))},
+            "portfolio_value_egp": {"doubleValue": float(stats.get("portfolio_value_egp", 0.0))},
+            "updated": {"timestampValue": _now_iso()},
+        }}}
+    }}
+    headers = {"Authorization": f"Bearer {id_token}", "Content-Type": "application/json"}
+    requests.patch(url, headers=headers, json=body, timeout=10)
+
+
+class _CloudWorker(QThread):
+    """Runs one Firebase/Firestore network call off the UI thread so a slow
+    or failed connection never freezes the dashboard. Fire-and-forget."""
+    finished_result = pyqtSignal(object)
+
+    def __init__(self, fn, *args, **kwargs):
+        super().__init__()
+        self.fn = fn
+        self.args = args
+        self.kwargs = kwargs
+
+    def run(self):
+        try:
+            result = self.fn(*self.args, **self.kwargs)
+        except Exception as e:
+            logger.warning(f"Cloud sync call failed: {e}")
+            result = None
+        self.finished_result.emit(result)
 
 TRANSLATIONS = {
     "EN": {
@@ -643,8 +753,103 @@ class AnalysisWorker(QThread):
         self.results_signal.emit(buys, exits, top10, closed, fin_stmt, sectors)
 
 
+class LoginDialog(QDialog):
+    """Blocks app startup until the user signs in with the same Firebase
+    account system as the website. Sets self.user_info on success:
+    {"uid", "email", "idToken", "name"}."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("MB-EGX — Sign In")
+        self.resize(380, 260)
+        self.setStyleSheet(THEME_DARK)
+        self.user_info = None
+        self._init_ui()
+
+    def _init_ui(self):
+        layout = QVBoxLayout(self)
+        layout.setSpacing(10)
+
+        lbl_title = QLabel("MB-EGX")
+        lbl_title.setStyleSheet("font-size: 20px; font-weight: bold; color: #38bdf8;")
+        lbl_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(lbl_title)
+
+        lbl_sub = QLabel("Sign in to your private dashboard")
+        lbl_sub.setStyleSheet("color: #a0aec0;")
+        lbl_sub.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(lbl_sub)
+
+        self.txt_email = QLineEdit()
+        self.txt_email.setPlaceholderText("Email")
+        layout.addWidget(self.txt_email)
+
+        self.txt_password = QLineEdit()
+        self.txt_password.setPlaceholderText("Password")
+        self.txt_password.setEchoMode(QLineEdit.EchoMode.Password)
+        self.txt_password.returnPressed.connect(self.do_sign_in)
+        layout.addWidget(self.txt_password)
+
+        self.lbl_error = QLabel("")
+        self.lbl_error.setStyleSheet("color: #e53e3e; font-size: 11px;")
+        self.lbl_error.setWordWrap(True)
+        layout.addWidget(self.lbl_error)
+
+        btn_row = QHBoxLayout()
+        self.btn_signin = QPushButton("Sign In")
+        self.btn_signin.setStyleSheet("background-color: #3182ce; color: white; padding: 8px; font-weight: bold;")
+        self.btn_signin.clicked.connect(self.do_sign_in)
+        self.btn_signup = QPushButton("Create Account")
+        self.btn_signup.setStyleSheet("background-color: #4a5568; color: white; padding: 8px;")
+        self.btn_signup.clicked.connect(self.do_sign_up)
+        btn_row.addWidget(self.btn_signin)
+        btn_row.addWidget(self.btn_signup)
+        layout.addLayout(btn_row)
+
+    def _friendly_name(self, data, email):
+        display_name = (data.get("displayName") or "").strip()
+        if display_name:
+            return display_name
+        local = email.split("@")[0]
+        return local[:1].upper() + local[1:] if local else "there"
+
+    def _attempt(self, fn, min_password_len=0):
+        email = self.txt_email.text().strip()
+        password = self.txt_password.text()
+        if not email or not password:
+            self.lbl_error.setText("Enter both email and password.")
+            return
+        if min_password_len and len(password) < min_password_len:
+            self.lbl_error.setText(f"Password must be at least {min_password_len} characters.")
+            return
+
+        self.lbl_error.setText("")
+        self.setEnabled(False)
+        QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
+        try:
+            data = fn(email, password)
+            self.user_info = {
+                "uid": data["localId"],
+                "email": email,
+                "idToken": data["idToken"],
+                "name": self._friendly_name(data, email),
+            }
+            self.accept()
+        except Exception as e:
+            self.lbl_error.setText(str(e))
+        finally:
+            QApplication.restoreOverrideCursor()
+            self.setEnabled(True)
+
+    def do_sign_in(self):
+        self._attempt(firebase_sign_in)
+
+    def do_sign_up(self):
+        self._attempt(firebase_sign_up, min_password_len=6)
+
+
 class QuantDashboard(QMainWindow):
-    def __init__(self):
+    def __init__(self, user_info=None):
         super().__init__()
         self.setWindowTitle("MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard")
         self.resize(1520, 920)
@@ -654,10 +859,80 @@ class QuantDashboard(QMainWindow):
         self.current_lang = "EN"
         self.theme_highlight = QColor("#2b6cb0")
         self._raw_buys_data = []
+        self.user_info = user_info
+        self._session_id = None
+        self._cloud_threads = set()
         self._init_ui()
         self.apply_theme(self.current_theme)
+        self._start_cloud_session()
+
+    def _run_cloud(self, fn, *args, on_result=None, **kwargs):
+        """Fire a Firebase/Firestore call on a background thread; keeps a
+        reference until it finishes so Qt doesn't garbage-collect it mid-flight."""
+        if requests is None or not self.user_info:
+            return
+        worker = _CloudWorker(fn, *args, **kwargs)
+        if on_result:
+            worker.finished_result.connect(on_result)
+        worker.finished_result.connect(lambda _: self._cloud_threads.discard(worker))
+        self._cloud_threads.add(worker)
+        worker.start()
+
+    def _start_cloud_session(self):
+        if not self.user_info:
+            return
+        self._run_cloud(
+            create_session_doc,
+            self.user_info["idToken"], self.user_info["uid"],
+            self.user_info["email"], self.user_info["name"],
+            on_result=self._on_session_created,
+        )
+        self._heartbeat_timer = QTimer(self)
+        self._heartbeat_timer.timeout.connect(self._heartbeat_tick)
+        self._heartbeat_timer.start(30000)
+
+    def _on_session_created(self, session_id):
+        self._session_id = session_id
+
+    def _heartbeat_tick(self):
+        if self._session_id:
+            self._run_cloud(touch_session_doc, self.user_info["idToken"], self._session_id)
+
+    def _compute_dealing_stats(self, exits, closed_trades, fin_stmt):
+        """Total EGP value of trades (buys+sells), trade count, and current
+        portfolio value — pushed to Firestore for the Usage Analytics panel."""
+        trade_count = len(exits) + len(closed_trades)
+        total_value = 0.0
+        for pos in exits:
+            try:
+                total_value += float(pos.get("Shares", 0)) * float(pos.get("Buy Price", 0))
+            except (TypeError, ValueError):
+                pass
+        for t in closed_trades:
+            try:
+                shares = float(t.get("Shares Sold", 0))
+                total_value += shares * float(t.get("Buy Price", 0))
+                total_value += shares * float(t.get("Sell Price", 0))
+            except (TypeError, ValueError):
+                pass
+        portfolio_value = 0.0
+        if fin_stmt:
+            try:
+                portfolio_value = float(fin_stmt.get("Total Account Equity / Net Worth (EGP)", 0.0))
+            except (TypeError, ValueError):
+                pass
+        return {
+            "trade_count": trade_count,
+            "total_trade_value_egp": round(total_value, 2),
+            "portfolio_value_egp": round(portfolio_value, 2),
+        }
 
     def closeEvent(self, event):
+        if self._session_id and self.user_info and requests is not None:
+            try:
+                touch_session_doc(self.user_info["idToken"], self._session_id)
+            except Exception as e:
+                logger.warning(f"Final session heartbeat failed: {e}")
         DatabaseManager.close_connection()
         event.accept()
 
@@ -735,6 +1010,13 @@ class QuantDashboard(QMainWindow):
 
         top_bar.addWidget(self.lbl_last_date)
         top_bar.addStretch()
+
+        self.lbl_welcome_user = QLabel("")
+        if self.user_info:
+            self.lbl_welcome_user.setText(f"👋 {self.user_info['name']}")
+            self.lbl_welcome_user.setStyleSheet("font-weight: bold; color: #38bdf8; padding: 4px 8px;")
+        top_bar.addWidget(self.lbl_welcome_user)
+
         top_bar.addWidget(QLabel("🌐 Language / اللغة:"))
         top_bar.addWidget(self.cmb_lang)
         layout.addLayout(top_bar)
@@ -1179,6 +1461,10 @@ class QuantDashboard(QMainWindow):
         self.update_last_data_date_display()
         self._raw_buys_data = buys
 
+        if self.user_info:
+            stats = self._compute_dealing_stats(exits, closed_trades, fin_stmt)
+            self._run_cloud(push_dealing_stats, self.user_info["idToken"], self.user_info["uid"], stats)
+
         for tbl in [self.tbl_sectors, self.tbl_exits, self.tbl_closed, self.tbl_fin_stmt]:
             tbl.setUpdatesEnabled(False)
 
@@ -1350,6 +1636,11 @@ class QuantDashboard(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = QuantDashboard()
+
+    login = LoginDialog()
+    if login.exec() != QDialog.DialogCode.Accepted or not login.user_info:
+        sys.exit(0)
+
+    window = QuantDashboard(user_info=login.user_info)
     window.show()
     sys.exit(app.exec())

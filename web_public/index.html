@@ -12,6 +12,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -93,6 +94,9 @@
                     <option value="EN">🇬🇧 English</option>
                     <option value="AR">🇪🇬 العربية</option>
                 </select>
+                <button id="btn-admin-analytics" onclick="openAnalyticsModal()" style="display:none;" class="bg-teal-600 hover:bg-teal-500 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
+                    <span>📊</span> <span>Usage Analytics</span>
+                </button>
                 <div id="user-badge" style="display:none;" class="flex items-center gap-2 bg-darkbg border border-bordercol rounded-lg px-3 py-2">
                     <span class="text-textmuted">👋</span>
                     <span id="lbl-welcome-user" class="font-semibold text-sky-400"></span>
@@ -390,6 +394,49 @@
             </select>
             <div class="flex justify-end">
                 <button onclick="closeModal('modal-theme')" class="bg-blue-600 text-white px-4 py-2 rounded font-bold text-xs">✅ Close & Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Usage Analytics Modal (admin only) -->
+    <div id="modal-analytics" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-panelbg border border-bordercol rounded-xl max-w-3xl w-full p-5 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
+            <h3 class="text-base font-bold text-teal-400">📊 Usage Analytics</h3>
+            <p class="text-[11px] text-textmuted">Sessions and trading activity combined across the website (🌐) and the desktop app (🖥️). "Time on site" is approximate — measured via a 30-second heartbeat while a session is open. Trade Value = total EGP bought + sold; Portfolio Value = cash + open positions at cost.</p>
+            <div id="analytics-loading" class="text-xs text-textmuted">Loading session data…</div>
+            <div id="analytics-summary" class="hidden grid grid-cols-3 gap-2 text-center">
+                <div class="bg-darkbg p-3 rounded border border-bordercol">
+                    <div class="text-2xl font-bold text-sky-400" id="stat-total-users">—</div>
+                    <div class="text-[10px] text-textmuted mt-1">Unique Users</div>
+                </div>
+                <div class="bg-darkbg p-3 rounded border border-bordercol">
+                    <div class="text-2xl font-bold text-emerald-400" id="stat-total-sessions">—</div>
+                    <div class="text-[10px] text-textmuted mt-1">Total Sessions</div>
+                </div>
+                <div class="bg-darkbg p-3 rounded border border-bordercol">
+                    <div class="text-2xl font-bold text-amber-400" id="stat-avg-duration">—</div>
+                    <div class="text-[10px] text-textmuted mt-1">Avg. Time / Session</div>
+                </div>
+            </div>
+            <div id="analytics-table-wrap" class="hidden">
+                <h4 class="text-xs font-bold text-textmuted mt-2 mb-1">Per-User Breakdown</h4>
+                <table class="w-full text-[11px]">
+                    <thead>
+                        <tr class="text-textmuted border-b border-bordercol">
+                            <th class="text-left py-1">User</th>
+                            <th class="text-right py-1">Sessions (🌐/🖥️)</th>
+                            <th class="text-right py-1">Total Time</th>
+                            <th class="text-right py-1">Trades</th>
+                            <th class="text-right py-1">Trade Value</th>
+                            <th class="text-right py-1">Portfolio Value</th>
+                            <th class="text-right py-1">Last Seen</th>
+                        </tr>
+                    </thead>
+                    <tbody id="analytics-tbody"></tbody>
+                </table>
+            </div>
+            <div class="flex justify-end">
+                <button onclick="closeModal('modal-analytics')" class="bg-slate-700 text-white px-4 py-2 rounded font-bold text-xs">Close</button>
             </div>
         </div>
     </div>
@@ -1145,6 +1192,15 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
+        // Requires Google Analytics to be linked to this Firebase project
+        // (Firebase console -> Project settings -> Integrations). If it
+        // isn't linked yet, this just no-ops instead of throwing.
+        let analytics = null;
+        try { analytics = firebase.analytics(); } catch (e) { console.warn('Firebase Analytics not available:', e); }
+
+        // Emails allowed to see the in-app "Usage Analytics" panel.
+        // TODO: replace with your real email address(es).
+        const ADMIN_EMAILS = ["drmo071990@gmail.com"];
 
         function showAuthError(msg) {
             const el = document.getElementById('auth-error');
@@ -1205,14 +1261,34 @@
             if (typeof renderHistory === 'function') renderHistory();
         }
 
+        // Trade count / EGP value dealt / portfolio value — mirrors the
+        // same fields the desktop app pushes, so the admin Usage Analytics
+        // panel can show one combined number per user across both apps.
+        function computeWebDealingStats() {
+            const tradeCount = userPortfolio.length + userHistory.length;
+            let totalValue = 0;
+            userPortfolio.forEach(p => { totalValue += (p.shares || 0) * (p.buyPrice || 0); });
+            userHistory.forEach(h => {
+                totalValue += (h.shares || 0) * (h.buyPrice || 0);
+                totalValue += (h.shares || 0) * (h.sellPrice || 0);
+            });
+            const openCostBasis = userPortfolio.reduce((acc, p) => acc + (p.shares || 0) * (p.buyPrice || 0), 0);
+            return {
+                trade_count: tradeCount,
+                total_trade_value_egp: Math.round(totalValue * 100) / 100,
+                portfolio_value_egp: Math.round((userCash + openCostBasis) * 100) / 100
+            };
+        }
+
         // Called by syncUserData() (defined earlier in the core script)
         // every time cash/portfolio/history changes, so it's always backed
         // up to the user's account - not just this one browser.
         window.cloudSyncUserData = function () {
             if (!auth.currentUser) return;
             db.collection('users').doc(auth.currentUser.uid).set({
-                cash: userCash, portfolio: userPortfolio, history: userHistory
-            }).catch(err => console.error('Cloud sync failed:', err));
+                cash: userCash, portfolio: userPortfolio, history: userHistory,
+                web_stats: { ...computeWebDealingStats(), updated: firebase.firestore.FieldValue.serverTimestamp() }
+            }, { merge: true }).catch(err => console.error('Cloud sync failed:', err));
         };
 
         // Turns "jane.doe@example.com" into "Jane.doe" when no display
@@ -1238,9 +1314,158 @@
 
         let _welcomedThisSession = false;
 
+        // --- Session tracking (for the "how long do users stay" question) ---
+        // Each sign-in creates one doc in `sessions`. While the tab is open
+        // and visible, `lastSeen` is bumped every 30s. Session length is
+        // then just (lastSeen - start) - this is an approximation (it can't
+        // capture the exact close time if someone just closes the tab), but
+        // the heartbeat keeps the error small in practice.
+        let _currentSessionRef = null;
+        let _heartbeatTimer = null;
+
+        function _touchSession() {
+            if (_currentSessionRef) {
+                _currentSessionRef.update({ lastSeen: firebase.firestore.FieldValue.serverTimestamp() }).catch(() => {});
+            }
+        }
+
+        function startSessionTracking(user) {
+            _currentSessionRef = db.collection('sessions').doc();
+            _currentSessionRef.set({
+                uid: user.uid,
+                email: user.email || null,
+                name: getFriendlyName(user),
+                source: 'web',
+                start: firebase.firestore.FieldValue.serverTimestamp(),
+                lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+            }).catch(err => console.warn('Session log failed:', err));
+
+            if (analytics) analytics.logEvent('login', { method: 'firebase' });
+
+            if (_heartbeatTimer) clearInterval(_heartbeatTimer);
+            _heartbeatTimer = setInterval(() => {
+                if (document.visibilityState === 'visible') _touchSession();
+            }, 30000);
+        }
+
+        function endSessionTracking() {
+            _touchSession();
+            if (_heartbeatTimer) { clearInterval(_heartbeatTimer); _heartbeatTimer = null; }
+            _currentSessionRef = null;
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') _touchSession();
+        });
+        window.addEventListener('beforeunload', () => _touchSession());
+
+        // --- Admin "Usage Analytics" panel ---
+        function _formatDuration(totalSeconds) {
+            if (!isFinite(totalSeconds) || totalSeconds < 0) return '—';
+            const mins = Math.round(totalSeconds / 60);
+            if (mins < 60) return `${mins}m`;
+            return `${Math.floor(mins / 60)}h ${mins % 60}m`;
+        }
+
+        async function openAnalyticsModal() {
+            openModal('modal-analytics');
+            document.getElementById('analytics-loading').classList.remove('hidden');
+            document.getElementById('analytics-loading').textContent = 'Loading session data…';
+            document.getElementById('analytics-summary').classList.add('hidden');
+            document.getElementById('analytics-table-wrap').classList.add('hidden');
+
+            try {
+                // Most recent 1000 sessions - raise this if you need deeper history.
+                const snap = await db.collection('sessions').orderBy('start', 'desc').limit(1000).get();
+                const perUser = {};
+                let totalDurationSec = 0;
+                let sessionCount = 0;
+
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    if (!d.start || !d.lastSeen) return; // still-open or malformed session
+                    const startMs = d.start.toMillis();
+                    const lastMs = d.lastSeen.toMillis();
+                    const durSec = Math.max(0, (lastMs - startMs) / 1000);
+                    const source = d.source === 'desktop' ? 'desktop' : 'web';
+
+                    sessionCount++;
+                    totalDurationSec += durSec;
+
+                    const key = d.uid || d.email || 'unknown';
+                    if (!perUser[key]) {
+                        perUser[key] = {
+                            uid: d.uid || null, name: d.name || d.email || 'Unknown', email: d.email || '',
+                            webSessions: 0, desktopSessions: 0, totalSec: 0, lastSeen: lastMs,
+                            tradeCount: 0, tradeValueEgp: 0, portfolioValueEgp: 0
+                        };
+                    }
+                    perUser[key][source === 'desktop' ? 'desktopSessions' : 'webSessions']++;
+                    perUser[key].totalSec += durSec;
+                    if (lastMs > perUser[key].lastSeen) perUser[key].lastSeen = lastMs;
+                });
+
+                // Pull dealing stats (trade count / EGP value / portfolio value) that
+                // each app pushes onto users/{uid}.web_stats and .desktop_stats.
+                document.getElementById('analytics-loading').textContent = 'Loading trading activity…';
+                const uids = Object.values(perUser).map(u => u.uid).filter(Boolean);
+                await Promise.all(uids.map(async uid => {
+                    try {
+                        const userSnap = await db.collection('users').doc(uid).get();
+                        if (!userSnap.exists) return;
+                        const ud = userSnap.data();
+                        const entry = Object.values(perUser).find(u => u.uid === uid);
+                        if (!entry) return;
+                        ['web_stats', 'desktop_stats'].forEach(field => {
+                            const s = ud[field];
+                            if (s) {
+                                entry.tradeCount += s.trade_count || 0;
+                                entry.tradeValueEgp += s.total_trade_value_egp || 0;
+                                entry.portfolioValueEgp += s.portfolio_value_egp || 0;
+                            }
+                        });
+                    } catch (e) { /* rules may block reading other users' docs for non-admins - ignore */ }
+                }));
+
+                const uniqueUsers = Object.keys(perUser).length;
+                document.getElementById('stat-total-users').textContent = uniqueUsers;
+                document.getElementById('stat-total-sessions').textContent = sessionCount;
+                document.getElementById('stat-avg-duration').textContent = sessionCount
+                    ? _formatDuration(totalDurationSec / sessionCount) : '—';
+
+                const tbody = document.getElementById('analytics-tbody');
+                tbody.innerHTML = '';
+                Object.values(perUser)
+                    .sort((a, b) => b.totalSec - a.totalSec)
+                    .forEach(u => {
+                        const tr = document.createElement('tr');
+                        tr.className = 'border-b border-bordercol/50';
+                        const totalSessions = u.webSessions + u.desktopSessions;
+                        tr.innerHTML = `
+                            <td class="py-1">${u.name}${u.email ? `<br><span class="text-textmuted text-[10px]">${u.email}</span>` : ''}</td>
+                            <td class="py-1 text-right">${totalSessions}<br><span class="text-textmuted text-[10px]">🌐${u.webSessions} 🖥️${u.desktopSessions}</span></td>
+                            <td class="py-1 text-right">${_formatDuration(u.totalSec)}</td>
+                            <td class="py-1 text-right">${u.tradeCount || 0}</td>
+                            <td class="py-1 text-right">${(u.tradeValueEgp || 0).toLocaleString(undefined, {maximumFractionDigits: 0})} EGP</td>
+                            <td class="py-1 text-right">${(u.portfolioValueEgp || 0).toLocaleString(undefined, {maximumFractionDigits: 0})} EGP</td>
+                            <td class="py-1 text-right text-textmuted">${new Date(u.lastSeen).toLocaleString()}</td>`;
+                        tbody.appendChild(tr);
+                    });
+
+                document.getElementById('analytics-loading').classList.add('hidden');
+                document.getElementById('analytics-summary').classList.remove('hidden');
+                document.getElementById('analytics-table-wrap').classList.remove('hidden');
+            } catch (err) {
+                document.getElementById('analytics-loading').textContent =
+                    'Could not load session data (check Firestore rules / console for details).';
+                console.error('Analytics load failed:', err);
+            }
+        }
+
         auth.onAuthStateChanged(function (user) {
             const gate = document.getElementById('auth-gate');
             const badge = document.getElementById('user-badge');
+            const adminBtn = document.getElementById('btn-admin-analytics');
             if (user) {
                 gate.style.display = 'none';
                 const name = getFriendlyName(user);
@@ -1249,12 +1474,16 @@
                 if (!_welcomedThisSession) {
                     showWelcomeToast(name);
                     _welcomedThisSession = true;
+                    startSessionTracking(user);
                 }
+                adminBtn.style.display = ADMIN_EMAILS.includes(user.email) ? 'flex' : 'none';
                 loadUserDataFromCloud(user.uid);
             } else {
                 gate.style.display = 'flex';
                 badge.style.display = 'none';
+                adminBtn.style.display = 'none';
                 _welcomedThisSession = false;
+                endSessionTracking();
             }
         });
     </script>
