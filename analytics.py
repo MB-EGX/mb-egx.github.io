@@ -15,12 +15,17 @@ Public surface:
 """
 from __future__ import annotations
 
+# MUST be imported before numpy/pandas (below) - sets OPENBLAS/MKL/OMP/
+# NUMEXPR thread caps as a module-level side effect; those only take
+# effect if set before numpy/pandas load anywhere in this process. See
+# config.py's module docstring.
+from config import MIN_BARS_FOR_PATTERN_TRUST
+
 import numpy as np
 import pandas as pd
 from numpy.lib.stride_tricks import sliding_window_view
 
 from db_manager import DatabaseManager, clean_sector_name
-from config import MIN_BARS_FOR_PATTERN_TRUST
 
 
 class QuantitativeEngine:

@@ -19,6 +19,16 @@ Run this from the repo root (same folder as export_json.py / config.py).
 import subprocess
 import sys
 
+# MUST be imported before ingestion/export_json (and, transitively,
+# analytics/decision_matrix) - config.py sets the OPENBLAS_NUM_THREADS /
+# MKL_NUM_THREADS / OMP_NUM_THREADS / NUMEXPR_NUM_THREADS env vars as a
+# module-level side effect, and those only take effect if set BEFORE
+# numpy/pandas are imported anywhere in this process. Importing it here
+# first also means any ProcessPoolExecutor spawned later (Windows uses
+# 'spawn') inherits the already-capped environment for its child
+# processes, regardless of each module's own internal import order.
+import config  # noqa: F401
+
 from ingestion import IngestionPipeline
 from export_json import export_market_matrix
 

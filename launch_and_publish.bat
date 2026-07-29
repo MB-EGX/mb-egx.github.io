@@ -16,6 +16,18 @@ REM ===================================================================
 setlocal
 cd /d "%~dp0"
 
+REM --- OpenBLAS/multiprocessing memory-fix safety net ---
+REM config.py sets these same caps as a Python-level side effect, but that
+REM only works if config.py is the FIRST thing to import numpy/pandas in
+REM a given script - easy to get wrong by accident in a new script. Setting
+REM them here, at the OS environment level, means every child process
+REM launched below (and every worker any of them spawns) starts with these
+REM caps already in place, independent of any file's import order.
+set "OPENBLAS_NUM_THREADS=1"
+set "MKL_NUM_THREADS=1"
+set "OMP_NUM_THREADS=1"
+set "NUMEXPR_NUM_THREADS=1"
+
 REM --- Prefer the project's venv Python if present, else fall back to PATH ---
 if exist "venv\Scripts\python.exe" (
     set "PY=venv\Scripts\python.exe"

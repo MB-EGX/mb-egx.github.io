@@ -1141,7 +1141,7 @@
          loads in the background (harmless, public data), but nobody can see
          or touch the dashboard - or any portfolio data - while this is up. -->
     <div id="auth-gate" style="display:none;" class="fixed inset-0 z-[9999] bg-[#0f1115] flex items-center justify-center p-4">
-        <div class="w-full max-w-sm bg-[#1a1d24] border border-[#2d3748] rounded-xl p-8 shadow-2xl">
+        <div class="w-full max-w-md bg-[#1a1d24] border border-[#2d3748] rounded-xl p-8 shadow-2xl">
             <h2 class="text-xl font-bold text-sky-400 mb-1 text-center">MB-EGX</h2>
             <p class="text-xs text-slate-400 mb-6 text-center">Sign in to view your private dashboard</p>
 
@@ -1152,10 +1152,37 @@
             <input id="auth-password" type="password" placeholder="Password" autocomplete="current-password"
                    class="w-full mb-4 px-3 py-2 rounded bg-[#0f1115] border border-[#2d3748] text-sm text-slate-200 focus:outline-none focus:border-sky-500">
 
+            <!-- ===== End-User Consent and Legal Disclaimer (required for NEW accounts) ===== -->
+            <div class="mb-4">
+                <div class="text-[10px] text-slate-500 mb-1">Required to create a new account:</div>
+                <div id="consent-disclaimer-text"
+                     class="h-32 overflow-y-auto text-[10px] leading-relaxed text-slate-400 bg-[#0f1115] border border-[#2d3748] rounded p-2 mb-2 whitespace-pre-line">End-User Consent and Legal Disclaimer:
+
+By accessing, subscribing to, or using this application, you explicitly acknowledge, understand, and agree to the following terms:
+
+• Informational and Educational Use Only: This app is for informational and educational purposes only. It does not constitute financial or investment advice.
+
+• Nature of the Tools: The service operates by providing educational and analytical tools, effectively giving you a mirror to look at the market. The outputs are generated via raw data, charts, historical trends, mathematical calculations, quantitative indicators, and automated technical screening tools.
+
+• No Unlicensed Financial Advisory: The application and its creators do not direct a user's specific actions, nor do they act as a portfolio manager. Giving direct investment advice or portfolio management requires rigorous licensing from the Egyptian Financial Regulatory Authority (FRA), which this software does not provide.
+
+• Analytics, Not Commands: All signals and feature outputs provided by the software are strictly classified as analytics, such as a 'Quantitative Indicator Output' or 'Technical Pattern Matcher'. They are never to be interpreted as direct 'Buy/Sell Recommendations' or market commands. The application provides the data, and you must independently decide what to do with it.
+
+• Assumption of Risk: Users are solely responsible for their own trading decisions.
+
+• No Handling of Client Funds: This application functions strictly as a Software as a Service (SaaS) analytics tool. We will never request, hold, or allow users to deposit trading capital or funds into our bank accounts or app wallets.
+
+• Third-Party Trade Execution: You cannot execute trades independently through this app; all users must execute their actual trades through approved and licensed EGX brokers (such as Thndr, EFG Hermes, etc.).</div>
+                <label class="flex items-start gap-2 text-[11px] text-slate-300 cursor-pointer select-none">
+                    <input type="checkbox" id="consent-checkbox" onchange="onConsentToggle()" class="mt-0.5 accent-sky-600">
+                    <span>I acknowledge and agree to the End-User Consent and Legal Disclaimer.</span>
+                </label>
+            </div>
+
             <button onclick="handleEmailSignIn()" id="btn-auth-signin"
                     class="w-full mb-2 py-2 rounded bg-sky-600 hover:bg-sky-500 text-sm font-semibold text-white transition">Sign In</button>
-            <button onclick="handleEmailSignUp()" id="btn-auth-signup"
-                    class="w-full mb-4 py-2 rounded bg-transparent border border-[#2d3748] hover:bg-[#222730] text-sm text-slate-300 transition">Create Account</button>
+            <button onclick="handleEmailSignUp()" id="btn-auth-signup" disabled
+                    class="w-full mb-4 py-2 rounded bg-transparent border border-[#2d3748] text-sm text-slate-500 transition cursor-not-allowed opacity-50">Create Account</button>
 
             <div class="flex items-center gap-2 mb-4">
                 <div class="h-px flex-1 bg-[#2d3748]"></div>
@@ -1173,6 +1200,7 @@
                 </svg>
                 Sign in with Google
             </button>
+            <p class="text-[9px] text-slate-500 mt-2 text-center">Continuing with Google to create a new account also requires the agreement checkbox above to be checked.</p>
         </div>
     </div>
 
@@ -1202,6 +1230,12 @@
         // TODO: replace with your real email address(es).
         const ADMIN_EMAILS = ["drmo071990@gmail.com"];
 
+        // --- End-User Consent and Legal Disclaimer ---
+        // Bump this whenever the disclaimer text materially changes; existing
+        // users are NOT re-prompted automatically by this alone - that would
+        // need its own "re-consent" flow, out of scope here.
+        const TERMS_VERSION = "1.0";
+
         function showAuthError(msg) {
             const el = document.getElementById('auth-error');
             el.textContent = msg;
@@ -1209,6 +1243,43 @@
         }
         function clearAuthError() {
             document.getElementById('auth-error').classList.add('hidden');
+        }
+
+        function onConsentToggle() {
+            const checked = document.getElementById('consent-checkbox').checked;
+            const btn = document.getElementById('btn-auth-signup');
+            btn.disabled = !checked;
+            btn.classList.toggle('opacity-50', !checked);
+            btn.classList.toggle('cursor-not-allowed', !checked);
+            btn.classList.toggle('bg-transparent', !checked);
+            btn.classList.toggle('text-slate-500', !checked);
+            btn.classList.toggle('text-slate-300', checked);
+            btn.classList.toggle('hover:bg-[#222730]', checked);
+        }
+
+        // Best-effort client-reported IP for the audit trail. This is NOT a
+        // server-verified value (a browser can't authoritatively know its own
+        // public IP) - it's a third-party lookup the client performs and
+        // reports about itself. True server-captured IP would require a
+        // Cloud Function reading the request, which this static site doesn't
+        // have. Never blocks sign-up if it fails.
+        async function fetchClientIp() {
+            try {
+                const resp = await fetch('https://api.ipify.org?format=json');
+                const data = await resp.json();
+                return data.ip || null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function buildConsentFields(ip) {
+            return {
+                agreed_to_terms: true,
+                terms_version: TERMS_VERSION,
+                agreed_at: firebase.firestore.FieldValue.serverTimestamp(),
+                ip_address: ip || null,
+            };
         }
 
         function handleEmailSignIn() {
@@ -1219,19 +1290,57 @@
             auth.signInWithEmailAndPassword(email, password).catch(err => showAuthError(err.message));
         }
 
-        function handleEmailSignUp() {
+        async function handleEmailSignUp() {
             clearAuthError();
             const email = document.getElementById('auth-email').value.trim();
             const password = document.getElementById('auth-password').value;
             if (!email || !password) { showAuthError("Enter both email and password."); return; }
             if (password.length < 6) { showAuthError("Password must be at least 6 characters."); return; }
-            auth.createUserWithEmailAndPassword(email, password).catch(err => showAuthError(err.message));
+            if (!document.getElementById('consent-checkbox').checked) {
+                showAuthError("You must agree to the legal terms to create an account.");
+                return;
+            }
+            try {
+                const cred = await auth.createUserWithEmailAndPassword(email, password);
+                const ip = await fetchClientIp();
+                // Firestore Security Rules (see firestore.rules) independently
+                // require these fields to be present and valid on create - this
+                // client write is convenience, not the enforcement boundary.
+                await db.collection('users').doc(cred.user.uid).set({
+                    cash: 0, portfolio: [], history: [],
+                    ...buildConsentFields(ip),
+                }, { merge: true });
+            } catch (err) {
+                showAuthError(err.message);
+            }
         }
 
-        function handleGoogleSignIn() {
+        async function handleGoogleSignIn() {
             clearAuthError();
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).catch(err => showAuthError(err.message));
+            try {
+                const result = await auth.signInWithPopup(provider);
+                const isNewUser = !!(result.additionalUserInfo && result.additionalUserInfo.isNewUser);
+                if (isNewUser) {
+                    if (!document.getElementById('consent-checkbox').checked) {
+                        // Can't un-create the Google/Firebase Auth identity from the
+                        // client, but we sign them straight back out and never write
+                        // an app-data doc - Firestore rules also block that doc from
+                        // ever being created without valid consent fields, so no
+                        // account "activates" in this app without agreement.
+                        await auth.signOut();
+                        showAuthError("You must agree to the legal terms to create an account.");
+                        return;
+                    }
+                    const ip = await fetchClientIp();
+                    await db.collection('users').doc(result.user.uid).set({
+                        cash: 0, portfolio: [], history: [],
+                        ...buildConsentFields(ip),
+                    }, { merge: true });
+                }
+            } catch (err) {
+                showAuthError(err.message);
+            }
         }
 
         function handleSignOut() {

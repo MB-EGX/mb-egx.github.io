@@ -23,7 +23,7 @@ from PyQt6.QtWidgets import (
     QFileDialog, QFormLayout, QHBoxLayout, QHeaderView, QInputDialog, QLabel,
     QLineEdit, QMainWindow, QMessageBox, QProgressBar, QPushButton, QScrollArea,
     QTableWidget, QTableWidgetItem, QTableView, QTabWidget, QVBoxLayout, QWidget,
-    QCheckBox
+    QCheckBox, QTextEdit
 )
 
 logger = get_logger("app_gui")
@@ -40,6 +40,103 @@ FIRESTORE_BASE = f"https://firestore.googleapis.com/v1/projects/{FIREBASE_PROJEC
 # Emails allowed to see the in-app "Usage Analytics" button/dialog.
 # Keep this in sync with the ADMIN_EMAILS list and Firestore rules on the website.
 ADMIN_EMAILS = ["drmo071990@gmail.com"]
+
+# =============================================================================
+# END-USER CONSENT AND LEGAL DISCLAIMER
+# Keep this text byte-for-byte identical to the disclaimer shown in
+# index.html's auth-gate - both surfaces write agreed_to_terms/terms_version
+# to the SAME users/{uid} Firestore document, and firestore.rules enforces
+# the same fields regardless of which app created the account.
+# Bump TERMS_VERSION whenever the text below materially changes.
+# =============================================================================
+TERMS_VERSION = "1.0"
+
+DISCLAIMER_TEXT = (
+    "End-User Consent and Legal Disclaimer:\n\n"
+    "By accessing, subscribing to, or using this application, you explicitly "
+    "acknowledge, understand, and agree to the following terms:\n\n"
+    "• Informational and Educational Use Only: This app is for informational "
+    "and educational purposes only. It does not constitute financial or "
+    "investment advice.\n\n"
+    "• Nature of the Tools: The service operates by providing educational and "
+    "analytical tools, effectively giving you a mirror to look at the market. "
+    "The outputs are generated via raw data, charts, historical trends, "
+    "mathematical calculations, quantitative indicators, and automated "
+    "technical screening tools.\n\n"
+    "• No Unlicensed Financial Advisory: The application and its creators do "
+    "not direct a user's specific actions, nor do they act as a portfolio "
+    "manager. Giving direct investment advice or portfolio management "
+    "requires rigorous licensing from the Egyptian Financial Regulatory "
+    "Authority (FRA), which this software does not provide.\n\n"
+    "• Analytics, Not Commands: All signals and feature outputs provided by "
+    "the software are strictly classified as analytics, such as a "
+    "'Quantitative Indicator Output' or 'Technical Pattern Matcher'. They are "
+    "never to be interpreted as direct 'Buy/Sell Recommendations' or market "
+    "commands. The application provides the data, and you must independently "
+    "decide what to do with it.\n\n"
+    "• Assumption of Risk: Users are solely responsible for their own trading "
+    "decisions.\n\n"
+    "• No Handling of Client Funds: This application functions strictly as a "
+    "Software as a Service (SaaS) analytics tool. We will never request, "
+    "hold, or allow users to deposit trading capital or funds into our bank "
+    "accounts or app wallets.\n\n"
+    "• Third-Party Trade Execution: You cannot execute trades independently "
+    "through this app; all users must execute their actual trades through "
+    "approved and licensed EGX brokers (such as Thndr, EFG Hermes, etc.)."
+)
+
+
+def fetch_client_ip():
+    """Best-effort client-reported IP for the audit trail.
+
+    NOT server-verified - a desktop process asking a third-party service
+    "what does my traffic look like from the outside" is the same kind of
+    self-report a browser does, not an authoritative capture. True
+    server-captured IP would need the write to go through a server we
+    control (e.g. a Cloud Function reading the request), which this app's
+    Firebase-REST-direct architecture doesn't have. Never blocks sign-up.
+    """
+    if requests is None:
+        return None
+    try:
+        resp = requests.get("https://api.ipify.org?format=json", timeout=5)
+        if resp.status_code == 200:
+            return resp.json().get("ip")
+    except Exception:
+        pass
+    return None
+
+
+def write_consent_doc(id_token, uid, ip_address):
+    """Merges consent + fresh-account defaults onto users/{uid}. Mirrors what
+    index.html's handleEmailSignUp/handleGoogleSignIn write, so an account
+    created on desktop looks identical to one created on the website.
+
+    firestore.rules is the actual enforcement boundary (server-side); this
+    call can fail (network, rules rejection, etc.) without this function
+    raising, since offering a working desktop sign-up experience matters
+    more than a merge succeeding on the first try - the rules will simply
+    keep blocking cloud reads/writes for that uid's data until a valid
+    consent doc exists.
+    """
+    if requests is None:
+        return
+    now = _now_iso()
+    url = f"{FIRESTORE_BASE}/users/{uid}?updateMask.fieldPaths=cash&updateMask.fieldPaths=portfolio&updateMask.fieldPaths=history&updateMask.fieldPaths=agreed_to_terms&updateMask.fieldPaths=terms_version&updateMask.fieldPaths=agreed_at&updateMask.fieldPaths=ip_address"
+    body = {"fields": {
+        "cash": {"doubleValue": 0.0},
+        "portfolio": {"arrayValue": {}},
+        "history": {"arrayValue": {}},
+        "agreed_to_terms": {"booleanValue": True},
+        "terms_version": {"stringValue": TERMS_VERSION},
+        "agreed_at": {"timestampValue": now},
+        "ip_address": {"stringValue": ip_address} if ip_address else {"nullValue": None},
+    }}
+    headers = {"Authorization": f"Bearer {id_token}", "Content-Type": "application/json"}
+    try:
+        requests.patch(url, headers=headers, json=body, timeout=10)
+    except Exception as e:
+        logger.warning(f"Could not write consent doc for {uid}: {e}")
 
 
 def _from_firestore_value(v):
@@ -909,7 +1006,7 @@ class LoginDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("MB-EGX — Sign In")
-        self.resize(380, 260)
+        self.resize(420, 520)
         self.setStyleSheet(THEME_DARK)
         self.user_info = None
         self._init_ui()
@@ -947,6 +1044,27 @@ class LoginDialog(QDialog):
         self.btn_forgot.clicked.connect(self.do_forgot_password)
         layout.addWidget(self.btn_forgot)
 
+        # ===== End-User Consent and Legal Disclaimer (required to create a
+        # new account; not required to sign in to an existing one) =====
+        lbl_consent_hdr = QLabel("Required to create a new account:")
+        lbl_consent_hdr.setStyleSheet("color: #718096; font-size: 10px;")
+        layout.addWidget(lbl_consent_hdr)
+
+        self.txt_disclaimer = QTextEdit()
+        self.txt_disclaimer.setReadOnly(True)
+        self.txt_disclaimer.setPlainText(DISCLAIMER_TEXT)
+        self.txt_disclaimer.setFixedHeight(160)
+        self.txt_disclaimer.setStyleSheet(
+            "background-color: #0f1115; color: #a0aec0; font-size: 10px; "
+            "border: 1px solid #2d3748; border-radius: 4px;"
+        )
+        layout.addWidget(self.txt_disclaimer)
+
+        self.chk_consent = QCheckBox("I acknowledge and agree to the End-User Consent and Legal Disclaimer.")
+        self.chk_consent.setStyleSheet("color: #cbd5e0; font-size: 11px;")
+        self.chk_consent.stateChanged.connect(self._on_consent_toggled)
+        layout.addWidget(self.chk_consent)
+
         self.lbl_error = QLabel("")
         self.lbl_error.setStyleSheet("color: #e53e3e; font-size: 11px;")
         self.lbl_error.setWordWrap(True)
@@ -957,11 +1075,20 @@ class LoginDialog(QDialog):
         self.btn_signin.setStyleSheet("background-color: #3182ce; color: white; padding: 8px; font-weight: bold;")
         self.btn_signin.clicked.connect(self.do_sign_in)
         self.btn_signup = QPushButton("Create Account")
-        self.btn_signup.setStyleSheet("background-color: #4a5568; color: white; padding: 8px;")
+        self.btn_signup.setEnabled(False)
+        self.btn_signup.setStyleSheet("background-color: #4a5568; color: #718096; padding: 8px;")
         self.btn_signup.clicked.connect(self.do_sign_up)
         btn_row.addWidget(self.btn_signin)
         btn_row.addWidget(self.btn_signup)
         layout.addLayout(btn_row)
+
+    def _on_consent_toggled(self, _state):
+        checked = self.chk_consent.isChecked()
+        self.btn_signup.setEnabled(checked)
+        self.btn_signup.setStyleSheet(
+            "background-color: #4a5568; color: white; padding: 8px;" if checked
+            else "background-color: #4a5568; color: #718096; padding: 8px;"
+        )
 
     def _friendly_name(self, data, email):
         display_name = (data.get("displayName") or "").strip()
@@ -970,7 +1097,7 @@ class LoginDialog(QDialog):
         local = email.split("@")[0]
         return local[:1].upper() + local[1:] if local else "there"
 
-    def _attempt(self, fn, min_password_len=0):
+    def _attempt(self, fn, min_password_len=0, require_consent=False):
         email = self.txt_email.text().strip()
         password = self.txt_password.text()
         if not email or not password:
@@ -978,6 +1105,11 @@ class LoginDialog(QDialog):
             return
         if min_password_len and len(password) < min_password_len:
             self.lbl_error.setText(f"Password must be at least {min_password_len} characters.")
+            return
+        # Defensive re-check: the button is disabled while unchecked, but this
+        # guards direct calls (e.g. returnPressed) too.
+        if require_consent and not self.chk_consent.isChecked():
+            self.lbl_error.setText("You must agree to the legal terms to create an account.")
             return
 
         self.lbl_error.setText("")
@@ -991,6 +1123,11 @@ class LoginDialog(QDialog):
                 "idToken": data["idToken"],
                 "name": self._friendly_name(data, email),
             }
+            if require_consent:
+                # Best-effort: firestore.rules is the real enforcement boundary
+                # (see firestore.rules), so a failure here doesn't block sign-up.
+                ip_address = fetch_client_ip()
+                write_consent_doc(data["idToken"], data["localId"], ip_address)
             self.accept()
         except Exception as e:
             self.lbl_error.setText(str(e))
@@ -1002,7 +1139,7 @@ class LoginDialog(QDialog):
         self._attempt(firebase_sign_in)
 
     def do_sign_up(self):
-        self._attempt(firebase_sign_up, min_password_len=6)
+        self._attempt(firebase_sign_up, min_password_len=6, require_consent=True)
 
     def do_forgot_password(self):
         email = self.txt_email.text().strip()

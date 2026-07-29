@@ -22,10 +22,11 @@ CHANGELOG vs the original:
 from __future__ import annotations
 
 from concurrent.futures import ProcessPoolExecutor, as_completed
-import pandas as pd
 
-from analytics import QuantitativeEngine
-from db_manager import DatabaseManager
+# MUST be imported before pandas and before `analytics` (below) - config.py
+# sets OPENBLAS/MKL/OMP/NUMEXPR thread caps as a module-level side effect,
+# which only takes effect if set before numpy/pandas load anywhere in this
+# process.
 from config import (
     MIN_AVG_VOLUME,
     MIN_BARS_FOR_PATTERN_TRUST,
@@ -40,6 +41,11 @@ from config import (
     MATRIX_LOOKBACK_DAYS,
     get_logger,
 )
+
+import pandas as pd
+
+from analytics import QuantitativeEngine
+from db_manager import DatabaseManager
 
 logger = get_logger("decision_matrix")
 

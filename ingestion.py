@@ -1,4 +1,11 @@
 import os
+
+# MUST be imported before pandas (below) - sets OPENBLAS/MKL/OMP/NUMEXPR
+# thread caps as a module-level side effect; those only take effect if
+# set before numpy/pandas load anywhere in this process. See config.py's
+# module docstring.
+from config import WATCH_DIR, MAX_WORKERS, CHUNK_SIZE, get_logger
+
 import re
 import glob
 import pandas as pd
@@ -10,7 +17,6 @@ try:
 except ImportError:
     from calamine import CalamineWorkbook
 
-from config import WATCH_DIR, MAX_WORKERS, CHUNK_SIZE, get_logger
 from db_manager import clean_sector_name
 
 logger = get_logger("ingestion")

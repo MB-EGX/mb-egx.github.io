@@ -31,11 +31,16 @@ import json
 import math
 import os
 
+# MUST be imported before pandas and before decision_matrix/db_manager
+# (below) - config.py sets OPENBLAS/MKL/OMP/NUMEXPR thread caps as a
+# module-level side effect, which only takes effect if set before
+# numpy/pandas load anywhere in this process.
+from config import CHART_HISTORY_DAYS
+
 import pandas as pd
 
 from decision_matrix import DecisionMatrix
 from db_manager import DatabaseManager
-from config import CHART_HISTORY_DAYS
 
 # Any of these keys, if present on a market_matrix/top_10 row, are derived
 # from the real cash balance and must never reach the public JSON.
