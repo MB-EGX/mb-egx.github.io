@@ -471,10 +471,13 @@ THEME_DARK = """
     QPushButton:hover { background-color: #3a4557; }
     QPushButton:pressed { background-color: #232b38; }
     QProgressBar { 
-        border: 1px solid #2d3748; border-radius: 4px; 
-        text-align: center; background-color: #0f1115; color: white; height: 12px;
+        border: none; 
+        background-color: rgba(255,255,255,0.1); 
+        border-radius: 2px; 
+        height: 4px; 
+        max-height: 4px; 
     }
-    QProgressBar::chunk { background-color: #3198dc; border-radius: 3px; }
+    QProgressBar::chunk { background-color: #3198dc; border-radius: 2px; }
     QScrollBar:vertical { background: #0f1115; width: 14px; margin: 0px; }
     QScrollBar::handle:vertical { background: #2d3748; border-radius: 7px; min-height: 20px; }
     QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0px; }
@@ -499,8 +502,8 @@ THEME_LIGHT = """
     QPushButton { background-color: #e2e8f0; color: #1a202c; border: none; border-radius: 4px; padding: 6px 12px; font-size: 12px; font-weight: bold; }
     QPushButton:hover { background-color: #cbd5e0; }
     QPushButton:pressed { background-color: #b8c4d4; }
-    QProgressBar { border: 1px solid #cbd5e0; border-radius: 4px; text-align: center; background-color: #e2e8f0; color: #1a202c; height: 12px; }
-    QProgressBar::chunk { background-color: #3182ce; border-radius: 3px; }
+    QProgressBar { border: none; background-color: rgba(0,0,0,0.1); border-radius: 2px; height: 4px; max-height: 4px; }
+    QProgressBar::chunk { background-color: #3182ce; border-radius: 2px; }
     QScrollBar:vertical { background: #f8fafc; width: 14px; margin: 0px; }
     QScrollBar::handle:vertical { background: #cbd5e0; border-radius: 7px; min-height: 20px; }
     QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0px; }
@@ -525,8 +528,8 @@ THEME_BLUE = """
     QPushButton { background-color: #1e293b; color: #f8fafc; border: none; border-radius: 4px; padding: 6px 12px; font-size: 12px; font-weight: bold; }
     QPushButton:hover { background-color: #334155; }
     QPushButton:pressed { background-color: #16202f; }
-    QProgressBar { border: 1px solid #334155; border-radius: 4px; text-align: center; background-color: #1e293b; color: white; height: 12px; }
-    QProgressBar::chunk { background-color: #0284c7; border-radius: 3px; }
+    QProgressBar { border: none; background-color: rgba(255,255,255,0.1); border-radius: 2px; height: 4px; max-height: 4px; }
+    QProgressBar::chunk { background-color: #0284c7; border-radius: 2px; }
     QScrollBar:vertical { background: #0f172a; width: 14px; margin: 0px; }
     QScrollBar::handle:vertical { background: #334155; border-radius: 7px; min-height: 20px; }
     QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0px; }
@@ -551,8 +554,8 @@ THEME_BLUSH_ROSE = """
     QPushButton { background-color: #fce7f3; color: #831843; border: none; border-radius: 4px; padding: 6px 12px; font-size: 12px; font-weight: bold; }
     QPushButton:hover { background-color: #fbcfe8; }
     QPushButton:pressed { background-color: #f9a8d4; }
-    QProgressBar { border: 1px solid #fbcfe8; border-radius: 4px; text-align: center; background-color: #fce7f3; color: #500724; height: 12px; }
-    QProgressBar::chunk { background-color: #ec4899; border-radius: 3px; }
+    QProgressBar { border: none; background-color: rgba(0,0,0,0.05); border-radius: 2px; height: 4px; max-height: 4px; }
+    QProgressBar::chunk { background-color: #ec4899; border-radius: 2px; }
     QScrollBar:vertical { background: #fdf2f8; width: 14px; margin: 0px; }
     QScrollBar::handle:vertical { background: #fbcfe8; border-radius: 7px; min-height: 20px; }
     QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0px; }
@@ -577,8 +580,8 @@ THEME_VELVET_ROSE = """
     QPushButton { background-color: #311825; color: #fecdd3; border: none; border-radius: 4px; padding: 6px 12px; font-size: 12px; font-weight: bold; }
     QPushButton:hover { background-color: #3f2231; }
     QPushButton:pressed { background-color: #26121b; }
-    QProgressBar { border: 1px solid #9f1239; border-radius: 4px; text-align: center; background-color: #311825; color: white; height: 12px; }
-    QProgressBar::chunk { background-color: #e11d48; border-radius: 3px; }
+    QProgressBar { border: none; background-color: rgba(255,255,255,0.1); border-radius: 2px; height: 4px; max-height: 4px; }
+    QProgressBar::chunk { background-color: #e11d48; border-radius: 2px; }
     QScrollBar:vertical { background: #20131a; width: 14px; margin: 0px; }
     QScrollBar::handle:vertical { background: #3f2231; border-radius: 7px; min-height: 20px; }
     QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0px; }
@@ -1547,6 +1550,9 @@ class QuantDashboard(QMainWindow):
                 self.btn_top10.setStyleSheet(f"background-color: #be185d; {btn_base_style}")
                 self.lbl_account_header.setStyleSheet("font-size: 13px; font-weight: bold; background-color: #fce7f3; color: #831843; padding: 8px; border-radius: 8px; border: 1px solid #fbcfe8;")
                 
+                self.lbl_disclosure.setStyleSheet("font-size: 10px; font-weight: bold; color: #be185d; background: transparent;")
+                self.lbl_status.setStyleSheet("font-size: 11px; font-weight: bold; color: #db2777; background: transparent;")
+                
             elif "Velvet Rose" in theme_name:
                 self.theme_highlight = QColor("#e11d48")
                 self.btn_ingest.setStyleSheet(f"background-color: #e11d48; {btn_base_style}")
@@ -1557,6 +1563,9 @@ class QuantDashboard(QMainWindow):
                 self.btn_settings.setStyleSheet(f"background-color: #4c1d32; color: #ffe4e6; border-radius: 6px; padding: 6px 12px; font-size: 12px;")
                 self.btn_top10.setStyleSheet(f"background-color: #e11d48; {btn_base_style}")
                 self.lbl_account_header.setStyleSheet("font-size: 13px; font-weight: bold; background-color: #311825; color: #fb7185; padding: 8px; border-radius: 8px; border: 1px solid #9f1239;")
+                
+                self.lbl_disclosure.setStyleSheet("font-size: 10px; font-weight: bold; color: #fb7185; background: transparent;")
+                self.lbl_status.setStyleSheet("font-size: 11px; font-weight: bold; color: #fecdd3; background: transparent;")
                 
             elif "Light" in theme_name:
                 self.theme_highlight = QColor("#3182ce")
@@ -1569,6 +1578,9 @@ class QuantDashboard(QMainWindow):
                 self.btn_top10.setStyleSheet(f"background-color: #3182ce; {btn_base_style}")
                 self.lbl_account_header.setStyleSheet("font-size: 13px; font-weight: bold; background-color: #ffffff; color: #2b6cb0; padding: 8px; border-radius: 8px; border: 1px solid #cbd5e0; box-shadow: 0 4px 6px rgba(0,0,0,0.1);")
                 
+                self.lbl_disclosure.setStyleSheet("font-size: 10px; font-weight: bold; color: #d69e2e; background: transparent;")
+                self.lbl_status.setStyleSheet("font-size: 11px; font-weight: bold; color: #38a169; background: transparent;")
+                
             elif "Midnight" in theme_name:
                 self.theme_highlight = QColor("#0284c7")
                 self.btn_ingest.setStyleSheet(f"background-color: #0284c7; {btn_base_style}")
@@ -1579,6 +1591,9 @@ class QuantDashboard(QMainWindow):
                 self.btn_settings.setStyleSheet(f"background-color: #475569; {btn_base_style}")
                 self.btn_top10.setStyleSheet(f"background-color: #0284c7; {btn_base_style}")
                 self.lbl_account_header.setStyleSheet("font-size: 13px; font-weight: bold; background-color: #1e293b; color: #38bdf8; padding: 8px; border-radius: 8px; border: 1px solid #334155;")
+                
+                self.lbl_disclosure.setStyleSheet("font-size: 10px; font-weight: bold; color: #d97706; background: transparent;")
+                self.lbl_status.setStyleSheet("font-size: 11px; font-weight: bold; color: #10b981; background: transparent;")
                 
             else:
                 self.theme_highlight = QColor("#3198dc")
@@ -1591,6 +1606,9 @@ class QuantDashboard(QMainWindow):
                 self.btn_top10.setStyleSheet(f"background-color: #ca8a04; {btn_base_style}") 
                 
                 self.lbl_account_header.setStyleSheet("font-size: 13px; font-weight: bold; background-color: #1a1d24; color: #e2e2e8; padding: 8px; border-radius: 8px; border: 1px solid #2d3748;")
+                
+                self.lbl_disclosure.setStyleSheet("font-size: 10px; font-weight: bold; color: #d69e2e; background: transparent;")
+                self.lbl_status.setStyleSheet("font-size: 11px; font-weight: bold; color: #38a169; background: transparent;")
 
     def _init_ui(self):
         main_widget = QWidget()
@@ -1609,8 +1627,10 @@ class QuantDashboard(QMainWindow):
         header_layout.setContentsMargins(12, 8, 12, 8)
         header_layout.setSpacing(6)
 
-        # 1. Top Row: Brand & Status
+        # 1. Top Row: Brand & Status Messages & Date/User
         top_row = QHBoxLayout()
+        
+        # Left: Brand
         brand_layout = QHBoxLayout()
         if LOGO_PATH.exists():
             self.lbl_brand_logo = QLabel()
@@ -1629,9 +1649,32 @@ class QuantDashboard(QMainWindow):
         brand_text_col.addWidget(self.lbl_brand_tagline)
         brand_layout.addLayout(brand_text_col)
         top_row.addLayout(brand_layout)
-        top_row.addStretch()
+        top_row.addStretch(1)
 
-        # Status (Date + User)
+        # Center: Progress & Status Messages Reallocated Here
+        msg_layout = QVBoxLayout()
+        msg_layout.setSpacing(2)
+        msg_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        
+        self.lbl_disclosure = QLabel("⚠️ Educational tool, not investment advice. Sector Breadth, VWAP entries, and Sortino risk penalties applied.")
+        self.lbl_disclosure.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        
+        self.lbl_status = QLabel("System Idle. Ready for processing.")
+        self.lbl_status.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setValue(0)
+        self.progress_bar.setTextVisible(False) # No text makes it a sleek line
+        self.progress_bar.setFixedHeight(4)     # Very thin progress bar
+        
+        msg_layout.addWidget(self.lbl_disclosure)
+        msg_layout.addWidget(self.lbl_status)
+        msg_layout.addWidget(self.progress_bar)
+        
+        top_row.addLayout(msg_layout, stretch=2)
+        top_row.addStretch(1)
+
+        # Right: Status (Date + User)
         status_layout = QVBoxLayout()
         status_layout.setSpacing(2)
         self.lbl_last_date = QLabel("📅 Last Data Date: Loading...")
@@ -1786,19 +1829,6 @@ class QuantDashboard(QMainWindow):
         filter_layout.addWidget(self.btn_reset_filters)
         
         layout.addWidget(filter_wrap)
-
-        self.lbl_disclosure = QLabel("⚠️ Educational tool, not investment advice. Sector Breadth, VWAP entries, and Sortino risk penalties applied.")
-        self.lbl_disclosure.setStyleSheet("font-size: 10px; color: #a0aec0;")
-        self.lbl_disclosure.setWordWrap(True)
-        layout.addWidget(self.lbl_disclosure)
-
-        self.lbl_status = QLabel("System Idle. Ready for processing.")
-        self.lbl_status.setStyleSheet("font-size: 11px; color: #a0aec0;")
-        layout.addWidget(self.lbl_status)
-        
-        self.progress_bar = QProgressBar()
-        self.progress_bar.setValue(0)
-        layout.addWidget(self.progress_bar)
 
         self.tabs = QTabWidget()
         self.tbl_buys = self._create_matrix_table()
