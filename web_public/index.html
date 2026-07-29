@@ -1399,15 +1399,20 @@
          or touch the dashboard - or any portfolio data - while this is up. -->
     <div id="auth-gate" style="display:none;" class="fixed inset-0 z-[9999] bg-[#0f1115] flex items-center justify-center p-4">
         <div class="w-full max-w-md bg-[#1a1d24] border border-[#2d3748] rounded-xl p-8 shadow-2xl">
-            <img src="assets/mb-egx-logo.png" alt="MB-EGX Logo" class="w-20 h-20 object-contain mx-auto mb-3">
-            <h2 class="text-xl font-bold text-sky-400 mb-1 text-center">MB-EGX</h2>
+            <div class="flex items-center justify-center gap-2 mb-1">
+                <span class="text-base font-black text-sky-400 tracking-wide">MB-EGX Alpha</span>
+            </div>
+            <img src="assets/mb-egx-logo.png" alt="MB-EGX Logo" class="w-28 h-28 object-contain mx-auto mb-2 drop-shadow-[0_0_20px_rgba(147,204,255,0.25)]">
+            <h2 class="text-xl font-bold text-white mb-1 text-center">Terminal Access</h2>
             <p class="text-xs text-slate-400 mb-6 text-center">Sign in to view your private dashboard</p>
 
             <div id="auth-error" class="hidden mb-4 text-xs text-rose-400 bg-rose-950/40 border border-rose-800 rounded p-2"></div>
 
-            <input id="auth-email" type="email" placeholder="Email" autocomplete="email"
+            <label class="block text-[10px] font-semibold tracking-widest text-slate-400 uppercase mb-1">Email Address</label>
+            <input id="auth-email" type="email" placeholder="investor@mb-egx.ai" autocomplete="email"
                    class="w-full mb-3 px-3 py-2 rounded bg-[#0f1115] border border-[#2d3748] text-sm text-slate-200 focus:outline-none focus:border-sky-500">
-            <input id="auth-password" type="password" placeholder="Password" autocomplete="current-password"
+            <label class="block text-[10px] font-semibold tracking-widest text-slate-400 uppercase mb-1">Password</label>
+            <input id="auth-password" type="password" placeholder="••••••••" autocomplete="current-password"
                    class="w-full mb-4 px-3 py-2 rounded bg-[#0f1115] border border-[#2d3748] text-sm text-slate-200 focus:outline-none focus:border-sky-500">
 
             <!-- ===== End-User Consent and Legal Disclaimer (required for NEW accounts) ===== -->
@@ -1438,7 +1443,7 @@ By accessing, subscribing to, or using this application, you explicitly acknowle
             </div>
 
             <button onclick="handleEmailSignIn()" id="btn-auth-signin"
-                    class="w-full mb-2 py-2 rounded bg-sky-600 hover:bg-sky-500 text-sm font-semibold text-white transition">Sign In</button>
+                    class="w-full mb-2 py-2 rounded bg-sky-600 hover:bg-sky-500 text-sm font-semibold text-white transition">Sign In  →</button>
             <button onclick="handleEmailSignUp()" id="btn-auth-signup" disabled
                     class="w-full mb-4 py-2 rounded bg-transparent border border-[#2d3748] text-sm text-slate-500 transition cursor-not-allowed opacity-50">Create Account</button>
 

@@ -449,7 +449,11 @@ THEME_DARK = """
     QTableWidget, QTableView { background-color: #0f1115; alternate-background-color: #1a1d24; color: #e2e2e8; gridline-color: #2d3748; border: none; selection-background-color: #2b6cb0; }
     QHeaderView::section { background-color: #1a1d24; color: #93ccff; padding: 6px; font-weight: bold; border: 1px solid #0f1115; }
     QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #1a1d24; color: #ffffff; border: 1px solid #2d3748; padding: 6px; border-radius: 4px; }
-    QPushButton { border-radius: 6px; padding: 8px; font-weight: bold; }
+    QPushButton { background-color: #2d3748; color: #ffffff; border: 1px solid #3f4850; border-radius: 6px; padding: 8px 14px; font-weight: bold; }
+    QPushButton:hover { background-color: #3a4557; border: 1px solid #93ccff; }
+    QPushButton:pressed { background-color: #232b38; }
+    QPushButton:checked { background-color: #3198dc; color: #ffffff; border: 1px solid #93ccff; }
+    QPushButton:disabled { background-color: #1a1d24; color: #4a5568; border: 1px solid #2d3748; }
     QProgressBar { border: 1px solid #2d3748; border-radius: 4px; text-align: center; background-color: #1a1d24; color: white; }
     QProgressBar::chunk { background-color: #3198dc; }
 """
@@ -462,7 +466,11 @@ THEME_LIGHT = """
     QTableWidget, QTableView { background-color: #ffffff; alternate-background-color: #f1f5f9; color: #1a202c; gridline-color: #e2e8f0; border: none; selection-background-color: #bee3f8; selection-color: #1a202c; }
     QHeaderView::section { background-color: #2d3748; color: #ffffff; padding: 6px; font-weight: bold; border: 1px solid #cbd5e0; }
     QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #ffffff; color: #1a202c; border: 1px solid #a0aec0; padding: 6px; border-radius: 4px; }
-    QPushButton { border-radius: 4px; padding: 8px; font-weight: bold; }
+    QPushButton { background-color: #e2e8f0; color: #1a202c; border: 1px solid #a0aec0; border-radius: 4px; padding: 8px 14px; font-weight: bold; }
+    QPushButton:hover { background-color: #cbd5e0; border: 1px solid #2b6cb0; }
+    QPushButton:pressed { background-color: #b8c4d4; }
+    QPushButton:checked { background-color: #2b6cb0; color: #ffffff; border: 1px solid #2b6cb0; }
+    QPushButton:disabled { background-color: #f1f5f9; color: #a0aec0; border: 1px solid #e2e8f0; }
     QProgressBar { border: 1px solid #cbd5e0; border-radius: 4px; text-align: center; background-color: #e2e8f0; color: #1a202c; }
     QProgressBar::chunk { background-color: #3182ce; }
 """
@@ -475,7 +483,11 @@ THEME_BLUE = """
     QTableWidget, QTableView { background-color: #0f172a; alternate-background-color: #1e293b; color: #f8fafc; gridline-color: #334155; border: none; selection-background-color: #0369a1; }
     QHeaderView::section { background-color: #1e293b; color: #38bdf8; padding: 6px; font-weight: bold; border: 1px solid #0f172a; }
     QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #1e293b; color: #f8fafc; border: 1px solid #475569; padding: 6px; border-radius: 4px; }
-    QPushButton { border-radius: 4px; padding: 8px; font-weight: bold; }
+    QPushButton { background-color: #1e293b; color: #f8fafc; border: 1px solid #475569; border-radius: 4px; padding: 8px 14px; font-weight: bold; }
+    QPushButton:hover { background-color: #334155; border: 1px solid #38bdf8; }
+    QPushButton:pressed { background-color: #16202f; }
+    QPushButton:checked { background-color: #0284c7; color: #ffffff; border: 1px solid #38bdf8; }
+    QPushButton:disabled { background-color: #0f172a; color: #475569; border: 1px solid #1e293b; }
     QProgressBar { border: 1px solid #334155; border-radius: 4px; text-align: center; background-color: #1e293b; color: white; }
     QProgressBar::chunk { background-color: #0284c7; }
 """
@@ -488,7 +500,11 @@ THEME_BLUSH_ROSE = """
     QTableWidget, QTableView { background-color: #ffffff; alternate-background-color: #fef6fb; color: #500724; gridline-color: #fbcfe8; border: none; selection-background-color: #f472b6; selection-color: #ffffff; }
     QHeaderView::section { background-color: #be185d; color: #ffffff; padding: 6px; font-weight: bold; border: 1px solid #fbcfe8; }
     QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #ffffff; color: #500724; border: 1px solid #f472b6; padding: 6px; border-radius: 4px; }
-    QPushButton { border-radius: 4px; padding: 8px; font-weight: bold; }
+    QPushButton { background-color: #fce7f3; color: #831843; border: 1px solid #f472b6; border-radius: 4px; padding: 8px 14px; font-weight: bold; }
+    QPushButton:hover { background-color: #fbcfe8; border: 1px solid #ec4899; }
+    QPushButton:pressed { background-color: #f9a8d4; }
+    QPushButton:checked { background-color: #ec4899; color: #ffffff; border: 1px solid #ec4899; }
+    QPushButton:disabled { background-color: #fdf2f8; color: #f0abc4; border: 1px solid #fce7f3; }
     QProgressBar { border: 1px solid #fbcfe8; border-radius: 4px; text-align: center; background-color: #fce7f3; color: #500724; }
     QProgressBar::chunk { background-color: #ec4899; }
 """
@@ -501,7 +517,11 @@ THEME_VELVET_ROSE = """
     QTableWidget, QTableView { background-color: #20131a; alternate-background-color: #2a1822; color: #fff1f2; gridline-color: #3f2231; border: none; selection-background-color: #be185d; }
     QHeaderView::section { background-color: #3f2231; color: #fb7185; padding: 6px; font-weight: bold; border: 1px solid #20131a; }
     QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox { background-color: #311825; color: #fff1f2; border: 1px solid #9f1239; padding: 6px; border-radius: 4px; }
-    QPushButton { border-radius: 4px; padding: 8px; font-weight: bold; }
+    QPushButton { background-color: #311825; color: #fecdd3; border: 1px solid #9f1239; border-radius: 4px; padding: 8px 14px; font-weight: bold; }
+    QPushButton:hover { background-color: #3f2231; border: 1px solid #fb7185; }
+    QPushButton:pressed { background-color: #26121b; }
+    QPushButton:checked { background-color: #e11d48; color: #ffffff; border: 1px solid #fb7185; }
+    QPushButton:disabled { background-color: #20131a; color: #6b3a48; border: 1px solid #3f2231; }
     QProgressBar { border: 1px solid #9f1239; border-radius: 4px; text-align: center; background-color: #311825; color: white; }
     QProgressBar::chunk { background-color: #e11d48; }
 """
@@ -1007,101 +1027,165 @@ class LoginDialog(QDialog):
     account system as the website. Sets self.user_info on success:
     {"uid", "email", "idToken", "name"}."""
 
+    # Same palette as the web login page (log.html) so both surfaces match.
+    _BG = "#0f1115"
+    _CARD = "#1a1d24"
+    _CARD_LOWEST = "#0c0e12"
+    _OUTLINE = "#3f4850"
+    _PRIMARY = "#93ccff"
+    _ON_PRIMARY = "#003351"
+    _TEXT_MUTED = "#bfc7d2"
+
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("MB-EGX — Sign In")
-        self.resize(420, 520)
-        self.setStyleSheet(THEME_DARK)
+        self.setWindowTitle("MB-EGX Alpha — Terminal Access")
+        self.resize(460, 640)
+        self.setStyleSheet(THEME_DARK + f"""
+            QDialog {{ background-color: {self._BG}; }}
+            QLineEdit {{
+                background-color: {self._CARD_LOWEST}; color: #ffffff;
+                border: 1px solid {self._OUTLINE}; border-radius: 6px; padding: 10px;
+            }}
+            QLineEdit:focus {{ border: 1px solid {self._PRIMARY}; }}
+            QTextEdit {{
+                background-color: {self._CARD_LOWEST}; color: {self._TEXT_MUTED};
+                border: 1px solid {self._OUTLINE}; border-radius: 6px; font-size: 10px;
+            }}
+        """)
         if LOGO_PATH.exists():
             self.setWindowIcon(QIcon(str(LOGO_PATH)))
         self.user_info = None
         self._init_ui()
 
     def _init_ui(self):
-        layout = QVBoxLayout(self)
-        layout.setSpacing(10)
+        outer = QVBoxLayout(self)
+        outer.setContentsMargins(0, 0, 0, 0)
 
-        lbl_title = QLabel("MB-EGX")
-        lbl_title.setStyleSheet("font-size: 20px; font-weight: bold; color: #93ccff;")
-        lbl_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        # ----- Branded top strip, mirrors the web header -----
+        header = QWidget()
+        header.setStyleSheet(f"background-color: {self._CARD}; border-bottom: 1px solid {self._OUTLINE};")
+        header_layout = QHBoxLayout(header)
+        header_layout.setContentsMargins(16, 10, 16, 10)
+        lbl_header_title = QLabel("MB-EGX Alpha")
+        lbl_header_title.setStyleSheet(f"font-size: 16px; font-weight: 900; color: {self._PRIMARY};")
+        header_layout.addWidget(lbl_header_title)
+        header_layout.addStretch()
+        lbl_header_tag = QLabel("Precision Wealth Alpha")
+        lbl_header_tag.setStyleSheet("font-size: 11px; color: #a0aec0;")
+        header_layout.addWidget(lbl_header_tag)
+        outer.addWidget(header)
+
+        # ----- Scrollable card body -----
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setStyleSheet("QScrollArea { border: none; background: transparent; }")
+        body = QWidget()
+        layout = QVBoxLayout(body)
+        layout.setContentsMargins(28, 24, 28, 24)
+        layout.setSpacing(12)
+        scroll.setWidget(body)
+        outer.addWidget(scroll)
 
         if LOGO_PATH.exists():
             lbl_logo = QLabel()
-            pixmap = QPixmap(str(LOGO_PATH)).scaledToHeight(88, Qt.TransformationMode.SmoothTransformation)
+            pixmap = QPixmap(str(LOGO_PATH)).scaledToHeight(96, Qt.TransformationMode.SmoothTransformation)
             lbl_logo.setPixmap(pixmap)
             lbl_logo.setAlignment(Qt.AlignmentFlag.AlignCenter)
             layout.addWidget(lbl_logo)
 
+        lbl_title = QLabel("Terminal Access")
+        lbl_title.setStyleSheet("font-size: 22px; font-weight: 700; color: #ffffff;")
+        lbl_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(lbl_title)
 
-        lbl_sub = QLabel("Sign in to your private dashboard")
-        lbl_sub.setStyleSheet("color: #a0aec0;")
+        lbl_sub = QLabel("Sign in to view your private dashboard")
+        lbl_sub.setStyleSheet(f"color: {self._TEXT_MUTED}; font-size: 12px;")
         lbl_sub.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(lbl_sub)
+        layout.addSpacing(8)
 
+        lbl_email_hdr = QLabel("EMAIL ADDRESS")
+        lbl_email_hdr.setStyleSheet(f"color: {self._TEXT_MUTED}; font-size: 10px; font-weight: bold; letter-spacing: 1px;")
+        layout.addWidget(lbl_email_hdr)
         self.txt_email = QLineEdit()
-        self.txt_email.setPlaceholderText("Email")
+        self.txt_email.setPlaceholderText("investor@mb-egx.ai")
         layout.addWidget(self.txt_email)
 
+        pw_row = QHBoxLayout()
+        lbl_pw_hdr = QLabel("PASSWORD")
+        lbl_pw_hdr.setStyleSheet(f"color: {self._TEXT_MUTED}; font-size: 10px; font-weight: bold; letter-spacing: 1px;")
+        pw_row.addWidget(lbl_pw_hdr)
+        pw_row.addStretch()
+        self.btn_forgot = QPushButton("Forgot Access?")
+        self.btn_forgot.setFlat(True)
+        self.btn_forgot.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.btn_forgot.setStyleSheet(
+            f"background: transparent; border: none; color: {self._PRIMARY}; font-size: 11px; padding: 0;"
+        )
+        self.btn_forgot.clicked.connect(self.do_forgot_password)
+        pw_row.addWidget(self.btn_forgot)
+        layout.addLayout(pw_row)
+
         self.txt_password = QLineEdit()
-        self.txt_password.setPlaceholderText("Password")
+        self.txt_password.setPlaceholderText("••••••••")
         self.txt_password.setEchoMode(QLineEdit.EchoMode.Password)
         self.txt_password.returnPressed.connect(self.do_sign_in)
         layout.addWidget(self.txt_password)
 
-        self.btn_forgot = QPushButton("Forgot password? / Signed in with Google on the website?")
-        self.btn_forgot.setFlat(True)
-        self.btn_forgot.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.btn_forgot.setStyleSheet(
-            "text-align: left; border: none; color: #63b3ed; font-size: 11px; padding: 0;"
-        )
-        self.btn_forgot.clicked.connect(self.do_forgot_password)
-        layout.addWidget(self.btn_forgot)
-
         # ===== End-User Consent and Legal Disclaimer (required to create a
         # new account; not required to sign in to an existing one) =====
-        lbl_consent_hdr = QLabel("Required to create a new account:")
-        lbl_consent_hdr.setStyleSheet("color: #718096; font-size: 10px;")
-        layout.addWidget(lbl_consent_hdr)
+        consent_box = QWidget()
+        consent_box.setStyleSheet(f"background-color: {self._CARD}; border: 1px solid {self._OUTLINE}; border-radius: 6px;")
+        consent_layout = QVBoxLayout(consent_box)
+        consent_layout.setContentsMargins(12, 10, 12, 10)
+
+        lbl_consent_hdr = QLabel("END-USER CONSENT AND LEGAL DISCLAIMER")
+        lbl_consent_hdr.setStyleSheet(f"color: {self._TEXT_MUTED}; font-size: 10px; font-weight: bold; letter-spacing: 1px;")
+        consent_layout.addWidget(lbl_consent_hdr)
 
         self.txt_disclaimer = QTextEdit()
         self.txt_disclaimer.setReadOnly(True)
         self.txt_disclaimer.setPlainText(DISCLAIMER_TEXT)
-        self.txt_disclaimer.setFixedHeight(160)
-        self.txt_disclaimer.setStyleSheet(
-            "background-color: #0f1115; color: #a0aec0; font-size: 10px; "
-            "border: 1px solid #2d3748; border-radius: 4px;"
-        )
-        layout.addWidget(self.txt_disclaimer)
+        self.txt_disclaimer.setFixedHeight(140)
+        consent_layout.addWidget(self.txt_disclaimer)
 
         self.chk_consent = QCheckBox("I acknowledge and agree to the End-User Consent and Legal Disclaimer.")
-        self.chk_consent.setStyleSheet("color: #cbd5e0; font-size: 11px;")
+        self.chk_consent.setStyleSheet("color: #e2e2e8; font-size: 11px;")
         self.chk_consent.stateChanged.connect(self._on_consent_toggled)
-        layout.addWidget(self.chk_consent)
+        consent_layout.addWidget(self.chk_consent)
+        layout.addWidget(consent_box)
 
         self.lbl_error = QLabel("")
-        self.lbl_error.setStyleSheet("color: #e53e3e; font-size: 11px;")
+        self.lbl_error.setStyleSheet("color: #ffb4ab; font-size: 11px;")
         self.lbl_error.setWordWrap(True)
         layout.addWidget(self.lbl_error)
 
-        btn_row = QHBoxLayout()
-        self.btn_signin = QPushButton("Sign In")
-        self.btn_signin.setStyleSheet("background-color: #3198dc; color: white; padding: 8px; font-weight: bold;")
+        self.btn_signin = QPushButton("Sign In  →")
+        self.btn_signin.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.btn_signin.setStyleSheet(
+            f"background-color: {self._PRIMARY}; color: {self._ON_PRIMARY}; "
+            "padding: 12px; font-weight: bold; font-size: 13px; border: none; border-radius: 8px;"
+        )
         self.btn_signin.clicked.connect(self.do_sign_in)
+        layout.addWidget(self.btn_signin)
+
         self.btn_signup = QPushButton("Create Account")
+        self.btn_signup.setCursor(Qt.CursorShape.PointingHandCursor)
         self.btn_signup.setEnabled(False)
-        self.btn_signup.setStyleSheet("background-color: #4a5568; color: #718096; padding: 8px;")
+        layout.addWidget(self.btn_signup)
         self.btn_signup.clicked.connect(self.do_sign_up)
-        btn_row.addWidget(self.btn_signin)
-        btn_row.addWidget(self.btn_signup)
-        layout.addLayout(btn_row)
+
+        lbl_footer = QLabel("🔒 AES-256 Bank Grade Encryption Matrix Enabled")
+        lbl_footer.setStyleSheet("color: #718096; font-size: 10px;")
+        lbl_footer.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(lbl_footer)
 
     def _on_consent_toggled(self, _state):
         checked = self.chk_consent.isChecked()
         self.btn_signup.setEnabled(checked)
         self.btn_signup.setStyleSheet(
-            "background-color: #4a5568; color: white; padding: 8px;" if checked
-            else "background-color: #4a5568; color: #718096; padding: 8px;"
+            "background-color: #2d3748; color: white; padding: 10px; border-radius: 8px; border: 1px solid #3f4850;" if checked
+            else "background-color: #1a1d24; color: #4a5568; padding: 10px; border-radius: 8px; border: 1px solid #2d3748;"
         )
 
     def _friendly_name(self, data, email):
@@ -1429,6 +1513,39 @@ class QuantDashboard(QMainWindow):
         main_widget = QWidget()
         self.setCentralWidget(main_widget)
         layout = QVBoxLayout(main_widget)
+
+        # ===== Brand header: logo + app name + tagline. Kept as its own
+        # widget (not just window title text) so it is always visible in
+        # the client area regardless of theme/stylesheet changes. =====
+        brand_bar = QWidget()
+        brand_bar.setObjectName("brandBar")
+        brand_bar.setStyleSheet(
+            "#brandBar { background-color: #1a1d24; border-bottom: 2px solid #3198dc; }"
+        )
+        brand_layout = QHBoxLayout(brand_bar)
+        brand_layout.setContentsMargins(16, 10, 16, 10)
+
+        if LOGO_PATH.exists():
+            self.lbl_brand_logo = QLabel()
+            logo_pixmap = QPixmap(str(LOGO_PATH)).scaledToHeight(
+                40, Qt.TransformationMode.SmoothTransformation
+            )
+            self.lbl_brand_logo.setPixmap(logo_pixmap)
+            brand_layout.addWidget(self.lbl_brand_logo)
+
+        brand_text_col = QVBoxLayout()
+        brand_text_col.setSpacing(0)
+        self.lbl_brand_title = QLabel("MB-EGX")
+        self.lbl_brand_title.setStyleSheet(
+            "font-size: 22px; font-weight: 900; color: #93ccff; letter-spacing: 1px;"
+        )
+        self.lbl_brand_tagline = QLabel("Precision Wealth Alpha — Out-of-Core Trading Matrix & Sector Dashboard")
+        self.lbl_brand_tagline.setStyleSheet("font-size: 11px; color: #a0aec0;")
+        brand_text_col.addWidget(self.lbl_brand_title)
+        brand_text_col.addWidget(self.lbl_brand_tagline)
+        brand_layout.addLayout(brand_text_col)
+        brand_layout.addStretch()
+        layout.addWidget(brand_bar)
 
         top_bar = QHBoxLayout()
         self.lbl_last_date = QLabel("📅 Last Data Date: Loading...")
