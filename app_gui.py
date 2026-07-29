@@ -738,7 +738,6 @@ class LoginDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         
-        # APPLYING THE WINDOW TYPE FLAG MAKES THIS BEHAVE LIKE A FULL DESKTOP WINDOW
         self.setWindowFlags(Qt.WindowType.Window)
         self.setWindowTitle("MB-EGX Alpha — Terminal Access")
         
@@ -747,21 +746,28 @@ class LoginDialog(QDialog):
         
         self.setStyleSheet(f"""
             QDialog#loginDialog {{ background-color: {self._BG}; }}
-            QWidget#header {{ background-color: transparent; border-bottom: 1px solid {self._OUTLINE}; }}
             QWidget#consentBox {{ background-color: #1a1c20; border: 1px solid {self._OUTLINE}; border-radius: 8px; }}
             QLabel {{ color: #ffffff; font-family: 'Inter', 'Segoe UI', sans-serif; }}
             QLineEdit {{
                 background-color: {self._CARD_LOWEST}; color: #ffffff;
-                border: 1px solid {self._OUTLINE}; border-radius: 8px; padding: 12px;
-                font-size: 14px;
+                border: 1px solid {self._OUTLINE}; border-radius: 8px; 
+                padding: 12px 14px; /* Increased padding */
+                font-size: 16px; /* Larger, clearer text */
             }}
             QLineEdit:focus {{ border: 1px solid {self._PRIMARY}; }}
+            
+            /* Custom Scrollbar for Disclaimer */
             QTextEdit {{
                 background-color: transparent; color: {self._TEXT_MUTED};
-                border: none; font-size: 11px; padding: 0px;
+                border: none; font-size: 12px; padding: 0px;
             }}
-            QCheckBox {{ color: #e2e2e8; font-size: 13px; margin-top: 4px; }}
-            QCheckBox::indicator {{ width: 16px; height: 16px; border-radius: 4px; border: 1px solid {self._OUTLINE}; background-color: {self._CARD_LOWEST}; }}
+            QScrollBar:vertical {{ background: transparent; width: 6px; margin: 0px; }}
+            QScrollBar::handle:vertical {{ background: {self._OUTLINE}; border-radius: 3px; min-height: 20px; }}
+            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {{ height: 0px; }}
+            
+            /* Explicit Checkbox Styling */
+            QCheckBox {{ color: #e2e2e8; font-size: 14px; margin-top: 4px; }}
+            QCheckBox::indicator {{ width: 18px; height: 18px; border-radius: 4px; border: 1px solid {self._OUTLINE}; background-color: {self._CARD_LOWEST}; }}
             QCheckBox::indicator:checked {{ background-color: {self._PRIMARY}; border: 1px solid {self._PRIMARY}; }}
         """)
         
@@ -769,42 +775,21 @@ class LoginDialog(QDialog):
             self.setWindowIcon(QIcon(str(LOGO_PATH)))
         self.user_info = None
         self._init_ui()
-        
-        # CALL SHOW MAXIMIZED AT THE END OF INIT TO FORCE FULL WINDOW EXPANSION
         self.showMaximized()
 
     def _init_ui(self):
-        # Master Layout (No margins so header can go edge-to-edge)
+        # Master Layout
         outer = QVBoxLayout(self)
         outer.setContentsMargins(0, 0, 0, 0)
         outer.setSpacing(0)
 
-        # 1. HEADER
-        header = QWidget()
-        header.setObjectName("header")
-        header_layout = QHBoxLayout(header)
-        header_layout.setContentsMargins(40, 15, 40, 15)
-        
-        lbl_header_title = QLabel("MB-EGX Alpha")
-        lbl_header_title.setStyleSheet(f"font-size: 22px; font-weight: bold; color: {self._PRIMARY}; font-family: 'Hanken Grotesk', sans-serif;")
-        header_layout.addWidget(lbl_header_title)
-        
-        header_layout.addStretch()
-        
-        lbl_header_tag = QLabel("Precision Wealth Alpha    🌐  ❓")
-        lbl_header_tag.setStyleSheet("font-size: 13px; color: #bfc7d2;")
-        header_layout.addWidget(lbl_header_tag)
-        
-        outer.addWidget(header)
-
-        # 2. MAIN 2-COLUMN CONTENT
+        # 1. MAIN 2-COLUMN CONTENT
         content_area = QWidget()
         content_layout = QHBoxLayout(content_area)
-        # Margin: Left, Top, Right, Bottom
         content_layout.setContentsMargins(60, 40, 60, 40)
         content_layout.setSpacing(40)
 
-        # --- LEFT COLUMN (Branding & Stats) ---
+        # --- LEFT COLUMN (Branding) ---
         left_col = QWidget()
         left_layout = QVBoxLayout(left_col)
         left_layout.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
@@ -829,39 +814,6 @@ class LoginDialog(QDialog):
         lbl_desc.setMaximumWidth(500)
         left_layout.addWidget(lbl_desc)
 
-        # Stats Grid (Horizontal)
-        stats_layout = QHBoxLayout()
-        stats_layout.setSpacing(15)
-        
-        # Stat Card 1
-        stat1 = QFrame()
-        stat1.setStyleSheet(f"background-color: {self._CARD}; border: 1px solid rgba(255,255,255,0.05); border-radius: 12px;")
-        stat1_layout = QVBoxLayout(stat1)
-        stat1_layout.setContentsMargins(20, 15, 20, 15)
-        lbl_s1_val = QLabel("20ms")
-        lbl_s1_val.setStyleSheet(f"color: {self._PRIMARY}; font-size: 24px; font-weight: bold; font-family: 'JetBrains Mono', monospace; border: none; background: transparent;")
-        lbl_s1_lbl = QLabel("EXECUTION SPEED")
-        lbl_s1_lbl.setStyleSheet("color: #89929b; font-size: 11px; font-weight: bold; letter-spacing: 1px; border: none; background: transparent;")
-        stat1_layout.addWidget(lbl_s1_val)
-        stat1_layout.addWidget(lbl_s1_lbl)
-
-        # Stat Card 2
-        stat2 = QFrame()
-        stat2.setStyleSheet(f"background-color: {self._CARD}; border: 1px solid rgba(255,255,255,0.05); border-radius: 12px;")
-        stat2_layout = QVBoxLayout(stat2)
-        stat2_layout.setContentsMargins(20, 15, 20, 15)
-        lbl_s2_val = QLabel("0.01%")
-        lbl_s2_val.setStyleSheet(f"color: {self._PRIMARY}; font-size: 24px; font-weight: bold; font-family: 'JetBrains Mono', monospace; border: none; background: transparent;")
-        lbl_s2_lbl = QLabel("ALPHA PRECISION")
-        lbl_s2_lbl.setStyleSheet("color: #89929b; font-size: 11px; font-weight: bold; letter-spacing: 1px; border: none; background: transparent;")
-        stat2_layout.addWidget(lbl_s2_val)
-        stat2_layout.addWidget(lbl_s2_lbl)
-
-        stats_layout.addWidget(stat1)
-        stats_layout.addWidget(stat2)
-        stats_layout.addStretch()
-        left_layout.addLayout(stats_layout)
-        
         content_layout.addWidget(left_col, stretch=1)
 
         # --- RIGHT COLUMN (Form) ---
@@ -881,7 +833,7 @@ class LoginDialog(QDialog):
         """)
         f_layout = QVBoxLayout(form_card)
         f_layout.setContentsMargins(35, 40, 35, 40)
-        f_layout.setSpacing(20)
+        f_layout.setSpacing(18)
 
         # Terminal Access Heading
         lbl_form_title = QLabel("Terminal Access")
@@ -902,6 +854,7 @@ class LoginDialog(QDialog):
         email_layout.addWidget(lbl_email_hdr)
         self.txt_email = QLineEdit()
         self.txt_email.setPlaceholderText("investor@mb-egx.ai")
+        self.txt_email.setMinimumHeight(50) # Force height to prevent squishing
         email_layout.addWidget(self.txt_email)
         f_layout.addWidget(email_container)
 
@@ -929,6 +882,7 @@ class LoginDialog(QDialog):
         self.txt_password = QLineEdit()
         self.txt_password.setPlaceholderText("••••••••")
         self.txt_password.setEchoMode(QLineEdit.EchoMode.Password)
+        self.txt_password.setMinimumHeight(50) # Force height to prevent squishing
         self.txt_password.returnPressed.connect(self.do_sign_in)
         pw_layout.addWidget(self.txt_password)
         f_layout.addWidget(pw_container)
@@ -947,7 +901,7 @@ class LoginDialog(QDialog):
         self.txt_disclaimer = QTextEdit()
         self.txt_disclaimer.setReadOnly(True)
         self.txt_disclaimer.setPlainText(DISCLAIMER_TEXT)
-        self.txt_disclaimer.setFixedHeight(90)
+        self.txt_disclaimer.setFixedHeight(65) # Shorter height leaves plenty of room for checkbox
         consent_layout.addWidget(self.txt_disclaimer)
 
         self.chk_consent = QCheckBox("I acknowledge and agree to the Terms.")
@@ -1016,7 +970,7 @@ class LoginDialog(QDialog):
         content_layout.addWidget(right_col, stretch=1)
         outer.addWidget(content_area, stretch=1)
 
-        # 3. FOOTER
+        # 2. FOOTER
         footer = QWidget()
         footer.setFixedHeight(40)
         footer_layout = QHBoxLayout(footer)
