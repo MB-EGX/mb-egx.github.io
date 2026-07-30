@@ -1397,6 +1397,8 @@
                 tbody.appendChild(tr);
             });
         }
+
+        function renderSectors() {
             const tbody = document.getElementById('tbody-sectors');
             tbody.innerHTML = '';
             if (!globalData || !globalData.sectors) return;
