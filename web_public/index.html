@@ -4,6 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard</title>
+    <!-- Anti-flash guard: keep the page invisible until the very end of body
+         has been parsed (see the reveal script just before </body>). This is
+         what actually prevents the dashboard from ever painting before the
+         login gate on refresh — CSS/Tailwind timing alone can't guarantee
+         that, since the gate sits later in the DOM than the dashboard
+         markup. A safety-net timeout below also reveals the page if
+         something goes wrong, so it can never stay stuck blank. -->
+    <style>html.preload body { visibility: hidden !important; }</style>
+    <script>
+        document.documentElement.classList.add('preload');
+        setTimeout(function () { document.documentElement.classList.remove('preload'); }, 4000);
+    </script>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <!-- Chart.js for Trendline & VWAP Charting -->
@@ -1499,7 +1511,7 @@
         <div class="flex-1 flex flex-col justify-center items-center px-6 md:px-16 py-12 relative z-10 lg:min-h-screen">
             <div class="max-w-xl w-full text-center lg:text-left">
                 <div class="mb-6 inline-block">
-                    <img alt="MB-EGX Metallic Logo" class="w-64 md:w-80 h-auto drop-shadow-[0_0_30px_rgba(147,204,255,0.2)]" src="assets/mb-egx-logo.png"/>
+                    <img alt="MB-EGX Metallic Logo" class="w-72 md:w-96 h-auto drop-shadow-[0_0_30px_rgba(147,204,255,0.2)]" src="assets/mb-egx-logo.png"/>
                 </div>
                 <h1 class="font-headline-xl text-3xl md:text-[38px] font-bold text-primary mt-4 mb-4 leading-tight">
                     Ancient Legacy meets <span class="text-on-background">Digital Future</span>
@@ -1519,29 +1531,29 @@
                 <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16"></div>
                 <div class="relative z-10">
                     <h2 class="font-headline-lg text-[22px] font-semibold text-on-background mb-1">Terminal Access</h2>
-                    <p class="font-body-sm text-xs text-on-surface-variant mb-5">Sign in to view your private dashboard</p>
+                    <p class="font-body-sm text-xs text-on-surface-variant mb-3">Sign in to view your private dashboard</p>
 
                     <!-- Auth Error Container -->
-                    <div id="auth-error" class="hidden mb-4 text-xs text-rose-400 bg-rose-950/40 border border-rose-800 rounded-lg p-3 shadow"></div>
+                    <div id="auth-error" class="hidden mb-3 text-xs text-rose-400 bg-rose-950/40 border border-rose-800 rounded-lg p-2.5 shadow"></div>
                     
-                    <form class="space-y-4" id="loginForm" onsubmit="event.preventDefault();">
+                    <form class="space-y-3" id="loginForm" onsubmit="event.preventDefault();">
                         <div>
-                            <label class="block font-label-mono text-[12px] text-on-surface-variant uppercase mb-2 font-medium tracking-wide">Email Address</label>
-                            <input id="auth-email" autocomplete="email" class="w-full bg-surface-container-lowest border border-outline-variant text-on-surface rounded-lg p-3 font-body-md focus:ring-0 focus:border-primary focus:outline-none transition-all" placeholder="investor@mb-egx.ai" type="email"/>
+                            <label class="block font-label-mono text-[11px] text-on-surface-variant uppercase mb-1.5 font-medium tracking-wide">Email Address</label>
+                            <input id="auth-email" autocomplete="email" class="w-full bg-surface-container-lowest border border-outline-variant text-on-surface rounded-lg p-2.5 font-body-md focus:ring-0 focus:border-primary focus:outline-none transition-all" placeholder="investor@mb-egx.ai" type="email"/>
                         </div>
                         
                         <div>
-                            <div class="flex justify-between mb-2">
-                                <label class="block font-label-mono text-[12px] text-on-surface-variant uppercase font-medium tracking-wide">Password</label>
+                            <div class="flex justify-between mb-1.5">
+                                <label class="block font-label-mono text-[11px] text-on-surface-variant uppercase font-medium tracking-wide">Password</label>
                                 <a class="text-label-mono text-[12px] text-primary hover:underline font-medium" href="#">Forgot Access?</a>
                             </div>
-                            <input id="auth-password" autocomplete="current-password" class="w-full bg-surface-container-lowest border border-outline-variant text-on-surface rounded-lg p-3 font-body-md focus:ring-0 focus:border-primary focus:outline-none transition-all" placeholder="••••••••" type="password"/>
+                            <input id="auth-password" autocomplete="current-password" class="w-full bg-surface-container-lowest border border-outline-variant text-on-surface rounded-lg p-2.5 font-body-md focus:ring-0 focus:border-primary focus:outline-none transition-all" placeholder="••••••••" type="password"/>
                         </div>
 
                         <!-- Required Consent Disclaimer Section -->
-                        <div class="bg-[#1a1c20] rounded-lg p-4 card-edge">
-                            <h3 class="font-label-mono text-[10px] text-on-surface-variant uppercase mb-2 border-b border-outline-variant pb-1 font-semibold">End-User Consent and Legal Disclaimer</h3>
-                            <div class="h-20 overflow-y-auto pr-2 custom-scrollbar">
+                        <div class="bg-[#1a1c20] rounded-lg p-3 card-edge">
+                            <h3 class="font-label-mono text-[10px] text-on-surface-variant uppercase mb-1.5 border-b border-outline-variant pb-1 font-semibold">End-User Consent and Legal Disclaimer</h3>
+                            <div class="h-14 overflow-y-auto pr-2 custom-scrollbar">
                                 <p class="font-body-sm text-[11px] leading-relaxed text-on-surface-variant text-justify whitespace-pre-line">By accessing, subscribing to, or using this application, you explicitly acknowledge, understand, and agree to the following terms: 
 
 • <strong>Informational and Educational Use Only:</strong> This app is for informational and educational purposes only. It does not constitute financial or investment advice. 
@@ -1558,29 +1570,29 @@
 
 • <strong>Third-Party Trade Execution:</strong> You cannot execute trades independently through this app; all users must execute their actual trades through approved and licensed EGX brokers (such as Thndr, EFG Hermes, etc.).</p>
                             </div>
-                            <label class="flex items-start gap-3 mt-3 cursor-pointer group select-none">
+                            <label class="flex items-start gap-2 mt-2 cursor-pointer group select-none">
                                 <input class="mt-1 rounded bg-[#1e2024] border-outline-variant text-primary focus:ring-offset-surface-elevated accent-primary" id="consent-checkbox" onchange="onConsentToggle()" type="checkbox"/>
-                                <span class="font-body-sm text-[14px] text-on-surface group-hover:text-primary transition-colors">I acknowledge and agree to the End-User Consent and Legal Disclaimer.</span>
+                                <span class="font-body-sm text-[12px] leading-snug text-on-surface group-hover:text-primary transition-colors">I acknowledge and agree to the End-User Consent and Legal Disclaimer.</span>
                             </label>
                         </div>
                         
-                        <button id="btn-auth-signin" onclick="handleEmailSignIn()" class="w-full bg-primary text-on-primary font-bold py-3 rounded-lg hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                        <button id="btn-auth-signin" onclick="handleEmailSignIn()" class="w-full bg-primary text-on-primary font-bold py-2.5 rounded-lg hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
                             <span>Sign In</span>
                             <span class="material-symbols-outlined text-[20px]">login</span>
                         </button>
                         
-                        <button id="btn-auth-signup" onclick="handleEmailSignUp()" disabled class="w-full py-3 rounded-lg bg-transparent border border-outline-variant text-sm text-outline transition cursor-not-allowed opacity-50 hover:bg-[#1a1c20]">
+                        <button id="btn-auth-signup" onclick="handleEmailSignUp()" disabled class="w-full py-2 rounded-lg bg-transparent border border-outline-variant text-sm text-outline transition cursor-not-allowed opacity-50 hover:bg-[#1a1c20]">
                             Create Account
                         </button>
                     </form>
                     
-                    <div class="flex items-center gap-4 my-6">
+                    <div class="flex items-center gap-4 my-3">
                         <div class="h-px flex-1 bg-outline-variant/30"></div>
                         <span class="font-label-mono text-[12px] text-on-surface-variant uppercase font-medium">OR</span>
                         <div class="h-px flex-1 bg-outline-variant/30"></div>
                     </div>
                     
-                    <button onclick="handleGoogleSignIn()" class="w-full bg-[#282a2e] text-on-surface py-3 rounded-lg border border-outline-variant hover:bg-[#37393e] transition-all flex items-center justify-center gap-3">
+                    <button onclick="handleGoogleSignIn()" class="w-full bg-[#282a2e] text-on-surface py-2.5 rounded-lg border border-outline-variant hover:bg-[#37393e] transition-all flex items-center justify-center gap-3">
                         <svg class="w-5 h-5" viewBox="0 0 24 24">
                             <path d="M12 5.04c1.74 0 3.3.6 4.53 1.77l3.39-3.39C17.85 1.5 15.17 0 12 0 7.31 0 3.26 2.69 1.25 6.61l3.96 3.07c.95-2.85 3.61-4.64 6.79-4.64z" fill="#EA4335"></path>
                             <path d="M23.49 12.27c0-.82-.07-1.61-.21-2.37H12v4.51h6.44c-.28 1.48-1.13 2.74-2.39 3.58l3.71 2.88c2.17-2 3.43-4.94 3.43-8.6z" fill="#4285F4"></path>
@@ -1590,7 +1602,7 @@
                         <span class="font-body-md font-medium text-sm">Sign in with Google</span>
                     </button>
                     
-                    <p class="mt-4 text-center font-body-sm text-[11px] text-on-surface-variant/80">
+                    <p class="mt-3 text-center font-body-sm text-[11px] text-on-surface-variant/80">
                         Continuing with Google to create a new account also requires the agreement checkbox above to be checked.
                     </p>
                 </div>
@@ -2001,6 +2013,18 @@
                 const tbTitle = document.getElementById('tb-title-text');
                 if (tbTitle) tbTitle.textContent = 'MB-EGX Alpha — Terminal Access';
             }
+        });
+    </script>
+
+    <!-- Reveal the page now that the full DOM (including the login gate in
+         its correct default state) has parsed. Two animation-frame ticks
+         give Tailwind's CDN scanner a moment to finish applying utility
+         classes first, so nothing unstyled ever becomes visible. -->
+    <script>
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+                document.documentElement.classList.remove('preload');
+            });
         });
     </script>
 </body>
