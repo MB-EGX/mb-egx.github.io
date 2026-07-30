@@ -264,6 +264,9 @@
             <button onclick="switchTab('tab-exits')" id="btn-tab-exits" class="px-4 py-2.5 rounded-t-lg font-semibold bg-darkbg text-textmuted hover:text-textmain transition">
                 🛡️ Owned Portfolio Exit Strategy
             </button>
+            <button onclick="switchTab('tab-breakout')" id="btn-tab-breakout" class="px-4 py-2.5 rounded-t-lg font-semibold bg-darkbg text-textmuted hover:text-textmain transition">
+                🎯 Breakouts
+            </button>
             <button onclick="switchTab('tab-history')" id="btn-tab-history" class="px-4 py-2.5 rounded-t-lg font-semibold bg-darkbg text-textmuted hover:text-textmain transition">
                 📜 Trade History & Realized P&L
             </button>
@@ -359,6 +362,32 @@
                         </tr>
                     </thead>
                     <tbody id="tbody-exits" class="divide-y divide-bordercol/50 text-xs">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 4: BREAKOUT WATCHLIST -->
+        <div id="tab-breakout" class="bg-panelbg rounded-b-xl border border-t-0 border-bordercol p-4 shadow-xl hidden">
+            <div class="overflow-x-auto max-h-[680px]">
+                <table class="w-full text-left border-collapse whitespace-nowrap font-mono">
+                    <thead class="sticky top-0 bg-[#2d3748] text-white font-sans text-xs z-10 shadow">
+                        <tr>
+                            <th class="p-2.5 border border-darkbg">#</th>
+                            <th class="p-2.5 border border-darkbg">Ticker</th>
+                            <th class="p-2.5 border border-darkbg text-right">Breakout Score</th>
+                            <th class="p-2.5 border border-darkbg text-right">Price</th>
+                            <th class="p-2.5 border border-darkbg text-right">Dist. to Resistance %</th>
+                            <th class="p-2.5 border border-darkbg text-right">RSI-14</th>
+                            <th class="p-2.5 border border-darkbg text-right">ADX-14</th>
+                            <th class="p-2.5 border border-darkbg text-center">Squeeze</th>
+                            <th class="p-2.5 border border-darkbg font-sans">Volume Trend</th>
+                            <th class="p-2.5 border border-darkbg font-sans">Trend</th>
+                            <th class="p-2.5 border border-darkbg font-sans">Signals</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-breakout" class="divide-y divide-bordercol/50 text-xs">
+                        <tr><td colspan="11" class="p-8 text-center text-textmuted font-sans">Loading breakout watchlist...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -917,7 +946,7 @@
 
         // Modals & Tabs
         function switchTab(tabId) {
-            ['tab-matrix', 'tab-sectors', 'tab-exits', 'tab-history', 'tab-fin', 'tab-top10', 'tab-charts'].forEach(id => {
+            ['tab-matrix', 'tab-sectors', 'tab-exits', 'tab-breakout', 'tab-history', 'tab-fin', 'tab-top10', 'tab-charts'].forEach(id => {
                 document.getElementById(id).classList.add('hidden');
                 document.getElementById('btn-' + id).classList.remove('tab-active');
             });
@@ -1326,7 +1355,48 @@
             });
         }
 
-        function renderSectors() {
+        // Mirrors the desktop app's "🎯 Breakouts" tab (tbl_breakout_watch),
+        // which reads from matrix.analyze_market()'s breakout_watchlist output.
+        // Expects globalData.breakout_watchlist as an array of row objects using
+        // the same keys the desktop populates from: Ticker, Breakout Score,
+        // Current Price, Dist. to Resistance (%), RSI-14, ADX-14,
+        // Squeeze Active, Volume Trend, Trend Class, Signals.
+        function renderBreakouts() {
+            const tbody = document.getElementById('tbody-breakout');
+            tbody.innerHTML = '';
+            if (!globalData || !Array.isArray(globalData.breakout_watchlist)) {
+                tbody.innerHTML = '<tr><td colspan="11" class="p-8 text-center text-textmuted font-sans">Breakout watchlist data isn\'t in the current market data feed yet.</td></tr>';
+                return;
+            }
+            const list = globalData.breakout_watchlist;
+            if (list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="11" class="p-8 text-center text-textmuted font-sans">No stocks currently qualify for the breakout watchlist.</td></tr>';
+                return;
+            }
+            list.forEach((row, i) => {
+                const score = parseFloat(row["Breakout Score"]);
+                let scoreStyle = 'text-textmain';
+                if (!isNaN(score) && score >= 70) scoreStyle = 'bg-[#276749] text-white font-bold rounded px-2 py-1';
+                else if (!isNaN(score) && score >= 55) scoreStyle = 'bg-[#2b6cb0] text-white font-bold rounded px-2 py-1';
+                const squeeze = row["Squeeze Active"];
+                const squeezeLabel = squeeze ? '<span class="text-emerald-400 font-bold">✅ Yes</span>' : '<span class="text-textmuted">—</span>';
+                const tr = document.createElement('tr');
+                tr.className = 'border-b border-bordercol/40 hover:bg-panelbg transition';
+                tr.innerHTML = `
+                    <td class="p-2.5 font-sans text-textmuted">${i + 1}</td><td class="p-2.5 font-bold text-sky-400">${row.Ticker || '-'}</td>
+                    <td class="p-2.5 text-right"><span class="${scoreStyle}">${!isNaN(score) ? score.toFixed(1) : '-'}</span></td>
+                    <td class="p-2.5 text-right text-textmain">${row["Current Price"] ?? '-'}</td>
+                    <td class="p-2.5 text-right text-textmain">${row["Dist. to Resistance (%)"] ?? '-'}</td>
+                    <td class="p-2.5 text-right text-textmain">${row["RSI-14"] ?? '-'}</td>
+                    <td class="p-2.5 text-right text-textmain">${row["ADX-14"] ?? '-'}</td>
+                    <td class="p-2.5 text-center">${squeezeLabel}</td>
+                    <td class="p-2.5 font-sans text-textmuted">${row["Volume Trend"] || '-'}</td>
+                    <td class="p-2.5 font-sans text-textmuted">${row["Trend Class"] || '-'}</td>
+                    <td class="p-2.5 font-sans text-textmuted whitespace-normal">${row.Signals || '-'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
             const tbody = document.getElementById('tbody-sectors');
             tbody.innerHTML = '';
             if (!globalData || !globalData.sectors) return;
@@ -1425,7 +1495,7 @@
                 const response = await fetch('./data/market_data.json');
                 globalData = await response.json();
                 document.getElementById('val-last-date').innerText = globalData.last_data_date || "N/A";
-                populateSelects(); applyFilters(); renderSectors(); renderTop10(); renderPortfolio(); renderHistory(); renderAccountBar();
+                populateSelects(); applyFilters(); renderSectors(); renderTop10(); renderBreakouts(); renderPortfolio(); renderHistory(); renderAccountBar();
             } catch (error) {
                 console.error("Failed to load market data:", error);
                 document.getElementById('tbody-matrix').innerHTML = `<tr><td colspan="16" class="p-8 text-center text-rose-400 font-sans">⚠️ Data temporarily unavailable. Please try refreshing in a moment.</td></tr>`;
