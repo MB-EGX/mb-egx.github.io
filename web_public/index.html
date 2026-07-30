@@ -153,8 +153,7 @@
             <div class="flex items-center gap-3">
                 <img src="assets/mb-egx-logo.png" alt="MB-EGX Logo" class="w-12 h-12 object-contain drop-shadow-[0_0_10px_rgba(147,204,255,0.35)]">
                 <div>
-                    <h1 id="lbl-title" class="text-lg md:text-xl font-headline font-bold text-sky-400 tracking-tight">MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard</h1>
-                    <p id="lbl-subtitle" class="text-[11px] text-textmuted">Web Edition — Local Memory & Static JSON Feed</p>
+                    <h1 id="lbl-title" class="text-sm md:text-base font-headline font-bold text-sky-400 tracking-tight">MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard</h1>
                     <p class="text-[11px] text-textmuted mt-0.5">📅 <span id="lbl-last-date">Last Data Date:</span> <strong id="val-last-date" class="text-sky-400">—</strong></p>
                 </div>
             </div>
@@ -254,29 +253,29 @@
         </div>
 
         <!-- Navigation Tabs -->
-        <div class="border-b border-bordercol flex flex-wrap gap-1 bg-panelbg px-2 pt-2 rounded-t-xl">
-            <button onclick="switchTab('tab-matrix')" id="btn-tab-matrix" class="px-4 py-2.5 rounded-t-lg font-semibold bg-darkbg text-textmuted hover:text-textmain transition tab-active">
+        <div class="border-b border-bordercol flex flex-nowrap gap-1 bg-panelbg px-2 pt-2 rounded-t-xl overflow-x-auto">
+            <button onclick="switchTab('tab-matrix')" id="btn-tab-matrix" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap tab-active">
                 📈 Full Market Action Matrix
             </button>
-            <button onclick="switchTab('tab-sectors')" id="btn-tab-sectors" class="px-4 py-2.5 rounded-t-lg font-semibold bg-darkbg text-textmuted hover:text-textmain transition">
+            <button onclick="switchTab('tab-sectors')" id="btn-tab-sectors" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap">
                 🏢 Sector Heatmap & Rotation
             </button>
-            <button onclick="switchTab('tab-exits')" id="btn-tab-exits" class="px-4 py-2.5 rounded-t-lg font-semibold bg-darkbg text-textmuted hover:text-textmain transition">
+            <button onclick="switchTab('tab-exits')" id="btn-tab-exits" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap">
                 🛡️ Owned Portfolio Exit Strategy
             </button>
-            <button onclick="switchTab('tab-breakout')" id="btn-tab-breakout" class="px-4 py-2.5 rounded-t-lg font-semibold bg-darkbg text-textmuted hover:text-textmain transition">
+            <button onclick="switchTab('tab-breakout')" id="btn-tab-breakout" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap">
                 🎯 Breakouts
             </button>
-            <button onclick="switchTab('tab-history')" id="btn-tab-history" class="px-4 py-2.5 rounded-t-lg font-semibold bg-darkbg text-textmuted hover:text-textmain transition">
+            <button onclick="switchTab('tab-history')" id="btn-tab-history" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap">
                 📜 Trade History & Realized P&L
             </button>
-            <button onclick="switchTab('tab-fin')" id="btn-tab-fin" class="px-4 py-2.5 rounded-t-lg font-semibold bg-darkbg text-textmuted hover:text-textmain transition">
+            <button onclick="switchTab('tab-fin')" id="btn-tab-fin" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap">
                 📊 Financial Statement
             </button>
-            <button onclick="switchTab('tab-top10')" id="btn-tab-top10" class="px-4 py-2.5 rounded-t-lg font-semibold bg-darkbg text-textmuted hover:text-textmain transition">
+            <button onclick="switchTab('tab-top10')" id="btn-tab-top10" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap">
                 🏆 Top 10 Overview
             </button>
-            <button onclick="switchTab('tab-charts')" id="btn-tab-charts" class="px-4 py-2.5 rounded-t-lg font-semibold bg-darkbg text-textmuted hover:text-textmain transition">
+            <button onclick="switchTab('tab-charts')" id="btn-tab-charts" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap">
                 📊 Charts & Trend Lines
             </button>
         </div>
