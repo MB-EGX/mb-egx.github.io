@@ -1968,18 +1968,26 @@
             const adminBtn = document.getElementById('btn-admin-analytics');
             if (user) {
                 gate.style.display = 'none';
-                const tbTitle = document.getElementById('tb-title-text');
-                if (tbTitle) tbTitle.textContent = 'MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard';
-                const name = getFriendlyName(user);
-                document.getElementById('lbl-welcome-user').textContent = name;
                 badge.style.display = 'flex';
-                if (!_welcomedThisSession) {
-                    showWelcomeToast(name);
-                    _welcomedThisSession = true;
-                    startSessionTracking(user);
-                }
                 adminBtn.style.display = ADMIN_EMAILS.includes(user.email) ? 'flex' : 'none';
-                loadUserDataFromCloud(user.uid);
+
+                let name = 'Investor';
+                try {
+                    name = getFriendlyName(user);
+                    const tbTitle = document.getElementById('tb-title-text');
+                    if (tbTitle) tbTitle.textContent = 'MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard';
+                    document.getElementById('lbl-welcome-user').textContent = name;
+                } catch (err) {
+                    console.error('Error setting welcome name (badge still shown):', err);
+                    document.getElementById('lbl-welcome-user').textContent = name;
+                }
+
+                if (!_welcomedThisSession) {
+                    _welcomedThisSession = true;
+                    try { showWelcomeToast(name); } catch (err) { console.error('Welcome toast failed:', err); }
+                    try { startSessionTracking(user); } catch (err) { console.error('Session tracking failed:', err); }
+                }
+                try { loadUserDataFromCloud(user.uid); } catch (err) { console.error('Loading cloud data failed:', err); }
             } else {
                 gate.style.display = 'flex';
                 badge.style.display = 'none';
