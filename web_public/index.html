@@ -3,7 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Security Headers -->
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
     <title>MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard</title>
+    <!-- Content Security Policy: allow trusted CDNs only, block inline scripts except explicit allowlist -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://www.gstatic.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.firebaseapp.com https://*.firebaseio.com https://api.ipify.org; frame-ancestors 'none'; form-action 'self';">
     <!-- Anti-flash guard: keep the page invisible until the very end of body
          has been parsed (see the reveal script just before </body>). This is
          what actually prevents the dashboard from ever painting before the
@@ -859,6 +867,54 @@
         let userHistory = JSON.parse(localStorage.getItem('quant_history')) || [];
         let hiddenCols = JSON.parse(localStorage.getItem('quant_hidden_cols')) || [];
 
+        // ===== SECURITY: Input sanitization helpers =====
+        // Escape HTML special chars to prevent XSS when injecting user/JSON data into innerHTML.
+        function escapeHtml(str) {
+            if (str == null) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#x27;');
+        }
+        // Strictly validate a ticker symbol: uppercase letters, numbers, dots, dashes, max 20 chars.
+        function sanitizeTicker(raw) {
+            if (typeof raw !== 'string') return '';
+            return raw.trim().toUpperCase().replace(/[^A-Z0-9.\-]/g, '').slice(0, 20);
+        }
+        // Validate numeric input: positive finite number or zero.
+        function sanitizeNumber(val, fallback) {
+            const n = parseFloat(val);
+            return isFinite(n) ? n : (fallback !== undefined ? fallback : 0);
+        }
+        // Rate-limit tracker for auth attempts: { count, lastAttempt }
+        const _authRateLimit = { attempts: 0, lockedUntil: 0 };
+        const AUTH_RATE_LIMIT_MS = 30000; // 30-second lockout
+        const AUTH_MAX_ATTEMPTS = 5;       // max attempts per window
+        function checkAuthRateLimit() {
+            const now = Date.now();
+            if (now < _authRateLimit.lockedUntil) {
+                const remaining = Math.ceil((_authRateLimit.lockedUntil - now) / 1000);
+                showAuthError(`Too many attempts. Please wait ${remaining}s before trying again.`);
+                return false;
+            }
+            return true;
+        }
+        function recordAuthAttempt() {
+            _authRateLimit.attempts++;
+            if (_authRateLimit.attempts >= AUTH_MAX_ATTEMPTS) {
+                _authRateLimit.lockedUntil = Date.now() + AUTH_RATE_LIMIT_MS;
+                _authRateLimit.attempts = 0;
+                showAuthError(`Too many failed attempts. Locked for ${AUTH_RATE_LIMIT_MS / 1000} seconds.`);
+                return;
+            }
+        }
+        function resetAuthRateLimit() {
+            _authRateLimit.attempts = 0;
+            _authRateLimit.lockedUntil = 0;
+        }
+
         // Saves cash/portfolio/history to this browser AND, if the user is
         // logged in, to their private Firestore account.
         function syncUserData() {
@@ -871,7 +927,6 @@
         const TRANSLATIONS = {
             EN: {
                 title: "MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard",
-                subtitle: "Web Edition — Local Memory & Static JSON Feed",
                 refresh: "Refresh Data", port: "+ Manage Portfolio", calc: "Risk Calculator",
                 cash: "Set Cash", themes: "Themes", cols: "Columns", reset: "Reset Filters",
                 filter: "🔍 Live Filters:", hide_illiquid: "🚫 Hide Illiquid / Unconfirmed",
@@ -885,7 +940,6 @@
             },
             AR: {
                 title: "MB-EGX — مصفوفة التداول والقطاعات",
-                subtitle: "نسخة الويب — ذاكرة محلية وتغذية بيانات سريعة",
                 refresh: "تحديث البيانات", port: "+ إدارة المحفظة", calc: "حاسبة المخاطر",
                 cash: "تحديد النقدية", themes: "المظهر", cols: "الأعمدة", reset: "إعادة ضبط",
                 filter: "🔍 تصفية مباشرة:", hide_illiquid: "🚫 إخفاء الأسهم ضعيفة السيولة",
@@ -913,7 +967,6 @@
             const t = TRANSLATIONS[lang];
             document.getElementById('html-root').setAttribute('dir', lang === 'AR' ? 'rtl' : 'ltr');
             document.getElementById('lbl-title').innerText = t.title;
-            document.getElementById('lbl-subtitle').innerText = t.subtitle;
             document.getElementById('btn-refresh-text').innerText = t.refresh;
             document.getElementById('btn-port-text').innerText = t.port;
             document.getElementById('btn-calc-text').innerText = t.calc;
@@ -977,14 +1030,23 @@
 
         // Column Visibility Engine
         function buildColumnCheckboxes() {
-            const headers = Array.from(document.querySelectorAll('#thead-matrix-tr th')).map((th, i) => ({ idx: i, text: th.innerText }));
+            const headers = Array.from(document.querySelectorAll('#thead-matrix-tr th')).map((th, i) => ({ idx: i, text: th.textContent || '' }));
             const container = document.getElementById('col-checkboxes');
-            container.innerHTML = headers.map(h => `
-                <label class="flex items-center gap-2 cursor-pointer p-1.5 hover:bg-panelbg rounded">
-                    <input type="checkbox" checked onchange="toggleColumn(${h.idx}, this.checked)" ${!hiddenCols.includes(h.idx) ? 'checked' : ''} class="rounded text-sky-500">
-                    <span>${h.text}</span>
-                </label>
-            `).join('');
+            container.innerHTML = '';
+            headers.forEach(h => {
+                const label = document.createElement('label');
+                label.className = 'flex items-center gap-2 cursor-pointer p-1.5 hover:bg-panelbg rounded';
+                const cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.checked = !hiddenCols.includes(h.idx);
+                cb.onchange = () => toggleColumn(h.idx, cb.checked);
+                cb.className = 'rounded text-sky-500';
+                const span = document.createElement('span');
+                span.textContent = h.text; // textContent prevents XSS from header text
+                label.appendChild(cb);
+                label.appendChild(span);
+                container.appendChild(label);
+            });
             applyColumnVisibility();
         }
         function toggleColumn(idx, show) {
@@ -1203,17 +1265,26 @@
             `;
         }
         function saveCash() {
-            userCash = parseFloat(document.getElementById('input-cash').value) || 0;
+            userCash = sanitizeNumber(document.getElementById('input-cash').value, 0);
+            if (userCash < 0) userCash = 0;
+            if (userCash > 1e12) { alert("Cash amount exceeds safe limit."); return; } // sanity cap
             syncUserData();
             closeModal('modal-cash');
             renderAccountBar(); renderPortfolio();
         }
         function addPortfolioPosition() {
-            const ticker = document.getElementById('port-ticker').value.trim().toUpperCase();
-            const price = parseFloat(document.getElementById('port-price').value);
-            const shares = parseFloat(document.getElementById('port-shares').value);
+            // Strict validation: sanitize all inputs to prevent XSS / injection
+            const rawTicker = document.getElementById('port-ticker').value;
+            const ticker = sanitizeTicker(rawTicker);
+            const price = sanitizeNumber(document.getElementById('port-price').value);
+            const shares = sanitizeNumber(document.getElementById('port-shares').value);
             const mode = document.getElementById('port-mode').value;
-            if (!ticker || !price || !shares) { alert("Please fill all fields."); return; }
+
+            if (!ticker) { alert("Please enter a valid ticker symbol."); return; }
+            if (price <= 0) { alert("Buy price must be greater than 0."); return; }
+            if (shares <= 0) { alert("Shares must be greater than 0."); return; }
+            if (shares > 1e9) { alert("Share count exceeds safe limit."); return; }
+
             const existing = userPortfolio.find(p => p.ticker === ticker);
             if (existing && mode === 'scale') {
                 const total = existing.shares + shares;
@@ -1494,8 +1565,12 @@
         async function loadMarketData() {
             try {
                 const response = await fetch('./data/market_data.json');
-                globalData = await response.json();
-                document.getElementById('val-last-date').innerText = globalData.last_data_date || "N/A";
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const raw = await response.json();
+                // Validate expected top-level structure (defense-in-depth)
+                if (typeof raw !== 'object' || raw === null) throw new Error('Invalid data format');
+                globalData = raw;
+                document.getElementById('val-last-date').innerText = escapeHtml(globalData.last_data_date || "N/A");
                 populateSelects(); applyFilters(); renderSectors(); renderTop10(); renderBreakouts(); renderPortfolio(); renderHistory(); renderAccountBar();
             } catch (error) {
                 console.error("Failed to load market data:", error);
@@ -1723,19 +1798,27 @@
         }
 
         function handleEmailSignIn() {
+            if (!checkAuthRateLimit()) return;
             clearAuthError();
             const email = document.getElementById('auth-email').value.trim();
             const password = document.getElementById('auth-password').value;
-            if (!email || !password) { showAuthError("Enter both email and password."); return; }
-            auth.signInWithEmailAndPassword(email, password).catch(err => showAuthError(err.message));
+            if (!email || !password) { showAuthError("Enter both email and password."); recordAuthAttempt(); return; }
+            // Basic email format validation (defense-in-depth — Firebase also checks this server-side)
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showAuthError("Invalid email format."); recordAuthAttempt(); return; }
+            auth.signInWithEmailAndPassword(email, password)
+                .then(() => resetAuthRateLimit())
+                .catch(err => { recordAuthAttempt(); showAuthError("Sign-in failed. Check your credentials."); });
         }
 
         async function handleEmailSignUp() {
+            if (!checkAuthRateLimit()) return;
             clearAuthError();
             const email = document.getElementById('auth-email').value.trim();
             const password = document.getElementById('auth-password').value;
-            if (!email || !password) { showAuthError("Enter both email and password."); return; }
-            if (password.length < 6) { showAuthError("Password must be at least 6 characters."); return; }
+            if (!email || !password) { showAuthError("Enter both email and password."); recordAuthAttempt(); return; }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showAuthError("Invalid email format."); recordAuthAttempt(); return; }
+            if (password.length < 8) { showAuthError("Password must be at least 8 characters."); return; }
+            if (password.length > 128) { showAuthError("Password is too long."); return; }
             if (!document.getElementById('consent-checkbox').checked) {
                 showAuthError("You must agree to the legal terms to create an account.");
                 return;
@@ -1747,12 +1830,16 @@
                     cash: 0, portfolio: [], history: [],
                     ...buildConsentFields(ip),
                 }, { merge: true });
+                resetAuthRateLimit();
             } catch (err) {
-                showAuthError(err.message);
+                recordAuthAttempt();
+                // Don't expose Firebase internal error codes to the client
+                showAuthError("Account creation failed. The email may already be registered.");
             }
         }
 
         async function handleGoogleSignIn() {
+            if (!checkAuthRateLimit()) return;
             clearAuthError();
             const provider = new firebase.auth.GoogleAuthProvider();
             try {
@@ -1770,8 +1857,10 @@
                         ...buildConsentFields(ip),
                     }, { merge: true });
                 }
+                resetAuthRateLimit();
             } catch (err) {
-                showAuthError(err.message);
+                recordAuthAttempt();
+                showAuthError("Google sign-in failed. Please try again.");
             }
         }
 
