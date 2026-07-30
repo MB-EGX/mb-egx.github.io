@@ -315,6 +315,7 @@ class DecisionMatrix:
                     if (range_high - range_low) > 0
                     else 50.0
                 )
+                pivots = self.qe.compute_pivot_points(df_ind)
 
                 # -------------------------------------------------------------------------
                 # Action classification (now split into 3 BREAKOUT BUY labels)
@@ -536,6 +537,13 @@ class DecisionMatrix:
                         "Take-Profit Target": take_profit_target,
                         "Resistance (52W High)": round(float(range_high), 4),
                         "Support (52W Low)": round(float(range_low), 4),
+                        "Pivot Point": pivots["pp"] if pivots else None,
+                        "R1": pivots["r1"] if pivots else None,
+                        "R2": pivots["r2"] if pivots else None,
+                        "R3": pivots["r3"] if pivots else None,
+                        "S1": pivots["s1"] if pivots else None,
+                        "S2": pivots["s2"] if pivots else None,
+                        "S3": pivots["s3"] if pivots else None,
                         "Suggested Shares (1% Risk)": suggested_shares,
                         "Projected Gain (%)": (
                             pattern_data["projected_change_pct"]

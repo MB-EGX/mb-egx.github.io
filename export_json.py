@@ -121,6 +121,7 @@ def build_chart_history(qe, dbm, sector_map):
             lookback = min(250, len(df_ind))
             resistance = round(float(df_ind["high"].iloc[-lookback:].max()), 4)
             support = round(float(df_ind["low"].iloc[-lookback:].min()), 4)
+            pivots = qe.compute_pivot_points(df_ind)
             chart_history["stocks"][norm_sym] = {
                 "dates": dates,
                 "close": closes,
@@ -130,6 +131,7 @@ def build_chart_history(qe, dbm, sector_map):
                 "vwap": vwaps,
                 "resistance": resistance,
                 "support": support,
+                "pivots": pivots,
             }
         except Exception:
             continue

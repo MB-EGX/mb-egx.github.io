@@ -311,11 +311,12 @@
                             <th class="p-2.5 border border-darkbg" data-col="14">Avg Vol (20D)</th>
                             <th class="p-2.5 border border-darkbg font-sans" data-col="15">Data Conf.</th>
                             <th class="p-2.5 border border-darkbg" data-col="16">Take-Profit</th>
-                            <th class="p-2.5 border border-darkbg" data-col="17">Support / Resistance</th>
+                            <th class="p-2.5 border border-darkbg" data-col="17">Resistance (R1/R2/R3)</th>
+                            <th class="p-2.5 border border-darkbg" data-col="18">Support (S1/S2/S3)</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-matrix" class="divide-y divide-bordercol/50 text-xs">
-                        <tr><td colspan="18" class="p-8 text-center text-textmuted font-sans">Loading quantitative matrix...</td></tr>
+                        <tr><td colspan="19" class="p-8 text-center text-textmuted font-sans">Loading quantitative matrix...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -1177,7 +1178,7 @@
             let vwaps = [];
             let labels = [];
             let opens = [], highs = [], lows = [];
-            let resistance = null, support = null;
+            let resistance = null, support = null, pivots = null;
 
             const wrapCandle = document.getElementById('wrap-style-candle');
             const wrapSr = document.getElementById('wrap-toggle-sr');
@@ -1198,6 +1199,7 @@
                     lows = (stockHistory.low || []).map(Number);
                     resistance = (typeof stockHistory.resistance === 'number') ? stockHistory.resistance : null;
                     support = (typeof stockHistory.support === 'number') ? stockHistory.support : null;
+                    pivots = stockHistory.pivots || null;
                 } else {
                     const row = globalData.market_matrix.find(r => r.Ticker === selected);
                     const latestPrice = row ? row["Current Price"] || 10.0 : 10.0;
@@ -1279,11 +1281,23 @@
             if (mode === 'stock' && vwaps.length > 0) {
                 datasets.push({ label: 'VWAP (20D)', data: vwaps, borderColor: '#f59e0b', borderWidth: 1.5, borderDash: [2, 2], pointRadius: 0, order: 3 });
             }
-            if (mode === 'stock' && showSr && resistance != null) {
+            if (mode === 'stock' && showSr && pivots) {
+                const pivotLevels = [
+                    ['R3', pivots.r3, '#ef4444', 0.4], ['R2', pivots.r2, '#ef4444', 0.6], ['R1', pivots.r1, '#ef4444', 0.9],
+                    ['S1', pivots.s1, '#22c55e', 0.9], ['S2', pivots.s2, '#22c55e', 0.6], ['S3', pivots.s3, '#22c55e', 0.4],
+                ];
+                pivotLevels.forEach(([lbl, val, color, opacity]) => {
+                    if (typeof val !== 'number') return;
+                    datasets.push({
+                        label: `${lbl} (${val})`, data: Array(n).fill(val),
+                        borderColor: color, borderWidth: lbl.endsWith('1') ? 1.8 : 1,
+                        borderDash: [3, 3], pointRadius: 0, order: 4,
+                    });
+                });
+            } else if (mode === 'stock' && showSr && resistance != null) {
+                // Fallback for tickers without two full weeks of history yet (no pivots computable)
                 datasets.push({ label: `Resistance (${resistance})`, data: Array(n).fill(resistance), borderColor: '#ef4444', borderWidth: 1.5, borderDash: [3, 3], pointRadius: 0, order: 4 });
-            }
-            if (mode === 'stock' && showSr && support != null) {
-                datasets.push({ label: `Support (${support})`, data: Array(n).fill(support), borderColor: '#22c55e', borderWidth: 1.5, borderDash: [3, 3], pointRadius: 0, order: 4 });
+                if (support != null) datasets.push({ label: `Support (${support})`, data: Array(n).fill(support), borderColor: '#22c55e', borderWidth: 1.5, borderDash: [3, 3], pointRadius: 0, order: 4 });
             }
 
             chartInstance = new Chart(ctx, {
@@ -1630,11 +1644,12 @@
                     <td class="p-2.5 text-textmain">${row["RSI-14"] || 0}</td><td class="p-2.5 text-textmain">${row["ADX-14"] || 0}</td><td class="p-2.5 text-textmain">${row["Vol Z-Score"] || 0}</td>
                     <td class="p-2.5 text-textmuted">${row["Avg Volume (20D)"] ? row["Avg Volume (20D)"].toLocaleString() : 0}</td><td class="p-2.5 font-sans ${confStyle}">${row["Data Confidence"] || '-'}</td>
                     <td class="p-2.5 text-emerald-400 font-semibold">${row["Take-Profit Target"] ?? '-'}</td>
-                    <td class="p-2.5 text-textmain"><span class="text-rose-400">R ${row["Resistance (52W High)"] ?? '-'}</span><br><span class="text-emerald-400">S ${row["Support (52W Low)"] ?? '-'}</span></td>
+                    <td class="p-2.5 text-rose-400 text-[11px] leading-tight" title="52-week high: ${row["Resistance (52W High)"] ?? '-'}">R1 ${row["R1"] ?? '-'}<br>R2 ${row["R2"] ?? '-'}<br>R3 ${row["R3"] ?? '-'}</td>
+                    <td class="p-2.5 text-emerald-400 text-[11px] leading-tight" title="52-week low: ${row["Support (52W Low)"] ?? '-'}">S1 ${row["S1"] ?? '-'}<br>S2 ${row["S2"] ?? '-'}<br>S3 ${row["S3"] ?? '-'}</td>
                 `;
                 tbody.appendChild(tr);
             });
-            if (rowCount === 0) tbody.innerHTML = '<tr><td colspan="18" class="p-8 text-center text-textmuted font-sans">No stocks match your active filter criteria.</td></tr>';
+            if (rowCount === 0) tbody.innerHTML = '<tr><td colspan="19" class="p-8 text-center text-textmuted font-sans">No stocks match your active filter criteria.</td></tr>';
             applyColumnVisibility();
         }
 
@@ -1659,7 +1674,7 @@
                 populateSelects(); applyFilters(); renderSectors(); renderTop10(); renderBreakouts(); renderPortfolio(); renderHistory(); renderAccountBar();
             } catch (error) {
                 console.error("Failed to load market data:", error);
-                document.getElementById('tbody-matrix').innerHTML = `<tr><td colspan="18" class="p-8 text-center text-rose-400 font-sans">⚠️ Data temporarily unavailable. Please try refreshing in a moment.</td></tr>`;
+                document.getElementById('tbody-matrix').innerHTML = `<tr><td colspan="19" class="p-8 text-center text-rose-400 font-sans">⚠️ Data temporarily unavailable. Please try refreshing in a moment.</td></tr>`;
             }
         }
 

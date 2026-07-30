@@ -505,6 +505,39 @@ class QuantitativeEngine:
         )
         return trend_vals, round(float(total_change_pct), 2)
 
+    @staticmethod
+    def compute_pivot_points(df: pd.DataFrame) -> dict | None:
+        """Classic floor-trader pivot points (PP, R1-R3, S1-S3).
+
+        Uses the most recently *completed* calendar week's High/Low/Close
+        as the basis - the standard convention for daily-chart pivots - so
+        the levels don't shift every single session the way a pure 250-day
+        range high/low does. Returns None if there isn't at least one full
+        prior week of data yet (e.g. a very recent listing).
+        """
+        if df.empty or not {"high", "low", "close"}.issubset(df.columns):
+            return None
+
+        weekly = df.resample("W").agg({"high": "max", "low": "min", "close": "last"}).dropna()
+        if len(weekly) < 2:
+            return None
+
+        prior_week = weekly.iloc[-2]  # last *completed* week, not the in-progress one
+        h, l, c = float(prior_week["high"]), float(prior_week["low"]), float(prior_week["close"])
+        if h <= 0 or l <= 0 or h < l:
+            return None
+
+        pp = (h + l + c) / 3.0
+        r1, s1 = 2 * pp - l, 2 * pp - h
+        r2, s2 = pp + (h - l), pp - (h - l)
+        r3, s3 = h + 2 * (pp - l), l - 2 * (h - pp)
+
+        return {
+            "pp": round(pp, 4),
+            "r1": round(r1, 4), "r2": round(r2, 4), "r3": round(r3, 4),
+            "s1": round(s1, 4), "s2": round(s2, 4), "s3": round(s3, 4),
+        }
+
     # -------------------------------------------------------------------------
     # Sector index (equal-weight, base 100)
     # -------------------------------------------------------------------------

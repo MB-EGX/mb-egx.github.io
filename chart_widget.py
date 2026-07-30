@@ -166,43 +166,6 @@ class StockSectorChartWidget(QWidget):
             ))
         ax.xaxis_date()
 
-    @staticmethod
-    def _compute_support_resistance(df, window=10, max_levels=2, tolerance_pct=0.015):
-        """Find recent swing highs/lows as candidate resistance/support levels.
-
-        A bar's high is a "swing high" if it is the max within a +/-window
-        neighborhood (same idea for swing lows, using the min). This is a
-        standard fractal pivot-point technique, so it reflects levels price
-        has actually reacted to recently rather than just the absolute
-        52-week high/low. Nearby duplicate levels (within tolerance_pct) are
-        merged; only the max_levels most recent distinct levels per side are
-        kept so the chart doesn't get cluttered with stale lines.
-        """
-        if len(df) < window * 2 + 1:
-            return [], []
-
-        highs, lows = df["high"].values, df["low"].values
-        n = len(df)
-        swing_highs, swing_lows = [], []
-        for i in range(window, n - window):
-            wnd_h = highs[i - window: i + window + 1]
-            wnd_l = lows[i - window: i + window + 1]
-            if highs[i] == wnd_h.max():
-                swing_highs.append((i, highs[i]))
-            if lows[i] == wnd_l.min():
-                swing_lows.append((i, lows[i]))
-
-        def _dedup_recent(levels):
-            out = []
-            for idx, price in sorted(levels, key=lambda t: -t[0]):
-                if not any(abs(price - p) / p < tolerance_pct for p in out):
-                    out.append(price)
-                if len(out) >= max_levels:
-                    break
-            return out
-
-        return _dedup_recent(swing_highs), _dedup_recent(swing_lows)
-
     def _get_alpha_btn_style(self, is_active=False):
         if is_active:
             return "QPushButton { background-color: #3182ce; color: #ffffff; font-weight: bold; border-radius: 3px; border: none; font-size: 11px; }"
@@ -300,14 +263,16 @@ class StockSectorChartWidget(QWidget):
             if 'vwap_20' in df.columns:
                 ax.plot(dates, df['vwap_20'], label="VWAP (20D)", color="#f59e0b", linestyle=":", alpha=0.8)
 
-            if self.chk_sr.isChecked() and {'high', 'low'}.issubset(df.columns):
-                res_levels, sup_levels = self._compute_support_resistance(df)
-                for lvl in res_levels:
-                    ax.axhline(y=lvl, color="#ef4444", linestyle=(0, (4, 3)), linewidth=1.1, alpha=0.75, zorder=1)
-                    ax.text(dates[-1], lvl, f" R {lvl:.4g}", color="#ef4444", fontsize=8, va="bottom", ha="right", zorder=4)
-                for lvl in sup_levels:
-                    ax.axhline(y=lvl, color="#22c55e", linestyle=(0, (4, 3)), linewidth=1.1, alpha=0.75, zorder=1)
-                    ax.text(dates[-1], lvl, f" S {lvl:.4g}", color="#22c55e", fontsize=8, va="top", ha="right", zorder=4)
+            if self.chk_sr.isChecked() and {'high', 'low', 'close'}.issubset(df.columns):
+                pivots = self.qe.compute_pivot_points(df)
+                if pivots:
+                    for tag, color, va in (("r3", "#ef4444", "bottom"), ("r2", "#ef4444", "bottom"), ("r1", "#ef4444", "bottom"),
+                                            ("s1", "#22c55e", "top"), ("s2", "#22c55e", "top"), ("s3", "#22c55e", "top")):
+                        lvl = pivots[tag]
+                        weight = 1.4 if tag in ("r1", "s1") else 0.9
+                        alpha = 0.85 if tag in ("r1", "s1") else 0.5
+                        ax.axhline(y=lvl, color=color, linestyle=(0, (4, 3)), linewidth=weight, alpha=alpha, zorder=1)
+                        ax.text(dates[-1], lvl, f" {tag.upper()} {lvl:.4g}", color=color, fontsize=7.5, va=va, ha="right", zorder=4)
 
             trend_color = "#22c55e" if slope_pct >= 0 else "#ef4444"
             trend_label = f"Trendline ({'+' if slope_pct >= 0 else ''}{slope_pct}%)"
@@ -343,10 +308,31 @@ class StockSectorChartWidget(QWidget):
 
         if len(dates) > 0:
             last_date = dates[-1]
+            last_price = float(prices.iloc[-1]) if self.rad_stock.isChecked() else float(idx_vals.iloc[-1])
             last_date_lbl = f"Last Data: {latest_date_str}" if self.lang == "EN" else f"آخر بيانات: {latest_date_str}"
             ax.axvline(x=last_date, color="#e11d48", linestyle="-.", alpha=0.85, linewidth=1.5, label=last_date_lbl)
+            # Explicit last-price callout on the final session, requested
+            # separately from the "Last Data" date marker above.
+            ax.annotate(
+                f"{last_price:.4g}",
+                xy=(last_date, last_price), xytext=(8, 0), textcoords="offset points",
+                color="#0b0f14", fontsize=9, fontweight="bold", va="center", zorder=5,
+                bbox=dict(boxstyle="round,pad=0.25", facecolor="#e11d48", edgecolor="none"),
+            )
 
-        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+        # BUGFIX: candlesticks are drawn via ax.add_line()/ax.add_patch() with
+        # raw mdates.date2num() coordinates, which never goes through
+        # matplotlib's automatic datetime-locator selection the way
+        # ax.plot(datetime_index, ...) does. Left to its own devices the
+        # default numeric locator then places ticks evenly by index and the
+        # '%Y-%m' formatter stamps each with only a month - producing the
+        # "2026-07" label repeated 6+ times seen in candle mode. An explicit
+        # date-aware locator/formatter fixes this for both line and candle
+        # modes and shows the actual date, not just a repeated month.
+        locator = mdates.AutoDateLocator(minticks=5, maxticks=9)
+        ax.xaxis.set_major_locator(locator)
+        ax.xaxis.set_major_formatter(mdates.ConciseDateFormatter(locator))
+        self.fig.autofmt_xdate(rotation=0, ha="center")
         ax.legend(facecolor='#1a1d24', edgecolor='#4a5568', labelcolor='#ffffff', loc='upper left')
         self.fig.tight_layout()
         self.canvas.draw()
