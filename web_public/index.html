@@ -1717,8 +1717,36 @@
             }
         }
 
-        function handleSignOut() {
-            auth.signOut();
+        async function handleSignOut() {
+            // Close any open modal first — an open modal can sit visually on top of
+            // the login gate (higher in DOM / same overlay layer) and make it look
+            // like sign-out "didn't work" even though the auth state did change.
+            ['modal-analytics','modal-calc','modal-cash','modal-columns','modal-guide','modal-portfolio','modal-theme']
+                .forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
+
+            try {
+                await auth.signOut();
+            } catch (err) {
+                console.error('Sign out failed:', err);
+                alert('Sign out failed: ' + err.message);
+                return;
+            }
+
+            // Clear the previous user's locally-cached account data so it can't
+            // linger in the UI or leak into the next person who signs in on this
+            // browser/device.
+            localStorage.removeItem('quant_cash');
+            localStorage.removeItem('quant_portfolio');
+            localStorage.removeItem('quant_history');
+            userCash = 0; userPortfolio = []; userHistory = [];
+
+            // Belt-and-braces: onAuthStateChanged should already flip these, but
+            // force them explicitly too in case any stray script re-hid the gate
+            // or re-showed the badge after the listener ran.
+            const gate = document.getElementById('auth-gate');
+            const badge = document.getElementById('user-badge');
+            if (gate) gate.style.display = 'flex';
+            if (badge) badge.style.display = 'none';
         }
 
         async function loadUserDataFromCloud(uid) {
