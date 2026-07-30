@@ -103,7 +103,7 @@
            screen from the very first frame. */
         #auth-gate {
             position: fixed !important;
-            top: 36px; left: 0; right: 0; bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             z-index: 99999 !important;
             background: #0F1115;
         }
@@ -120,7 +120,7 @@
         .text-sky-400 { color: var(--accent-text) !important; }
 
         /* Sticky, glassy header */
-        header#main-header { position: sticky; top: 36px; z-index: 30; background-color: color-mix(in srgb, var(--bg-panel) 92%, transparent); backdrop-filter: blur(10px); }
+        header#main-header { position: sticky; top: 0; z-index: 30; background-color: color-mix(in srgb, var(--bg-panel) 92%, transparent); backdrop-filter: blur(10px); }
 
         /* Card panels: subtle depth + hairline glow */
         .bg-panelbg { box-shadow: 0 1px 0 0 rgba(255,255,255,0.04) inset, 0 10px 24px -12px rgba(0,0,0,0.5); }
@@ -142,71 +142,9 @@
             background-color: color-mix(in srgb, var(--accent-text) 8%, transparent) !important;
         }
 
-        /* ===== Desktop app window chrome (native title bar, sits above both the
-             login gate and the dashboard, styled like the PyQt desktop client's own
-             OS-level title bar rather than the in-app theme, so it never changes
-             color when the user switches dashboard themes) ===== */
-        html, body { height: 100%; }
-        body { padding-top: 36px !important; }
-        .app-titlebar {
-            position: fixed; top: 0; left: 0; right: 0; height: 36px; z-index: 100000;
-            display: flex; align-items: center; justify-content: space-between;
-            background: #1a1d24; border-bottom: 1px solid #2d3748;
-            -webkit-user-select: none; user-select: none;
-            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-        }
-        .app-titlebar .tb-left { display: flex; align-items: center; gap: 8px; padding-left: 10px; min-width: 0; }
-        .app-titlebar .tb-left img { width: 18px; height: 18px; object-fit: contain; border-radius: 3px; }
-        .app-titlebar .tb-left span.tb-title {
-            color: #e2e2e8; font-size: 12px; font-weight: 600; letter-spacing: 0.2px;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
-        .app-titlebar .tb-right { display: flex; align-items: stretch; height: 100%; }
-        .app-titlebar .tb-btn {
-            width: 44px; height: 36px; display: flex; align-items: center; justify-content: center;
-            background: transparent; border: none; cursor: pointer; color: #bfc7d2;
-            font-size: 13px; line-height: 1; transition: background-color 0.1s ease, color 0.1s ease;
-        }
-        .app-titlebar .tb-btn:hover { background: rgba(255,255,255,0.08); color: #ffffff; }
-        .app-titlebar .tb-btn.tb-close:hover { background: #e11d48; color: #ffffff; }
     </style>
 </head>
 <body class="bg-darkbg text-textmain font-sans min-h-screen text-xs md:text-sm transition-colors duration-200 pb-16">
-
-    <!-- ===== Native-style desktop window title bar (shown over every screen, login included) ===== -->
-    <div class="app-titlebar" id="app-titlebar">
-        <div class="tb-left">
-            <img src="assets/mb-egx-logo.png" alt="MB-EGX">
-            <span class="tb-title" id="tb-title-text">MB-EGX Alpha — Terminal Access</span>
-        </div>
-        <div class="tb-right">
-            <button class="tb-btn tb-minimize" title="Minimize" onclick="titlebarMinimize()">&#x2013;</button>
-            <button class="tb-btn tb-maximize" title="Maximize / Restore" onclick="titlebarMaximize()">&#x25A1;</button>
-            <button class="tb-btn tb-close" title="Close" onclick="titlebarClose()">&#x2715;</button>
-        </div>
-    </div>
-    <script>
-        function titlebarMinimize() {
-            const btn = document.querySelector('.tb-btn.tb-minimize');
-            btn.style.color = '#93ccff';
-            setTimeout(() => { btn.style.color = ''; }, 400);
-        }
-        function titlebarMaximize() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(() => {});
-            } else {
-                document.exitFullscreen().catch(() => {});
-            }
-        }
-        function titlebarClose() {
-            if (confirm('Close MB-EGX Alpha?')) {
-                window.close();
-                setTimeout(() => {
-                    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0f1115;color:#e2e2e8;font-family:Inter,sans-serif;">You can close this browser tab now.</div>';
-                }, 200);
-            }
-        }
-    </script>
 
     <div class="max-w-[1650px] mx-auto p-3 md:p-5 space-y-4">
         
@@ -1990,8 +1928,6 @@
                 let name = 'Investor';
                 try {
                     name = getFriendlyName(user);
-                    const tbTitle = document.getElementById('tb-title-text');
-                    if (tbTitle) tbTitle.textContent = 'MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard';
                     document.getElementById('lbl-welcome-user').textContent = name;
                 } catch (err) {
                     console.error('Error setting welcome name (badge still shown):', err);
@@ -2010,8 +1946,6 @@
                 adminBtn.style.display = 'none';
                 _welcomedThisSession = false;
                 endSessionTracking();
-                const tbTitle = document.getElementById('tb-title-text');
-                if (tbTitle) tbTitle.textContent = 'MB-EGX Alpha — Terminal Access';
             }
         });
     </script>
