@@ -125,6 +125,30 @@ def _clean_volume(val):
     return f if f >= 0 else 0.0
 
 
+_HTML_METACHARS = str.maketrans({
+    '<': '', '>': '', '"': "'", '&': 'and',
+})
+
+
+def _sanitize_text_field(val: str, max_len: int = 200) -> str:
+    """Strip HTML metacharacters and control chars from ingested text.
+
+    SECURITY: name/sector (and ticker) columns come straight from
+    user-supplied Excel/CSV files. They flow DB -> export_json.py ->
+    market_data.json -> index.html, where several sites do
+    el.innerHTML = TEMPLATE_LITERAL(value) with no escaping. A malicious
+    cell value (e.g. "<img src=x onerror=...>") would otherwise become
+    stored XSS served to every visitor. Stripping '<' and '>' at the
+    ingestion boundary neutralizes this regardless of what any
+    downstream renderer does or forgets to do.
+    """
+    if val is None:
+        return ""
+    s = str(val).translate(_HTML_METACHARS)
+    s = re.sub(r'[\x00-\x1f\x7f]', '', s)  # strip control chars
+    return s.strip()[:max_len]
+
+
 def _parse_excel_date(val):
     if pd.isna(val):
         return None
@@ -193,12 +217,16 @@ def parse_excel_worker(file_info):
                 high_val = _clean_price(row[col_map['high']]) if 'high' in col_map else None
                 low_val = _clean_price(row[col_map['low']]) if 'low' in col_map else None
                 volume_val = _clean_volume(row[col_map['volume']]) if 'volume' in col_map else 0.0
-                name_val = str(row[col_map['name']]).strip() if 'name' in col_map else ""
-                sec_val = clean_sector_name(str(row[col_map['sector']])) if 'sector' in col_map else ""
+                name_val = _sanitize_text_field(row[col_map['name']]) if 'name' in col_map else ""
+                sec_val = clean_sector_name(_sanitize_text_field(row[col_map['sector']])) if 'sector' in col_map else ""
+                ticker_val = _sanitize_text_field(row[col_map['ticker']], max_len=20).strip().upper()
+                if not ticker_val:
+                    skipped_rows += 1
+                    continue
 
                 data_records.append({
                     'date': date_str,
-                    'ticker': str(row[col_map['ticker']]).strip().upper(),
+                    'ticker': ticker_val,
                     'name': name_val,
                     'sector': sec_val,
                     'open': open_val if open_val is not None else close_val,

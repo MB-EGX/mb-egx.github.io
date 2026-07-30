@@ -1400,10 +1400,10 @@
                 const tr = document.createElement('tr');
                 tr.className = 'border-b border-bordercol hover:bg-panelbg transition';
                 tr.innerHTML = `
-                    <td class="p-2.5 font-bold text-sky-400">${pos.ticker}</td><td class="p-2.5">${pos.shares.toLocaleString()}</td><td class="p-2.5">${pos.buyPrice.toFixed(4)}</td><td class="p-2.5 font-bold text-white">${cp.toFixed(4)}</td>
+                    <td class="p-2.5 font-bold text-sky-400">${escapeHtml(pos.ticker)}</td><td class="p-2.5">${pos.shares.toLocaleString()}</td><td class="p-2.5">${pos.buyPrice.toFixed(4)}</td><td class="p-2.5 font-bold text-white">${cp.toFixed(4)}</td>
                     <td class="p-2.5 font-bold ${pnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${pnl.toLocaleString(undefined, {minimumFractionDigits: 2})}</td><td class="p-2.5 font-bold ${pnlPct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${pnlPct.toFixed(2)}%</td>
-                    <td class="p-2.5 text-center font-sans"><span class="px-3 py-1 rounded-full text-[11px] ${actionBg}">${action}</span></td><td class="p-2.5 text-emerald-400">${tp.toFixed(4)}</td><td class="p-2.5 text-rose-400">${stop.toFixed(4)}</td>
-                    <td class="p-2.5 font-sans text-textmuted">${trend}</td><td class="p-2.5 text-center font-sans"><button onclick="sellPosition('${pos.ticker}')" class="bg-rose-700 text-white px-2.5 py-1 rounded text-[11px] font-bold">🤝 Record Sale</button></td>
+                    <td class="p-2.5 text-center font-sans"><span class="px-3 py-1 rounded-full text-[11px] ${actionBg}">${escapeHtml(action)}</span></td><td class="p-2.5 text-emerald-400">${tp.toFixed(4)}</td><td class="p-2.5 text-rose-400">${stop.toFixed(4)}</td>
+                    <td class="p-2.5 font-sans text-textmuted">${escapeHtml(trend)}</td><td class="p-2.5 text-center font-sans"><button onclick="sellPosition('${sanitizeTicker(pos.ticker)}')" class="bg-rose-700 text-white px-2.5 py-1 rounded text-[11px] font-bold">🤝 Record Sale</button></td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -1417,9 +1417,9 @@
                 const tr = document.createElement('tr');
                 tr.className = 'border-b border-bordercol hover:bg-panelbg transition';
                 tr.innerHTML = `
-                    <td class="p-2.5 font-bold text-sky-400">${h.ticker}</td><td class="p-2.5">${h.shares.toLocaleString()}</td><td class="p-2.5">${h.buyPrice.toFixed(4)}</td><td class="p-2.5">${h.sellPrice.toFixed(4)}</td>
+                    <td class="p-2.5 font-bold text-sky-400">${escapeHtml(h.ticker)}</td><td class="p-2.5">${h.shares.toLocaleString()}</td><td class="p-2.5">${h.buyPrice.toFixed(4)}</td><td class="p-2.5">${h.sellPrice.toFixed(4)}</td>
                     <td class="p-2.5 font-bold ${h.realizedPnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${h.realizedPnl.toLocaleString(undefined, {minimumFractionDigits: 2})}</td><td class="p-2.5 font-bold ${h.pnlPct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${h.pnlPct.toFixed(2)}%</td>
-                    <td class="p-2.5 text-textmuted">${h.buyDate}</td><td class="p-2.5 text-textmuted">${h.sellDate}</td>
+                    <td class="p-2.5 text-textmuted">${escapeHtml(h.buyDate)}</td><td class="p-2.5 text-textmuted">${escapeHtml(h.sellDate)}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -1453,7 +1453,7 @@
                 const tr = document.createElement('tr');
                 tr.className = 'border-b border-bordercol/40 hover:bg-panelbg transition';
                 tr.innerHTML = `
-                    <td class="p-2.5 font-sans text-textmuted">${i + 1}</td><td class="p-2.5 font-bold text-sky-400">${row.Ticker || '-'}</td>
+                    <td class="p-2.5 font-sans text-textmuted">${i + 1}</td><td class="p-2.5 font-bold text-sky-400">${escapeHtml(row.Ticker) || '-'}</td>
                     <td class="p-2.5 text-right"><span class="${scoreStyle}">${!isNaN(score) ? score.toFixed(1) : '-'}</span></td>
                     <td class="p-2.5 text-right text-textmain">${row["Current Price"] ?? '-'}</td>
                     <td class="p-2.5 text-right text-textmain">${row["Dist. to Resistance (%)"] ?? '-'}</td>
@@ -1481,11 +1481,11 @@
                 const tr = document.createElement('tr');
                 tr.className = 'border-b border-bordercol hover:bg-panelbg transition font-mono';
                 tr.innerHTML = `
-                    <td class="p-2.5 font-sans font-bold text-textmain">${s.Sector}</td><td class="p-2.5 text-center">${s.Stocks}</td>
+                    <td class="p-2.5 font-sans font-bold text-textmain">${escapeHtml(s.Sector)}</td><td class="p-2.5 text-center">${s.Stocks}</td>
                     <td class="p-2.5 text-right font-bold ${r1d >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${r1d.toFixed(2)}%</td><td class="p-2.5 text-right font-bold ${r5d >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${r5d.toFixed(2)}%</td>
                     <td class="p-2.5 text-right ${cmf >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${cmf.toFixed(2)}</td><td class="p-2.5 text-right">${s["Bullish Breadth (%)"]}%</td>
                     <td class="p-2.5 text-right text-textmain">${parseFloat(s["Traded Value (EGP)"]).toLocaleString(undefined, {maximumFractionDigits: 0})}</td>
-                    <td class="p-2.5 text-center font-bold text-sky-400">${s["Sector Leader"]}</td><td class="p-2.5 text-center font-sans"><span class="px-3 py-1 rounded-full text-[11px] ${statusBg}">${s["Sector Status"]}</span></td>
+                    <td class="p-2.5 text-center font-bold text-sky-400">${escapeHtml(s["Sector Leader"])}</td><td class="p-2.5 text-center font-sans"><span class="px-3 py-1 rounded-full text-[11px] ${statusBg}">${escapeHtml(s["Sector Status"])}</span></td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -1498,7 +1498,7 @@
             [{ key: "🔥 STRONG BUY", title: "🔥 Top 10 Strong Buy", col: "text-emerald-400" }, { key: "⚡ BREAKOUT BUY", title: "⚡ Top 10 Breakout", col: "text-sky-400" }, { key: "📈 ACCUMULATE", title: "📈 Top 10 Accumulate", col: "text-blue-400" }, { key: "⏳ BUY ON DIP", title: "⏳ Top 10 Buy on Dip", col: "text-amber-400" }].forEach(c => {
                 const list = globalData.top_10[c.key] || [];
                 let rowsHtml = list.map((row, i) => `
-                    <tr class="border-b border-bordercol/40 hover:bg-panelbg"><td class="p-2 text-textmuted">${i+1}</td><td class="p-2 font-bold text-sky-400">${row.Ticker}</td><td class="p-2 text-white font-bold">${row["Current Price"]}</td><td class="p-2 text-textmain">${row["Rank Score"]}</td><td class="p-2 font-sans text-textmuted">${row["Trend Class"]}</td></tr>
+                    <tr class="border-b border-bordercol/40 hover:bg-panelbg"><td class="p-2 text-textmuted">${i+1}</td><td class="p-2 font-bold text-sky-400">${escapeHtml(row.Ticker)}</td><td class="p-2 text-white font-bold">${row["Current Price"]}</td><td class="p-2 text-textmain">${row["Rank Score"]}</td><td class="p-2 font-sans text-textmuted">${escapeHtml(row["Trend Class"])}</td></tr>
                 `).join('');
                 const box = document.createElement('div');
                 box.className = 'bg-darkbg p-4 rounded-xl border border-bordercol shadow space-y-3';
@@ -1540,10 +1540,10 @@
                 const tr = document.createElement('tr');
                 tr.className = 'border-b border-bordercol/40 hover:bg-panelbg transition';
                 tr.innerHTML = `
-                    <td class="p-2.5 font-sans text-textmuted">${rowCount}</td><td class="p-2.5 font-bold text-sky-400">${row.Ticker || '-'}</td><td class="p-2 text-center font-sans ${actionStyle} rounded-full shadow-sm px-3">${row.Action || '-'}</td>
+                    <td class="p-2.5 font-sans text-textmuted">${rowCount}</td><td class="p-2.5 font-bold text-sky-400">${escapeHtml(row.Ticker) || '-'}</td><td class="p-2 text-center font-sans ${actionStyle} rounded-full shadow-sm px-3">${escapeHtml(row.Action) || '-'}</td>
                     <td class="p-2.5 text-textmain font-bold">${row["Rank Score"] || 0}</td><td class="p-2.5 font-bold text-white">${row["Current Price"] || 0}</td><td class="p-2.5 text-textmain">${row["Target Entry (VWAP)"] || 0}</td>
                     <td class="p-2.5 text-rose-400 font-semibold">${row["Suggested Stop-Loss"] || 0}</td><td class="p-2.5 text-textmain">${row["Suggested Shares (1% Risk)"] ? row["Suggested Shares (1% Risk)"].toLocaleString() : 0}</td>
-                    <td class="p-2.5 text-emerald-400 font-semibold">${row["Projected Gain (%)"] || 'N/A'}</td><td class="p-2.5 text-textmain">${row["Pattern Conf (%)"] || 'N/A'}</td><td class="p-2.5 font-sans text-textmuted">${row["Trend Class"] || '-'}</td>
+                    <td class="p-2.5 text-emerald-400 font-semibold">${row["Projected Gain (%)"] || 'N/A'}</td><td class="p-2.5 text-textmain">${row["Pattern Conf (%)"] || 'N/A'}</td><td class="p-2.5 font-sans text-textmuted">${escapeHtml(row["Trend Class"]) || '-'}</td>
                     <td class="p-2.5 text-textmain">${row["RSI-14"] || 0}</td><td class="p-2.5 text-textmain">${row["ADX-14"] || 0}</td><td class="p-2.5 text-textmain">${row["Vol Z-Score"] || 0}</td>
                     <td class="p-2.5 text-textmuted">${row["Avg Volume (20D)"] ? row["Avg Volume (20D)"].toLocaleString() : 0}</td><td class="p-2.5 font-sans ${confStyle}">${row["Data Confidence"] || '-'}</td>
                 `;
@@ -2076,7 +2076,7 @@
                         tr.className = 'border-b border-bordercol/50';
                         const totalSessions = u.webSessions + u.desktopSessions;
                         tr.innerHTML = `
-                            <td class="py-1">${u.name}${u.email ? `<br><span class="text-textmuted text-[10px]">${u.email}</span>` : ''}</td>
+                            <td class="py-1">${escapeHtml(u.name)}${u.email ? `<br><span class="text-textmuted text-[10px]">${escapeHtml(u.email)}</span>` : ''}</td>
                             <td class="py-1 text-right">${totalSessions}<br><span class="text-textmuted text-[10px]">🌐${u.webSessions} 🖥️${u.desktopSessions}</span></td>
                             <td class="py-1 text-right">${_formatDuration(u.totalSec)}</td>
                             <td class="py-1 text-right">${u.tradeCount || 0}</td>

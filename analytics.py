@@ -509,9 +509,10 @@ class QuantitativeEngine:
     # Sector index (equal-weight, base 100)
     # -------------------------------------------------------------------------
     def get_sector_historical_index(
-        self, sector_name: str, sector_map: dict
+        self, sector_name: str, sector_map: dict, bulk_data: dict | None = None
     ) -> pd.DataFrame:
-        bulk_data = self.get_all_market_data_bulk()
+        if bulk_data is None:
+            bulk_data = self.get_all_market_data_bulk()
         matching_series = []
         for norm_ticker, df in bulk_data.items():
             if df.empty or len(df) < 5:

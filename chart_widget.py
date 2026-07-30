@@ -16,7 +16,31 @@ class StockSectorChartWidget(QWidget):
         self.dbm = dbm
         self.lang = "EN"
         self.current_letter_filter = "ALL"
+        # PERF: get_sector_historical_index() used to call
+        # get_all_market_data_bulk() (a full-table fetch + per-ticker
+        # cleaning pass over the ENTIRE market) and dbm.get_sector_map()
+        # (an O(n*m) fuzzy token-match) on every single sector dropdown
+        # selection. Cache both for the widget's lifetime; refresh_data()
+        # lets the host window invalidate them after re-ingestion.
+        self._bulk_cache = None
+        self._sector_map_cache = None
         self._init_ui()
+
+    def refresh_data(self):
+        """Call after new market data has been ingested to drop caches."""
+        self._bulk_cache = None
+        self._sector_map_cache = None
+        self.populate_selector()
+
+    def _get_bulk_data_cached(self):
+        if self._bulk_cache is None:
+            self._bulk_cache = self.qe.get_all_market_data_bulk()
+        return self._bulk_cache
+
+    def _get_sector_map_cached(self):
+        if self._sector_map_cache is None:
+            self._sector_map_cache = self.dbm.get_sector_map()
+        return self._sector_map_cache
 
     def _init_ui(self):
         layout = QVBoxLayout(self)
@@ -128,7 +152,7 @@ class StockSectorChartWidget(QWidget):
                     tickers = [t for t in tickers if t.upper().startswith(self.current_letter_filter)]
             self.cmb_selector.addItems(tickers)
         else:
-            sector_map = self.dbm.get_sector_map()
+            sector_map = self._get_sector_map_cached()
             unique_sectors = sorted(list(set(sector_map.values())))
             self.cmb_selector.addItems(unique_sectors)
             
@@ -177,8 +201,10 @@ class StockSectorChartWidget(QWidget):
             ax.set_title(title, color="#ffffff", fontsize=12, fontweight="bold")
             
         else:
-            sector_map = self.dbm.get_sector_map()
-            df_sec = self.qe.get_sector_historical_index(selected, sector_map)
+            sector_map = self._get_sector_map_cached()
+            df_sec = self.qe.get_sector_historical_index(
+                selected, sector_map, bulk_data=self._get_bulk_data_cached()
+            )
             if df_sec.empty:
                 self.canvas.draw()
                 return

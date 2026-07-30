@@ -31,6 +31,8 @@ import json
 import math
 import os
 
+import numpy as np
+
 # MUST be imported before pandas and before decision_matrix/db_manager
 # (below) - config.py sets OPENBLAS/MKL/OMP/NUMEXPR thread caps as a
 # module-level side effect, which only takes effect if set before
@@ -56,13 +58,30 @@ def _strip_private_row_fields(rows):
 
 
 def sanitize_for_json(obj):
-    """Recursively convert NaN, Infinity, and -Infinity to None (null in JSON)."""
+    """Recursively convert NaN/Infinity to None and numpy scalars to native
+    Python types.
+
+    BUGFIX: pandas aggregations (.sum(), .count(), comparisons, etc.) very
+    commonly hand back numpy.int64 / numpy.float64 / numpy.bool_ instead of
+    plain Python types. json.dump() does not know how to serialize those
+    ("Object of type int64 is not JSON serializable") and the previous
+    version here only special-cased `float`, so any such value reaching
+    the payload silently killed the entire nightly export.
+    """
+    if isinstance(obj, (np.floating,)):
+        f = float(obj)
+        return None if (math.isnan(f) or math.isinf(f)) else f
     if isinstance(obj, float):
-        if math.isnan(obj) or math.isinf(obj):
-            return None
-    elif isinstance(obj, dict):
+        return None if (math.isnan(obj) or math.isinf(obj)) else obj
+    if isinstance(obj, (np.integer,)):
+        return int(obj)
+    if isinstance(obj, (np.bool_,)):
+        return bool(obj)
+    if isinstance(obj, np.ndarray):
+        return sanitize_for_json(obj.tolist())
+    if isinstance(obj, dict):
         return {k: sanitize_for_json(v) for k, v in obj.items()}
-    elif isinstance(obj, list):
+    if isinstance(obj, (list, tuple)):
         return [sanitize_for_json(v) for v in obj]
     return obj
 
