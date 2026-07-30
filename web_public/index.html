@@ -1576,6 +1576,28 @@
         // network issue, misconfigured project, etc.), surface it visibly on the
         // login screen instead of leaving the user staring at a form with no
         // feedback about what went wrong.
+        // Anti-flash reveal: the page starts hidden (see the <style>/<script>
+        // pair in <head>). We only make it visible once we actually know
+        // whether the user is signed in — that way, whichever screen is
+        // correct (login gate or dashboard) is the *first* thing painted,
+        // instead of always flashing the login gate first and then swapping
+        // to the dashboard a moment later for returning users.
+        let _revealed = false;
+        function revealApp() {
+            if (_revealed) return;
+            _revealed = true;
+            requestAnimationFrame(function () {
+                requestAnimationFrame(function () {
+                    document.documentElement.classList.remove('preload');
+                });
+            });
+        }
+        // Safety net: never leave the page stuck invisible if Firebase is slow,
+        // blocked, or offline — reveal the (default logged-out) screen anyway
+        // after 3s; the existing 8s watchdog below will then also surface a
+        // "still connecting" message on it if auth still hasn't resolved.
+        setTimeout(revealApp, 3000);
+
         let _authResolved = false;
         setTimeout(() => {
             if (!_authResolved) {
@@ -1916,6 +1938,7 @@
 
         auth.onAuthStateChanged(function (user) {
             _authResolved = true;
+            revealApp();
             clearAuthError();
             const gate = document.getElementById('auth-gate');
             const badge = document.getElementById('user-badge');
@@ -1947,18 +1970,6 @@
                 _welcomedThisSession = false;
                 endSessionTracking();
             }
-        });
-    </script>
-
-    <!-- Reveal the page now that the full DOM (including the login gate in
-         its correct default state) has parsed. Two animation-frame ticks
-         give Tailwind's CDN scanner a moment to finish applying utility
-         classes first, so nothing unstyled ever becomes visible. -->
-    <script>
-        requestAnimationFrame(function () {
-            requestAnimationFrame(function () {
-                document.documentElement.classList.remove('preload');
-            });
         });
     </script>
 </body>
