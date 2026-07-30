@@ -99,19 +99,37 @@ def build_chart_history(qe, dbm, sector_map):
         try:
             df_ind = qe.compute_indicators(df).tail(CHART_HISTORY_DAYS)
             dates = [str(d).split("T")[0] for d in df_ind.index]
-            closes = [
-                round(float(c), 4) if pd.notna(c) else None for c in df_ind["close"]
-            ]
+
+            def _round_col(col_name, fallback_col="close"):
+                series = df_ind[col_name] if col_name in df_ind.columns else df_ind[fallback_col]
+                return [round(float(v), 4) if pd.notna(v) else None for v in series]
+
+            closes = _round_col("close")
+            opens = _round_col("open")
+            highs = _round_col("high")
+            lows = _round_col("low")
             vwaps = [
                 round(float(v), 4)
                 if "vwap_20" in df_ind.columns and pd.notna(v)
                 else None
                 for v in df_ind.get("vwap_20", df_ind["close"])
             ]
+            # Resistance/support reference lines for the chart, matching the
+            # same 250-day range the matrix table's "Resistance (52W High)" /
+            # "Support (52W Low)" columns use, so the chart and the table
+            # never disagree about where those levels sit.
+            lookback = min(250, len(df_ind))
+            resistance = round(float(df_ind["high"].iloc[-lookback:].max()), 4)
+            support = round(float(df_ind["low"].iloc[-lookback:].min()), 4)
             chart_history["stocks"][norm_sym] = {
                 "dates": dates,
                 "close": closes,
+                "open": opens,
+                "high": highs,
+                "low": lows,
                 "vwap": vwaps,
+                "resistance": resistance,
+                "support": support,
             }
         except Exception:
             continue

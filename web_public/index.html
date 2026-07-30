@@ -310,10 +310,12 @@
                             <th class="p-2.5 border border-darkbg" data-col="13">Vol Z-Score</th>
                             <th class="p-2.5 border border-darkbg" data-col="14">Avg Vol (20D)</th>
                             <th class="p-2.5 border border-darkbg font-sans" data-col="15">Data Conf.</th>
+                            <th class="p-2.5 border border-darkbg" data-col="16">Take-Profit</th>
+                            <th class="p-2.5 border border-darkbg" data-col="17">Support / Resistance</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-matrix" class="divide-y divide-bordercol/50 text-xs">
-                        <tr><td colspan="16" class="p-8 text-center text-textmuted font-sans">Loading quantitative matrix...</td></tr>
+                        <tr><td colspan="18" class="p-8 text-center text-textmuted font-sans">Loading quantitative matrix...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -457,6 +459,20 @@
                 <div class="flex items-center gap-2 w-full md:w-auto">
                     <span class="font-bold text-textmuted" id="lbl-chart-select">Select Item:</span>
                     <select id="chart-selector" onchange="plotChart()" class="bg-panelbg border border-bordercol rounded px-3 py-1.5 text-textmain font-bold w-full md:w-64"></select>
+                </div>
+                <div class="flex items-center gap-3 font-bold text-xs">
+                    <label class="flex items-center gap-1.5 cursor-pointer">
+                        <input type="radio" name="chart_style" value="line" checked onchange="plotChart()" class="text-sky-500">
+                        <span id="lbl-style-line">📉 Line</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 cursor-pointer" id="wrap-style-candle">
+                        <input type="radio" name="chart_style" value="candle" onchange="plotChart()" class="text-sky-500">
+                        <span id="lbl-style-candle">🕯️ Candles</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 cursor-pointer" id="wrap-toggle-sr">
+                        <input type="checkbox" id="toggle-sr" checked onchange="plotChart()" class="rounded text-sky-500">
+                        <span id="lbl-toggle-sr">📐 Support / Resistance</span>
+                    </label>
                 </div>
             </div>
 
@@ -888,6 +904,26 @@
             const n = parseFloat(val);
             return isFinite(n) ? n : (fallback !== undefined ? fallback : 0);
         }
+        // Mirrors decision_matrix.py's position-sizing formula (risk 1% of
+        // cash per trade, capped by what cash can actually afford after
+        // fees). The server-side "Suggested Shares (1% Risk)" field is
+        // deliberately stripped from market_data.json (export_json.py) since
+        // it's derived from the account's real cash balance and would leak
+        // that figure to every visitor. Computing it here instead, from the
+        // *visitor's own* private userCash, gives everyone a real number
+        // without exposing anyone else's account size.
+        const RISK_PER_TRADE_PCT = 0.01;
+        const TRANSACTION_FEE_PCT = 0.0035;
+        function estimateSuggestedShares(entryPrice, stopLoss) {
+            const price = sanitizeNumber(entryPrice), stop = sanitizeNumber(stopLoss);
+            const stopDistance = price - stop;
+            if (!(userCash > 0) || !(stopDistance > 0) || !(price > 0)) return 0;
+            const riskBudget = userCash * RISK_PER_TRADE_PCT;
+            const effectiveEntryCost = price * (1 + TRANSACTION_FEE_PCT);
+            const maxAffordable = Math.floor(userCash / effectiveEntryCost);
+            const riskSized = Math.floor(riskBudget / stopDistance);
+            return Math.max(0, Math.min(riskSized, maxAffordable));
+        }
         // Rate-limit tracker for auth attempts: { count, lastAttempt }
         const _authRateLimit = { attempts: 0, lockedUntil: 0 };
         const AUTH_RATE_LIMIT_MS = 30000; // 30-second lockout
@@ -936,7 +972,8 @@
                 tab_exits: "🛡️ Owned Portfolio Exit Strategy", tab_history: "📜 Trade History & Realized P&L",
                 tab_fin: "📊 Financial Statement", tab_top10: "🏆 Top 10 Overview", tab_charts: "📊 Charts & Trend Lines",
                 rad_stock: "📈 Per Stock", rad_sector: "🏢 Per Sector", select_item: "Select Item:", alpha_quick: "🔤 Quick Filter:",
-                time_zoom: "⏱️ Time Horizon:", guide: "Guide"
+                time_zoom: "⏱️ Time Horizon:", guide: "Guide",
+                style_line: "📉 Line", style_candle: "🕯️ Candles", toggle_sr: "📐 Support / Resistance"
             },
             AR: {
                 title: "MB-EGX — مصفوفة التداول والقطاعات",
@@ -949,7 +986,8 @@
                 tab_exits: "🛡️ إستراتيجية الخروج للمحفظة", tab_history: "📜 سجل الصفقات والربح المحقق",
                 tab_fin: "📊 القوائم المالية", tab_top10: "🏆 أفضل 10 أسهم", tab_charts: "📊 الرسوم البيانية والاتجاهات",
                 rad_stock: "📈 تحليل الأسهم", rad_sector: "🏢 تحليل القطاعات", select_item: "اختر العنصر:", alpha_quick: "🔤 تصفية بالحرف:",
-                time_zoom: "⏱️ الفترة الزمنية:", guide: "الدليل"
+                time_zoom: "⏱️ الفترة الزمنية:", guide: "الدليل",
+                style_line: "📉 خط", style_candle: "🕯️ شموع", toggle_sr: "📐 الدعم / المقاومة"
             }
         };
 
@@ -991,6 +1029,9 @@
             document.getElementById('lbl-rad-stock').innerText = t.rad_stock;
             document.getElementById('lbl-rad-sector').innerText = t.rad_sector;
             document.getElementById('lbl-chart-select').innerText = t.select_item;
+            if (document.getElementById('lbl-style-line')) document.getElementById('lbl-style-line').innerText = t.style_line;
+            if (document.getElementById('lbl-style-candle')) document.getElementById('lbl-style-candle').innerText = t.style_candle;
+            if (document.getElementById('lbl-toggle-sr')) document.getElementById('lbl-toggle-sr').innerText = t.toggle_sr;
             document.getElementById('lbl-alpha-quick').innerText = t.alpha_quick;
             if (document.getElementById('lbl-time-zoom')) document.getElementById('lbl-time-zoom').innerText = t.time_zoom;
             if (chartInstance) plotChart();
@@ -1135,6 +1176,16 @@
             let prices = [];
             let vwaps = [];
             let labels = [];
+            let opens = [], highs = [], lows = [];
+            let resistance = null, support = null;
+
+            const wrapCandle = document.getElementById('wrap-style-candle');
+            const wrapSr = document.getElementById('wrap-toggle-sr');
+            if (wrapCandle) wrapCandle.style.opacity = (mode === 'stock') ? '1' : '0.4';
+            if (wrapSr) wrapSr.style.opacity = (mode === 'stock') ? '1' : '0.4';
+            const radCandle = document.querySelector('input[name="chart_style"][value="candle"]');
+            const radLine = document.querySelector('input[name="chart_style"][value="line"]');
+            if (mode !== 'stock' && radCandle && radCandle.checked) { radCandle.checked = false; if (radLine) radLine.checked = true; }
 
             if (mode === 'stock') {
                 const stockHistory = globalData.chart_history && globalData.chart_history.stocks ? globalData.chart_history.stocks[selected] : null;
@@ -1142,6 +1193,11 @@
                     labels = stockHistory.dates || [];
                     prices = stockHistory.close.map(Number);
                     vwaps = (stockHistory.vwap || []).map(Number);
+                    opens = (stockHistory.open || []).map(Number);
+                    highs = (stockHistory.high || []).map(Number);
+                    lows = (stockHistory.low || []).map(Number);
+                    resistance = (typeof stockHistory.resistance === 'number') ? stockHistory.resistance : null;
+                    support = (typeof stockHistory.support === 'number') ? stockHistory.support : null;
                 } else {
                     const row = globalData.market_matrix.find(r => r.Ticker === selected);
                     const latestPrice = row ? row["Current Price"] || 10.0 : 10.0;
@@ -1170,6 +1226,9 @@
                 prices = prices.slice(-barCount);
                 labels = labels.slice(-barCount);
                 if (vwaps.length > 0) vwaps = vwaps.slice(-barCount);
+                if (opens.length > 0) opens = opens.slice(-barCount);
+                if (highs.length > 0) highs = highs.slice(-barCount);
+                if (lows.length > 0) lows = lows.slice(-barCount);
             }
             if (document.getElementById('lbl-bars-shown')) {
                 document.getElementById('lbl-bars-shown').innerText = `Showing ${prices.length} trading bar(s) (${labels[0] || ''} to ${labels[labels.length-1] || ''})`;
@@ -1195,12 +1254,36 @@
             const gridCol = isDark ? '#334155' : '#cbd5e0';
             const textCol = isDark ? '#f8fafc' : '#1a202c';
 
-            const datasets = [
-                { label: mode === 'stock' ? 'Close Price (EGP)' : 'Sector Index', data: prices, borderColor: '#38bdf8', borderWidth: 2, tension: 0.1, pointRadius: 2 },
-                { label: `Trendline (${slope >= 0 ? '+' : ''}${slopePct}%)`, data: trendVals, borderColor: slope >= 0 ? '#22c55e' : '#ef4444', borderWidth: 2, borderDash: [5, 5], pointRadius: 0 }
-            ];
+            const style = (document.querySelector('input[name="chart_style"]:checked') || {}).value || 'line';
+            const showSr = document.getElementById('toggle-sr') && document.getElementById('toggle-sr').checked;
+            const isCandle = style === 'candle' && mode === 'stock' && opens.length === n && highs.length === n && lows.length === n;
+
+            const datasets = [];
+            if (isCandle) {
+                const upColor = '#22c55e', downColor = '#ef4444';
+                const dirColors = Array.from({length: n}, (_, i) => (prices[i] >= opens[i]) ? upColor : downColor);
+                datasets.push({
+                    type: 'bar', label: 'Range (H/L)', data: Array.from({length: n}, (_, i) => [lows[i], highs[i]]),
+                    backgroundColor: dirColors, borderColor: dirColors, borderWidth: 1,
+                    barPercentage: 0.15, categoryPercentage: 0.9, order: 1,
+                });
+                datasets.push({
+                    type: 'bar', label: 'Open/Close', data: Array.from({length: n}, (_, i) => [Math.min(opens[i], prices[i]), Math.max(opens[i], prices[i])]),
+                    backgroundColor: dirColors, borderColor: dirColors, borderWidth: 1,
+                    barPercentage: 0.7, categoryPercentage: 0.9, order: 1,
+                });
+            } else {
+                datasets.push({ label: mode === 'stock' ? 'Close Price (EGP)' : 'Sector Index', data: prices, borderColor: '#38bdf8', borderWidth: 2, tension: 0.1, pointRadius: 2, order: 2 });
+            }
+            datasets.push({ label: `Trendline (${slope >= 0 ? '+' : ''}${slopePct}%)`, data: trendVals, borderColor: slope >= 0 ? '#22c55e' : '#ef4444', borderWidth: 2, borderDash: [5, 5], pointRadius: 0, order: 3 });
             if (mode === 'stock' && vwaps.length > 0) {
-                datasets.push({ label: 'VWAP (20D)', data: vwaps, borderColor: '#f59e0b', borderWidth: 1.5, borderDash: [2, 2], pointRadius: 0 });
+                datasets.push({ label: 'VWAP (20D)', data: vwaps, borderColor: '#f59e0b', borderWidth: 1.5, borderDash: [2, 2], pointRadius: 0, order: 3 });
+            }
+            if (mode === 'stock' && showSr && resistance != null) {
+                datasets.push({ label: `Resistance (${resistance})`, data: Array(n).fill(resistance), borderColor: '#ef4444', borderWidth: 1.5, borderDash: [3, 3], pointRadius: 0, order: 4 });
+            }
+            if (mode === 'stock' && showSr && support != null) {
+                datasets.push({ label: `Support (${support})`, data: Array(n).fill(support), borderColor: '#22c55e', borderWidth: 1.5, borderDash: [3, 3], pointRadius: 0, order: 4 });
             }
 
             chartInstance = new Chart(ctx, {
@@ -1208,7 +1291,7 @@
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     scales: {
-                        x: { grid: { color: gridCol }, ticks: { color: textCol, maxTicksLimit: 12 } },
+                        x: { grid: { color: gridCol }, ticks: { color: textCol, maxTicksLimit: 12 }, grouped: false },
                         y: { grid: { color: gridCol }, ticks: { color: textCol } }
                     },
                     plugins: { legend: { labels: { color: textCol, font: { weight: 'bold' } } } }
@@ -1542,14 +1625,16 @@
                 tr.innerHTML = `
                     <td class="p-2.5 font-sans text-textmuted">${rowCount}</td><td class="p-2.5 font-bold text-sky-400">${escapeHtml(row.Ticker) || '-'}</td><td class="p-2 text-center font-sans ${actionStyle} rounded-full shadow-sm px-3">${escapeHtml(row.Action) || '-'}</td>
                     <td class="p-2.5 text-textmain font-bold">${row["Rank Score"] || 0}</td><td class="p-2.5 font-bold text-white">${row["Current Price"] || 0}</td><td class="p-2.5 text-textmain">${row["Target Entry (VWAP)"] || 0}</td>
-                    <td class="p-2.5 text-rose-400 font-semibold">${row["Suggested Stop-Loss"] || 0}</td><td class="p-2.5 text-textmain">${row["Suggested Shares (1% Risk)"] ? row["Suggested Shares (1% Risk)"].toLocaleString() : 0}</td>
+                    <td class="p-2.5 text-rose-400 font-semibold">${row["Suggested Stop-Loss"] || 0}</td><td class="p-2.5 text-textmain" title="Estimated from your own cash balance">${estimateSuggestedShares(row["Target Entry (VWAP)"], row["Suggested Stop-Loss"]).toLocaleString()}</td>
                     <td class="p-2.5 text-emerald-400 font-semibold">${row["Projected Gain (%)"] || 'N/A'}</td><td class="p-2.5 text-textmain">${row["Pattern Conf (%)"] || 'N/A'}</td><td class="p-2.5 font-sans text-textmuted">${escapeHtml(row["Trend Class"]) || '-'}</td>
                     <td class="p-2.5 text-textmain">${row["RSI-14"] || 0}</td><td class="p-2.5 text-textmain">${row["ADX-14"] || 0}</td><td class="p-2.5 text-textmain">${row["Vol Z-Score"] || 0}</td>
                     <td class="p-2.5 text-textmuted">${row["Avg Volume (20D)"] ? row["Avg Volume (20D)"].toLocaleString() : 0}</td><td class="p-2.5 font-sans ${confStyle}">${row["Data Confidence"] || '-'}</td>
+                    <td class="p-2.5 text-emerald-400 font-semibold">${row["Take-Profit Target"] ?? '-'}</td>
+                    <td class="p-2.5 text-textmain"><span class="text-rose-400">R ${row["Resistance (52W High)"] ?? '-'}</span><br><span class="text-emerald-400">S ${row["Support (52W Low)"] ?? '-'}</span></td>
                 `;
                 tbody.appendChild(tr);
             });
-            if (rowCount === 0) tbody.innerHTML = '<tr><td colspan="16" class="p-8 text-center text-textmuted font-sans">No stocks match your active filter criteria.</td></tr>';
+            if (rowCount === 0) tbody.innerHTML = '<tr><td colspan="18" class="p-8 text-center text-textmuted font-sans">No stocks match your active filter criteria.</td></tr>';
             applyColumnVisibility();
         }
 
@@ -1574,7 +1659,7 @@
                 populateSelects(); applyFilters(); renderSectors(); renderTop10(); renderBreakouts(); renderPortfolio(); renderHistory(); renderAccountBar();
             } catch (error) {
                 console.error("Failed to load market data:", error);
-                document.getElementById('tbody-matrix').innerHTML = `<tr><td colspan="16" class="p-8 text-center text-rose-400 font-sans">⚠️ Data temporarily unavailable. Please try refreshing in a moment.</td></tr>`;
+                document.getElementById('tbody-matrix').innerHTML = `<tr><td colspan="18" class="p-8 text-center text-rose-400 font-sans">⚠️ Data temporarily unavailable. Please try refreshing in a moment.</td></tr>`;
             }
         }
 

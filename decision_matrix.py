@@ -500,6 +500,24 @@ class DecisionMatrix:
                 suggested_stop = round(max(curr_price - stop_distance, 0.0001), 4)
                 risk_budget = cash_balance * RISK_PER_TRADE_PCT
 
+                # Buy-side take-profit target: same pattern-match / ATR-floor
+                # blend already used for owned-position exits above, just
+                # evaluated from the proposed entry instead of an existing
+                # buy price. Gives every "buy" row an explicit sell/target
+                # level to go with its stop-loss, instead of only the exit
+                # tab having one.
+                if pattern_data["match_found"]:
+                    tp_floor_pct = ACTION_THRESHOLDS["take_profit_pattern_floor_pct"]
+                    tp_expected_gain = max(pattern_data["projected_change_pct"], tp_floor_pct) / 100.0
+                else:
+                    tp_atr_floor_mult = ACTION_THRESHOLDS["take_profit_atr_floor_multiplier"]
+                    tp_expected_gain = (
+                        (atr * tp_atr_floor_mult) / curr_price if curr_price > 0 else 0.03
+                    )
+                take_profit_target = round(
+                    curr_price * (1 + tp_expected_gain + ROUND_TRIP_FEE_PCT), 4
+                )
+
                 effective_entry_cost = curr_price * (1.0 + TRANSACTION_FEE_PCT)
                 max_affordable_shares = (
                     int(cash_balance / effective_entry_cost) if effective_entry_cost > 0 else 0
@@ -515,6 +533,9 @@ class DecisionMatrix:
                         "Current Price": round(curr_price, 4),
                         "Target Entry (VWAP)": round(entry_target, 4),
                         "Suggested Stop-Loss": suggested_stop,
+                        "Take-Profit Target": take_profit_target,
+                        "Resistance (52W High)": round(float(range_high), 4),
+                        "Support (52W Low)": round(float(range_low), 4),
                         "Suggested Shares (1% Risk)": suggested_shares,
                         "Projected Gain (%)": (
                             pattern_data["projected_change_pct"]
