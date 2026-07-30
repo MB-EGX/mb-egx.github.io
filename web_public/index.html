@@ -82,7 +82,19 @@
         ::-webkit-scrollbar-thumb:hover { background: var(--accent-col); }
         .tab-active { background-color: var(--accent-col) !important; color: #ffffff !important; font-weight: bold; box-shadow: 0 2px 10px -2px rgba(49,152,220,0.5); }
 
-        /* Login Screen specific styles */
+        /* ===== Anti-flash guard for the login gate =====
+           Tailwind's CDN build applies utility classes (fixed/inset/z-index)
+           asynchronously after it scans the DOM, so on a hard refresh the raw
+           dashboard can paint for a frame before #auth-gate becomes a real
+           overlay. These plain CSS rules take effect immediately at parse
+           time (no JS/Tailwind dependency) so the gate always covers the
+           screen from the very first frame. */
+        #auth-gate {
+            position: fixed !important;
+            top: 36px; left: 0; right: 0; bottom: 0;
+            z-index: 99999 !important;
+            background: #0F1115;
+        }
         .ambient-glow { box-shadow: 0 0 24px 0 rgba(147, 204, 255, 0.15); }
         .card-edge { border: 1px solid rgba(255, 255, 255, 0.05); }
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
@@ -1487,7 +1499,7 @@
         <div class="flex-1 flex flex-col justify-center items-center px-6 md:px-16 py-12 relative z-10 lg:min-h-screen">
             <div class="max-w-xl w-full text-center lg:text-left">
                 <div class="mb-6 inline-block">
-                    <img alt="MB-EGX Metallic Logo" class="w-48 md:w-60 h-auto drop-shadow-[0_0_30px_rgba(147,204,255,0.2)]" src="assets/mb-egx-logo.png"/>
+                    <img alt="MB-EGX Metallic Logo" class="w-64 md:w-80 h-auto drop-shadow-[0_0_30px_rgba(147,204,255,0.2)]" src="assets/mb-egx-logo.png"/>
                 </div>
                 <h1 class="font-headline-xl text-3xl md:text-[38px] font-bold text-primary mt-4 mb-4 leading-tight">
                     Ancient Legacy meets <span class="text-on-background">Digital Future</span>
@@ -1502,12 +1514,12 @@
 
         <!-- Right Column: Sign In Form -->
         <div class="flex-1 flex justify-center items-center px-6 md:px-16 py-12 relative z-10 lg:min-h-screen">
-            <div class="w-full max-w-sm bg-surface-elevated p-6 rounded-xl card-edge shadow-2xl relative overflow-hidden">
+            <div class="w-full max-w-[360px] bg-surface-elevated p-5 rounded-xl card-edge shadow-2xl relative overflow-hidden">
                 <!-- Subtle internal shader effect for form depth -->
                 <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16"></div>
                 <div class="relative z-10">
-                    <h2 class="font-headline-lg text-[26px] font-semibold text-on-background mb-1">Terminal Access</h2>
-                    <p class="font-body-sm text-sm text-on-surface-variant mb-6">Sign in to view your private dashboard</p>
+                    <h2 class="font-headline-lg text-[22px] font-semibold text-on-background mb-1">Terminal Access</h2>
+                    <p class="font-body-sm text-xs text-on-surface-variant mb-5">Sign in to view your private dashboard</p>
 
                     <!-- Auth Error Container -->
                     <div id="auth-error" class="hidden mb-4 text-xs text-rose-400 bg-rose-950/40 border border-rose-800 rounded-lg p-3 shadow"></div>
