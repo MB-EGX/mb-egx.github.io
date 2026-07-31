@@ -1264,19 +1264,23 @@
             const isCandle = style === 'candle' && mode === 'stock' && opens.length === n && highs.length === n && lows.length === n;
 
             const datasets = [];
+            let candleWickPoints = null;
             if (isCandle) {
                 const upColor = '#22c55e', downColor = '#ef4444';
                 const dirColors = Array.from({length: n}, (_, i) => (prices[i] >= opens[i]) ? upColor : downColor);
-                datasets.push({
-                    type: 'bar', label: 'Range (H/L)', data: Array.from({length: n}, (_, i) => [lows[i], highs[i]]),
-                    backgroundColor: dirColors, borderColor: dirColors, borderWidth: 1,
-                    barPercentage: 0.15, categoryPercentage: 0.9, order: 1,
-                });
+                // Single bar dataset for the body only. The high-low wick is
+                // drawn by a canvas plugin (registered below) instead of a
+                // second overlaid bar dataset - two bar datasets sharing the
+                // same category axis get width-divided by Chart.js's default
+                // grouping behavior regardless of barPercentage, which is why
+                // the previous version rendered both the "wick" and "body"
+                // as similarly-thin slivers instead of a proper candle.
                 datasets.push({
                     type: 'bar', label: 'Open/Close', data: Array.from({length: n}, (_, i) => [Math.min(opens[i], prices[i]), Math.max(opens[i], prices[i])]),
                     backgroundColor: dirColors, borderColor: dirColors, borderWidth: 1,
-                    barPercentage: 0.7, categoryPercentage: 0.9, order: 1,
+                    barPercentage: 0.7, categoryPercentage: 0.85, order: 1,
                 });
+                candleWickPoints = Array.from({length: n}, (_, i) => ({ low: lows[i], high: highs[i], color: dirColors[i] }));
             } else {
                 datasets.push({ label: mode === 'stock' ? 'Close Price (EGP)' : 'Sector Index', data: prices, borderColor: '#38bdf8', borderWidth: 2, tension: 0.1, pointRadius: 2, order: 2 });
             }
@@ -1303,17 +1307,50 @@
                 if (support != null) datasets.push({ label: `Support (${support})`, data: Array(n).fill(support), borderColor: '#22c55e', borderWidth: 1.5, borderDash: [3, 3], pointRadius: 0, order: 4 });
             }
 
+            if (!window.__candleWickPluginRegistered) {
+                Chart.register({
+                    id: 'candleWicks',
+                    afterDatasetsDraw(chart) {
+                        const wickData = chart.$candleWickData;
+                        if (!wickData || !wickData.points || !wickData.points.length) return;
+                        const meta = chart.getDatasetMeta(wickData.bodyDatasetIndex);
+                        if (!meta || meta.hidden || !meta.xScale || !meta.yScale) return;
+                        const { ctx } = chart;
+                        const xScale = meta.xScale, yScale = meta.yScale;
+                        ctx.save();
+                        wickData.points.forEach((p, i) => {
+                            if (typeof p.low !== 'number' || typeof p.high !== 'number') return;
+                            const x = xScale.getPixelForValue(i);
+                            const yLow = yScale.getPixelForValue(p.low);
+                            const yHigh = yScale.getPixelForValue(p.high);
+                            ctx.strokeStyle = p.color;
+                            ctx.lineWidth = 1.3;
+                            ctx.beginPath();
+                            ctx.moveTo(x, yHigh);
+                            ctx.lineTo(x, yLow);
+                            ctx.stroke();
+                        });
+                        ctx.restore();
+                    },
+                });
+                window.__candleWickPluginRegistered = true;
+            }
+
             chartInstance = new Chart(ctx, {
                 type: 'line', data: { labels, datasets },
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     scales: {
-                        x: { grid: { color: gridCol }, ticks: { color: textCol, maxTicksLimit: 12 }, grouped: false },
+                        x: { grid: { color: gridCol }, ticks: { color: textCol, maxTicksLimit: 12 } },
                         y: { grid: { color: gridCol }, ticks: { color: textCol } }
                     },
                     plugins: { legend: { labels: { color: textCol, font: { weight: 'bold' } } } }
                 }
             });
+            if (candleWickPoints) {
+                chartInstance.$candleWickData = { bodyDatasetIndex: 0, points: candleWickPoints };
+                chartInstance.update();
+            }
         }
 
         // Portfolio & Risk Engine
