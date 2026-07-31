@@ -164,7 +164,13 @@ def export_market_matrix():
     dbm = DatabaseManager()
     sector_map = dbm.get_sector_map()
 
-    buys, exits, top10, closed_trades, fin_stmt, sectors, breakout_watchlist = matrix.analyze_market()
+    # PRIVACY: portfolio_risk (position sizes, sector/ticker concentration %)
+    # is derived from real account holdings, same trust boundary as
+    # cash_balance/financial_statement/closed_trades above — intentionally
+    # not unpacked into a used variable so it can't accidentally end up in
+    # the public payload below. The desktop app (app_gui.py), which reads
+    # its own private local DB, is the correct place to display this.
+    buys, exits, top10, closed_trades, fin_stmt, sectors, breakout_watchlist, _portfolio_risk = matrix.analyze_market()
     last_data_date = dbm.get_latest_market_date()
 
     # PRIVACY: strip the cash-derived "Suggested Shares (1% Risk)" column
@@ -186,6 +192,11 @@ def export_market_matrix():
         "top_10": top10,
         "breakout_watchlist": breakout_watchlist,
         "chart_history": chart_history,
+        # Public, non-sensitive (sector classification, not account data) -
+        # lets the web client compute its OWN portfolio concentration risk
+        # from its own privately-stored positions, without the server ever
+        # seeing position sizes. See portfolio_risk privacy note above.
+        "ticker_sectors": sector_map,
     }
 
     print("🧹 Sanitizing data payload (removing NaN / Infinity)...")

@@ -134,6 +134,17 @@ CHART_HISTORY_DAYS = 365
 # multi-year history on every single "Execute Matrix" run.
 MATRIX_LOOKBACK_DAYS = 400
 
+# --- Portfolio concentration risk (analyze_market's portfolio_risk output) ---
+# Flags when too much of the account sits in one sector or one ticker -
+# a common blind spot that per-stock risk metrics (ATR stops, Sortino, etc.)
+# don't catch on their own, since each stock can look individually fine
+# while the account as a whole is one bad sector-day away from a large loss.
+PORTFOLIO_RISK_THRESHOLDS = {
+    "sector_concentration_warn_pct": 35.0,   # single sector > this % of total equity
+    "position_concentration_warn_pct": 25.0,  # single ticker > this % of total equity
+    "min_positions_for_warning": 2,          # don't warn a 1-stock starter portfolio for being "concentrated"
+}
+
 
 def get_logger(name: str) -> logging.Logger:
     """Return a process-wide logger writing UTF-8 to ``quant_app.log``."""

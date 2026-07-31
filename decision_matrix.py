@@ -39,6 +39,7 @@ from config import (
     CONFIDENCE_FULL_TRUST_BARS,
     MAX_WORKERS,
     MATRIX_LOOKBACK_DAYS,
+    PORTFOLIO_RISK_THRESHOLDS,
     get_logger,
 )
 
@@ -81,6 +82,70 @@ class DecisionMatrix:
         self.dbm = DatabaseManager()
         self.qe = QuantitativeEngine()
 
+    @staticmethod
+    def _compute_portfolio_risk(total_equity, sector_market_value, position_market_value):
+        """Flag concentration risk: too much of the account in one sector or
+        one ticker. Per-stock metrics (ATR stops, Sortino-weighted patterns,
+        etc.) all look fine in isolation even when the account as a whole is
+        one bad sector day away from a large loss - this is the check that
+        catches that blind spot.
+        """
+        n_positions = len(position_market_value)
+        result = {
+            "total_equity": round(total_equity, 2),
+            "sector_allocations": [],
+            "position_allocations": [],
+            "warnings": [],
+        }
+        if total_equity <= 0 or n_positions == 0:
+            return result
+
+        sector_alloc = sorted(
+            (
+                {
+                    "sector": sec,
+                    "value": round(val, 2),
+                    "pct_of_equity": round((val / total_equity) * 100, 1),
+                }
+                for sec, val in sector_market_value.items()
+            ),
+            key=lambda r: r["pct_of_equity"],
+            reverse=True,
+        )
+        position_alloc = sorted(
+            (
+                {
+                    "ticker": tkr,
+                    "value": round(val, 2),
+                    "pct_of_equity": round((val / total_equity) * 100, 1),
+                }
+                for tkr, val in position_market_value.items()
+            ),
+            key=lambda r: r["pct_of_equity"],
+            reverse=True,
+        )
+        result["sector_allocations"] = sector_alloc
+        result["position_allocations"] = position_alloc
+
+        if n_positions >= PORTFOLIO_RISK_THRESHOLDS["min_positions_for_warning"]:
+            sec_warn_pct = PORTFOLIO_RISK_THRESHOLDS["sector_concentration_warn_pct"]
+            pos_warn_pct = PORTFOLIO_RISK_THRESHOLDS["position_concentration_warn_pct"]
+            if sector_alloc and sector_alloc[0]["pct_of_equity"] >= sec_warn_pct:
+                top = sector_alloc[0]
+                result["warnings"].append(
+                    f"⚠️ {top['pct_of_equity']}% of your account equity is in "
+                    f"{top['sector']} alone — a sector-wide move would hit "
+                    f"most of your portfolio at once."
+                )
+            if position_alloc and position_alloc[0]["pct_of_equity"] >= pos_warn_pct:
+                top = position_alloc[0]
+                result["warnings"].append(
+                    f"⚠️ {top['pct_of_equity']}% of your account equity is in "
+                    f"{top['ticker']} alone — a single-stock stop-out would "
+                    f"hurt more than your normal 1%-per-trade risk sizing implies."
+                )
+        return result
+
     def analyze_market(self, progress_callback=None):
         # Was an unbounded pull of EVERY bar ever ingested, for every ticker,
         # on every single analysis run. Nothing in the scoring below looks
@@ -102,6 +167,8 @@ class DecisionMatrix:
 
         total_invested = 0.0
         total_market_value = 0.0
+        sector_market_value: dict = {}
+        position_market_value: dict = {}
         processed_owned_tickers = set()
 
         total = len(tickers)
@@ -117,6 +184,12 @@ class DecisionMatrix:
                 "Realized P&L from Closed Trades (EGP)": 0.0,
                 "Total Account Equity / Net Worth (EGP)": round(cash_balance, 2),
             }
+            empty_risk = {
+                "total_equity": round(cash_balance, 2),
+                "sector_allocations": [],
+                "position_allocations": [],
+                "warnings": [],
+            }
             return (
                 buy_recommendations,
                 exit_strategies,
@@ -125,6 +198,7 @@ class DecisionMatrix:
                 empty_stmt,
                 [],
                 breakout_watchlist,
+                empty_risk,
             )
 
         eligible = []
@@ -190,6 +264,10 @@ class DecisionMatrix:
                     total_invested += invested_val
                     total_market_value += curr_val
                     processed_owned_tickers.add(norm_ticker)
+
+                    sec = sector_map.get(norm_ticker, sector_map.get(ticker, "General / Diversified"))
+                    sector_market_value[sec] = sector_market_value.get(sec, 0.0) + curr_val
+                    position_market_value[norm_ticker] = position_market_value.get(norm_ticker, 0.0) + curr_val
 
                     pnl_egp = curr_val - invested_val
                     pnl_pct = (
@@ -631,6 +709,10 @@ class DecisionMatrix:
         realized_pnl_total = sum(t["Realized P&L (EGP)"] for t in closed_trades)
         total_equity = cash_balance + total_market_value
 
+        portfolio_risk = self._compute_portfolio_risk(
+            total_equity, sector_market_value, position_market_value
+        )
+
         financial_statement = {
             "Cash Balance (EGP)": round(cash_balance, 2),
             "Stock Portfolio Cost Basis (EGP)": round(total_invested, 2),
@@ -656,4 +738,5 @@ class DecisionMatrix:
             financial_statement,
             sector_summary,
             breakout_watchlist,
+            portfolio_risk,
         )

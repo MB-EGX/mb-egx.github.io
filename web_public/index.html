@@ -212,6 +212,7 @@
             <span class="hidden md:inline text-bordercol">|</span>
             <span>🏛️ <span id="lbl-equity">Total Account Equity:</span> <strong class="text-amber-400">0.00 EGP</strong></span>
         </div>
+        <div id="concentration-warning" style="display:none;" class="bg-[#3d2b0f] border border-amber-600 text-amber-300 text-xs font-semibold px-4 py-2 rounded-lg text-center"></div>
 
         <!-- Live Filters Bar -->
         <div class="bg-panelbg p-3 rounded-xl border border-bordercol shadow flex flex-col lg:flex-row items-center gap-3">
@@ -1478,6 +1479,61 @@
                 <div class="flex justify-between py-2 border-b border-bordercol"><span>Realized P&L from Closed Trades (EGP):</span> <strong class="${realizedPnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${realizedPnl.toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></div>
                 <div class="flex justify-between py-2 bg-panelbg px-3 rounded text-base"><span>Total Account Equity (EGP):</span> <strong class="text-amber-400">${totalEquity.toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></div>
             `;
+            renderConcentrationRisk(stockVal, totalEquity);
+        }
+
+        // Portfolio concentration risk - same thresholds/logic as
+        // decision_matrix.py's _compute_portfolio_risk, but computed
+        // entirely client-side from the visitor's own locally-stored
+        // portfolio. The server-side export deliberately does NOT publish
+        // this (it would leak real position sizes on a public site) - see
+        // the privacy note in export_json.py. ticker_sectors is the one
+        // piece of public data this needs (sector classification isn't
+        // account data), everything else comes from userPortfolio.
+        const SECTOR_CONCENTRATION_WARN_PCT = 35.0;
+        const POSITION_CONCENTRATION_WARN_PCT = 25.0;
+        const MIN_POSITIONS_FOR_WARNING = 2;
+        function renderConcentrationRisk(stockVal, totalEquity) {
+            const el = document.getElementById('concentration-warning');
+            if (!el) return;
+            const sectorMap = (globalData && globalData.ticker_sectors) || {};
+            const sectorVal = {}, positionVal = {};
+            userPortfolio.forEach(pos => {
+                let cp = pos.buyPrice;
+                if (globalData && globalData.market_matrix) {
+                    const m = globalData.market_matrix.find(x => x.Ticker === pos.ticker);
+                    if (m) cp = m["Current Price"];
+                }
+                const val = cp * pos.shares;
+                const sec = sectorMap[pos.ticker] || 'General / Diversified';
+                sectorVal[sec] = (sectorVal[sec] || 0) + val;
+                positionVal[pos.ticker] = (positionVal[pos.ticker] || 0) + val;
+            });
+            const nPositions = Object.keys(positionVal).length;
+            const warnings = [];
+            if (totalEquity > 0 && nPositions >= MIN_POSITIONS_FOR_WARNING) {
+                const topSector = Object.entries(sectorVal).sort((a, b) => b[1] - a[1])[0];
+                const topPosition = Object.entries(positionVal).sort((a, b) => b[1] - a[1])[0];
+                if (topSector) {
+                    const pct = (topSector[1] / totalEquity) * 100;
+                    if (pct >= SECTOR_CONCENTRATION_WARN_PCT) {
+                        warnings.push(`⚠️ ${pct.toFixed(1)}% of your account equity is in ${topSector[0]} alone — a sector-wide move would hit most of your portfolio at once.`);
+                    }
+                }
+                if (topPosition) {
+                    const pct = (topPosition[1] / totalEquity) * 100;
+                    if (pct >= POSITION_CONCENTRATION_WARN_PCT) {
+                        warnings.push(`⚠️ ${pct.toFixed(1)}% of your account equity is in ${topPosition[0]} alone — a single-stock stop-out would hurt more than your normal 1%-per-trade risk sizing implies.`);
+                    }
+                }
+            }
+            if (warnings.length > 0) {
+                el.textContent = warnings.join('   |   ');
+                el.style.display = 'block';
+            } else {
+                el.textContent = '';
+                el.style.display = 'none';
+            }
         }
 
         function renderPortfolio() {

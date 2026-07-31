@@ -1159,14 +1159,14 @@ class IngestionWorker(QThread):
 
 class AnalysisWorker(QThread):
     progress_signal = pyqtSignal(int, str)
-    results_signal = pyqtSignal(list, list, dict, list, dict, list, list)
+    results_signal = pyqtSignal(list, list, dict, list, dict, list, list, dict)
 
     def run(self):
         matrix = DecisionMatrix()
-        buys, exits, top10, closed, fin_stmt, sectors, breakout_watchlist = matrix.analyze_market(
+        buys, exits, top10, closed, fin_stmt, sectors, breakout_watchlist, portfolio_risk = matrix.analyze_market(
             progress_callback=lambda pct, msg: self.progress_signal.emit(pct, msg)
         )
-        self.results_signal.emit(buys, exits, top10, closed, fin_stmt, sectors, breakout_watchlist)
+        self.results_signal.emit(buys, exits, top10, closed, fin_stmt, sectors, breakout_watchlist, portfolio_risk)
 
 # =============================================================================
 # REDESIGNED FULL-SCREEN LOGIN DIALOG
@@ -1860,7 +1860,13 @@ class QuantDashboard(QMainWindow):
         
         self.lbl_status = QLabel("System Idle. Ready for processing.")
         self.lbl_status.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        
+
+        self.lbl_concentration_warning = QLabel("")
+        self.lbl_concentration_warning.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.lbl_concentration_warning.setStyleSheet("color: #f6ad55; font-weight: bold; font-size: 11px;")
+        self.lbl_concentration_warning.setWordWrap(True)
+        self.lbl_concentration_warning.hide()
+
         self.progress_bar = QProgressBar()
         self.progress_bar.setValue(0)
         self.progress_bar.setTextVisible(False)
@@ -1868,6 +1874,7 @@ class QuantDashboard(QMainWindow):
         
         msg_layout.addWidget(self.lbl_disclosure)
         msg_layout.addWidget(self.lbl_status)
+        msg_layout.addWidget(self.lbl_concentration_warning)
         msg_layout.addWidget(self.progress_bar)
         
         top_row.addLayout(msg_layout, stretch=2)
@@ -2368,13 +2375,21 @@ class QuantDashboard(QMainWindow):
         self.progress_bar.setValue(pct)
         self.lbl_status.setText(msg)
 
-    def populate_tables(self, buys, exits, top10, closed_trades, fin_stmt, sector_summary, breakout_watchlist=None):
+    def populate_tables(self, buys, exits, top10, closed_trades, fin_stmt, sector_summary, breakout_watchlist=None, portfolio_risk=None):
         breakout_watchlist = breakout_watchlist or []
         self._set_ui_controls_enabled(True)
         self.lbl_status.setText("✅ Quantitative signal matrix & sector heatmaps successfully updated.")
         self.refresh_account_header(fin_stmt)
         self.update_last_data_date_display()
         self._raw_buys_data = buys
+
+        warnings = (portfolio_risk or {}).get("warnings", [])
+        if warnings:
+            self.lbl_concentration_warning.setText(" | ".join(warnings))
+            self.lbl_concentration_warning.show()
+        else:
+            self.lbl_concentration_warning.clear()
+            self.lbl_concentration_warning.hide()
 
         if self.user_info:
             stats = self._compute_dealing_stats(exits, closed_trades, fin_stmt)
