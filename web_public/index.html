@@ -5,13 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- Security Headers -->
-    <meta http-equiv="X-Frame-Options" content="DENY">
+    <!-- NOTE: X-Frame-Options and the CSP "frame-ancestors" directive only take
+         effect when sent as real HTTP response headers — browsers ignore both
+         when set via a <meta> tag (see console warnings). GitHub Pages cannot
+         set custom HTTP headers, so if you need these enforced, serve this
+         site from a host that supports a headers config (Netlify, Vercel,
+         Cloudflare Pages) instead. Left out here since they do nothing as-is. -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
     <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
     <title>MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard</title>
-    <!-- Content Security Policy: allow trusted CDNs only, block inline scripts except explicit allowlist -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://www.gstatic.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.firebaseapp.com https://*.firebaseio.com https://api.ipify.org https://identitytoolkit.googleapis.com https://firestore.googleapis.com https://securetoken.googleapis.com; frame-ancestors 'none'; form-action 'self';">
+    <!-- Content Security Policy: allow trusted CDNs only, block inline scripts except explicit allowlist.
+         connect-src expanded to include the Google/Firebase endpoints that
+         Google Sign-In (identitytoolkit + apis.google.com), Firebase
+         Installations, and Firebase Analytics actually call — the previous
+         list was missing these, which is why signInWithPopup / the SDK's
+         background calls were being blocked and Google sign-in kept failing. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://www.gstatic.com https://apis.google.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.firebaseapp.com https://*.firebaseio.com https://api.ipify.org https://identitytoolkit.googleapis.com https://firestore.googleapis.com https://securetoken.googleapis.com https://firebaseinstallations.googleapis.com https://www.googleapis.com https://apis.google.com https://www.google-analytics.com https://region1.google-analytics.com https://region1.analytics.google.com; frame-src https://mb-egx-12d11.firebaseapp.com https://accounts.google.com; form-action 'self';">
     <!-- Anti-flash guard: keep the page invisible until the very end of body
          has been parsed (see the reveal script just before </body>). This is
          what actually prevents the dashboard from ever painting before the
