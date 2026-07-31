@@ -22,8 +22,8 @@
          list was missing these, which is why signInWithPopup / the SDK's
          background calls were being blocked and Google sign-in kept failing. -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://www.gstatic.com https://apis.google.com https://www.googletagmanager.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.firebaseapp.com https://*.firebaseio.com https://api.ipify.org https://identitytoolkit.googleapis.com https://firestore.googleapis.com https://securetoken.googleapis.com https://firebaseinstallations.googleapis.com https://firebase.googleapis.com https://www.googleapis.com https://apis.google.com https://www.googletagmanager.com https://www.google.com https://*.google-analytics.com https://*.analytics.google.com; frame-src https://mb-egx-12d11.firebaseapp.com https://accounts.google.com; form-action 'self';">
-    <!-- Inline favicon so the browser doesn't request /favicon.ico and get a 404 -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
+    <!-- MB-EGX logo used as the browser tab favicon -->
+    <link rel="icon" type="image/png" href="assets/mb-egx-logo.png">
     <!-- Anti-flash guard: keep the page invisible until the very end of body
          has been parsed (see the reveal script just before </body>). This is
          what actually prevents the dashboard from ever painting before the
@@ -759,7 +759,7 @@
     <div id="modal-analytics" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
         <div class="bg-panelbg border border-bordercol rounded-xl max-w-3xl w-full p-5 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
             <h3 class="text-base font-bold text-teal-400">📊 Usage Analytics</h3>
-            <p class="text-[11px] text-textmuted">Sessions and trading activity combined across the website (🌐) and the desktop app (🖥️). "Time on site" is approximate — measured via a 30-second heartbeat while a session is open. Trade Value = total EGP bought + sold; Portfolio Value = cash + open positions at cost.</p>
+            <p class="text-[11px] text-textmuted">Sessions and trading activity combined across the website (🌐) and the desktop app (🖥️). "Time on site" is approximate — measured from sign-in until the tab is switched away from or closed. Trade Value = total EGP bought + sold; Portfolio Value = cash + open positions at cost.</p>
             <div id="analytics-loading" class="text-xs text-textmuted">Loading session data…</div>
             <div id="analytics-summary" class="hidden grid grid-cols-3 gap-2 text-center">
                 <div class="bg-darkbg p-3 rounded border border-bordercol">
@@ -791,6 +791,21 @@
                     </thead>
                     <tbody id="analytics-tbody"></tbody>
                 </table>
+            </div>
+            <div class="flex justify-between items-center gap-3 flex-wrap">
+                <div class="flex items-center gap-2">
+                    <label class="text-[11px] text-textmuted">Delete session logs older than</label>
+                    <select id="cleanup-days" class="bg-darkbg border border-bordercol rounded px-2 py-1 text-[11px] text-textmain">
+                        <option value="30">30 days</option>
+                        <option value="60">60 days</option>
+                        <option value="90" selected>90 days</option>
+                        <option value="180">180 days</option>
+                    </select>
+                    <button onclick="cleanupOldSessions()" id="btn-cleanup-sessions" class="bg-rose-700 hover:bg-rose-600 text-white px-3 py-1.5 rounded font-bold text-[11px] transition">
+                        🧹 Clean Up Old Sessions
+                    </button>
+                </div>
+                <span id="cleanup-status" class="text-[11px] text-textmuted"></span>
             </div>
             <div class="flex justify-end">
                 <button onclick="closeModal('modal-analytics')" class="bg-slate-700 text-white px-4 py-2 rounded font-bold text-xs">Close</button>
@@ -2193,12 +2208,15 @@
 
         let _welcomedThisSession = false;
         let _currentSessionRef = null;
-        let _heartbeatTimer = null;
+        let _lastTouchAt = 0;
+        const TOUCH_MIN_INTERVAL_MS = 60000; // don't write more than once/minute even if the user rapidly tab-switches
 
-        function _touchSession() {
-            if (_currentSessionRef) {
-                _currentSessionRef.update({ lastSeen: firebase.firestore.FieldValue.serverTimestamp() }).catch(() => {});
-            }
+        function _touchSession(force) {
+            if (!_currentSessionRef) return;
+            const now = Date.now();
+            if (!force && (now - _lastTouchAt) < TOUCH_MIN_INTERVAL_MS) return;
+            _lastTouchAt = now;
+            _currentSessionRef.update({ lastSeen: firebase.firestore.FieldValue.serverTimestamp() }).catch(() => {});
         }
 
         function startSessionTracking(user) {
@@ -2214,28 +2232,87 @@
 
             if (analytics) analytics.logEvent('login', { method: 'firebase' });
 
-            if (_heartbeatTimer) clearInterval(_heartbeatTimer);
-            _heartbeatTimer = setInterval(() => {
-                if (document.visibilityState === 'visible') _touchSession();
-            }, 30000);
+            // No periodic heartbeat: writes only happen when the tab is
+            // actually hidden/closed (below), or when the session ends.
+            // This keeps write volume proportional to visit count instead
+            // of time-open, which is what fits inside Firestore's free-tier
+            // daily write quota at real user scale.
         }
 
         function endSessionTracking() {
-            _touchSession();
-            if (_heartbeatTimer) { clearInterval(_heartbeatTimer); _heartbeatTimer = null; }
+            _touchSession(true);
             _currentSessionRef = null;
         }
 
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'hidden') _touchSession();
         });
-        window.addEventListener('beforeunload', () => _touchSession());
+        window.addEventListener('pagehide', () => _touchSession(true));
+        window.addEventListener('beforeunload', () => _touchSession(true));
 
         function _formatDuration(totalSeconds) {
             if (!isFinite(totalSeconds) || totalSeconds < 0) return '—';
             const mins = Math.round(totalSeconds / 60);
             if (mins < 60) return `${mins}m`;
             return `${Math.floor(mins / 60)}h ${mins % 60}m`;
+        }
+
+        async function cleanupOldSessions() {
+            const days = parseInt(document.getElementById('cleanup-days').value, 10);
+            const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+            const confirmed = confirm(
+                `Delete all session logs older than ${days} days (before ${cutoff.toLocaleDateString()})?\n\n` +
+                `This only removes analytics/session history — it never touches cash, portfolio, or trade data.\n\n` +
+                `This cannot be undone.`
+            );
+            if (!confirmed) return;
+
+            const btn = document.getElementById('btn-cleanup-sessions');
+            const status = document.getElementById('cleanup-status');
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            // Safety cap per click: Spark's free tier allows 20,000 deletes/day
+            // for the WHOLE project. Capping a single cleanup run well under
+            // that (5,000) means even a couple of clicks in a day can't come
+            // close to exhausting the daily quota, and batches of 400 keep
+            // each Firestore batch-write comfortably under its own 500-op limit.
+            const RUN_CAP = 5000;
+            const BATCH_SIZE = 400;
+            let totalDeleted = 0;
+
+            try {
+                const cutoffTs = firebase.firestore.Timestamp.fromDate(cutoff);
+                while (totalDeleted < RUN_CAP) {
+                    status.textContent = `Scanning… ${totalDeleted} deleted so far`;
+                    const snap = await db.collection('sessions')
+                        .where('start', '<', cutoffTs)
+                        .limit(BATCH_SIZE)
+                        .get();
+
+                    if (snap.empty) break;
+
+                    const batch = db.batch();
+                    snap.forEach(doc => batch.delete(doc.ref));
+                    await batch.commit();
+
+                    totalDeleted += snap.size;
+                    if (snap.size < BATCH_SIZE) break; // fewer than a full page left = done
+                }
+
+                status.textContent = totalDeleted === 0
+                    ? 'No session logs older than the selected age were found.'
+                    : `✅ Deleted ${totalDeleted} old session log(s).` +
+                      (totalDeleted >= RUN_CAP ? ' More remain — click again to continue.' : '');
+
+                if (totalDeleted > 0) openAnalyticsModal(); // refresh the stats/table to reflect the cleanup
+            } catch (err) {
+                console.error('Session cleanup failed:', err);
+                status.textContent = '⚠️ Cleanup failed — check the console (this usually means the Firestore rules need a delete permission added for sessions).';
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
         }
 
         async function openAnalyticsModal() {
