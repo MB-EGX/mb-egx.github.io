@@ -402,12 +402,37 @@
         async function handleGoogleSignIn() {
             clearAuthError();
             const provider = new firebase.auth.GoogleAuthProvider();
+            // NOTE: signInWithPopup is unreliable on mobile browsers — mobile
+            // Chrome/Safari frequently block the popup outright, or block the
+            // third-party storage access the popup needs to hand its result
+            // back to this tab. That's the most likely cause of "Google
+            // sign-in failed" reports from mobile. Redirect auth avoids
+            // popups/cross-window messaging entirely. We stash the consent
+            // checkbox state first since the page fully reloads on return.
             try {
-                const result = await auth.signInWithPopup(provider);
+                sessionStorage.setItem(
+                    'mbegx_consent_checked',
+                    document.getElementById('consent-checkbox').checked ? '1' : '0'
+                );
+                await auth.signInWithRedirect(provider);
+                // Execution stops here — browser navigates to Google, then
+                // back to this page, where handleGoogleRedirectResult() below
+                // picks up the result on load.
+            } catch (err) {
+                console.error('Google sign-in (redirect) failed to start:', err.code, err);
+                showAuthError(err.message);
+            }
+        }
+
+        async function handleGoogleRedirectResult() {
+            try {
+                const result = await auth.getRedirectResult();
+                if (!result || !result.user) return; // not returning from a redirect
                 const isNewUser = !!(result.additionalUserInfo && result.additionalUserInfo.isNewUser);
 
                 if (isNewUser) {
-                    if (!document.getElementById('consent-checkbox').checked) {
+                    const consentWasChecked = sessionStorage.getItem('mbegx_consent_checked') === '1';
+                    if (!consentWasChecked) {
                         await auth.signOut();
                         triggerConsentShake();
                         showAuthError("You must agree to the legal terms to create a new account.");
@@ -420,9 +445,17 @@
                     }, { merge: true });
                 }
             } catch (err) {
+                // Logging the real Firebase error code (auth/unauthorized-domain,
+                // auth/popup-blocked, etc.) so future field reports are
+                // actually diagnosable from the console instead of a generic
+                // "failed" message with no trail.
+                console.error('Google sign-in (redirect result) failed:', err.code, err);
                 showAuthError(err.message);
+            } finally {
+                sessionStorage.removeItem('mbegx_consent_checked');
             }
         }
+        handleGoogleRedirectResult();
 
         async function handlePasswordReset() {
             clearAuthError();

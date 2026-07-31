@@ -2125,27 +2125,69 @@
             if (!checkAuthRateLimit()) return;
             clearAuthError();
             const provider = new firebase.auth.GoogleAuthProvider();
+            // NOTE: signInWithPopup is unreliable on mobile browsers — mobile
+            // Chrome/Safari frequently block the popup window outright, or
+            // block the third-party storage access the popup needs to hand
+            // the result back to this tab, which surfaces as a generic
+            // "Google sign-in failed" error with no useful detail. Redirect
+            // auth (navigate to accounts.google.com, then back to this same
+            // page) avoids popups/cross-window messaging entirely and is
+            // what Firebase/Google recommend for mobile. We persist the
+            // consent-checkbox state across the redirect since the page
+            // fully reloads when the user comes back.
             try {
-                const result = await auth.signInWithPopup(provider);
-                const isNewUser = !!(result.additionalUserInfo && result.additionalUserInfo.isNewUser);
-                if (isNewUser) {
-                    if (!document.getElementById('consent-checkbox').checked) {
-                        await auth.signOut();
-                        showAuthError("You must agree to the legal terms to create an account.");
-                        return;
-                    }
-                    const ip = await fetchClientIp();
-                    await db.collection('users').doc(result.user.uid).set({
-                        cash: 0, portfolio: [], history: [],
-                        ...buildConsentFields(ip),
-                    }, { merge: true });
-                }
-                resetAuthRateLimit();
+                sessionStorage.setItem(
+                    'mbegx_consent_checked',
+                    document.getElementById('consent-checkbox').checked ? '1' : '0'
+                );
+                await auth.signInWithRedirect(provider);
+                // Execution stops here — the browser navigates away. The
+                // result is picked up by handleGoogleRedirectResult() below
+                // on page load after Google redirects back.
             } catch (err) {
+                console.error('Google sign-in (redirect) failed to start:', err && err.code, err);
                 recordAuthAttempt();
                 showAuthError("Google sign-in failed. Please try again.");
             }
         }
+
+        // Resolves the pending signInWithRedirect() above, if any. Safe to
+        // call unconditionally on every page load — resolves to a null
+        // result when the user didn't just come back from a Google redirect.
+        async function handleGoogleRedirectResult() {
+            try {
+                const result = await auth.getRedirectResult();
+                if (result && result.user) {
+                    const isNewUser = !!(result.additionalUserInfo && result.additionalUserInfo.isNewUser);
+                    if (isNewUser) {
+                        const consentWasChecked = sessionStorage.getItem('mbegx_consent_checked') === '1';
+                        if (!consentWasChecked) {
+                            await auth.signOut();
+                            showAuthError("You must agree to the legal terms to create an account.");
+                            return;
+                        }
+                        const ip = await fetchClientIp();
+                        await db.collection('users').doc(result.user.uid).set({
+                            cash: 0, portfolio: [], history: [],
+                            ...buildConsentFields(ip),
+                        }, { merge: true });
+                    }
+                    resetAuthRateLimit();
+                }
+            } catch (err) {
+                // Log the real Firebase error code (auth/unauthorized-domain,
+                // auth/popup-blocked, etc.) — this used to be discarded
+                // entirely, which made field reports like "Google sign-in
+                // just fails" impossible to diagnose. Check this console
+                // output first when triaging a report.
+                console.error('Google sign-in (redirect result) failed:', err && err.code, err);
+                recordAuthAttempt();
+                showAuthError("Google sign-in failed. Please try again.");
+            } finally {
+                sessionStorage.removeItem('mbegx_consent_checked');
+            }
+        }
+        handleGoogleRedirectResult();
 
         async function handleSignOut() {
             // Close any open modal first — an open modal can sit visually on top of
