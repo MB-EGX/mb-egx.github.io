@@ -243,6 +243,7 @@ class QuantitativeEngine:
         ema_26 = df["close"].ewm(span=min(26, n), adjust=False).mean()
         df["macd"] = ema_12 - ema_26
         df["macd_signal"] = df["macd"].ewm(span=min(9, n), adjust=False).mean()
+        df["macd_histogram"] = df["macd"] - df["macd_signal"]
 
         high_low = df["high"] - df["low"]
         high_close = (df["high"] - df["close"].shift()).abs()
@@ -258,6 +259,8 @@ class QuantitativeEngine:
         bb_std = df["close"].rolling(window=min(20, n), min_periods=1).std().fillna(0)
         df["bb_upper"] = bb_mean + (2 * bb_std)
         df["bb_lower"] = bb_mean - (2 * bb_std)
+        bb_range = (df["bb_upper"] - df["bb_lower"]).replace(0, np.nan)
+        df["bb_percent_b"] = ((df["close"] - df["bb_lower"]) / bb_range).fillna(0.5)
 
         kc_mean = df["ema_20"]
         df["kc_upper"] = kc_mean + (1.5 * df["atr_14"])

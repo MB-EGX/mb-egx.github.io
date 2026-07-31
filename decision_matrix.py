@@ -294,6 +294,9 @@ class DecisionMatrix:
                 cmf = latest.get("cmf_20", 0.0)
                 is_squeezed = latest.get("bb_kc_squeeze", False)
                 avg_volume_20 = latest.get("volume_avg", 0.0)
+                macd_hist = latest.get("macd_histogram", 0.0)
+                prev_macd_hist = prev.get("macd_histogram", macd_hist)
+                bb_pct_b = latest.get("bb_percent_b", 0.5)
                 trend_latest = latest.get("trend_class", "Consolidation / Neutral")
                 atr = latest.get("atr_14", curr_price * 0.02)
                 if pd.isna(atr) or atr == 0:
@@ -316,6 +319,16 @@ class DecisionMatrix:
                     else 50.0
                 )
                 pivots = self.qe.compute_pivot_points(df_ind)
+                if macd_hist > 0 and prev_macd_hist <= 0:
+                    macd_state = "🟢 Bullish Cross"
+                elif macd_hist < 0 and prev_macd_hist >= 0:
+                    macd_state = "🔴 Bearish Cross"
+                elif macd_hist > 0:
+                    macd_state = "Bullish"
+                elif macd_hist < 0:
+                    macd_state = "Bearish"
+                else:
+                    macd_state = "Neutral"
 
                 # -------------------------------------------------------------------------
                 # Action classification (now split into 3 BREAKOUT BUY labels)
@@ -557,6 +570,9 @@ class DecisionMatrix:
                         "RSI-14": round(rsi, 1),
                         "ADX-14": round(adx, 1),
                         "Vol Z-Score": round(vol_z, 2),
+                        "MACD Signal": macd_state,
+                        "MACD Histogram": round(float(macd_hist), 4),
+                        "Bollinger %B": round(float(bb_pct_b), 3),
                         "Avg Volume (20D)": int(avg_volume_20),
                         "Data Confidence": data_conf_tier,
                     }

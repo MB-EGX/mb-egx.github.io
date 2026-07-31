@@ -494,6 +494,9 @@ THEME_DARK = """
         background-color: #3198dc;
         border: 1px solid #93ccff;
     }
+    QCheckBox { color: #e2e2e8; font-weight: bold; font-size: 12px; spacing: 6px; }
+    QCheckBox::indicator { width: 14px; height: 14px; border-radius: 4px; border: 1px solid #2d3748; background-color: #0f1115; }
+    QCheckBox::indicator:checked { background-color: #3198dc; border: 1px solid #93ccff; }
     QLabel {
         color: #e2e2e8;
     }
@@ -536,6 +539,9 @@ THEME_LIGHT = """
     QRadioButton { color: #1a202c; font-weight: bold; font-size: 12px; spacing: 6px; }
     QRadioButton::indicator { width: 14px; height: 14px; border-radius: 7px; border: 1px solid #a0aec0; background-color: #ffffff; }
     QRadioButton::indicator:checked { background-color: #2b6cb0; border: 1px solid #2b6cb0; }
+    QCheckBox { color: #1a202c; font-weight: bold; font-size: 12px; spacing: 6px; }
+    QCheckBox::indicator { width: 14px; height: 14px; border-radius: 4px; border: 1px solid #a0aec0; background-color: #ffffff; }
+    QCheckBox::indicator:checked { background-color: #2b6cb0; border: 1px solid #2b6cb0; }
     QLabel { color: #1a202c; }
     QScrollArea, QScrollArea > QWidget, QScrollArea > QWidget > QWidget { background-color: #f8fafc; border: none; }
     QProgressBar { border: none; background-color: rgba(0,0,0,0.1); border-radius: 2px; height: 4px; max-height: 4px; }
@@ -567,6 +573,9 @@ THEME_BLUE = """
     QRadioButton { color: #f8fafc; font-weight: bold; font-size: 12px; spacing: 6px; }
     QRadioButton::indicator { width: 14px; height: 14px; border-radius: 7px; border: 1px solid #475569; background-color: #0f172a; }
     QRadioButton::indicator:checked { background-color: #0284c7; border: 1px solid #38bdf8; }
+    QCheckBox { color: #f8fafc; font-weight: bold; font-size: 12px; spacing: 6px; }
+    QCheckBox::indicator { width: 14px; height: 14px; border-radius: 4px; border: 1px solid #475569; background-color: #0f172a; }
+    QCheckBox::indicator:checked { background-color: #0284c7; border: 1px solid #38bdf8; }
     QLabel { color: #e2e8f0; }
     QScrollArea, QScrollArea > QWidget, QScrollArea > QWidget > QWidget { background-color: #0f172a; border: none; }
     QProgressBar { border: none; background-color: rgba(255,255,255,0.1); border-radius: 2px; height: 4px; max-height: 4px; }
@@ -598,6 +607,9 @@ THEME_BLUSH_ROSE = """
     QRadioButton { color: #500724; font-weight: bold; font-size: 12px; spacing: 6px; }
     QRadioButton::indicator { width: 14px; height: 14px; border-radius: 7px; border: 1px solid #f472b6; background-color: #ffffff; }
     QRadioButton::indicator:checked { background-color: #ec4899; border: 1px solid #ec4899; }
+    QCheckBox { color: #500724; font-weight: bold; font-size: 12px; spacing: 6px; }
+    QCheckBox::indicator { width: 14px; height: 14px; border-radius: 4px; border: 1px solid #f472b6; background-color: #ffffff; }
+    QCheckBox::indicator:checked { background-color: #ec4899; border: 1px solid #ec4899; }
     QLabel { color: #500724; }
     QScrollArea, QScrollArea > QWidget, QScrollArea > QWidget > QWidget { background-color: #fdf2f8; border: none; }
     QProgressBar { border: none; background-color: rgba(0,0,0,0.05); border-radius: 2px; height: 4px; max-height: 4px; }
@@ -629,6 +641,9 @@ THEME_VELVET_ROSE = """
     QRadioButton { color: #fff1f2; font-weight: bold; font-size: 12px; spacing: 6px; }
     QRadioButton::indicator { width: 14px; height: 14px; border-radius: 7px; border: 1px solid #9f1239; background-color: #20131a; }
     QRadioButton::indicator:checked { background-color: #e11d48; border: 1px solid #fb7185; }
+    QCheckBox { color: #ffe4e6; font-weight: bold; font-size: 12px; spacing: 6px; }
+    QCheckBox::indicator { width: 14px; height: 14px; border-radius: 4px; border: 1px solid #9f1239; background-color: #20131a; }
+    QCheckBox::indicator:checked { background-color: #e11d48; border: 1px solid #fb7185; }
     QLabel { color: #ffe4e6; }
     QScrollArea, QScrollArea > QWidget, QScrollArea > QWidget > QWidget { background-color: #20131a; border: none; }
     QProgressBar { border: none; background-color: rgba(255,255,255,0.1); border-radius: 2px; height: 4px; max-height: 4px; }
@@ -669,14 +684,26 @@ class MatrixTableModel(QAbstractTableModel):
             ("RSI-14", "14-period Relative Strength Index"),
             ("ADX-14", "14-period trend-strength index"),
             ("Vol Z-Score", "Rolling 20-day Volume Standard Deviation anomaly (Z >= 1.5 indicates institutional influx)"),
+            ("MACD Signal", "Momentum direction/crossover state from the 12/26/9 MACD"),
+            ("MACD Hist.", "MACD histogram value (MACD line minus signal line)"),
+            ("Bollinger %B", "Where price sits within the 20-period Bollinger Bands (0 = lower band, 1 = upper band)"),
             ("Avg Vol (20D)", "20-day average traded volume (shares)"),
             ("Data Conf.", "How much real history backs these numbers"),
+            ("Take-Profit", "Suggested take-profit target (pattern-match or ATR-floor based)"),
+            ("R1", "Nearest pivot resistance (from last completed week's H/L/C)"),
+            ("R2", "Second pivot resistance level"),
+            ("R3", "Third (furthest) pivot resistance level"),
+            ("S1", "Nearest pivot support (from last completed week's H/L/C)"),
+            ("S2", "Second pivot support level"),
+            ("S3", "Third (furthest) pivot support level"),
         ]
         self._col_keys = [
             "Ticker", "Action", "Rank Score", "Current Price", "Target Entry (VWAP)",
             "Suggested Stop-Loss", "Suggested Shares (1% Risk)", "Projected Gain (%)",
             "Pattern Conf (%)", "Trend Class", "RSI-14", "ADX-14", "Vol Z-Score",
+            "MACD Signal", "MACD Histogram", "Bollinger %B",
             "Avg Volume (20D)", "Data Confidence",
+            "Take-Profit Target", "R1", "R2", "R3", "S1", "S2", "S3",
         ]
 
     def rowCount(self, parent=QModelIndex()):
@@ -700,6 +727,8 @@ class MatrixTableModel(QAbstractTableModel):
         col = index.column()
         key = self._col_keys[col]
         val = self._data[row].get(key, "")
+        if val is None:
+            val = "-"
         val_str = str(val)
 
         if role == Qt.ItemDataRole.DisplayRole:
@@ -707,7 +736,7 @@ class MatrixTableModel(QAbstractTableModel):
         elif role == Qt.ItemDataRole.TextAlignmentRole:
             if key in ["Action", "Data Confidence"]:
                 return int(Qt.AlignmentFlag.AlignCenter)
-            elif col >= 2 and col <= 8:
+            elif (2 <= col <= 8) or (14 <= col <= 15) or (18 <= col <= 24):
                 return int(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
             return int(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         elif role == Qt.ItemDataRole.BackgroundRole:

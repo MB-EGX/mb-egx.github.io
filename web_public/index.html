@@ -308,15 +308,17 @@
                             <th class="p-2.5 border border-darkbg" data-col="11">RSI-14</th>
                             <th class="p-2.5 border border-darkbg" data-col="12">ADX-14</th>
                             <th class="p-2.5 border border-darkbg" data-col="13">Vol Z-Score</th>
-                            <th class="p-2.5 border border-darkbg" data-col="14">Avg Vol (20D)</th>
-                            <th class="p-2.5 border border-darkbg font-sans" data-col="15">Data Conf.</th>
-                            <th class="p-2.5 border border-darkbg" data-col="16">Take-Profit</th>
-                            <th class="p-2.5 border border-darkbg" data-col="17">Resistance (R1/R2/R3)</th>
-                            <th class="p-2.5 border border-darkbg" data-col="18">Support (S1/S2/S3)</th>
+                            <th class="p-2.5 border border-darkbg font-sans" data-col="14">MACD</th>
+                            <th class="p-2.5 border border-darkbg" data-col="15">Bollinger %B</th>
+                            <th class="p-2.5 border border-darkbg" data-col="16">Avg Vol (20D)</th>
+                            <th class="p-2.5 border border-darkbg font-sans" data-col="17">Data Conf.</th>
+                            <th class="p-2.5 border border-darkbg" data-col="18">Take-Profit</th>
+                            <th class="p-2.5 border border-darkbg" data-col="19">Resistance (R1/R2/R3)</th>
+                            <th class="p-2.5 border border-darkbg" data-col="20">Support (S1/S2/S3)</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-matrix" class="divide-y divide-bordercol/50 text-xs">
-                        <tr><td colspan="19" class="p-8 text-center text-textmuted font-sans">Loading quantitative matrix...</td></tr>
+                        <tr><td colspan="21" class="p-8 text-center text-textmuted font-sans">Loading quantitative matrix...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -1642,6 +1644,8 @@
                     <td class="p-2.5 text-rose-400 font-semibold">${row["Suggested Stop-Loss"] || 0}</td><td class="p-2.5 text-textmain" title="Estimated from your own cash balance">${estimateSuggestedShares(row["Target Entry (VWAP)"], row["Suggested Stop-Loss"]).toLocaleString()}</td>
                     <td class="p-2.5 text-emerald-400 font-semibold">${row["Projected Gain (%)"] || 'N/A'}</td><td class="p-2.5 text-textmain">${row["Pattern Conf (%)"] || 'N/A'}</td><td class="p-2.5 font-sans text-textmuted">${escapeHtml(row["Trend Class"]) || '-'}</td>
                     <td class="p-2.5 text-textmain">${row["RSI-14"] || 0}</td><td class="p-2.5 text-textmain">${row["ADX-14"] || 0}</td><td class="p-2.5 text-textmain">${row["Vol Z-Score"] || 0}</td>
+                    <td class="p-2.5 font-sans text-textmain" title="Histogram: ${row["MACD Histogram"] ?? '-'}">${escapeHtml(row["MACD Signal"]) || '-'}</td>
+                    <td class="p-2.5 text-textmain">${row["Bollinger %B"] ?? '-'}</td>
                     <td class="p-2.5 text-textmuted">${row["Avg Volume (20D)"] ? row["Avg Volume (20D)"].toLocaleString() : 0}</td><td class="p-2.5 font-sans ${confStyle}">${row["Data Confidence"] || '-'}</td>
                     <td class="p-2.5 text-emerald-400 font-semibold">${row["Take-Profit Target"] ?? '-'}</td>
                     <td class="p-2.5 text-rose-400 text-[11px] leading-tight" title="52-week high: ${row["Resistance (52W High)"] ?? '-'}">R1 ${row["R1"] ?? '-'}<br>R2 ${row["R2"] ?? '-'}<br>R3 ${row["R3"] ?? '-'}</td>
@@ -1649,7 +1653,7 @@
                 `;
                 tbody.appendChild(tr);
             });
-            if (rowCount === 0) tbody.innerHTML = '<tr><td colspan="19" class="p-8 text-center text-textmuted font-sans">No stocks match your active filter criteria.</td></tr>';
+            if (rowCount === 0) tbody.innerHTML = '<tr><td colspan="21" class="p-8 text-center text-textmuted font-sans">No stocks match your active filter criteria.</td></tr>';
             applyColumnVisibility();
         }
 
@@ -1674,7 +1678,7 @@
                 populateSelects(); applyFilters(); renderSectors(); renderTop10(); renderBreakouts(); renderPortfolio(); renderHistory(); renderAccountBar();
             } catch (error) {
                 console.error("Failed to load market data:", error);
-                document.getElementById('tbody-matrix').innerHTML = `<tr><td colspan="19" class="p-8 text-center text-rose-400 font-sans">⚠️ Data temporarily unavailable. Please try refreshing in a moment.</td></tr>`;
+                document.getElementById('tbody-matrix').innerHTML = `<tr><td colspan="21" class="p-8 text-center text-rose-400 font-sans">⚠️ Data temporarily unavailable. Please try refreshing in a moment.</td></tr>`;
             }
         }
 
