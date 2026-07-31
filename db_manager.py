@@ -2,6 +2,7 @@ import hashlib
 import os
 import re
 import threading
+import time
 from pathlib import Path
 from config import DB_PATH, get_logger
 import duckdb
@@ -62,10 +63,35 @@ def clean_sector_name(sec: str) -> str:
     return s
 
 
+class DatabaseLockedError(RuntimeError):
+    """Raised when the DuckDB file is already open in another process
+    (most commonly: the MB-EGX desktop app is still running)."""
+
+
 class _ConnectionWrapper:
-    def __init__(self, db_path: str):
+    def __init__(self, db_path: str, retries: int = 3, retry_delay_seconds: float = 1.5):
         self._lock = threading.RLock()
-        self._conn = duckdb.connect(db_path)
+        last_err = None
+        for attempt in range(retries):
+            try:
+                self._conn = duckdb.connect(db_path)
+                return
+            except duckdb.IOException as e:
+                last_err = e
+                # DuckDB's lock-conflict message mentions "being used by
+                # another process" (or similar) - anything else (corrupt
+                # file, missing directory, etc.) shouldn't be silently
+                # retried and re-labeled as a lock issue.
+                if "another process" not in str(e) and "lock" not in str(e).lower():
+                    raise
+                if attempt < retries - 1:
+                    time.sleep(retry_delay_seconds)
+        raise DatabaseLockedError(
+            f"Can't open the database at '{db_path}' — it's already open in "
+            f"another program (usually the MB-EGX desktop app, if it's "
+            f"running). Close that app and run this again.\n\n"
+            f"Original error: {last_err}"
+        ) from last_err
 
     def cursor(self):
         return self._conn.cursor()
