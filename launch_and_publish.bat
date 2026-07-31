@@ -67,6 +67,40 @@ REM at a time. Running them truly in parallel causes:
 REM   IOException: Cannot open file ... being used by another process
 REM So we run publish.py to completion FIRST (it's quick when there's
 REM nothing new to ingest), then launch the app once the DB is free.
+REM
+REM That handles the app THIS script launches - but if an earlier run of
+REM this same .bat is still open in the background (the app keeps running
+REM after the .bat exits, so double-clicking this again while it's still
+REM up is easy to do by accident), publish.py will hit that exact lock
+REM error. Check for that specific case up front instead of discovering
+REM it partway through ingestion.
+echo Checking whether MB-EGX is already running...
+set "APP_ALREADY_RUNNING="
+set "PS_CHECK_SCRIPT=%TEMP%\mbegx_check_running_%RANDOM%.ps1"
+(
+    echo $procs = Get-CimInstance Win32_Process -Filter "Name='pythonw.exe' or Name='python.exe'" -ErrorAction SilentlyContinue
+    echo $match = $procs ^| Where-Object { $_.CommandLine -and $_.CommandLine -like '*app_gui.py*' } ^| Select-Object -First 1
+    echo if ^($match^) { Write-Output $match.ProcessId }
+) > "%PS_CHECK_SCRIPT%"
+
+for /f "usebackq delims=" %%P in (`powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "%PS_CHECK_SCRIPT%" 2^>nul`) do set "APP_ALREADY_RUNNING=%%P"
+del "%PS_CHECK_SCRIPT%" >nul 2>&1
+
+if defined APP_ALREADY_RUNNING (
+    echo.
+    echo ============================================
+    echo  [!] MB-EGX is already running ^(PID %APP_ALREADY_RUNNING%^).
+    echo      Close it first, then re-run this script -
+    echo      publish.py can't update the database while
+    echo      the app has it open.
+    echo ============================================
+    pause
+    exit /b 1
+)
+REM If the check above couldn't run (PowerShell unavailable/blocked,
+REM different Windows edition, etc.), APP_ALREADY_RUNNING just stays
+REM empty and we fall through to the normal flow below - publish.py's
+REM own retry-then-clear-error handling is the safety net either way.
 
 echo ============================================
 echo  Publishing latest data to the website...

@@ -31,6 +31,7 @@ import config  # noqa: F401
 
 from ingestion import IngestionPipeline
 from export_json import export_market_matrix
+from db_manager import DatabaseLockedError
 
 
 def run_git(*args):
@@ -68,4 +69,18 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except DatabaseLockedError as e:
+        # The single most common way publish.py fails: the MB-EGX desktop
+        # app is still open from an earlier session and DuckDB only allows
+        # one process to hold the database file at a time. This is a known,
+        # actionable situation — no traceback needed, just tell the person
+        # what to do.
+        print("\n" + "=" * 60)
+        print(" [!] Can't update the database — it's already open in")
+        print("     another program (usually the MB-EGX desktop app).")
+        print("     Close that app, then run publish.py again.")
+        print("=" * 60)
+        print(f"\n     Details: {e}")
+        sys.exit(1)
