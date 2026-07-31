@@ -1307,6 +1307,31 @@
                 if (support != null) datasets.push({ label: `Support (${support})`, data: Array(n).fill(support), borderColor: '#22c55e', borderWidth: 1.5, borderDash: [3, 3], pointRadius: 0, order: 4 });
             }
 
+            // Chart.js's bar controller defaults the value axis to a zero
+            // baseline (sensible for a normal count/amount bar chart, wrong
+            // here - a stock trading at 200-280 doesn't need axis space down
+            // to 0). Compute the actual visible range from every series that
+            // gets plotted (candle highs/lows or the price line, trendline,
+            // VWAP, and whichever S/R levels are currently shown) so nothing
+            // is clipped, then pad it modestly instead of anchoring at 0.
+            const rangeValues = [];
+            const collect = (arr) => { if (arr) arr.forEach(v => { if (typeof v === 'number' && isFinite(v)) rangeValues.push(v); }); };
+            if (isCandle) { collect(lows); collect(highs); } else { collect(prices); }
+            collect(trendVals);
+            if (mode === 'stock') collect(vwaps);
+            if (mode === 'stock' && showSr) {
+                if (pivots) { collect([pivots.r1, pivots.r2, pivots.r3, pivots.s1, pivots.s2, pivots.s3]); }
+                else { collect([resistance, support]); }
+            }
+            let yMin, yMax;
+            if (rangeValues.length > 0) {
+                const dataMin = Math.min(...rangeValues), dataMax = Math.max(...rangeValues);
+                const span = dataMax - dataMin;
+                const pad = span > 0 ? span * 0.08 : Math.max(dataMax * 0.05, 0.5);
+                yMin = Math.max(0, dataMin - pad);
+                yMax = dataMax + pad;
+            }
+
             if (!window.__candleWickPluginRegistered) {
                 Chart.register({
                     id: 'candleWicks',
@@ -1342,7 +1367,7 @@
                     responsive: true, maintainAspectRatio: false,
                     scales: {
                         x: { grid: { color: gridCol }, ticks: { color: textCol, maxTicksLimit: 12 } },
-                        y: { grid: { color: gridCol }, ticks: { color: textCol } }
+                        y: { grid: { color: gridCol }, ticks: { color: textCol }, beginAtZero: false, ...(yMin !== undefined ? { min: yMin, max: yMax } : {}) }
                     },
                     plugins: { legend: { labels: { color: textCol, font: { weight: 'bold' } } } }
                 }
