@@ -45,6 +45,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"></script>
     <!-- MB-EGX Alpha design system fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Hanken+Grotesk:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap">
@@ -1143,8 +1144,8 @@
         function populateSelects() {
             if (!globalData || !globalData.market_matrix) return;
             const tickers = globalData.market_matrix.map(row => row.Ticker).filter(Boolean).sort();
-            document.getElementById('portfolio-ticker-list').innerHTML = tickers.map(t => `<option value="${t}">`).join('');
-            document.getElementById('calc-ticker-select').innerHTML = '<option value="">-- Select Symbol --</option>' + tickers.map(t => `<option value="${t}">${t}</option>`).join('');
+            document.getElementById('portfolio-ticker-list').innerHTML = tickers.map(t => `<option value="${escapeHtml(t)}">`).join('');
+            document.getElementById('calc-ticker-select').innerHTML = '<option value="">-- Select Symbol --</option>' + tickers.map(t => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join('');
             
             // Populate Alphabet Quick Filter
             const alphaContainer = document.getElementById('alpha-container');
@@ -1189,10 +1190,10 @@
                     if (currentAlpha === '#') tickers = tickers.filter(t => !/^[A-Z]/i.test(t));
                     else tickers = tickers.filter(t => t.toUpperCase().startsWith(currentAlpha));
                 }
-                select.innerHTML = tickers.map(t => `<option value="${t}">${t}</option>`).join('');
+                select.innerHTML = tickers.map(t => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join('');
             } else {
                 const sectors = (globalData.sectors || []).map(s => s.Sector).filter(Boolean).sort();
-                select.innerHTML = sectors.map(s => `<option value="${s}">${s}</option>`).join('');
+                select.innerHTML = sectors.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
             }
             if (select.options.length > 0) plotChart();
         }
@@ -1704,9 +1705,9 @@
                     <td class="p-2.5 text-right text-textmain">${row["RSI-14"] ?? '-'}</td>
                     <td class="p-2.5 text-right text-textmain">${row["ADX-14"] ?? '-'}</td>
                     <td class="p-2.5 text-center">${squeezeLabel}</td>
-                    <td class="p-2.5 font-sans text-textmuted">${row["Volume Trend"] || '-'}</td>
-                    <td class="p-2.5 font-sans text-textmuted">${row["Trend Class"] || '-'}</td>
-                    <td class="p-2.5 font-sans text-textmuted whitespace-normal">${row.Signals || '-'}</td>
+                    <td class="p-2.5 font-sans text-textmuted">${escapeHtml(row["Volume Trend"]) || '-'}</td>
+                    <td class="p-2.5 font-sans text-textmuted">${escapeHtml(row["Trend Class"]) || '-'}</td>
+                    <td class="p-2.5 font-sans text-textmuted whitespace-normal">${escapeHtml(row.Signals) || '-'}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -1791,7 +1792,7 @@
                     <td class="p-2.5 text-textmain">${row["RSI-14"] || 0}</td><td class="p-2.5 text-textmain">${row["ADX-14"] || 0}</td><td class="p-2.5 text-textmain">${row["Vol Z-Score"] || 0}</td>
                     <td class="p-2.5 font-sans text-textmain" title="Histogram: ${row["MACD Histogram"] ?? '-'}">${escapeHtml(row["MACD Signal"]) || '-'}</td>
                     <td class="p-2.5 text-textmain">${row["Bollinger %B"] ?? '-'}</td>
-                    <td class="p-2.5 text-textmuted">${row["Avg Volume (20D)"] ? row["Avg Volume (20D)"].toLocaleString() : 0}</td><td class="p-2.5 font-sans ${confStyle}">${row["Data Confidence"] || '-'}</td>
+                    <td class="p-2.5 text-textmuted">${row["Avg Volume (20D)"] ? row["Avg Volume (20D)"].toLocaleString() : 0}</td><td class="p-2.5 font-sans ${confStyle}">${escapeHtml(row["Data Confidence"]) || '-'}</td>
                     <td class="p-2.5 text-emerald-400 font-semibold">${row["Take-Profit Target"] ?? '-'}</td>
                     <td class="p-2.5 text-rose-400 text-[11px] leading-tight" title="52-week high: ${row["Resistance (52W High)"] ?? '-'}">R1 ${row["R1"] ?? '-'}<br>R2 ${row["R2"] ?? '-'}<br>R3 ${row["R3"] ?? '-'}</td>
                     <td class="p-2.5 text-emerald-400 text-[11px] leading-tight" title="52-week low: ${row["Support (52W Low)"] ?? '-'}">S1 ${row["S1"] ?? '-'}<br>S2 ${row["S2"] ?? '-'}<br>S3 ${row["S3"] ?? '-'}</td>
@@ -1966,6 +1967,19 @@
         const db = firebase.firestore();
         let analytics = null;
         try { analytics = firebase.analytics(); } catch (e) { console.warn('Firebase Analytics not available:', e); }
+
+        // --- App Check (recommended before broad public traffic) ---
+        // Registered in Firebase Console → App Check with a reCAPTCHA v3
+        // site key (public by design, safe to ship in client code — the
+        // matching SECRET key lives only in the Firebase Console, never here).
+        // Enforcement is NOT yet turned on for Firestore/Auth in the console —
+        // this just starts sending tokens so you can watch the App Check
+        // dashboard for a few days and confirm all real traffic is verified
+        // before flipping enforcement on.
+        firebase.appCheck().activate(
+            '6LdfFm8tAAAAAI_lLBucTW8n5hfDADJlcEn0xNAw',
+            true // isTokenAutoRefreshEnabled
+        );
 
         // Watchdog: if Firebase never confirms an auth state (blocked script,
         // network issue, misconfigured project, etc.), surface it visibly on the
