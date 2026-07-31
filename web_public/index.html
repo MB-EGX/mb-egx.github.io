@@ -2000,8 +2000,28 @@
             }
         }, 8000);
 
-        const ADMIN_EMAILS = ["drmo071990@gmail.com"];
         const TERMS_VERSION = "1.0";
+
+        // Admin-button visibility is derived from a real Firestore permission
+        // probe rather than a hardcoded email list. The actual security
+        // boundary lives in Firestore rules (only the admin account can read
+        // /sessions or other users' /users docs); this just asks Firestore
+        // "can I actually do this?" and shows the button only if the answer
+        // is yes. That way the UI can never drift out of sync with the rules
+        // (no separate list to remember to update if the admin account
+        // changes), and a non-admin who inspects the JS never even sees an
+        // email address to target.
+        async function canAccessAdminAnalytics() {
+            try {
+                // Cheapest possible read that mirrors what openAnalyticsModal()
+                // actually needs: a single doc from the sessions collection.
+                // If Firestore rules deny it, this throws permission-denied.
+                await db.collection('sessions').limit(1).get();
+                return true;
+            } catch (err) {
+                return false;
+            }
+        }
 
         function showAuthError(msg) {
             const el = document.getElementById('auth-error');
@@ -2417,7 +2437,12 @@
             if (user) {
                 gate.style.display = 'none';
                 badge.style.display = 'flex';
-                adminBtn.style.display = ADMIN_EMAILS.includes(user.email) ? 'flex' : 'none';
+                // Hide until the permission probe resolves, then reveal only
+                // if Firestore actually grants the read.
+                adminBtn.style.display = 'none';
+                canAccessAdminAnalytics().then(isAdmin => {
+                    adminBtn.style.display = isAdmin ? 'flex' : 'none';
+                });
 
                 let name = 'Investor';
                 try {
