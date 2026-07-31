@@ -21,7 +21,7 @@
          Installations, and Firebase Analytics actually call — the previous
          list was missing these, which is why signInWithPopup / the SDK's
          background calls were being blocked and Google sign-in kept failing. -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://www.gstatic.com https://apis.google.com https://www.googletagmanager.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.firebaseapp.com https://*.firebaseio.com https://api.ipify.org https://identitytoolkit.googleapis.com https://firestore.googleapis.com https://securetoken.googleapis.com https://firebaseinstallations.googleapis.com https://firebase.googleapis.com https://www.googleapis.com https://apis.google.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; frame-src https://mb-egx-12d11.firebaseapp.com https://accounts.google.com; form-action 'self';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://www.gstatic.com https://apis.google.com https://www.googletagmanager.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.firebaseapp.com https://*.firebaseio.com https://api.ipify.org https://identitytoolkit.googleapis.com https://firestore.googleapis.com https://securetoken.googleapis.com https://firebaseinstallations.googleapis.com https://firebase.googleapis.com https://www.googleapis.com https://apis.google.com https://www.googletagmanager.com https://www.google.com https://*.google-analytics.com https://*.analytics.google.com; frame-src https://mb-egx-12d11.firebaseapp.com https://accounts.google.com; form-action 'self';">
     <!-- Inline favicon so the browser doesn't request /favicon.ico and get a 404 -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
     <!-- Anti-flash guard: keep the page invisible until the very end of body
@@ -274,7 +274,7 @@
         </div>
 
         <!-- Navigation Tabs -->
-        <div class="border-b border-bordercol flex flex-nowrap gap-1 bg-panelbg px-2 pt-2 rounded-t-xl overflow-x-auto">
+        <div class="border-b border-bordercol flex flex-wrap gap-1 bg-panelbg px-2 pt-2 rounded-t-xl">
             <button onclick="switchTab('tab-matrix')" id="btn-tab-matrix" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap tab-active">
                 📈 Full Market Action Matrix
             </button>
