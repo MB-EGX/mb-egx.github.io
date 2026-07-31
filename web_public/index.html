@@ -21,7 +21,9 @@
          Installations, and Firebase Analytics actually call — the previous
          list was missing these, which is why signInWithPopup / the SDK's
          background calls were being blocked and Google sign-in kept failing. -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://www.gstatic.com https://apis.google.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.firebaseapp.com https://*.firebaseio.com https://api.ipify.org https://identitytoolkit.googleapis.com https://firestore.googleapis.com https://securetoken.googleapis.com https://firebaseinstallations.googleapis.com https://www.googleapis.com https://apis.google.com https://www.google-analytics.com https://region1.google-analytics.com https://region1.analytics.google.com; frame-src https://mb-egx-12d11.firebaseapp.com https://accounts.google.com; form-action 'self';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://www.gstatic.com https://apis.google.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.firebaseapp.com https://*.firebaseio.com https://api.ipify.org https://identitytoolkit.googleapis.com https://firestore.googleapis.com https://securetoken.googleapis.com https://firebaseinstallations.googleapis.com https://firebase.googleapis.com https://www.googleapis.com https://apis.google.com https://www.google-analytics.com https://region1.google-analytics.com https://region1.analytics.google.com; frame-src https://mb-egx-12d11.firebaseapp.com https://accounts.google.com; form-action 'self';">
+    <!-- Inline favicon so the browser doesn't request /favicon.ico and get a 404 -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
     <!-- Anti-flash guard: keep the page invisible until the very end of body
          has been parsed (see the reveal script just before </body>). This is
          what actually prevents the dashboard from ever painting before the
@@ -167,8 +169,8 @@
     <div class="max-w-[1650px] mx-auto p-3 md:p-5 space-y-4">
         
         <!-- Header Bar -->
-        <header id="main-header" class="bg-panelbg p-4 rounded-xl border border-bordercol shadow-xl flex flex-col xl:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-3">
+        <header id="main-header" class="bg-panelbg p-4 rounded-xl border border-bordercol shadow-xl flex flex-col lg:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3 w-full lg:w-auto">
                 <img src="assets/mb-egx-logo.png" alt="MB-EGX Logo" class="w-12 h-12 object-contain drop-shadow-[0_0_10px_rgba(147,204,255,0.35)]">
                 <div>
                     <h1 id="lbl-title" class="text-sm md:text-base font-headline font-bold text-sky-400 tracking-tight">MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard</h1>
@@ -177,7 +179,7 @@
             </div>
 
             <!-- Controls -->
-            <div class="flex flex-wrap items-center gap-2">
+            <div class="flex flex-wrap items-center justify-center lg:justify-end gap-2 w-full lg:w-auto">
                 <button onclick="loadMarketData()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
                     <span>⚡</span> <span id="btn-refresh-text">Refresh Data</span>
                 </button>
