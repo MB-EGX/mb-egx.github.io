@@ -21,7 +21,7 @@
          Installations, and Firebase Analytics actually call — the previous
          list was missing these, which is why signInWithPopup / the SDK's
          background calls were being blocked and Google sign-in kept failing. -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://www.gstatic.com https://apis.google.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.firebaseapp.com https://*.firebaseio.com https://api.ipify.org https://identitytoolkit.googleapis.com https://firestore.googleapis.com https://securetoken.googleapis.com https://firebaseinstallations.googleapis.com https://firebase.googleapis.com https://www.googleapis.com https://apis.google.com https://www.google-analytics.com https://region1.google-analytics.com https://region1.analytics.google.com; frame-src https://mb-egx-12d11.firebaseapp.com https://accounts.google.com; form-action 'self';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://www.gstatic.com https://apis.google.com https://www.googletagmanager.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.firebaseapp.com https://*.firebaseio.com https://api.ipify.org https://identitytoolkit.googleapis.com https://firestore.googleapis.com https://securetoken.googleapis.com https://firebaseinstallations.googleapis.com https://firebase.googleapis.com https://www.googleapis.com https://apis.google.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; frame-src https://mb-egx-12d11.firebaseapp.com https://accounts.google.com; form-action 'self';">
     <!-- Inline favicon so the browser doesn't request /favicon.ico and get a 404 -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
     <!-- Anti-flash guard: keep the page invisible until the very end of body
@@ -164,7 +164,7 @@
 
     </style>
 </head>
-<body class="bg-darkbg text-textmain font-sans min-h-screen text-xs md:text-sm transition-colors duration-200 pb-16">
+<body class="bg-darkbg text-textmain font-sans min-h-screen text-xs md:text-sm transition-colors duration-200 pb-16 overflow-x-hidden">
 
     <div class="max-w-[1650px] mx-auto p-3 md:p-5 space-y-4">
         
@@ -227,7 +227,7 @@
         <div id="concentration-warning" style="display:none;" class="bg-[#3d2b0f] border border-amber-600 text-amber-300 text-xs font-semibold px-4 py-2 rounded-lg text-center"></div>
 
         <!-- Live Filters Bar -->
-        <div class="bg-panelbg p-3 rounded-xl border border-bordercol shadow flex flex-col lg:flex-row items-center gap-3">
+        <div class="bg-panelbg p-3 rounded-xl border border-bordercol shadow flex flex-wrap items-center gap-3">
             <span id="lbl-filter" class="font-bold text-sky-400 flex items-center gap-1 whitespace-nowrap">🔍 Live Filters:</span>
             
             <input type="text" id="filter-search" oninput="applyFilters()" placeholder="Search Ticker or keyword..." 
