@@ -1926,7 +1926,7 @@
                         <div class="h-px flex-1 bg-outline-variant/30"></div>
                     </div>
                     
-                    <button onclick="handleGoogleSignIn()" class="w-full bg-[#282a2e] text-on-surface py-2.5 rounded-lg border border-outline-variant hover:bg-[#37393e] transition-all flex items-center justify-center gap-3">
+                    <button id="btn-google-signin" onclick="handleGoogleSignIn()" class="w-full bg-[#282a2e] text-on-surface py-2.5 rounded-lg border border-outline-variant hover:bg-[#37393e] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed">
                         <svg class="w-5 h-5" viewBox="0 0 24 24">
                             <path d="M12 5.04c1.74 0 3.3.6 4.53 1.77l3.39-3.39C17.85 1.5 15.17 0 12 0 7.31 0 3.26 2.69 1.25 6.61l3.96 3.07c.95-2.85 3.61-4.64 6.79-4.64z" fill="#EA4335"></path>
                             <path d="M23.49 12.27c0-.82-.07-1.61-.21-2.37H12v4.51h6.44c-.28 1.48-1.13 2.74-2.39 3.58l3.71 2.88c2.17-2 3.43-4.94 3.43-8.6z" fill="#4285F4"></path>
@@ -2165,8 +2165,17 @@
             }
         }
 
+        let _googleSignInInProgress = false;
+
         async function handleGoogleSignIn() {
             if (!checkAuthRateLimit()) return;
+            // Guard against a second click re-triggering signInWithPopup while
+            // the first popup is still open — that's exactly what produces the
+            // auth/cancelled-popup-request -> auth/popup-closed-by-user pair.
+            if (_googleSignInInProgress) return;
+            _googleSignInInProgress = true;
+            const googleBtn = document.getElementById('btn-google-signin');
+            if (googleBtn) googleBtn.disabled = true;
             clearAuthError();
             const provider = new firebase.auth.GoogleAuthProvider();
             try {
@@ -2192,7 +2201,16 @@
                 // a generic "failed" message with no trail.
                 console.error('Google sign-in failed:', err && err.code, err);
                 recordAuthAttempt();
-                showAuthError("Google sign-in failed. Please try again.");
+                if (err && (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request')) {
+                    showAuthError("The Google sign-in window closed before finishing. If you clicked the button twice, try once and wait — or check that your browser isn't blocking pop-ups / third-party cookies for this site.");
+                } else if (err && err.code === 'auth/popup-blocked') {
+                    showAuthError("Your browser blocked the sign-in pop-up. Please allow pop-ups for this site and try again.");
+                } else {
+                    showAuthError("Google sign-in failed. Please try again.");
+                }
+            } finally {
+                _googleSignInInProgress = false;
+                if (googleBtn) googleBtn.disabled = false;
             }
         }
 

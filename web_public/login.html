@@ -241,8 +241,9 @@
 
                     <!-- Google Sign In -->
                     <button
+                        id="btn-google-signin"
                         onclick="handleGoogleSignIn()"
-                        class="w-full bg-[#282a2e] text-on-surface py-3 rounded-lg border border-outline-variant hover:bg-[#37393e] transition-all flex items-center justify-center gap-3"
+                        class="w-full bg-[#282a2e] text-on-surface py-3 rounded-lg border border-outline-variant hover:bg-[#37393e] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <svg class="w-5 h-5" viewBox="0 0 24 24">
                             <path d="M12 5.04c1.74 0 3.3.6 4.53 1.77l3.39-3.39C17.85 1.5 15.17 0 12 0 7.31 0 3.26 2.69 1.25 6.61l3.96 3.07c.95-2.85 3.61-4.64 6.79-4.64z" fill="#EA4335"></path>
@@ -398,6 +399,15 @@
                 console.error('Account creation failed:', err.code, err);
                 showAuthError("Account creation failed. The email may already be registered.");
             }
+        }
+
+        let _googleSignInInProgress = false;
+
+        async function handleGoogleSignIn() {
+            if (_googleSignInInProgress) return;
+            _googleSignInInProgress = true;
+            const googleBtn = document.getElementById('btn-google-signin');
+            if (googleBtn) googleBtn.disabled = true;
             clearAuthError();
             const provider = new firebase.auth.GoogleAuthProvider();
             try {
@@ -419,7 +429,16 @@
                 }
             } catch (err) {
                 console.error('Google sign-in failed:', err.code, err);
-                showAuthError("Google sign-in failed. Please try again.");
+                if (err && (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request')) {
+                    showAuthError("The Google sign-in window closed before finishing. If you clicked the button twice, try once and wait — or check that your browser isn't blocking pop-ups / third-party cookies for this site.");
+                } else if (err && err.code === 'auth/popup-blocked') {
+                    showAuthError("Your browser blocked the sign-in pop-up. Please allow pop-ups for this site and try again.");
+                } else {
+                    showAuthError("Google sign-in failed. Please try again.");
+                }
+            } finally {
+                _googleSignInInProgress = false;
+                if (googleBtn) googleBtn.disabled = false;
             }
         }
 
@@ -439,6 +458,9 @@
                 console.error('Password reset failed:', err.code, err);
                 showAuthError("Couldn't send the reset email. Double-check the address and try again.");
             }
+        }
+
+        // Interactive logo hover effect
         const logo = document.getElementById('interactive-logo');
         if (logo) {
             logo.addEventListener('mousemove', (e) => {
