@@ -37,7 +37,7 @@ if not LOGO_PATH.exists():
 # =============================================================================
 # FIREBASE AUTH + FIRESTORE (REST)
 # =============================================================================
-FIREBASE_API_KEY = "AIzaSyBCC4D61IHTEFNsgO6i8H_BdixwArE-VRo"
+FIREBASE_API_KEY = "AIzaSyDlLv9qJFZ87mIztvbJZ0tBbwczYbnutwk"
 FIREBASE_PROJECT_ID = "mb-egx-12d11"
 FIRESTORE_BASE = f"https://firestore.googleapis.com/v1/projects/{FIREBASE_PROJECT_ID}/databases/(default)/documents"
 ADMIN_EMAILS = ["drmo071990@gmail.com"]
@@ -1514,7 +1514,12 @@ class LoginDialog(QDialog):
                 write_consent_doc(data["idToken"], data["localId"], ip_address)
             self.accept()
         except Exception as e:
-            self._show_error(str(e))
+            # Log the real error (Firebase/Google's raw message, e.g. an API
+            # key restriction rejection or a specific auth/* error code) for
+            # diagnosis, but never surface that raw text to the user - it can
+            # expose backend config details or just be confusing/unhelpful.
+            logger.error(f"Auth attempt failed ({fn.__name__}): {e}")
+            self._show_error("Sign-in failed. Please check your credentials and try again.")
         finally:
             QApplication.restoreOverrideCursor()
             self.setEnabled(True)
@@ -1523,7 +1528,7 @@ class LoginDialog(QDialog):
         self._attempt(firebase_sign_in)
 
     def do_sign_up(self):
-        self._attempt(firebase_sign_up, min_password_len=6, require_consent=True)
+        self._attempt(firebase_sign_up, min_password_len=8, require_consent=True)
 
     def do_forgot_password(self):
         email = self.txt_email.text().strip()
@@ -1544,7 +1549,8 @@ class LoginDialog(QDialog):
                 "you can sign in here on desktop too."
             )
         except Exception as e:
-            self._show_error(str(e))
+            logger.error(f"Password reset request failed: {e}")
+            self._show_error("Couldn't send the reset email. Double-check the address and try again.")
         finally:
             QApplication.restoreOverrideCursor()
             self.setEnabled(True)
