@@ -1952,6 +1952,50 @@
         </div>
     </div>
 
+    <!-- Terms Re-Consent Gate: shown for signed-in users whose stored
+         terms_version is behind the page's current TERMS_VERSION. Blocks
+         all interaction with the app until re-accepted. -->
+    <div id="terms-reconsent-gate" class="hidden fixed inset-0 bg-black/90 z-[10000] flex items-center justify-center p-4">
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 max-w-md w-full card-edge">
+            <h2 class="font-label-mono text-sm text-primary uppercase font-bold mb-1">Updated Terms & Disclaimer</h2>
+            <p class="font-body-sm text-[12px] text-on-surface-variant mb-3">
+                Our End-User Consent and Legal Disclaimer has been updated. Please review and re-accept it to continue using the app.
+            </p>
+            <div class="bg-[#1a1c20] rounded-lg p-3 card-edge">
+                <div class="h-40 overflow-y-auto pr-2 custom-scrollbar">
+                    <p class="font-body-sm text-[11px] leading-relaxed text-on-surface-variant text-justify whitespace-pre-line">By accessing, subscribing to, or using this application, you explicitly acknowledge, understand, and agree to the following terms: 
+
+• <strong>Informational and Educational Use Only:</strong> This app is for informational and educational purposes only. It does not constitute financial or investment advice. 
+
+• <strong>Nature of the Tools:</strong> The service operates by providing educational and analytical tools, effectively giving you a mirror to look at the market. The outputs are generated via raw data, charts, historical trends, mathematical calculations, quantitative indicators, and automated technical screening tools. 
+
+• <strong>No Unlicensed Financial Advisory:</strong> The application and its creators do not direct a user's specific actions, nor do they act as a portfolio manager. Giving direct investment advice or portfolio management requires rigorous licensing from the Egyptian Financial Regulatory Authority (FRA), which this software does not provide. 
+
+• <strong>Analytics, Not Commands:</strong> All signals and feature outputs provided by the software are strictly classified as analytics, such as a 'Quantitative Indicator Output' or 'Technical Pattern Matcher'. They are never to be interpreted as direct 'Buy/Sell Recommendations' or market commands. The application provides the data, and you must independently decide what to do with it. 
+
+• <strong>Assumption of Risk:</strong> Users are solely responsible for their own trading decisions. 
+
+• <strong>No Handling of Client Funds:</strong> This application functions strictly as a Software as a Service (SaaS) analytics tool. We will never request, hold, or allow users to deposit trading capital or funds into our bank accounts or app wallets. 
+
+• <strong>Third-Party Trade Execution:</strong> You cannot execute trades independently through this app; all users must execute their actual trades through approved and licensed EGX brokers (such as Thndr, EFG Hermes, etc.).</p>
+                </div>
+            </div>
+            <label class="flex items-start gap-2 mt-3 cursor-pointer group select-none">
+                <input class="mt-1 rounded bg-[#1e2024] border-outline-variant text-primary focus:ring-offset-surface-elevated accent-primary" id="reconsent-checkbox" onchange="document.getElementById('btn-reconsent-accept').disabled = !this.checked; document.getElementById('btn-reconsent-accept').classList.toggle('opacity-50', !this.checked);" type="checkbox"/>
+                <span class="font-body-sm text-[12px] leading-snug text-on-surface group-hover:text-primary transition-colors">I acknowledge and agree to the updated End-User Consent and Legal Disclaimer.</span>
+            </label>
+            <div id="reconsent-error" class="hidden mt-2 text-[#ffb4ab] font-body-sm text-[11px]"></div>
+            <div class="flex gap-3 mt-4">
+                <button id="btn-reconsent-accept" disabled onclick="handleReconsentAccept()" class="flex-1 bg-primary text-on-primary font-bold py-2.5 rounded-lg hover:opacity-90 active:scale-[0.98] transition-all opacity-50">
+                    Accept & Continue
+                </button>
+                <button onclick="handleSignOut()" class="px-4 py-2.5 rounded-lg border border-outline-variant text-on-surface-variant text-sm hover:bg-[#1a1c20] transition">
+                    Sign Out
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // --- Firebase setup ---
         const firebaseConfig = {
@@ -2163,7 +2207,7 @@
                 await auth.signOut();
             } catch (err) {
                 console.error('Sign out failed:', err);
-                alert('Sign out failed: ' + err.message);
+                alert('Sign out failed. Please try again, or reload the page.');
                 return;
             }
 
@@ -2446,6 +2490,47 @@
             }
         }
 
+        let _pendingReconsentUser = null;
+
+        // Everything that used to run unconditionally inside onAuthStateChanged's
+        // `if (user)` branch now lives here, so it can be deferred until an
+        // up-to-date terms acceptance is confirmed (see below).
+        function proceedAfterAuth(user) {
+            let name = 'Investor';
+            try {
+                name = getFriendlyName(user);
+                document.getElementById('lbl-welcome-user').textContent = name;
+            } catch (err) {
+                console.error('Error setting welcome name (badge still shown):', err);
+                document.getElementById('lbl-welcome-user').textContent = name;
+            }
+
+            if (!_welcomedThisSession) {
+                _welcomedThisSession = true;
+                try { showWelcomeToast(name); } catch (err) { console.error('Welcome toast failed:', err); }
+                try { startSessionTracking(user); } catch (err) { console.error('Session tracking failed:', err); }
+            }
+            try { loadUserDataFromCloud(user.uid); } catch (err) { console.error('Loading cloud data failed:', err); }
+        }
+
+        async function handleReconsentAccept() {
+            const user = _pendingReconsentUser;
+            if (!user || !document.getElementById('reconsent-checkbox').checked) return;
+            const errEl = document.getElementById('reconsent-error');
+            errEl.classList.add('hidden');
+            try {
+                const ip = await fetchClientIp();
+                await db.collection('users').doc(user.uid).set(buildConsentFields(ip), { merge: true });
+                document.getElementById('terms-reconsent-gate').classList.add('hidden');
+                _pendingReconsentUser = null;
+                proceedAfterAuth(user);
+            } catch (err) {
+                console.error('Failed to save re-consent:', err);
+                errEl.textContent = "Couldn't save your acceptance. Please check your connection and try again.";
+                errEl.classList.remove('hidden');
+            }
+        }
+
         auth.onAuthStateChanged(function (user) {
             _authResolved = true;
             revealApp();
@@ -2453,8 +2538,10 @@
             const gate = document.getElementById('auth-gate');
             const badge = document.getElementById('user-badge');
             const adminBtn = document.getElementById('btn-admin-analytics');
+            const reconsentGate = document.getElementById('terms-reconsent-gate');
             if (user) {
                 gate.style.display = 'none';
+                reconsentGate.classList.add('hidden');
                 badge.style.display = 'flex';
                 // Hide until the permission probe resolves, then reveal only
                 // if Firestore actually grants the read.
@@ -2463,26 +2550,37 @@
                     adminBtn.style.display = isAdmin ? 'flex' : 'none';
                 });
 
-                let name = 'Investor';
-                try {
-                    name = getFriendlyName(user);
-                    document.getElementById('lbl-welcome-user').textContent = name;
-                } catch (err) {
-                    console.error('Error setting welcome name (badge still shown):', err);
-                    document.getElementById('lbl-welcome-user').textContent = name;
-                }
-
-                if (!_welcomedThisSession) {
-                    _welcomedThisSession = true;
-                    try { showWelcomeToast(name); } catch (err) { console.error('Welcome toast failed:', err); }
-                    try { startSessionTracking(user); } catch (err) { console.error('Session tracking failed:', err); }
-                }
-                try { loadUserDataFromCloud(user.uid); } catch (err) { console.error('Loading cloud data failed:', err); }
+                // Gate the rest of the app behind an up-to-date terms acceptance.
+                // A missing or stale terms_version (bumped by editing the
+                // TERMS_VERSION constant) blocks everything below until the
+                // user re-accepts via the modal instead of silently letting
+                // them keep using the app under an outdated agreement.
+                db.collection('users').doc(user.uid).get().then(doc => {
+                    const data = doc.exists ? doc.data() : {};
+                    if (data.terms_version !== TERMS_VERSION) {
+                        _pendingReconsentUser = user;
+                        document.getElementById('reconsent-checkbox').checked = false;
+                        document.getElementById('btn-reconsent-accept').disabled = true;
+                        document.getElementById('btn-reconsent-accept').classList.add('opacity-50');
+                        document.getElementById('reconsent-error').classList.add('hidden');
+                        reconsentGate.classList.remove('hidden');
+                        return;
+                    }
+                    proceedAfterAuth(user);
+                }).catch(err => {
+                    // Fail safe: if we can't confirm the user's consent record,
+                    // don't silently grant access — surface the re-consent gate.
+                    console.error('Could not verify terms acceptance:', err);
+                    _pendingReconsentUser = user;
+                    reconsentGate.classList.remove('hidden');
+                });
             } else {
                 gate.style.display = 'flex';
+                reconsentGate.classList.add('hidden');
                 badge.style.display = 'none';
                 adminBtn.style.display = 'none';
                 _welcomedThisSession = false;
+                _pendingReconsentUser = null;
                 endSessionTracking();
             }
         });

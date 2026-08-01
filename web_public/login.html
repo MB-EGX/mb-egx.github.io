@@ -372,7 +372,7 @@
             const password = document.getElementById('auth-password').value;
             if (!email || !password) { showAuthError("Enter both email and password."); return; }
 
-            auth.signInWithEmailAndPassword(email, password).catch(err => showAuthError(err.message));
+            auth.signInWithEmailAndPassword(email, password).catch(err => { console.error('Sign-in failed:', err.code, err); showAuthError("Sign-in failed. Check your credentials."); });
         }
 
         async function handleEmailSignUp() {
@@ -381,7 +381,7 @@
             const password = document.getElementById('auth-password').value;
 
             if (!email || !password) { showAuthError("Enter both email and password."); return; }
-            if (password.length < 6) { showAuthError("Password must be at least 6 characters."); return; }
+            if (password.length < 8) { showAuthError("Password must be at least 8 characters."); return; }
             if (!document.getElementById('consent-checkbox').checked) {
                 triggerConsentShake();
                 return;
@@ -395,11 +395,9 @@
                     ...buildConsentFields(ip),
                 }, { merge: true });
             } catch (err) {
-                showAuthError(err.message);
+                console.error('Account creation failed:', err.code, err);
+                showAuthError("Account creation failed. The email may already be registered.");
             }
-        }
-
-        async function handleGoogleSignIn() {
             clearAuthError();
             const provider = new firebase.auth.GoogleAuthProvider();
             try {
@@ -421,7 +419,7 @@
                 }
             } catch (err) {
                 console.error('Google sign-in failed:', err.code, err);
-                showAuthError(err.message);
+                showAuthError("Google sign-in failed. Please try again.");
             }
         }
 
@@ -438,11 +436,9 @@
                 await auth.sendPasswordResetEmail(email);
                 alert(`If an account exists for ${email}, a password reset link has been sent.`);
             } catch (err) {
-                showAuthError(err.message);
+                console.error('Password reset failed:', err.code, err);
+                showAuthError("Couldn't send the reset email. Double-check the address and try again.");
             }
-        }
-
-        // Interactive logo hover effect
         const logo = document.getElementById('interactive-logo');
         if (logo) {
             logo.addEventListener('mousemove', (e) => {
