@@ -9,6 +9,23 @@ import duckdb
 
 logger = get_logger("db_manager")
 
+# =============================================================================
+# Optional display-language for the handful of user-facing portfolio messages
+# this module returns (add_owned_stock / record_sale). Deliberately isolated
+# here rather than importing anything from app_gui.py: this module is also
+# used by the unattended CLI pipeline (export_json.py / publish.py), which
+# never calls set_language(), so it always defaults to "EN" there and this
+# change cannot affect the website/CLI pipeline in any way. app_gui.py calls
+# set_language() to keep these messages in sync with the desktop UI's own
+# language toggle.
+# =============================================================================
+_LANG = "EN"
+
+
+def set_language(lang):
+    global _LANG
+    _LANG = lang if lang == "AR" else "EN"
+
 def clean_sector_name(sec: str) -> str:
     if not sec or str(sec).strip() in ('', 'nan', 'None', 'N/A', 'NULL'):
         return "General / Diversified"
@@ -363,6 +380,8 @@ class DatabaseManager:
     def add_owned_stock(self, ticker: str, buy_price: float, shares: float, purchase_date: str, mode="ADD_SCALE", is_demo=False):
         ticker = self.normalize_symbol(ticker)
         if mode != "OVERWRITE" and float(shares) <= 0:
+            if _LANG == "AR":
+                return (False, "⚠️ خطأ: يجب أن يكون عدد الأسهم المضافة أكبر من صفر.")
             return (False, "⚠️ Error: Number of shares to add must be greater than zero.")
             
         with self.get_connection() as conn:
@@ -371,6 +390,8 @@ class DatabaseManager:
                     "INSERT OR REPLACE INTO portfolio_owned (ticker, buy_price, shares, purchase_date, is_demo) VALUES (?, ?, ?, ?, ?);",
                     (ticker, float(buy_price), float(shares), str(purchase_date), bool(is_demo)),
                 )
+                if _LANG == "AR":
+                    return (True, f"✏️ تم تصحيح / استبدال المركز لـ {ticker}:\nتم تعيينه إلى {shares:,.4f} سهم بالضبط بسعر {buy_price:.4f} جنيه.")
                 return (True, f"✏️ Corrected / Overwritten position for {ticker}:\nSet to exactly {shares:,.4f} shares @ {buy_price:.4f} EGP.")
             else:
                 row = conn.cursor().execute("SELECT buy_price, shares, is_demo FROM portfolio_owned WHERE ticker = ?;", (ticker,)).fetchone()
@@ -379,14 +400,20 @@ class DatabaseManager:
                         "INSERT INTO portfolio_owned (ticker, buy_price, shares, purchase_date, is_demo) VALUES (?, ?, ?, ?, ?);",
                         (ticker, float(buy_price), float(shares), str(purchase_date), bool(is_demo)),
                     )
+                    if _LANG == "AR":
+                        return (True, f"🛒 تم فتح مركز جديد لـ {ticker}:\n{shares:,.4f} سهم بسعر {buy_price:.4f} جنيه.")
                     return (True, f"🛒 Opened fresh position for {ticker}:\n{shares:,.4f} shares @ {buy_price:.4f} EGP.")
                 else:
                     old_p, old_s = float(row[0]), float(row[1])
                     new_s = old_s + float(shares)
                     if new_s <= 0:
+                        if _LANG == "AR":
+                            return (False, "⚠️ خطأ: لا يمكن أن يكون إجمالي عدد الأسهم صفرًا أو أقل.")
                         return (False, "⚠️ Error: Combined share quantity cannot be zero or less.")
                     new_p = ((old_s * old_p) + (float(shares) * float(buy_price))) / new_s
                     conn.execute("UPDATE portfolio_owned SET buy_price = ?, shares = ?, purchase_date = ?, is_demo = ? WHERE ticker = ?;", (new_p, new_s, str(purchase_date), bool(is_demo), ticker))
+                    if _LANG == "AR":
+                        return (True, f"📈 تمت الزيادة في {ticker}! دمج {old_s:,.4f} + {shares:,.4f} سهم.\nالإجمالي الجديد: {new_s:,.4f} سهم | متوسط التكلفة المرجح الجديد: {new_p:.4f} جنيه (كان {old_p:.4f}).")
                     return (True, f"📈 Scaled into {ticker}! Combined {old_s:,.4f} + {shares:,.4f} shares.\nNew Total: {new_s:,.4f} shares | New Weighted Average Cost: {new_p:.4f} EGP (was {old_p:.4f}).")
 
     def remove_owned_stock(self, ticker: str):
@@ -407,11 +434,15 @@ class DatabaseManager:
                 (ticker, ticker.replace(".CA", "")),
             ).fetchone()
             if not row:
+                if _LANG == "AR":
+                    return (False, f"ليس لديك مركز مفتوح لـ {ticker} في محفظتك النشطة.")
                 return (False, f"You do not have an open position for {ticker} in your active portfolio.")
             actual_ticker, buy_price, current_shares, purchase_date = row[0], row[1], row[2], str(row[3])
             is_demo = bool(row[4]) if len(row) > 4 else False
             
             if shares_to_sell > (current_shares + 0.0001):
+                if _LANG == "AR":
+                    return (False, f"لا يمكن بيع {shares_to_sell} سهم. أنت تمتلك فقط {current_shares} سهم من {actual_ticker}.")
                 return (False, f"Cannot sell {shares_to_sell} shares. You only own {current_shares} shares of {actual_ticker}.")
             
             realized_pnl = (sell_price - buy_price) * shares_to_sell
@@ -430,6 +461,8 @@ class DatabaseManager:
                 conn.execute("DELETE FROM portfolio_owned WHERE ticker = ?;", (actual_ticker,))
             else:
                 conn.execute("UPDATE portfolio_owned SET shares = ? WHERE ticker = ?;", (remaining_shares, actual_ticker))
+        if _LANG == "AR":
+            return (True, f"تم تسجيل بيع {shares_to_sell} سهم من {actual_ticker} بسعر {sell_price} جنيه بنجاح.\nالربح/الخسارة المحققة: {realized_pnl:.2f} جنيه ({pnl_pct:.2f}%).")
         return (True, f"Successfully recorded sale of {shares_to_sell} shares of {actual_ticker} @ {sell_price} EGP.\nRealized P&L: {realized_pnl:.2f} EGP ({pnl_pct:.2f}%).")
 
     def get_all_closed_trades(self):

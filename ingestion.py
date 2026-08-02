@@ -21,6 +21,25 @@ from db_manager import clean_sector_name
 
 logger = get_logger("ingestion")
 
+# =============================================================================
+# Optional display-language for the progress_callback messages below.
+# Self-contained (no import from app_gui.py) so there's no circular-import
+# risk. The CLI pipeline (publish.py) never calls set_language(), so it
+# always sees English here — this can't affect that pipeline in any way.
+# app_gui.py calls set_language() to keep these in sync with its own toggle.
+# =============================================================================
+_LANG = "EN"
+
+
+def set_language(lang):
+    global _LANG
+    _LANG = lang if lang == "AR" else "EN"
+
+
+def _t(en, ar):
+    return ar if _LANG == "AR" else en
+
+
 FIELD_EXACT = {
     'date': ['date', 'dt', 'timestamp', 'datetime', 'trading date', 'trade date'],
     'ticker': ['ticker', 'symbol', 'stock symbol', 'sym'],
@@ -265,7 +284,7 @@ class IngestionPipeline:
         
         if total_files == 0:
             if progress_callback: 
-                progress_callback(100, "No spreadsheet or CSV files found.")
+                progress_callback(100, _t("No spreadsheet or CSV files found.", "لم يتم العثور على ملفات جداول بيانات أو CSV."))
             return
 
         with self.dbm.get_connection() as conn:
@@ -282,7 +301,7 @@ class IngestionPipeline:
 
         if not files_to_process:
             if progress_callback: 
-                progress_callback(100, "All files up to date. Zero ingestion required.")
+                progress_callback(100, _t("All files up to date. Zero ingestion required.", "جميع الملفات محدّثة. لا حاجة لأي استيعاب."))
             return
 
         processed_count = 0
@@ -295,7 +314,10 @@ class IngestionPipeline:
             processed_count += 1
             if progress_callback and processed_count % 5 == 0:
                 pct = int((processed_count / len(files_to_process)) * 100)
-                progress_callback(pct, f"Ingested {processed_count}/{len(files_to_process)} files...")
+                progress_callback(pct, _t(
+                    f"Ingested {processed_count}/{len(files_to_process)} files...",
+                    f"تم استيعاب {processed_count}/{len(files_to_process)} ملف..."
+                ))
 
             if res[0] == "SUCCESS":
                 _, f_path, l_mod, f_hash, df = res
@@ -333,11 +355,14 @@ class IngestionPipeline:
                     batch_errors.clear()
 
         if progress_callback:
-            progress_callback(99, "Compacting DuckDB database file...")
+            progress_callback(99, _t("Compacting DuckDB database file...", "جاري ضغط ملف قاعدة بيانات DuckDB..."))
         self.dbm.optimize_database()
 
         if progress_callback:
-            progress_callback(100, f"Ingestion complete. Processed {processed_count} files.")
+            progress_callback(100, _t(
+                f"Ingestion complete. Processed {processed_count} files.",
+                f"اكتمل الاستيعاب. تمت معالجة {processed_count} ملف."
+            ))
 
     def _flush_to_db(self, data_dfs, tracker_records, error_records):
         with self.dbm.get_connection() as conn:

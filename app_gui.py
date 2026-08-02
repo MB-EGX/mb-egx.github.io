@@ -11,11 +11,11 @@ except ImportError:
     requests = None
 
 from config import WATCH_DIR, TRANSACTION_FEE_PCT, get_logger
-from db_manager import DatabaseManager
-from decision_matrix import DecisionMatrix
+from db_manager import DatabaseManager, set_language as _set_db_language
+from decision_matrix import DecisionMatrix, set_language as _set_dm_language
 from analytics import QuantitativeEngine
 from chart_widget import StockSectorChartWidget
-from ingestion import IngestionPipeline
+from ingestion import IngestionPipeline, set_language as _set_ing_language
 from PyQt6.QtCore import QDate, Qt, QThread, QTimer, pyqtSignal, QAbstractTableModel, QModelIndex, QSettings
 from PyQt6.QtGui import QFont, QColor, QPixmap, QIcon
 from PyQt6.QtWidgets import (
@@ -180,6 +180,118 @@ AR_TRANSLATIONS = {
         "🎯 <b>عدد الأسهم الموصى به:</b> {shares} سهم<br><br>"
         "💵 <b>إجمالي التكلفة (شاملة رسوم 0.35%):</b> {outlay} جنيه ({pct}% من الرصيد النقدي)<br><br>"
         "🛡️ <b>أقصى رأس مال معرّض للمخاطرة:</b> {risk} جنيه",
+    "Institutional Portfolio & Trade Manager": "إدارة المحفظة والصفقات المؤسسية",
+    "Type or select ticker (e.g. PHGC.CA)...": "اكتب أو اختر رمز السهم (مثل PHGC.CA)...",
+    "Buy Price (EGP):": "سعر الشراء (جنيه):",
+    "Number of Shares:": "عدد الأسهم:",
+    "Purchase Date:": "تاريخ الشراء:",
+    "📈 Add Shares / Scale In (Auto-Calculate Average)": "📈 إضافة أسهم / زيادة المركز (حساب المتوسط تلقائيًا)",
+    "✏️ Correct Mistake": "✏️ تصحيح خطأ",
+    "🗑️ Delete Position": "🗑️ حذف المركز",
+    "🛒 Open / Add / Delete Position": "🛒 فتح / إضافة / حذف مركز",
+    "Type or select sold ticker (e.g. PHGC.CA)...": "اكتب أو اختر رمز السهم المباع (مثل PHGC.CA)...",
+    "Selling Price (EGP):": "سعر البيع (جنيه):",
+    "Shares Sold:": "عدد الأسهم المباعة:",
+    "Sell Date:": "تاريخ البيع:",
+    "🤝 Record Sale & Calculate P&L": "🤝 تسجيل البيع وحساب الربح/الخسارة",
+    "🤝 Record Sale / Close Trade": "🤝 تسجيل بيع / إغلاق صفقة",
+    "🧹 Clear Sample Demo Data": "🧹 مسح بيانات تجريبية",
+    "Input Error": "خطأ في الإدخال",
+    "Please enter or select a valid Ticker Symbol.": "يرجى إدخال أو اختيار رمز سهم صحيح.",
+    "Position Updated": "تم تحديث المركز",
+    "Position Error": "خطأ في المركز",
+    "Please select the Ticker Symbol to delete.": "يرجى اختيار رمز السهم المراد حذفه.",
+    "Deleted": "تم الحذف",
+    "Permanently removed {ticker} from your active portfolio.": "تمت إزالة {ticker} نهائيًا من محفظتك النشطة.",
+    "Please enter or select the Ticker Symbol.": "يرجى إدخال أو اختيار رمز السهم.",
+    "Sale Recorded!": "تم تسجيل البيع!",
+    "Sale Error": "خطأ في البيع",
+    "Samples Deleted": "تم حذف العينات",
+    "Successfully removed demo samples without deleting real positions!": "تمت إزالة العينات التجريبية بنجاح دون حذف المراكز الحقيقية!",
+    "📊 Usage Analytics": "📊 إحصائيات الاستخدام",
+    "Sessions and trading activity combined across the website (🌐) and the desktop app (🖥️). "
+    "Time is approximate (30s heartbeat). Trade Value = total EGP bought + sold; "
+    "Portfolio Value = cash + open positions at cost.":
+        "الجلسات ونشاط التداول مجمعة عبر الموقع (🌐) وتطبيق سطح المكتب (🖥️). "
+        "الوقت تقريبي (نبضة كل 30 ثانية). قيمة التداول = إجمالي الشراء والبيع بالجنيه؛ "
+        "قيمة المحفظة = النقد + المراكز المفتوحة بسعر التكلفة.",
+    "Loading session data…": "جاري تحميل بيانات الجلسات…",
+    "User": "المستخدم", "Sessions (🌐/🖥️)": "الجلسات (🌐/🖥️)", "Total Time": "إجمالي الوقت",
+    "Trades": "الصفقات", "Trade Value": "قيمة التداول", "Portfolio Value": "قيمة المحفظة", "Last Seen": "آخر ظهور",
+    "🔄 Refresh": "🔄 تحديث", "Close": "إغلاق",
+    "⚠️ Could not load analytics data (check your connection or Firestore rules).": "⚠️ تعذّر تحميل بيانات الإحصائيات (تحقق من اتصالك أو قواعد Firestore).",
+    "👥 Unique Users: {users}    |    "
+    "📅 Total Sessions: {sessions}    |    "
+    "⏱️ Avg Time / Session: {avg}":
+        "👥 المستخدمون الفريدون: {users}    |    "
+        "📅 إجمالي الجلسات: {sessions}    |    "
+        "⏱️ متوسط الوقت / الجلسة: {avg}",
+    "Stock ticker symbol": "رمز السهم",
+    "Ticker": "الرمز", "Action": "الإجراء", "Trend": "الاتجاه",
+    "Recommended action based on multi-factor confirmation": "الإجراء الموصى به بناءً على تأكيد متعدد العوامل",
+    "Score": "الدرجة", "Composite rank score (higher = stronger signal)": "درجة التصنيف المركبة (كلما زادت، زادت قوة الإشارة)",
+    "Price": "السعر", "Current close price": "سعر الإغلاق الحالي",
+    "Entry (VWAP)": "سعر الدخول (VWAP)", "Suggested entry price benchmarked to 20-day Volume Weighted Average Price": "سعر الدخول المقترح مقاسًا بمتوسط السعر المرجح بالحجم لـ 20 يومًا",
+    "Stop-Loss": "وقف الخسارة", "Suggested stop-loss price (2x ATR below current price)": "سعر وقف الخسارة المقترح (2x ATR أقل من السعر الحالي)",
+    "Shares (1% Risk)": "الأسهم (مخاطرة 1%)", "Suggested share count so a stop-out costs ~1% of cash balance": "عدد الأسهم المقترح بحيث تكلف الخسارة القصوى ~1% من الرصيد النقدي",
+    "Proj. Gain %": "الربح المتوقع %", "Historical-analog projected return": "العائد المتوقع بناءً على أنماط تاريخية مشابهة",
+    "Pattern Conf %": "ثقة النموذج %", "Confidence in the historical pattern match (Sortino downside-penalized)": "الثقة في تطابق النموذج التاريخي (معدّلة بعقوبة الهبوط Sortino)",
+    "Trend classification": "تصنيف الاتجاه",
+    "Vol Z-Score": "انحراف الحجم", "Rolling 20-day Volume Standard Deviation anomaly (Z >= 1.5 indicates institutional influx)": "شذوذ الانحراف المعياري للحجم خلال 20 يومًا (Z >= 1.5 يشير إلى تدفق مؤسسي)",
+    "MACD Signal": "إشارة MACD", "Momentum direction/crossover state from the 12/26/9 MACD": "اتجاه الزخم/حالة التقاطع من MACD (12/26/9)",
+    "MACD Hist.": "مدرج MACD", "MACD histogram value (MACD line minus signal line)": "قيمة مدرج MACD (خط MACD ناقص خط الإشارة)",
+    "Bollinger %B": "بولينجر %B", "Where price sits within the 20-period Bollinger Bands (0 = lower band, 1 = upper band)": "موقع السعر ضمن نطاقات بولينجر لـ 20 فترة (0 = النطاق السفلي، 1 = النطاق العلوي)",
+    "Avg Vol (20D)": "متوسط الحجم (20 يوم)", "20-day average traded volume (shares)": "متوسط حجم التداول خلال 20 يومًا (بالأسهم)",
+    "Data Conf.": "دقة البيانات", "How much real history backs these numbers": "مقدار البيانات التاريخية الفعلية الداعمة لهذه الأرقام",
+    "Take-Profit": "جني الأرباح", "Suggested take-profit target (pattern-match or ATR-floor based)": "هدف جني الأرباح المقترح (بناءً على مطابقة النموذج أو حد ATR)",
+    "Nearest pivot resistance (from last completed week's H/L/C)": "أقرب مستوى مقاومة محوري (من أعلى/أدنى/إغلاق آخر أسبوع مكتمل)",
+    "Second pivot resistance level": "مستوى المقاومة المحوري الثاني",
+    "Third (furthest) pivot resistance level": "مستوى المقاومة المحوري الثالث (الأبعد)",
+    "Nearest pivot support (from last completed week's H/L/C)": "أقرب مستوى دعم محوري (من أعلى/أدنى/إغلاق آخر أسبوع مكتمل)",
+    "Second pivot support level": "مستوى الدعم المحوري الثاني",
+    "Third (furthest) pivot support level": "مستوى الدعم المحوري الثالث (الأبعد)",
+    # Action badges (exact strings from decision_matrix.py)
+    "🛡️ HOLD / TRAIL STOP": "🛡️ احتفاظ / تتبع وقف الخسارة",
+    "⚠️ CUT LOSS / REVIEW (Below VWAP)": "⚠️ قطع الخسارة / مراجعة (تحت VWAP)",
+    "💰 TAKE PROFIT ZONE": "💰 منطقة جني الأرباح",
+    "🛡️ HOLD / TRAIL STOP (Low Data)": "🛡️ احتفاظ / تتبع وقف الخسارة (بيانات محدودة)",
+    "🛑 SELL / AVOID": "🛑 بيع / تجنب",
+    "🔥 STRONG BUY": "🔥 شراء قوي",
+    "⚡ BREAKOUT BUY (X-OVER + MOMENTUM)": "⚡ شراء اختراق (تقاطع + زخم)",
+    "⚡ BREAKOUT BUY (X-OVER)": "⚡ شراء اختراق (تقاطع)",
+    "⚡ BREAKOUT BUY (MOMENTUM)": "⚡ شراء اختراق (زخم)",
+    "⏳ BUY ON DIP": "⏳ شراء عند الهبوط",
+    "📈 ACCUMULATE": "📈 تجميع",
+    # Trend Class (exact strings from analytics.py)
+    "Strong Bullish": "صعودي قوي",
+    "Weak Bullish (Low Trend Strength)": "صعودي ضعيف (قوة اتجاه منخفضة)",
+    "Weak Bullish": "صعودي ضعيف",
+    "Consolidation / Neutral": "تماسك / محايد",
+    "Strong Bearish": "هبوطي قوي",
+    "Weak Bearish (Low Trend Strength)": "هبوطي ضعيف (قوة اتجاه منخفضة)",
+    "Weak Bearish": "هبوطي ضعيف",
+    "Insufficient Data": "بيانات غير كافية",
+    # Data Confidence tiers (exact strings from analytics.py's data_confidence_tier)
+    "Very Low (New/Short History)": "منخفضة جدًا (سجل جديد/قصير)",
+    "Low (<3 Months)": "منخفضة (أقل من 3 أشهر)",
+    "Medium (<1 Year)": "متوسطة (أقل من سنة)",
+    "High (1Y+)": "عالية (سنة+)",
+    "Set Account Cash Balance": "تحديد الرصيد النقدي للحساب",
+    "Enter available cash balance in EGP:": "أدخل الرصيد النقدي المتاح بالجنيه:",
+    "Cash Updated": "تم تحديث الرصيد النقدي",
+    "Account cash balance successfully updated to: {v} EGP.": "تم تحديث الرصيد النقدي للحساب بنجاح إلى: {v} جنيه.",
+    "No real (non-demo) closed trades available to export.": "لا توجد صفقات مغلقة حقيقية (غير تجريبية) متاحة للتصدير.",
+    "({n} demo trade(s) were excluded.)": "(تم استبعاد {n} صفقة/صفقات تجريبية.)",
+    "Export Error": "خطأ في التصدير",
+    "Export Audit Ledger": "تصدير سجل المراجعة",
+    "CSV Files (*.csv);;Excel Files (*.xlsx)": "ملفات CSV (*.csv);;ملفات Excel (*.xlsx)",
+    "Export Successful": "تم التصدير بنجاح",
+    "Audit ledger successfully saved to:\n{path}\n\nWin Rate: {wr}% | Profit Factor: {pf}": "تم حفظ سجل المراجعة بنجاح في:\n{path}\n\nمعدل الفوز: {wr}% | معامل الربحية: {pf}",
+    "Export Failed": "فشل التصدير",
+    "Could not save file:\n{err}": "تعذّر حفظ الملف:\n{err}",
+    "Invalid Folder": "مجلد غير صحيح",
+    "The directory does not exist:\n{dir}": "المجلد غير موجود:\n{dir}",
+    "MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard": "إم بي-إي جي إكس — لوحة مصفوفة التداول والقطاعات",
 }
 
 
@@ -196,6 +308,17 @@ def set_language(lang):
     global CURRENT_LANG
     CURRENT_LANG = lang
     _SETTINGS.setValue("lang", lang)
+    _set_db_language(lang)
+    _set_dm_language(lang)
+    _set_ing_language(lang)
+
+
+# Keep the backend modules' small sets of user-facing message translations
+# in sync with whatever language was persisted from a previous launch, right
+# from import time — not just after the next toggle.
+_set_db_language(CURRENT_LANG)
+_set_dm_language(CURRENT_LANG)
+_set_ing_language(CURRENT_LANG)
 
 
 def fetch_client_ip():
@@ -834,9 +957,9 @@ class MatrixTableModel(QAbstractTableModel):
     def headerData(self, section, orientation, role=Qt.ItemDataRole.DisplayRole):
         if orientation == Qt.Orientation.Horizontal:
             if role == Qt.ItemDataRole.DisplayRole:
-                return self._columns[section][0]
+                return tr(self._columns[section][0])
             elif role == Qt.ItemDataRole.ToolTipRole:
-                return self._columns[section][1]
+                return tr(self._columns[section][1])
         return None
 
     def data(self, index, role=Qt.ItemDataRole.DisplayRole):
@@ -851,6 +974,8 @@ class MatrixTableModel(QAbstractTableModel):
         val_str = str(val)
 
         if role == Qt.ItemDataRole.DisplayRole:
+            if key in ("Action", "Trend Class", "Data Confidence"):
+                return tr(val_str)
             return val_str
         elif role == Qt.ItemDataRole.TextAlignmentRole:
             if key in ["Action", "Data Confidence"]:
@@ -1108,7 +1233,7 @@ class PositionSizingDialog(QDialog):
 class PortfolioDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Institutional Portfolio & Trade Manager")
+        self.setWindowTitle(tr("Institutional Portfolio & Trade Manager"))
         self.resize(550, 500)
         self.dbm = DatabaseManager()
         self._init_ui()
@@ -1125,49 +1250,49 @@ class PortfolioDialog(QDialog):
         self.cmb_buy_ticker = QComboBox()
         self.cmb_buy_ticker.setEditable(True)
         self.cmb_buy_ticker.addItems(available_tickers)
-        self.cmb_buy_ticker.setPlaceholderText("Type or select ticker (e.g. PHGC.CA)...")
+        self.cmb_buy_ticker.setPlaceholderText(tr("Type or select ticker (e.g. PHGC.CA)..."))
 
         completer_buy = self.cmb_buy_ticker.completer()
         if completer_buy:
             completer_buy.setCompletionMode(QCompleter.CompletionMode.PopupCompletion)
             completer_buy.setFilterMode(Qt.MatchFlag.MatchContains)
-        form_buy.addRow("Ticker Symbol:", self.cmb_buy_ticker)
+        form_buy.addRow(tr("Ticker Symbol:"), self.cmb_buy_ticker)
 
         self.spn_buy_price = QDoubleSpinBox()
         self.spn_buy_price.setRange(0.0001, 100000.0)
         self.spn_buy_price.setDecimals(4)
         self.spn_buy_price.setValue(0.1351)
-        form_buy.addRow("Buy Price (EGP):", self.spn_buy_price)
+        form_buy.addRow(tr("Buy Price (EGP):"), self.spn_buy_price)
 
         self.spn_buy_shares = QDoubleSpinBox()
         self.spn_buy_shares.setRange(0.0001, 10000000.0)
         self.spn_buy_shares.setDecimals(4)
         self.spn_buy_shares.setValue(10000.0000)
-        form_buy.addRow("Number of Shares:", self.spn_buy_shares)
+        form_buy.addRow(tr("Number of Shares:"), self.spn_buy_shares)
 
         self.dt_buy_date = QDateEdit()
         self.dt_buy_date.setCalendarPopup(True)
         self.dt_buy_date.setDate(QDate.currentDate())
-        form_buy.addRow("Purchase Date:", self.dt_buy_date)
+        form_buy.addRow(tr("Purchase Date:"), self.dt_buy_date)
 
-        btn_scale = QPushButton("📈 Add Shares / Scale In (Auto-Calculate Average)")
+        btn_scale = QPushButton(tr("📈 Add Shares / Scale In (Auto-Calculate Average)"))
         btn_scale.setStyleSheet("background-color: #3198dc; color: white; margin-top: 10px; padding: 10px 14px; font-size: 13px; border-radius: 6px;")
         btn_scale.clicked.connect(lambda: self.save_buy_position(mode="ADD_SCALE"))
         form_buy.addRow(btn_scale)
 
         btn_layout = QHBoxLayout()
-        btn_overwrite = QPushButton("✏️ Correct Mistake")
+        btn_overwrite = QPushButton(tr("✏️ Correct Mistake"))
         btn_overwrite.setStyleSheet("background-color: #d69e2e; color: white; padding: 10px 14px; font-size: 13px; border-radius: 6px;")
         btn_overwrite.clicked.connect(lambda: self.save_buy_position(mode="OVERWRITE"))
 
-        btn_delete = QPushButton("🗑️ Delete Position")
+        btn_delete = QPushButton(tr("🗑️ Delete Position"))
         btn_delete.setStyleSheet("background-color: #e53e3e; color: white; padding: 10px 14px; font-size: 13px; border-radius: 6px;")
         btn_delete.clicked.connect(self.delete_buy_position)
 
         btn_layout.addWidget(btn_overwrite)
         btn_layout.addWidget(btn_delete)
         form_buy.addRow(btn_layout)
-        self.tabs.addTab(tab_buy, "🛒 Open / Add / Delete Position")
+        self.tabs.addTab(tab_buy, tr("🛒 Open / Add / Delete Position"))
 
         tab_sell = QWidget()
         form_sell = QFormLayout(tab_sell)
@@ -1182,33 +1307,33 @@ class PortfolioDialog(QDialog):
         if completer_sell:
             completer_sell.setCompletionMode(QCompleter.CompletionMode.PopupCompletion)
             completer_sell.setFilterMode(Qt.MatchFlag.MatchContains)
-        form_sell.addRow("Ticker Symbol:", self.cmb_sell_ticker)
+        form_sell.addRow(tr("Ticker Symbol:"), self.cmb_sell_ticker)
 
         self.spn_sell_price = QDoubleSpinBox()
         self.spn_sell_price.setRange(0.0001, 100000.0)
         self.spn_sell_price.setDecimals(4)
         self.spn_sell_price.setValue(0.1500)
-        form_sell.addRow("Selling Price (EGP):", self.spn_sell_price)
+        form_sell.addRow(tr("Selling Price (EGP):"), self.spn_sell_price)
 
         self.spn_sell_shares = QDoubleSpinBox()
         self.spn_sell_shares.setRange(0.0001, 10000000.0)
         self.spn_sell_shares.setDecimals(4)
         self.spn_sell_shares.setValue(10000.0000)
-        form_sell.addRow("Shares Sold:", self.spn_sell_shares)
+        form_sell.addRow(tr("Shares Sold:"), self.spn_sell_shares)
 
         self.dt_sell_date = QDateEdit()
         self.dt_sell_date.setCalendarPopup(True)
         self.dt_sell_date.setDate(QDate.currentDate())
-        form_sell.addRow("Sell Date:", self.dt_sell_date)
+        form_sell.addRow(tr("Sell Date:"), self.dt_sell_date)
 
-        btn_record_sale = QPushButton("🤝 Record Sale & Calculate P&L")
+        btn_record_sale = QPushButton(tr("🤝 Record Sale & Calculate P&L"))
         btn_record_sale.setStyleSheet("background-color: #38a169; color: white; margin-top: 10px; padding: 10px 14px; font-size: 13px; border-radius: 6px;")
         btn_record_sale.clicked.connect(self.record_stock_sale)
         form_sell.addRow(btn_record_sale)
-        self.tabs.addTab(tab_sell, "🤝 Record Sale / Close Trade")
+        self.tabs.addTab(tab_sell, tr("🤝 Record Sale / Close Trade"))
         layout.addWidget(self.tabs)
 
-        btn_clean = QPushButton("🧹 Clear Sample Demo Data")
+        btn_clean = QPushButton(tr("🧹 Clear Sample Demo Data"))
         btn_clean.setStyleSheet("background-color: #4a5568; color: white; margin-top: 5px; padding: 10px 14px; font-size: 13px; border-radius: 6px;")
         btn_clean.clicked.connect(self.clean_samples)
         layout.addWidget(btn_clean)
@@ -1216,7 +1341,7 @@ class PortfolioDialog(QDialog):
     def save_buy_position(self, mode="ADD_SCALE"):
         ticker = self.cmb_buy_ticker.currentText().strip().upper()
         if not ticker:
-            QMessageBox.warning(self, "Input Error", "Please enter or select a valid Ticker Symbol.")
+            QMessageBox.warning(self, tr("Input Error"), tr("Please enter or select a valid Ticker Symbol."))
             return
         available_tickers = self.dbm.get_unique_tickers()
         if ticker not in available_tickers and (ticker + ".CA") in available_tickers:
@@ -1226,27 +1351,27 @@ class PortfolioDialog(QDialog):
         p_date = self.dt_buy_date.date().toString("yyyy-MM-dd")
         success, msg = self.dbm.add_owned_stock(ticker, price, shares, p_date, mode=mode, is_demo=False)
         if success:
-            QMessageBox.information(self, "Position Updated", msg)
+            QMessageBox.information(self, tr("Position Updated"), msg)
             self.accept()
         else:
-            QMessageBox.warning(self, "Position Error", msg)
+            QMessageBox.warning(self, tr("Position Error"), msg)
 
     def delete_buy_position(self):
         ticker = self.cmb_buy_ticker.currentText().strip().upper()
         if not ticker:
-            QMessageBox.warning(self, "Input Error", "Please select the Ticker Symbol to delete.")
+            QMessageBox.warning(self, tr("Input Error"), tr("Please select the Ticker Symbol to delete."))
             return
         available_tickers = self.dbm.get_unique_tickers()
         if ticker not in available_tickers and (ticker + ".CA") in available_tickers:
             ticker = ticker + ".CA"
         self.dbm.remove_owned_stock(ticker)
-        QMessageBox.information(self, "Deleted", f"Permanently removed {ticker} from your active portfolio.")
+        QMessageBox.information(self, tr("Deleted"), tr("Permanently removed {ticker} from your active portfolio.").format(ticker=ticker))
         self.accept()
 
     def record_stock_sale(self):
         ticker = self.cmb_sell_ticker.currentText().strip().upper()
         if not ticker:
-            QMessageBox.warning(self, "Input Error", "Please enter or select the Ticker Symbol.")
+            QMessageBox.warning(self, tr("Input Error"), tr("Please enter or select the Ticker Symbol."))
             return
         available_tickers = self.dbm.get_unique_tickers()
         if ticker not in available_tickers and (ticker + ".CA") in available_tickers:
@@ -1256,14 +1381,14 @@ class PortfolioDialog(QDialog):
         s_date = self.dt_sell_date.date().toString("yyyy-MM-dd")
         success, msg = self.dbm.record_sale(ticker, sell_price, shares_sold, s_date)
         if success:
-            QMessageBox.information(self, "Sale Recorded!", msg)
+            QMessageBox.information(self, tr("Sale Recorded!"), msg)
             self.accept()
         else:
-            QMessageBox.warning(self, "Sale Error", msg)
+            QMessageBox.warning(self, tr("Sale Error"), msg)
 
     def clean_samples(self):
         self.dbm.clear_sample_data()
-        QMessageBox.information(self, "Samples Deleted", "Successfully removed demo samples without deleting real positions!")
+        QMessageBox.information(self, tr("Samples Deleted"), tr("Successfully removed demo samples without deleting real positions!"))
         self.accept()
 
 
@@ -1741,7 +1866,7 @@ class LoginDialog(QDialog):
 class AnalyticsDialog(QDialog):
     def __init__(self, id_token, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("📊 Usage Analytics")
+        self.setWindowTitle(tr("📊 Usage Analytics"))
         self.resize(920, 520)
         self.setStyleSheet(THEME_DARK)
         self.id_token = id_token
@@ -1752,23 +1877,23 @@ class AnalyticsDialog(QDialog):
     def _init_ui(self):
         layout = QVBoxLayout(self)
 
-        lbl_info = QLabel(
+        lbl_info = QLabel(tr(
             "Sessions and trading activity combined across the website (🌐) and the desktop app (🖥️). "
             "Time is approximate (30s heartbeat). Trade Value = total EGP bought + sold; "
             "Portfolio Value = cash + open positions at cost."
-        )
+        ))
         lbl_info.setWordWrap(True)
         lbl_info.setStyleSheet("color: #a0aec0; font-size: 13px;")
         layout.addWidget(lbl_info)
 
-        self.lbl_status = QLabel("Loading session data…")
+        self.lbl_status = QLabel(tr("Loading session data…"))
         self.lbl_status.setStyleSheet("font-weight: bold; font-size: 14px; padding: 6px 0;")
         layout.addWidget(self.lbl_status)
 
         self.table = QTableWidget()
         self.table.setColumnCount(7)
         self.table.setHorizontalHeaderLabels(
-            ["User", "Sessions (🌐/🖥️)", "Total Time", "Trades", "Trade Value", "Portfolio Value", "Last Seen"]
+            [tr("User"), tr("Sessions (🌐/🖥️)"), tr("Total Time"), tr("Trades"), tr("Trade Value"), tr("Portfolio Value"), tr("Last Seen")]
         )
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
@@ -1777,16 +1902,16 @@ class AnalyticsDialog(QDialog):
 
         btn_row = QHBoxLayout()
         btn_row.addStretch()
-        self.btn_refresh = QPushButton("🔄 Refresh")
+        self.btn_refresh = QPushButton(tr("🔄 Refresh"))
         self.btn_refresh.clicked.connect(self._load)
         btn_row.addWidget(self.btn_refresh)
-        btn_close = QPushButton("Close")
+        btn_close = QPushButton(tr("Close"))
         btn_close.clicked.connect(self.accept)
         btn_row.addWidget(btn_close)
         layout.addLayout(btn_row)
 
     def _load(self):
-        self.lbl_status.setText("Loading session data…")
+        self.lbl_status.setText(tr("Loading session data…"))
         self.btn_refresh.setEnabled(False)
         self._worker = _CloudWorker(compute_usage_analytics, self.id_token)
         self._worker.finished_result.connect(self._on_loaded)
@@ -1795,14 +1920,18 @@ class AnalyticsDialog(QDialog):
     def _on_loaded(self, result):
         self.btn_refresh.setEnabled(True)
         if not result:
-            self.lbl_status.setText("⚠️ Could not load analytics data (check your connection or Firestore rules).")
+            self.lbl_status.setText(tr("⚠️ Could not load analytics data (check your connection or Firestore rules)."))
             self.table.setRowCount(0)
             return
 
         self.lbl_status.setText(
-            f"👥 Unique Users: {result['unique_users']}    |    "
-            f"📅 Total Sessions: {result['session_count']}    |    "
-            f"⏱️ Avg Time / Session: {_format_duration(result['avg_duration_sec'])}"
+            tr("👥 Unique Users: {users}    |    "
+               "📅 Total Sessions: {sessions}    |    "
+               "⏱️ Avg Time / Session: {avg}").format(
+                users=result['unique_users'],
+                sessions=result['session_count'],
+                avg=_format_duration(result['avg_duration_sec']),
+            )
         )
 
         rows = result["per_user"]
@@ -1828,7 +1957,7 @@ class AnalyticsDialog(QDialog):
 class QuantDashboard(QMainWindow):
     def __init__(self, user_info=None):
         super().__init__()
-        self.setWindowTitle("MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard")
+        self.setWindowTitle(tr("MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard"))
         self.resize(1520, 920)
         if LOGO_PATH.exists():
             self.setWindowIcon(QIcon(str(LOGO_PATH)))
@@ -2362,6 +2491,7 @@ class QuantDashboard(QMainWindow):
     def switch_language(self, index):
         self.current_lang = "AR" if index == 1 else "EN"
         set_language(self.current_lang)
+        self.setWindowTitle(tr("MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard"))
         t = TRANSLATIONS[self.current_lang]
 
         if self.current_lang == "AR":
@@ -2398,6 +2528,17 @@ class QuantDashboard(QMainWindow):
             self.chart_widget.set_language(self.current_lang)
         self.update_last_data_date_display()
         self.refresh_account_header()
+
+        # MatrixTableModel's data()/headerData() read the module-level
+        # CURRENT_LANG directly, but Qt views only repaint when told the
+        # model changed — so explicitly signal each one now.
+        for tbl in (getattr(self, "tbl_buys", None), getattr(self, "tbl_top_strong", None),
+                    getattr(self, "tbl_top_breakout", None), getattr(self, "tbl_top_accum", None),
+                    getattr(self, "tbl_top_dip", None)):
+            if tbl is not None and tbl.model() is not None:
+                m = tbl.model()
+                m.layoutChanged.emit()
+                m.headerDataChanged.emit(Qt.Orientation.Horizontal, 0, m.columnCount() - 1)
 
     def _create_matrix_table(self):
         tbl = QTableView()
@@ -2460,10 +2601,10 @@ class QuantDashboard(QMainWindow):
 
     def prompt_set_cash(self):
         current_cash = self.dbm.get_cash_balance()
-        val, ok = QInputDialog.getDouble(self, "Set Account Cash Balance", "Enter available cash balance in EGP:", current_cash, 0.0, 1000000000.0, 2)
+        val, ok = QInputDialog.getDouble(self, tr("Set Account Cash Balance"), tr("Enter available cash balance in EGP:"), current_cash, 0.0, 1000000000.0, 2)
         if ok:
             self.dbm.set_cash_balance(val)
-            QMessageBox.information(self, "Cash Updated", f"Account cash balance successfully updated to: {val:,.2f} EGP.")
+            QMessageBox.information(self, tr("Cash Updated"), tr("Account cash balance successfully updated to: {v} EGP.").format(v=f"{val:,.2f}"))
             self.start_analysis()
 
     def export_trade_ledger(self):
@@ -2471,13 +2612,13 @@ class QuantDashboard(QMainWindow):
         trades = [t for t in all_trades if not t.get("is_demo")]
         n_demo_excluded = len(all_trades) - len(trades)
         if not trades:
-            msg = "No real (non-demo) closed trades available to export."
+            msg = tr("No real (non-demo) closed trades available to export.")
             if n_demo_excluded:
-                msg += f"\n({n_demo_excluded} demo trade(s) were excluded.)"
-            QMessageBox.warning(self, "Export Error", msg)
+                msg += "\n" + tr("({n} demo trade(s) were excluded.)").format(n=n_demo_excluded)
+            QMessageBox.warning(self, tr("Export Error"), msg)
             return
         
-        file_path, _ = QFileDialog.getSaveFileName(self, "Export Audit Ledger", "Trade_Audit_Ledger.csv", "CSV Files (*.csv);;Excel Files (*.xlsx)")
+        file_path, _ = QFileDialog.getSaveFileName(self, tr("Export Audit Ledger"), "Trade_Audit_Ledger.csv", tr("CSV Files (*.csv);;Excel Files (*.xlsx)"))
         if not file_path:
             return
         
@@ -2513,9 +2654,9 @@ class QuantDashboard(QMainWindow):
                 df_export.to_excel(file_path, index=False)
             else:
                 df_export.to_csv(file_path, index=False)
-            QMessageBox.information(self, "Export Successful", f"Audit ledger successfully saved to:\n{file_path}\n\nWin Rate: {win_rate:.1f}% | Profit Factor: {profit_factor:.2f}")
+            QMessageBox.information(self, tr("Export Successful"), tr("Audit ledger successfully saved to:\n{path}\n\nWin Rate: {wr}% | Profit Factor: {pf}").format(path=file_path, wr=f"{win_rate:.1f}", pf=f"{profit_factor:.2f}"))
         except Exception as e:
-            QMessageBox.critical(self, "Export Failed", f"Could not save file:\n{str(e)}")
+            QMessageBox.critical(self, tr("Export Failed"), tr("Could not save file:\n{err}").format(err=str(e)))
 
     def refresh_account_header(self, fin_stmt=None):
         t = TRANSLATIONS[self.current_lang]
@@ -2547,7 +2688,7 @@ class QuantDashboard(QMainWindow):
     def start_ingestion(self):
         target_directory = self.txt_scan_dir.text().strip()
         if not os.path.exists(target_directory):
-            QMessageBox.warning(self, "Invalid Folder", f"The directory does not exist:\n{target_directory}")
+            QMessageBox.warning(self, tr("Invalid Folder"), tr("The directory does not exist:\n{dir}").format(dir=target_directory))
             return
         self._set_ui_controls_enabled(False)
         self.ingest_worker = IngestionWorker(target_dir=target_directory)
@@ -2557,7 +2698,7 @@ class QuantDashboard(QMainWindow):
 
     def ingestion_done(self):
         self._set_ui_controls_enabled(True)
-        self.lbl_status.setText("⚡ Ingestion successfully flushed to DuckDB.")
+        self.lbl_status.setText(tr("⚡ Ingestion successfully flushed to DuckDB."))
         self.update_last_data_date_display()
 
     def start_analysis(self):
@@ -2574,7 +2715,7 @@ class QuantDashboard(QMainWindow):
     def populate_tables(self, buys, exits, top10, closed_trades, fin_stmt, sector_summary, breakout_watchlist=None, portfolio_risk=None):
         breakout_watchlist = breakout_watchlist or []
         self._set_ui_controls_enabled(True)
-        self.lbl_status.setText("✅ Quantitative signal matrix & sector heatmaps successfully updated.")
+        self.lbl_status.setText(tr("✅ Quantitative signal matrix & sector heatmaps successfully updated."))
         self.refresh_account_header(fin_stmt)
         self.update_last_data_date_display()
         self._raw_buys_data = buys

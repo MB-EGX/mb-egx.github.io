@@ -50,6 +50,29 @@ from db_manager import DatabaseManager
 
 logger = get_logger("decision_matrix")
 
+# =============================================================================
+# Optional display-language for the small set of scan-progress messages
+# below ONLY (e.g. "Scanning multi-factor confirmation matrix..."). This is
+# completely separate from - and never touches - the Action/Trend Class/
+# Sector Status strings this module generates as actual data (those must
+# stay English unconditionally: they're shipped into market_data.json for
+# the website and matched against fixed value sets there and in Firestore
+# rules). Self-contained here (no import from app_gui.py) so there's no
+# circular-import risk, and the CLI pipeline (publish.py/export_json.py)
+# never calls set_language(), so it always sees English and is unaffected.
+# =============================================================================
+_LANG = "EN"
+
+
+def set_language(lang):
+    global _LANG
+    _LANG = lang if lang == "AR" else "EN"
+
+
+def _t(en, ar):
+    return ar if _LANG == "AR" else en
+
+
 
 def _confidence_weight(n_bars: int) -> float:
     if n_bars <= MIN_BARS_FOR_PATTERN_TRUST:
@@ -174,7 +197,7 @@ class DecisionMatrix:
         total = len(tickers)
         if total == 0 and not owned_dict:
             if progress_callback:
-                progress_callback(100, "No tickers found in database.")
+                progress_callback(100, _t("No tickers found in database.", "لم يتم العثور على رموز أسهم في قاعدة البيانات."))
             empty_stmt = {
                 "Cash Balance (EGP)": round(cash_balance, 2),
                 "Stock Portfolio Cost Basis (EGP)": 0.0,
@@ -231,14 +254,20 @@ class DecisionMatrix:
                     if progress_callback:
                         progress_callback(
                             int((done_tickers / len(eligible)) * 70),
-                            f"Computing indicators & pattern matches: {done_tickers}/{len(eligible)}...",
+                            _t(
+                                f"Computing indicators & pattern matches: {done_tickers}/{len(eligible)}...",
+                                f"جاري حساب المؤشرات ومطابقة الأنماط: {done_tickers}/{len(eligible)}...",
+                            ),
                         )
 
         for idx, (ticker, norm_ticker, df, is_owned, n_bars) in enumerate(eligible):
             if progress_callback and idx % 5 == 0:
                 progress_callback(
                     70 + int((idx / max(len(eligible), 1)) * 30),
-                    f"Scanning multi-factor confirmation matrix: {ticker}...",
+                    _t(
+                        f"Scanning multi-factor confirmation matrix: {ticker}...",
+                        f"جاري فحص مصفوفة التأكيد متعددة العوامل: {ticker}...",
+                    ),
                 )
 
             df_ind, pattern_data = precomputed.get(ticker, (pd.DataFrame(), None))
@@ -729,7 +758,7 @@ class DecisionMatrix:
         breakout_watchlist = breakout_watchlist[: ACTION_THRESHOLDS["breakout_watch_max_results"]]
 
         if progress_callback:
-            progress_callback(100, "Multi-factor confirmation matrix scan complete.")
+            progress_callback(100, _t("Multi-factor confirmation matrix scan complete.", "اكتمل فحص مصفوفة التأكيد متعددة العوامل."))
         return (
             buy_recommendations,
             exit_strategies,
