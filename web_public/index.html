@@ -204,12 +204,12 @@
                     <option value="AR">🇪🇬 العربية</option>
                 </select>
                 <button id="btn-admin-analytics" onclick="openAnalyticsModal()" style="display:none;" class="bg-teal-600 hover:bg-teal-500 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
-                    <span>📊</span> <span>Usage Analytics</span>
+                    <span>📊</span> <span data-i18n="btn_usage_analytics">Usage Analytics</span>
                 </button>
                 <div id="user-badge" style="display:none;" class="flex items-center gap-2 bg-darkbg border border-bordercol rounded-lg px-3 py-2">
                     <span class="text-textmuted">👋</span>
                     <span id="lbl-welcome-user" class="font-semibold text-sky-400"></span>
-                    <button onclick="handleSignOut()" title="Sign out" class="text-textmuted hover:text-rose-400 transition text-xs font-bold ml-1">✕</button>
+                    <button onclick="handleSignOut()" data-i18n-title="tt_sign_out" title="Sign out" class="text-textmuted hover:text-rose-400 transition text-xs font-bold ml-1">✕</button>
                 </div>
             </div>
         </header>
@@ -231,33 +231,33 @@
         <div class="bg-panelbg p-3 rounded-xl border border-bordercol shadow flex flex-wrap items-center gap-3">
             <span id="lbl-filter" class="font-bold text-sky-400 flex items-center gap-1 whitespace-nowrap">🔍 Live Filters:</span>
             
-            <input type="text" id="filter-search" oninput="applyFilters()" placeholder="Search Ticker or keyword..." 
+            <input type="text" id="filter-search" oninput="applyFilters()" data-i18n-placeholder="ph_search_ticker" placeholder="Search Ticker or keyword..." 
                 class="bg-darkbg border border-bordercol rounded px-3 py-1.5 text-textmain w-full lg:w-56 focus:outline-none focus:border-sky-500">
 
             <select id="filter-action" onchange="applyFilters()" class="bg-darkbg border border-bordercol rounded px-2 py-1.5 text-textmain w-full lg:w-auto">
-                <option value="All">All Actions</option>
-                <option value="🔥 STRONG BUY">🔥 STRONG BUY</option>
-                <option value="⚡ BREAKOUT BUY">⚡ BREAKOUT BUY</option>
-                <option value="📈 ACCUMULATE">📈 ACCUMULATE</option>
-                <option value="⏳ BUY ON DIP">⏳ BUY ON DIP</option>
-                <option value="🟡 HOLD">🟡 HOLD / NEUTRAL</option>
-                <option value="🛑 SELL">🛑 SELL / AVOID</option>
+                <option value="All" data-i18n="opt_all_actions">All Actions</option>
+                <option value="🔥 STRONG BUY" data-i18n="opt_strong_buy">🔥 STRONG BUY</option>
+                <option value="⚡ BREAKOUT BUY" data-i18n="opt_breakout_buy">⚡ BREAKOUT BUY</option>
+                <option value="📈 ACCUMULATE" data-i18n="opt_accumulate">📈 ACCUMULATE</option>
+                <option value="⏳ BUY ON DIP" data-i18n="opt_buy_on_dip">⏳ BUY ON DIP</option>
+                <option value="🟡 HOLD" data-i18n="opt_hold_neutral">🟡 HOLD / NEUTRAL</option>
+                <option value="🛑 SELL" data-i18n="opt_sell_avoid">🛑 SELL / AVOID</option>
             </select>
 
             <select id="filter-trend" onchange="applyFilters()" class="bg-darkbg border border-bordercol rounded px-2 py-1.5 text-textmain w-full lg:w-auto">
-                <option value="All">All Trends</option>
-                <option value="Strong Bullish">Strong Bullish</option>
-                <option value="Weak Bullish">Weak Bullish</option>
-                <option value="Consolidation">Consolidation / Neutral</option>
-                <option value="Weak Bearish">Weak Bearish</option>
-                <option value="Strong Bearish">Strong Bearish</option>
+                <option value="All" data-i18n="opt_all_trends">All Trends</option>
+                <option value="Strong Bullish" data-i18n="opt_strong_bullish">Strong Bullish</option>
+                <option value="Weak Bullish" data-i18n="opt_weak_bullish">Weak Bullish</option>
+                <option value="Consolidation" data-i18n="opt_consolidation">Consolidation / Neutral</option>
+                <option value="Weak Bearish" data-i18n="opt_weak_bearish">Weak Bearish</option>
+                <option value="Strong Bearish" data-i18n="opt_strong_bearish">Strong Bearish</option>
             </select>
 
             <select id="filter-confidence" onchange="applyFilters()" class="bg-darkbg border border-bordercol rounded px-2 py-1.5 text-textmain w-full lg:w-auto">
-                <option value="All">All Data Confidence</option>
-                <option value="High">High (1Y+)</option>
-                <option value="Medium">Medium (<1 Year)</option>
-                <option value="Low">Low (<3 Months)</option>
+                <option value="All" data-i18n="opt_all_confidence">All Data Confidence</option>
+                <option value="High" data-i18n="opt_conf_high">High (1Y+)</option>
+                <option value="Medium" data-i18n="opt_conf_medium">Medium (<1 Year)</option>
+                <option value="Low" data-i18n="opt_conf_low">Low (<3 Months)</option>
             </select>
 
             <label class="flex items-center gap-2 cursor-pointer bg-darkbg px-3 py-1.5 rounded border border-bordercol whitespace-nowrap">
@@ -309,30 +309,30 @@
                     <thead class="sticky top-0 bg-[#2d3748] text-white font-sans text-xs z-10 shadow">
                         <tr id="thead-matrix-tr">
                             <th class="p-2.5 border border-darkbg" data-col="0">#</th>
-                            <th class="p-2.5 border border-darkbg" data-col="1">Ticker</th>
-                            <th class="p-2.5 border border-darkbg text-center" data-col="2">Action</th>
-                            <th class="p-2.5 border border-darkbg" data-col="3">Score</th>
-                            <th class="p-2.5 border border-darkbg" data-col="4">Price</th>
-                            <th class="p-2.5 border border-darkbg" data-col="5">Entry (VWAP)</th>
-                            <th class="p-2.5 border border-darkbg" data-col="6">Stop-Loss</th>
-                            <th class="p-2.5 border border-darkbg" data-col="7">Shares (1% Risk)</th>
-                            <th class="p-2.5 border border-darkbg" data-col="8">Proj. Gain %</th>
-                            <th class="p-2.5 border border-darkbg" data-col="9">Pattern Conf %</th>
-                            <th class="p-2.5 border border-darkbg font-sans" data-col="10">Trend</th>
+                            <th class="p-2.5 border border-darkbg" data-col="1" data-i18n="hdr_ticker">Ticker</th>
+                            <th class="p-2.5 border border-darkbg text-center" data-col="2" data-i18n="hdr_action">Action</th>
+                            <th class="p-2.5 border border-darkbg" data-col="3" data-i18n="hdr_score">Score</th>
+                            <th class="p-2.5 border border-darkbg" data-col="4" data-i18n="hdr_price">Price</th>
+                            <th class="p-2.5 border border-darkbg" data-col="5" data-i18n="hdr_entry_vwap">Entry (VWAP)</th>
+                            <th class="p-2.5 border border-darkbg" data-col="6" data-i18n="hdr_stop_loss">Stop-Loss</th>
+                            <th class="p-2.5 border border-darkbg" data-col="7" data-i18n="hdr_shares_risk">Shares (1% Risk)</th>
+                            <th class="p-2.5 border border-darkbg" data-col="8" data-i18n="hdr_proj_gain">Proj. Gain %</th>
+                            <th class="p-2.5 border border-darkbg" data-col="9" data-i18n="hdr_pattern_conf">Pattern Conf %</th>
+                            <th class="p-2.5 border border-darkbg font-sans" data-col="10" data-i18n="hdr_trend">Trend</th>
                             <th class="p-2.5 border border-darkbg" data-col="11">RSI-14</th>
                             <th class="p-2.5 border border-darkbg" data-col="12">ADX-14</th>
-                            <th class="p-2.5 border border-darkbg" data-col="13">Vol Z-Score</th>
+                            <th class="p-2.5 border border-darkbg" data-col="13" data-i18n="hdr_vol_zscore">Vol Z-Score</th>
                             <th class="p-2.5 border border-darkbg font-sans" data-col="14">MACD</th>
-                            <th class="p-2.5 border border-darkbg" data-col="15">Bollinger %B</th>
-                            <th class="p-2.5 border border-darkbg" data-col="16">Avg Vol (20D)</th>
-                            <th class="p-2.5 border border-darkbg font-sans" data-col="17">Data Conf.</th>
-                            <th class="p-2.5 border border-darkbg" data-col="18">Take-Profit</th>
-                            <th class="p-2.5 border border-darkbg" data-col="19">Resistance (R1/R2/R3)</th>
-                            <th class="p-2.5 border border-darkbg" data-col="20">Support (S1/S2/S3)</th>
+                            <th class="p-2.5 border border-darkbg" data-col="15" data-i18n="hdr_bollinger">Bollinger %B</th>
+                            <th class="p-2.5 border border-darkbg" data-col="16" data-i18n="hdr_avg_vol">Avg Vol (20D)</th>
+                            <th class="p-2.5 border border-darkbg font-sans" data-col="17" data-i18n="hdr_data_conf">Data Conf.</th>
+                            <th class="p-2.5 border border-darkbg" data-col="18" data-i18n="hdr_take_profit">Take-Profit</th>
+                            <th class="p-2.5 border border-darkbg" data-col="19" data-i18n="hdr_resistance">Resistance (R1/R2/R3)</th>
+                            <th class="p-2.5 border border-darkbg" data-col="20" data-i18n="hdr_support">Support (S1/S2/S3)</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-matrix" class="divide-y divide-bordercol/50 text-xs">
-                        <tr><td colspan="21" class="p-8 text-center text-textmuted font-sans">Loading quantitative matrix...</td></tr>
+                        <tr><td colspan="21" class="p-8 text-center text-textmuted font-sans" data-i18n="loading_matrix">Loading quantitative matrix...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -344,15 +344,15 @@
                 <table class="w-full text-left border-collapse whitespace-nowrap">
                     <thead class="bg-[#2d3748] text-white text-xs">
                         <tr>
-                            <th class="p-2.5 border border-darkbg">Sector</th>
-                            <th class="p-2.5 border border-darkbg text-center">Stocks</th>
-                            <th class="p-2.5 border border-darkbg text-right">1D Return (%)</th>
-                            <th class="p-2.5 border border-darkbg text-right">5D Return (%)</th>
-                            <th class="p-2.5 border border-darkbg text-right">Money Flow (CMF)</th>
-                            <th class="p-2.5 border border-darkbg text-right">Bullish Breadth (%)</th>
-                            <th class="p-2.5 border border-darkbg text-right">Traded Value (EGP)</th>
-                            <th class="p-2.5 border border-darkbg text-center">Sector Leader</th>
-                            <th class="p-2.5 border border-darkbg text-center">Sector Status</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_sector">Sector</th>
+                            <th class="p-2.5 border border-darkbg text-center" data-i18n="hdr_stocks">Stocks</th>
+                            <th class="p-2.5 border border-darkbg text-right" data-i18n="hdr_1d_return">1D Return (%)</th>
+                            <th class="p-2.5 border border-darkbg text-right" data-i18n="hdr_5d_return">5D Return (%)</th>
+                            <th class="p-2.5 border border-darkbg text-right" data-i18n="hdr_money_flow">Money Flow (CMF)</th>
+                            <th class="p-2.5 border border-darkbg text-right" data-i18n="hdr_bullish_breadth">Bullish Breadth (%)</th>
+                            <th class="p-2.5 border border-darkbg text-right" data-i18n="hdr_traded_value">Traded Value (EGP)</th>
+                            <th class="p-2.5 border border-darkbg text-center" data-i18n="hdr_sector_leader">Sector Leader</th>
+                            <th class="p-2.5 border border-darkbg text-center" data-i18n="hdr_sector_status">Sector Status</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-sectors" class="divide-y divide-bordercol/50 text-xs font-mono">
@@ -364,27 +364,27 @@
         <!-- TAB 3: OWNED PORTFOLIO -->
         <div id="tab-exits" class="bg-panelbg rounded-b-xl border border-t-0 border-bordercol p-4 shadow-xl hidden space-y-4">
             <div class="flex justify-between items-center">
-                <span class="text-textmuted text-xs">Positions stored securely in browser local storage.</span>
+                <span class="text-textmuted text-xs" data-i18n="lbl_positions_local">Positions stored securely in browser local storage.</span>
                 <div class="flex gap-2">
-                    <button onclick="clearDemoData()" class="bg-rose-800 hover:bg-rose-700 text-white px-3 py-1.5 rounded font-bold text-xs">🧹 Clear Demo Data</button>
-                    <button onclick="openModal('modal-portfolio')" class="bg-purple-600 hover:bg-purple-500 text-white px-3 py-1.5 rounded font-bold text-xs">+ Add Position</button>
+                    <button onclick="clearDemoData()" class="bg-rose-800 hover:bg-rose-700 text-white px-3 py-1.5 rounded font-bold text-xs">🧹 <span data-i18n="btn_clear_demo">Clear Demo Data</span></button>
+                    <button onclick="openModal('modal-portfolio')" class="bg-purple-600 hover:bg-purple-500 text-white px-3 py-1.5 rounded font-bold text-xs" data-i18n="btn_add_position">+ Add Position</button>
                 </div>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse whitespace-nowrap font-mono">
                     <thead class="bg-[#2d3748] text-white font-sans text-xs">
                         <tr>
-                            <th class="p-2.5 border border-darkbg">Ticker</th>
-                            <th class="p-2.5 border border-darkbg">Shares</th>
-                            <th class="p-2.5 border border-darkbg">Buy Price</th>
-                            <th class="p-2.5 border border-darkbg">Current Price</th>
-                            <th class="p-2.5 border border-darkbg">P&L (EGP)</th>
-                            <th class="p-2.5 border border-darkbg">P&L (%)</th>
-                            <th class="p-2.5 border border-darkbg text-center font-sans">Action Command</th>
-                            <th class="p-2.5 border border-darkbg">Take-Profit</th>
-                            <th class="p-2.5 border border-darkbg">Trailing Stop</th>
-                            <th class="p-2.5 border border-darkbg font-sans">Trend</th>
-                            <th class="p-2.5 border border-darkbg font-sans text-center">Manage</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_ticker">Ticker</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_shares">Shares</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_buy_price">Buy Price</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_current_price">Current Price</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_pnl_egp">P&L (EGP)</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_pnl_pct">P&L (%)</th>
+                            <th class="p-2.5 border border-darkbg text-center font-sans" data-i18n="hdr_action_command">Action Command</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_take_profit">Take-Profit</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_trailing_stop">Trailing Stop</th>
+                            <th class="p-2.5 border border-darkbg font-sans" data-i18n="hdr_trend">Trend</th>
+                            <th class="p-2.5 border border-darkbg font-sans text-center" data-i18n="hdr_manage">Manage</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-exits" class="divide-y divide-bordercol/50 text-xs">
@@ -400,20 +400,20 @@
                     <thead class="sticky top-0 bg-[#2d3748] text-white font-sans text-xs z-10 shadow">
                         <tr>
                             <th class="p-2.5 border border-darkbg">#</th>
-                            <th class="p-2.5 border border-darkbg">Ticker</th>
-                            <th class="p-2.5 border border-darkbg text-right">Breakout Score</th>
-                            <th class="p-2.5 border border-darkbg text-right">Price</th>
-                            <th class="p-2.5 border border-darkbg text-right">Dist. to Resistance %</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_ticker">Ticker</th>
+                            <th class="p-2.5 border border-darkbg text-right" data-i18n="hdr_breakout_score">Breakout Score</th>
+                            <th class="p-2.5 border border-darkbg text-right" data-i18n="hdr_price">Price</th>
+                            <th class="p-2.5 border border-darkbg text-right" data-i18n="hdr_dist_resistance">Dist. to Resistance %</th>
                             <th class="p-2.5 border border-darkbg text-right">RSI-14</th>
                             <th class="p-2.5 border border-darkbg text-right">ADX-14</th>
-                            <th class="p-2.5 border border-darkbg text-center">Squeeze</th>
-                            <th class="p-2.5 border border-darkbg font-sans">Volume Trend</th>
-                            <th class="p-2.5 border border-darkbg font-sans">Trend</th>
-                            <th class="p-2.5 border border-darkbg font-sans">Signals</th>
+                            <th class="p-2.5 border border-darkbg text-center" data-i18n="hdr_squeeze">Squeeze</th>
+                            <th class="p-2.5 border border-darkbg font-sans" data-i18n="hdr_volume_trend">Volume Trend</th>
+                            <th class="p-2.5 border border-darkbg font-sans" data-i18n="hdr_trend">Trend</th>
+                            <th class="p-2.5 border border-darkbg font-sans" data-i18n="hdr_signals">Signals</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-breakout" class="divide-y divide-bordercol/50 text-xs">
-                        <tr><td colspan="11" class="p-8 text-center text-textmuted font-sans">Loading breakout watchlist...</td></tr>
+                        <tr><td colspan="11" class="p-8 text-center text-textmuted font-sans" data-i18n="loading_breakout">Loading breakout watchlist...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -422,23 +422,23 @@
         <!-- TAB 4: TRADE HISTORY -->
         <div id="tab-history" class="bg-panelbg rounded-b-xl border border-t-0 border-bordercol p-4 shadow-xl hidden space-y-4">
             <div class="flex justify-between items-center">
-                <span class="text-textmuted text-xs">Closed trade ledger.</span>
+                <span class="text-textmuted text-xs" data-i18n="lbl_closed_ledger">Closed trade ledger.</span>
                 <button onclick="exportAuditLedger()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded font-bold text-xs flex items-center gap-1">
-                    📥 Export Tax & Audit Ledger (CSV)
+                    📥 <span data-i18n="btn_export_ledger">Export Tax & Audit Ledger (CSV)</span>
                 </button>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse whitespace-nowrap font-mono">
                     <thead class="bg-[#2d3748] text-white font-sans text-xs">
                         <tr>
-                            <th class="p-2.5 border border-darkbg">Ticker</th>
-                            <th class="p-2.5 border border-darkbg">Shares Sold</th>
-                            <th class="p-2.5 border border-darkbg">Buy Price</th>
-                            <th class="p-2.5 border border-darkbg">Sell Price</th>
-                            <th class="p-2.5 border border-darkbg">Realized P&L (EGP)</th>
-                            <th class="p-2.5 border border-darkbg">Realized P&L (%)</th>
-                            <th class="p-2.5 border border-darkbg">Purchase Date</th>
-                            <th class="p-2.5 border border-darkbg">Sell Date</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_ticker">Ticker</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_shares_sold">Shares Sold</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_buy_price">Buy Price</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_sell_price">Sell Price</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_realized_pnl_egp">Realized P&L (EGP)</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_realized_pnl_pct">Realized P&L (%)</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_purchase_date">Purchase Date</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_sell_date">Sell Date</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-history" class="divide-y divide-bordercol/50 text-xs">
@@ -450,7 +450,7 @@
         <!-- TAB 5: FINANCIALS -->
         <div id="tab-fin" class="bg-panelbg rounded-b-xl border border-t-0 border-bordercol p-4 shadow-xl hidden">
             <div class="max-w-3xl mx-auto bg-darkbg p-6 rounded-xl border border-bordercol shadow">
-                <h3 class="text-base font-bold text-sky-400 mb-4 border-b border-bordercol pb-2">📊 Account Financial Overview</h3>
+                <h3 class="text-base font-bold text-sky-400 mb-4 border-b border-bordercol pb-2">📊 <span data-i18n="fin_overview_title">Account Financial Overview</span></h3>
                 <div id="fin-statement-content" class="space-y-3 font-mono text-sm"></div>
             </div>
         </div>
@@ -526,14 +526,14 @@
     <!-- Column Chooser Modal -->
     <div id="modal-columns" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
         <div class="bg-panelbg border border-bordercol rounded-xl max-w-sm w-full p-5 space-y-4 shadow-2xl max-h-[80vh] flex flex-col">
-            <h3 class="text-base font-bold text-sky-400">👁️ Select Columns to Display</h3>
+            <h3 class="text-base font-bold text-sky-400">👁️ <span data-i18n="modal_columns_title">Select Columns to Display</span></h3>
             <div class="flex gap-2">
-                <button onclick="toggleAllColumns(true)" class="bg-blue-600 text-white px-3 py-1 rounded text-xs font-bold flex-1">Select All</button>
-                <button onclick="toggleAllColumns(false)" class="bg-slate-700 text-white px-3 py-1 rounded text-xs font-bold flex-1">Deselect All</button>
+                <button onclick="toggleAllColumns(true)" class="bg-blue-600 text-white px-3 py-1 rounded text-xs font-bold flex-1" data-i18n="btn_select_all">Select All</button>
+                <button onclick="toggleAllColumns(false)" class="bg-slate-700 text-white px-3 py-1 rounded text-xs font-bold flex-1" data-i18n="btn_deselect_all">Deselect All</button>
             </div>
             <div id="col-checkboxes" class="overflow-y-auto space-y-2 text-xs flex-1 border border-bordercol p-3 rounded bg-darkbg"></div>
             <div class="flex justify-end">
-                <button onclick="closeModal('modal-columns')" class="bg-emerald-600 text-white px-4 py-2 rounded font-bold text-xs">✅ OK</button>
+                <button onclick="closeModal('modal-columns')" class="bg-emerald-600 text-white px-4 py-2 rounded font-bold text-xs">✅ <span data-i18n="btn_ok">OK</span></button>
             </div>
         </div>
     </div>
@@ -541,17 +541,17 @@
     <!-- Theme Settings Modal -->
     <div id="modal-theme" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
         <div class="bg-panelbg border border-bordercol rounded-xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
-            <h3 class="text-base font-bold text-sky-400">⚙️ Appearance & Theme Settings</h3>
-            <p class="text-xs text-textmuted">Choose your preferred visual dashboard palette:</p>
+            <h3 class="text-base font-bold text-sky-400">⚙️ <span data-i18n="modal_theme_title">Appearance & Theme Settings</span></h3>
+            <p class="text-xs text-textmuted" data-i18n="modal_theme_desc">Choose your preferred visual dashboard palette:</p>
             <select id="theme-select" onchange="applyTheme(this.value)" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-bold">
-                <option value="dark">🌙 Institutional Dark</option>
-                <option value="light">☀️ Professional Light</option>
-                <option value="blue">🌊 Midnight Blue</option>
-                <option value="blush">🌸 Soft Blush Rose (Pastel)</option>
-                <option value="velvet">✨ Velvet Rose Gold (Elegance)</option>
+                <option value="dark" data-i18n="theme_dark">🌙 Institutional Dark</option>
+                <option value="light" data-i18n="theme_light">☀️ Professional Light</option>
+                <option value="blue" data-i18n="theme_blue">🌊 Midnight Blue</option>
+                <option value="blush" data-i18n="theme_blush">🌸 Soft Blush Rose (Pastel)</option>
+                <option value="velvet" data-i18n="theme_velvet">✨ Velvet Rose Gold (Elegance)</option>
             </select>
             <div class="flex justify-end">
-                <button onclick="closeModal('modal-theme')" class="bg-blue-600 text-white px-4 py-2 rounded font-bold text-xs">✅ Close & Save</button>
+                <button onclick="closeModal('modal-theme')" class="bg-blue-600 text-white px-4 py-2 rounded font-bold text-xs">✅ <span data-i18n="btn_close_save">Close & Save</span></button>
             </div>
         </div>
     </div>
@@ -759,35 +759,35 @@
     <!-- Usage Analytics Modal (admin only) -->
     <div id="modal-analytics" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
         <div class="bg-panelbg border border-bordercol rounded-xl max-w-3xl w-full p-5 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
-            <h3 class="text-base font-bold text-teal-400">📊 Usage Analytics</h3>
-            <p class="text-[11px] text-textmuted">Sessions and trading activity combined across the website (🌐) and the desktop app (🖥️). "Time on site" is approximate — measured from sign-in until the tab is switched away from or closed. Trade Value = total EGP bought + sold; Portfolio Value = cash + open positions at cost.</p>
-            <div id="analytics-loading" class="text-xs text-textmuted">Loading session data…</div>
+            <h3 class="text-base font-bold text-teal-400">📊 <span data-i18n="modal_analytics_title">Usage Analytics</span></h3>
+            <p class="text-[11px] text-textmuted" data-i18n="modal_analytics_desc">Sessions and trading activity combined across the website (🌐) and the desktop app (🖥️). "Time on site" is approximate — measured from sign-in until the tab is switched away from or closed. Trade Value = total EGP bought + sold; Portfolio Value = cash + open positions at cost.</p>
+            <div id="analytics-loading" class="text-xs text-textmuted" data-i18n="loading_sessions">Loading session data…</div>
             <div id="analytics-summary" class="hidden grid grid-cols-3 gap-2 text-center">
                 <div class="bg-darkbg p-3 rounded border border-bordercol">
                     <div class="text-2xl font-bold text-sky-400" id="stat-total-users">—</div>
-                    <div class="text-[10px] text-textmuted mt-1">Unique Users</div>
+                    <div class="text-[10px] text-textmuted mt-1" data-i18n="lbl_unique_users">Unique Users</div>
                 </div>
                 <div class="bg-darkbg p-3 rounded border border-bordercol">
                     <div class="text-2xl font-bold text-emerald-400" id="stat-total-sessions">—</div>
-                    <div class="text-[10px] text-textmuted mt-1">Total Sessions</div>
+                    <div class="text-[10px] text-textmuted mt-1" data-i18n="lbl_total_sessions">Total Sessions</div>
                 </div>
                 <div class="bg-darkbg p-3 rounded border border-bordercol">
                     <div class="text-2xl font-bold text-amber-400" id="stat-avg-duration">—</div>
-                    <div class="text-[10px] text-textmuted mt-1">Avg. Time / Session</div>
+                    <div class="text-[10px] text-textmuted mt-1" data-i18n="lbl_avg_duration">Avg. Time / Session</div>
                 </div>
             </div>
             <div id="analytics-table-wrap" class="hidden">
-                <h4 class="text-xs font-bold text-textmuted mt-2 mb-1">Per-User Breakdown</h4>
+                <h4 class="text-xs font-bold text-textmuted mt-2 mb-1" data-i18n="lbl_per_user">Per-User Breakdown</h4>
                 <table class="w-full text-[11px]">
                     <thead>
                         <tr class="text-textmuted border-b border-bordercol">
-                            <th class="text-left py-1">User</th>
-                            <th class="text-right py-1">Sessions (🌐/🖥️)</th>
-                            <th class="text-right py-1">Total Time</th>
-                            <th class="text-right py-1">Trades</th>
-                            <th class="text-right py-1">Trade Value</th>
-                            <th class="text-right py-1">Portfolio Value</th>
-                            <th class="text-right py-1">Last Seen</th>
+                            <th class="text-left py-1" data-i18n="hdr_user">User</th>
+                            <th class="text-right py-1" data-i18n="hdr_sessions">Sessions (🌐/🖥️)</th>
+                            <th class="text-right py-1" data-i18n="hdr_total_time">Total Time</th>
+                            <th class="text-right py-1" data-i18n="hdr_trades">Trades</th>
+                            <th class="text-right py-1" data-i18n="hdr_trade_value">Trade Value</th>
+                            <th class="text-right py-1" data-i18n="hdr_portfolio_value">Portfolio Value</th>
+                            <th class="text-right py-1" data-i18n="hdr_last_seen">Last Seen</th>
                         </tr>
                     </thead>
                     <tbody id="analytics-tbody"></tbody>
@@ -795,21 +795,21 @@
             </div>
             <div class="flex justify-between items-center gap-3 flex-wrap">
                 <div class="flex items-center gap-2">
-                    <label class="text-[11px] text-textmuted">Delete session logs older than</label>
+                    <label class="text-[11px] text-textmuted" data-i18n="lbl_delete_older_than">Delete session logs older than</label>
                     <select id="cleanup-days" class="bg-darkbg border border-bordercol rounded px-2 py-1 text-[11px] text-textmain">
-                        <option value="30">30 days</option>
-                        <option value="60">60 days</option>
-                        <option value="90" selected>90 days</option>
-                        <option value="180">180 days</option>
+                        <option value="30" data-i18n="days_30">30 days</option>
+                        <option value="60" data-i18n="days_60">60 days</option>
+                        <option value="90" selected data-i18n="days_90">90 days</option>
+                        <option value="180" data-i18n="days_180">180 days</option>
                     </select>
                     <button onclick="cleanupOldSessions()" id="btn-cleanup-sessions" class="bg-rose-700 hover:bg-rose-600 text-white px-3 py-1.5 rounded font-bold text-[11px] transition">
-                        🧹 Clean Up Old Sessions
+                        🧹 <span data-i18n="btn_cleanup_sessions">Clean Up Old Sessions</span>
                     </button>
                 </div>
                 <span id="cleanup-status" class="text-[11px] text-textmuted"></span>
             </div>
             <div class="flex justify-end">
-                <button onclick="closeModal('modal-analytics')" class="bg-slate-700 text-white px-4 py-2 rounded font-bold text-xs">Close</button>
+                <button onclick="closeModal('modal-analytics')" class="bg-slate-700 text-white px-4 py-2 rounded font-bold text-xs" data-i18n="btn_close">Close</button>
             </div>
         </div>
     </div>
@@ -817,39 +817,39 @@
     <!-- Risk Calculator Modal -->
     <div id="modal-calc" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
         <div class="bg-panelbg border border-bordercol rounded-xl max-w-md w-full p-5 space-y-4 shadow-2xl">
-            <h3 class="text-base font-bold text-amber-400">⚖️ Interactive Risk Calculator</h3>
+            <h3 class="text-base font-bold text-amber-400">⚖️ <span data-i18n="modal_calc_title">Interactive Risk Calculator</span></h3>
             <div class="space-y-3 text-xs">
                 <div class="bg-darkbg p-2 rounded border border-bordercol">
-                    <label class="block text-sky-400 font-bold mb-1">⚡ Ticker Symbol / Auto-Load Price:</label>
+                    <label class="block text-sky-400 font-bold mb-1">⚡ <span data-i18n="lbl_ticker_autoload">Ticker Symbol / Auto-Load Price:</span></label>
                     <select id="calc-ticker-select" onchange="autoLoadRiskPrices()" class="w-full bg-panelbg border border-bordercol rounded p-1.5 text-textmain font-mono"></select>
                 </div>
                 <div>
-                    <label class="block text-textmuted mb-1">Stop-Loss Mode:</label>
+                    <label class="block text-textmuted mb-1" data-i18n="lbl_stop_loss_mode">Stop-Loss Mode:</label>
                     <select id="calc-stop-mode" onchange="onStopModeChange()" class="w-full bg-darkbg border border-bordercol rounded p-1.5 text-textmain font-bold">
-                        <option value="manual">Manual Stop</option>
-                        <option value="1.5">1.5x ATR Stop</option>
-                        <option value="2.0">2.0x ATR Stop</option>
-                        <option value="3.0">3.0x ATR Stop</option>
+                        <option value="manual" data-i18n="opt_manual_stop">Manual Stop</option>
+                        <option value="1.5" data-i18n="opt_atr_15">1.5x ATR Stop</option>
+                        <option value="2.0" data-i18n="opt_atr_20">2.0x ATR Stop</option>
+                        <option value="3.0" data-i18n="opt_atr_30">3.0x ATR Stop</option>
                     </select>
                 </div>
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-textmuted mb-1">Target Entry (EGP):</label>
+                        <label class="block text-textmuted mb-1" data-i18n="lbl_target_entry">Target Entry (EGP):</label>
                         <input type="number" id="calc-entry" value="10.00" step="0.01" oninput="runRiskCalc()" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono">
                     </div>
                     <div>
-                        <label class="block text-textmuted mb-1">Stop-Loss (EGP):</label>
+                        <label class="block text-textmuted mb-1" data-i18n="lbl_stop_loss_egp">Stop-Loss (EGP):</label>
                         <input type="number" id="calc-stop" value="9.20" step="0.01" oninput="runRiskCalc()" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-textmuted mb-1">Max Account Risk (%):</label>
+                    <label class="block text-textmuted mb-1" data-i18n="lbl_max_risk">Max Account Risk (%):</label>
                     <input type="number" id="calc-risk" value="1.0" step="0.1" oninput="runRiskCalc()" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono">
                 </div>
                 <div id="calc-output" class="bg-darkbg p-3 rounded border border-bordercol space-y-1 font-mono text-textmain"></div>
             </div>
             <div class="flex justify-end">
-                <button onclick="closeModal('modal-calc')" class="bg-slate-700 text-white px-4 py-2 rounded font-bold text-xs">Close</button>
+                <button onclick="closeModal('modal-calc')" class="bg-slate-700 text-white px-4 py-2 rounded font-bold text-xs" data-i18n="btn_close">Close</button>
             </div>
         </div>
     </div>
@@ -857,11 +857,11 @@
     <!-- Set Cash Modal -->
     <div id="modal-cash" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
         <div class="bg-panelbg border border-bordercol rounded-xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
-            <h3 class="text-base font-bold text-sky-400">💵 Set Available Cash Balance</h3>
+            <h3 class="text-base font-bold text-sky-400">💵 <span data-i18n="modal_cash_title">Set Available Cash Balance</span></h3>
             <input type="number" id="input-cash" placeholder="e.g. 100000" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono text-sm">
             <div class="flex justify-end gap-2">
-                <button onclick="closeModal('modal-cash')" class="bg-slate-700 text-white px-3 py-1.5 rounded font-bold text-xs">Cancel</button>
-                <button onclick="saveCash()" class="bg-blue-600 text-white px-4 py-1.5 rounded font-bold text-xs">Save</button>
+                <button onclick="closeModal('modal-cash')" class="bg-slate-700 text-white px-3 py-1.5 rounded font-bold text-xs" data-i18n="btn_cancel">Cancel</button>
+                <button onclick="saveCash()" class="bg-blue-600 text-white px-4 py-1.5 rounded font-bold text-xs" data-i18n="btn_save">Save</button>
             </div>
         </div>
     </div>
@@ -869,34 +869,34 @@
     <!-- Portfolio Modal -->
     <div id="modal-portfolio" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
         <div class="bg-panelbg border border-bordercol rounded-xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
-            <h3 class="text-base font-bold text-purple-400">🛒 Open / Add Position</h3>
+            <h3 class="text-base font-bold text-purple-400">🛒 <span data-i18n="modal_portfolio_title">Open / Add Position</span></h3>
             <div class="space-y-3 text-xs">
                 <div>
-                    <label class="block text-textmuted mb-1">Ticker Symbol:</label>
+                    <label class="block text-textmuted mb-1" data-i18n="lbl_ticker_symbol">Ticker Symbol:</label>
                     <input type="text" id="port-ticker" list="portfolio-ticker-list" placeholder="e.g. COMI.CA" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono uppercase">
                     <datalist id="portfolio-ticker-list"></datalist>
                 </div>
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-textmuted mb-1">Buy Price (EGP):</label>
+                        <label class="block text-textmuted mb-1" data-i18n="lbl_buy_price_egp">Buy Price (EGP):</label>
                         <input type="number" id="port-price" step="0.01" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono">
                     </div>
                     <div>
-                        <label class="block text-textmuted mb-1">Shares:</label>
+                        <label class="block text-textmuted mb-1" data-i18n="hdr_shares">Shares:</label>
                         <input type="number" id="port-shares" step="1" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-textmuted mb-1">Mode:</label>
+                    <label class="block text-textmuted mb-1" data-i18n="lbl_mode">Mode:</label>
                     <select id="port-mode" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-bold">
-                        <option value="scale">📈 Add Shares / Scale In (Auto-Avg)</option>
-                        <option value="overwrite">✏️ Correct Mistake / Overwrite</option>
+                        <option value="scale" data-i18n="opt_scale_in">📈 Add Shares / Scale In (Auto-Avg)</option>
+                        <option value="overwrite" data-i18n="opt_overwrite">✏️ Correct Mistake / Overwrite</option>
                     </select>
                 </div>
             </div>
             <div class="flex justify-end gap-2">
-                <button onclick="closeModal('modal-portfolio')" class="bg-slate-700 text-white px-3 py-1.5 rounded font-bold text-xs">Cancel</button>
-                <button onclick="addPortfolioPosition()" class="bg-purple-600 text-white px-4 py-1.5 rounded font-bold text-xs">Save Position</button>
+                <button onclick="closeModal('modal-portfolio')" class="bg-slate-700 text-white px-3 py-1.5 rounded font-bold text-xs" data-i18n="btn_cancel">Cancel</button>
+                <button onclick="addPortfolioPosition()" class="bg-purple-600 text-white px-4 py-1.5 rounded font-bold text-xs" data-i18n="btn_save_position">Save Position</button>
             </div>
         </div>
     </div>
@@ -956,31 +956,51 @@
             const riskSized = Math.floor(riskBudget / stopDistance);
             return Math.max(0, Math.min(riskSized, maxAffordable));
         }
-        // Rate-limit tracker for auth attempts: { count, lastAttempt }
-        const _authRateLimit = { attempts: 0, lockedUntil: 0 };
+        // Rate-limit tracker for auth attempts. Persisted to localStorage (not
+        // just an in-memory variable) so a page refresh — or opening a second
+        // tab — can't be used to reset the lockout. This is still a client-side
+        // control only (defense-in-depth / better UX), not a substitute for
+        // server-side abuse protection: Firebase Auth already applies its own
+        // server-side throttling on signInWithEmailAndPassword regardless of
+        // anything here, and it can't be bypassed by clearing local storage.
         const AUTH_RATE_LIMIT_MS = 30000; // 30-second lockout
         const AUTH_MAX_ATTEMPTS = 5;       // max attempts per window
+        const AUTH_RL_KEY = 'mbegx_auth_rl';
+        function _loadAuthRateLimit() {
+            try {
+                const parsed = JSON.parse(localStorage.getItem(AUTH_RL_KEY) || '{}');
+                return { attempts: Number(parsed.attempts) || 0, lockedUntil: Number(parsed.lockedUntil) || 0 };
+            } catch (e) {
+                return { attempts: 0, lockedUntil: 0 };
+            }
+        }
+        function _saveAuthRateLimit(state) {
+            try { localStorage.setItem(AUTH_RL_KEY, JSON.stringify(state)); } catch (e) { /* storage unavailable — fail open on this UX-only guard */ }
+        }
         function checkAuthRateLimit() {
+            const state = _loadAuthRateLimit();
             const now = Date.now();
-            if (now < _authRateLimit.lockedUntil) {
-                const remaining = Math.ceil((_authRateLimit.lockedUntil - now) / 1000);
-                showAuthError(`Too many attempts. Please wait ${remaining}s before trying again.`);
+            if (now < state.lockedUntil) {
+                const remaining = Math.ceil((state.lockedUntil - now) / 1000);
+                showAuthError(tt('rate_limit_wait').replace('{s}', remaining));
                 return false;
             }
             return true;
         }
         function recordAuthAttempt() {
-            _authRateLimit.attempts++;
-            if (_authRateLimit.attempts >= AUTH_MAX_ATTEMPTS) {
-                _authRateLimit.lockedUntil = Date.now() + AUTH_RATE_LIMIT_MS;
-                _authRateLimit.attempts = 0;
-                showAuthError(`Too many failed attempts. Locked for ${AUTH_RATE_LIMIT_MS / 1000} seconds.`);
+            const state = _loadAuthRateLimit();
+            state.attempts++;
+            if (state.attempts >= AUTH_MAX_ATTEMPTS) {
+                state.lockedUntil = Date.now() + AUTH_RATE_LIMIT_MS;
+                state.attempts = 0;
+                _saveAuthRateLimit(state);
+                showAuthError(tt('rate_limit_locked').replace('{s}', AUTH_RATE_LIMIT_MS / 1000));
                 return;
             }
+            _saveAuthRateLimit(state);
         }
         function resetAuthRateLimit() {
-            _authRateLimit.attempts = 0;
-            _authRateLimit.lockedUntil = 0;
+            _saveAuthRateLimit({ attempts: 0, lockedUntil: 0 });
         }
 
         // Saves cash/portfolio/history to this browser AND, if the user is
@@ -1005,7 +1025,119 @@
                 tab_fin: "📊 Financial Statement", tab_top10: "🏆 Top 10 Overview", tab_charts: "📊 Charts & Trend Lines",
                 rad_stock: "📈 Per Stock", rad_sector: "🏢 Per Sector", select_item: "Select Item:", alpha_quick: "🔤 Quick Filter:",
                 time_zoom: "⏱️ Time Horizon:", guide: "Guide",
-                style_line: "📉 Line", style_candle: "🕯️ Candles", toggle_sr: "📐 Support / Resistance"
+                style_line: "📉 Line", style_candle: "🕯️ Candles", toggle_sr: "📐 Support / Resistance",
+                // Table headers
+                hdr_ticker: "Ticker", hdr_action: "Action", hdr_score: "Score", hdr_price: "Price",
+                hdr_entry_vwap: "Entry (VWAP)", hdr_stop_loss: "Stop-Loss", hdr_shares_risk: "Shares (1% Risk)",
+                hdr_proj_gain: "Proj. Gain %", hdr_pattern_conf: "Pattern Conf %", hdr_trend: "Trend",
+                hdr_vol_zscore: "Vol Z-Score", hdr_bollinger: "Bollinger %B", hdr_avg_vol: "Avg Vol (20D)",
+                hdr_data_conf: "Data Conf.", hdr_take_profit: "Take-Profit", hdr_resistance: "Resistance (R1/R2/R3)",
+                hdr_support: "Support (S1/S2/S3)", hdr_sector: "Sector", hdr_stocks: "Stocks",
+                hdr_1d_return: "1D Return (%)", hdr_5d_return: "5D Return (%)", hdr_money_flow: "Money Flow (CMF)",
+                hdr_bullish_breadth: "Bullish Breadth (%)", hdr_traded_value: "Traded Value (EGP)",
+                hdr_sector_leader: "Sector Leader", hdr_sector_status: "Sector Status",
+                hdr_shares: "Shares", hdr_buy_price: "Buy Price", hdr_current_price: "Current Price",
+                hdr_pnl_egp: "P&L (EGP)", hdr_pnl_pct: "P&L (%)", hdr_action_command: "Action Command",
+                hdr_trailing_stop: "Trailing Stop", hdr_manage: "Manage", hdr_breakout_score: "Breakout Score",
+                hdr_dist_resistance: "Dist. to Resistance %", hdr_squeeze: "Squeeze", hdr_volume_trend: "Volume Trend",
+                hdr_signals: "Signals", hdr_shares_sold: "Shares Sold", hdr_sell_price: "Sell Price",
+                hdr_realized_pnl_egp: "Realized P&L (EGP)", hdr_realized_pnl_pct: "Realized P&L (%)",
+                hdr_purchase_date: "Purchase Date", hdr_sell_date: "Sell Date",
+                // Misc labels / loading states
+                lbl_positions_local: "Positions stored securely in browser local storage.",
+                lbl_closed_ledger: "Closed trade ledger.",
+                btn_clear_demo: "Clear Demo Data", btn_add_position: "+ Add Position",
+                btn_export_ledger: "Export Tax & Audit Ledger (CSV)",
+                loading_matrix: "Loading quantitative matrix...", loading_breakout: "Loading breakout watchlist...",
+                modal_columns_title: "Select Columns to Display", btn_select_all: "Select All", btn_deselect_all: "Deselect All", btn_ok: "OK",
+                modal_theme_title: "Appearance & Theme Settings", modal_theme_desc: "Choose your preferred visual dashboard palette:",
+                theme_dark: "🌙 Institutional Dark", theme_light: "☀️ Professional Light", theme_blue: "🌊 Midnight Blue",
+                theme_blush: "🌸 Soft Blush Rose (Pastel)", theme_velvet: "✨ Velvet Rose Gold (Elegance)", btn_close_save: "Close & Save",
+                modal_analytics_title: "Usage Analytics",
+                modal_analytics_desc: "Sessions and trading activity combined across the website (🌐) and the desktop app (🖥️). \"Time on site\" is approximate — measured from sign-in until the tab is switched away from or closed. Trade Value = total EGP bought + sold; Portfolio Value = cash + open positions at cost.",
+                loading_sessions: "Loading session data…", lbl_unique_users: "Unique Users", lbl_total_sessions: "Total Sessions",
+                lbl_avg_duration: "Avg. Time / Session", lbl_per_user: "Per-User Breakdown", hdr_user: "User",
+                hdr_sessions: "Sessions (🌐/🖥️)", hdr_total_time: "Total Time", hdr_trades: "Trades",
+                hdr_trade_value: "Trade Value", hdr_portfolio_value: "Portfolio Value", hdr_last_seen: "Last Seen",
+                lbl_delete_older_than: "Delete session logs older than", days_30: "30 days", days_60: "60 days",
+                days_90: "90 days", days_180: "180 days", btn_cleanup_sessions: "Clean Up Old Sessions", btn_close: "Close",
+                modal_calc_title: "Interactive Risk Calculator", lbl_ticker_autoload: "Ticker Symbol / Auto-Load Price:",
+                lbl_stop_loss_mode: "Stop-Loss Mode:", opt_manual_stop: "Manual Stop", opt_atr_15: "1.5x ATR Stop",
+                opt_atr_20: "2.0x ATR Stop", opt_atr_30: "3.0x ATR Stop", lbl_target_entry: "Target Entry (EGP):",
+                lbl_stop_loss_egp: "Stop-Loss (EGP):", lbl_max_risk: "Max Account Risk (%):",
+                modal_cash_title: "Set Available Cash Balance", btn_cancel: "Cancel", btn_save: "Save",
+                modal_portfolio_title: "Open / Add Position", lbl_ticker_symbol: "Ticker Symbol:",
+                lbl_buy_price_egp: "Buy Price (EGP):", lbl_mode: "Mode:", opt_scale_in: "📈 Add Shares / Scale In (Auto-Avg)",
+                opt_overwrite: "✏️ Correct Mistake / Overwrite", btn_save_position: "Save Position",
+                btn_usage_analytics: "Usage Analytics", tt_sign_out: "Sign out", ph_search_ticker: "Search Ticker or keyword...",
+                opt_all_actions: "All Actions", opt_strong_buy: "🔥 STRONG BUY", opt_breakout_buy: "⚡ BREAKOUT BUY",
+                opt_accumulate: "📈 ACCUMULATE", opt_buy_on_dip: "⏳ BUY ON DIP", opt_hold_neutral: "🟡 HOLD / NEUTRAL",
+                opt_sell_avoid: "🛑 SELL / AVOID", opt_all_trends: "All Trends", opt_strong_bullish: "Strong Bullish",
+                opt_weak_bullish: "Weak Bullish", opt_consolidation: "Consolidation / Neutral", opt_weak_bearish: "Weak Bearish",
+                opt_strong_bearish: "Strong Bearish", opt_all_confidence: "All Data Confidence", opt_conf_high: "High (1Y+)",
+                opt_conf_medium: "Medium (<1 Year)", opt_conf_low: "Low (<3 Months)",
+                fin_overview_title: "Account Financial Overview", fin_cash_balance: "Cash Balance (EGP)",
+                fin_cost_basis: "Stock Portfolio Cost Basis (EGP)", fin_market_value: "Stock Portfolio Market Value (EGP)",
+                fin_unrealized_pnl: "Unrealized Stock P&L (EGP)", fin_realized_pnl: "Realized P&L from Closed Trades (EGP)",
+                fin_total_equity: "Total Account Equity (EGP)",
+                hero_title_1: "Ancient Legacy meets", hero_title_2: "Digital Future",
+                hero_vision_label: "Vision:", hero_vision_text: "A transparent stock market where every investor has the insights to succeed.",
+                hero_mission_label: "Mission:", hero_mission_text: "We build seamless analytical platforms that decode EGX data, cut through the noise, and empower you to trade smarter.",
+                auth_title: "Terminal Access", auth_subtitle: "Sign in to view your private dashboard",
+                lbl_email_address: "Email Address", lbl_password: "Password", lnk_forgot_access: "Forgot Access?",
+                lbl_consent_header: "End-User Consent and Legal Disclaimer",
+                legal_disclaimer_text: `By accessing, subscribing to, or using this application, you explicitly acknowledge, understand, and agree to the following terms: 
+
+• <strong>Informational and Educational Use Only:</strong> This app is for informational and educational purposes only. It does not constitute financial or investment advice. 
+
+• <strong>Nature of the Tools:</strong> The service operates by providing educational and analytical tools, effectively giving you a mirror to look at the market. The outputs are generated via raw data, charts, historical trends, mathematical calculations, quantitative indicators, and automated technical screening tools. 
+
+• <strong>No Unlicensed Financial Advisory:</strong> The application and its creators do not direct a user's specific actions, nor do they act as a portfolio manager. Giving direct investment advice or portfolio management requires rigorous licensing from the Egyptian Financial Regulatory Authority (FRA), which this software does not provide. 
+
+• <strong>Analytics, Not Commands:</strong> All signals and feature outputs provided by the software are strictly classified as analytics, such as a 'Quantitative Indicator Output' or 'Technical Pattern Matcher'. They are never to be interpreted as direct 'Buy/Sell Recommendations' or market commands. The application provides the data, and you must independently decide what to do with it. 
+
+• <strong>Assumption of Risk:</strong> Users are solely responsible for their own trading decisions. 
+
+• <strong>No Handling of Client Funds:</strong> This application functions strictly as a Software as a Service (SaaS) analytics tool. We will never request, hold, or allow users to deposit trading capital or funds into our bank accounts or app wallets. 
+
+• <strong>Third-Party Trade Execution:</strong> You cannot execute trades independently through this app; all users must execute their actual trades through approved and licensed EGX brokers (such as Thndr, EFG Hermes, etc.).`,
+                lbl_consent_checkbox: "I acknowledge and agree to the End-User Consent and Legal Disclaimer.",
+                btn_sign_in: "Sign In", btn_create_account: "Create Account", lbl_or: "OR",
+                btn_sign_in_google: "Sign in with Google",
+                lbl_google_consent_note: "Continuing with Google to create a new account also requires the agreement checkbox above to be checked.",
+                lbl_encryption_badge: "AES-256 Bank Grade Encryption Matrix Enabled",
+                reconsent_title: "Updated Terms & Disclaimer",
+                reconsent_desc: "Our End-User Consent and Legal Disclaimer has been updated. Please review and re-accept it to continue using the app.",
+                lbl_reconsent_checkbox: "I acknowledge and agree to the updated End-User Consent and Legal Disclaimer.",
+                btn_accept_continue: "Accept & Continue", btn_sign_out_reconsent: "Sign Out",
+                err_enter_both: "Enter both email and password.", err_invalid_email: "Invalid email format.",
+                err_sign_in_failed: "Sign-in failed. Check your credentials.",
+                err_password_min: "Password must be at least 8 characters.", err_password_max: "Password is too long.",
+                err_must_agree_terms: "You must agree to the legal terms to create an account.",
+                err_account_creation_failed: "Account creation failed. The email may already be registered.",
+                err_popup_closed: "The Google sign-in window closed before finishing. If you clicked the button twice, try once and wait — or check that your browser isn't blocking pop-ups / third-party cookies for this site.",
+                err_popup_blocked: "Your browser blocked the sign-in pop-up. Please allow pop-ups for this site and try again.",
+                err_google_signin_failed: "Google sign-in failed. Please try again.",
+                loading_trading_activity: "Loading trading activity…",
+                err_analytics_load_failed: "Could not load session data (check Firestore rules / console for details).",
+                err_reconsent_save_failed: "Couldn't save your acceptance. Please check your connection and try again.",
+                rate_limit_wait: "Too many attempts. Please wait {s}s before trying again.",
+                rate_limit_locked: "Too many failed attempts. Locked for {s} seconds.",
+                confirm_clear_demo: "Are you sure you want to clear demo samples without deleting real trades?",
+                alert_cash_limit: "Cash amount exceeds safe limit.", alert_invalid_ticker: "Please enter a valid ticker symbol.",
+                alert_price_positive: "Buy price must be greater than 0.", alert_shares_positive: "Shares must be greater than 0.",
+                alert_shares_limit: "Share count exceeds safe limit.", alert_no_closed_trades: "No closed trades available to export.",
+                alert_sign_out_failed: "Sign out failed. Please try again, or reload the page.",
+                top10_strong_buy: "🔥 Top 10 Strong Buy", top10_breakout: "⚡ Top 10 Breakout",
+                top10_accumulate: "📈 Top 10 Accumulate", top10_buy_on_dip: "⏳ Top 10 Buy on Dip",
+                lbl_no_stocks_category: "No stocks in category",
+                lbl_no_positions: `No active stock positions. Click "+ Add Position" to start tracking!`,
+                lbl_no_closed_trades: "No closed trades recorded yet.",
+                lbl_breakout_data_missing: "Breakout watchlist data isn't in the current market data feed yet.",
+                lbl_no_breakout_qualifiers: "No stocks currently qualify for the breakout watchlist.",
+                lbl_no_filter_matches: "No stocks match your active filter criteria.",
+                lbl_data_unavailable: "Data temporarily unavailable. Please try refreshing in a moment.",
+                toast_welcome_back: "👋 Welcome back, {name}!"
             },
             AR: {
                 title: "MB-EGX — مصفوفة التداول والقطاعات",
@@ -1019,11 +1151,237 @@
                 tab_fin: "📊 القوائم المالية", tab_top10: "🏆 أفضل 10 أسهم", tab_charts: "📊 الرسوم البيانية والاتجاهات",
                 rad_stock: "📈 تحليل الأسهم", rad_sector: "🏢 تحليل القطاعات", select_item: "اختر العنصر:", alpha_quick: "🔤 تصفية بالحرف:",
                 time_zoom: "⏱️ الفترة الزمنية:", guide: "الدليل",
-                style_line: "📉 خط", style_candle: "🕯️ شموع", toggle_sr: "📐 الدعم / المقاومة"
+                style_line: "📉 خط", style_candle: "🕯️ شموع", toggle_sr: "📐 الدعم / المقاومة",
+                // Table headers
+                hdr_ticker: "الرمز", hdr_action: "الإجراء", hdr_score: "الدرجة", hdr_price: "السعر",
+                hdr_entry_vwap: "سعر الدخول (VWAP)", hdr_stop_loss: "وقف الخسارة", hdr_shares_risk: "الأسهم (مخاطرة 1%)",
+                hdr_proj_gain: "الربح المتوقع %", hdr_pattern_conf: "ثقة النموذج %", hdr_trend: "الاتجاه",
+                hdr_vol_zscore: "انحراف الحجم", hdr_bollinger: "بولينجر %B", hdr_avg_vol: "متوسط الحجم (20 يوم)",
+                hdr_data_conf: "دقة البيانات", hdr_take_profit: "جني الأرباح", hdr_resistance: "المقاومة (R1/R2/R3)",
+                hdr_support: "الدعم (S1/S2/S3)", hdr_sector: "القطاع", hdr_stocks: "عدد الأسهم",
+                hdr_1d_return: "عائد يوم واحد (%)", hdr_5d_return: "عائد 5 أيام (%)", hdr_money_flow: "تدفق الأموال (CMF)",
+                hdr_bullish_breadth: "نطاق الصعود (%)", hdr_traded_value: "قيمة التداول (جنيه)",
+                hdr_sector_leader: "الشركة الرائدة بالقطاع", hdr_sector_status: "حالة القطاع",
+                hdr_shares: "عدد الأسهم", hdr_buy_price: "سعر الشراء", hdr_current_price: "السعر الحالي",
+                hdr_pnl_egp: "الربح/الخسارة (جنيه)", hdr_pnl_pct: "الربح/الخسارة (%)", hdr_action_command: "أمر التنفيذ",
+                hdr_trailing_stop: "وقف الخسارة المتحرك", hdr_manage: "إدارة", hdr_breakout_score: "درجة الاختراق",
+                hdr_dist_resistance: "المسافة للمقاومة %", hdr_squeeze: "انضغاط", hdr_volume_trend: "اتجاه الحجم",
+                hdr_signals: "الإشارات", hdr_shares_sold: "الأسهم المباعة", hdr_sell_price: "سعر البيع",
+                hdr_realized_pnl_egp: "الربح المحقق (جنيه)", hdr_realized_pnl_pct: "الربح المحقق (%)",
+                hdr_purchase_date: "تاريخ الشراء", hdr_sell_date: "تاريخ البيع",
+                // Misc labels / loading states
+                lbl_positions_local: "المراكز محفوظة بأمان في التخزين المحلي للمتصفح.",
+                lbl_closed_ledger: "سجل الصفقات المغلقة.",
+                btn_clear_demo: "مسح بيانات تجريبية", btn_add_position: "+ إضافة مركز",
+                btn_export_ledger: "تصدير سجل الضرائب والمراجعة (CSV)",
+                loading_matrix: "جاري تحميل مصفوفة السوق...", loading_breakout: "جاري تحميل قائمة الاختراقات...",
+                modal_columns_title: "اختر الأعمدة المعروضة", btn_select_all: "تحديد الكل", btn_deselect_all: "إلغاء تحديد الكل", btn_ok: "موافق",
+                modal_theme_title: "إعدادات المظهر والألوان", modal_theme_desc: "اختر لوحة الألوان المفضلة لديك:",
+                theme_dark: "🌙 داكن مؤسسي", theme_light: "☀️ فاتح احترافي", theme_blue: "🌊 أزرق منتصف الليل",
+                theme_blush: "🌸 وردي فاتح ناعم", theme_velvet: "✨ ذهبي وردي مخملي", btn_close_save: "إغلاق وحفظ",
+                modal_analytics_title: "إحصائيات الاستخدام",
+                modal_analytics_desc: "الجلسات ونشاط التداول مجمعة عبر الموقع (🌐) وتطبيق سطح المكتب (🖥️). \"الوقت على الموقع\" تقريبي — يُقاس من تسجيل الدخول حتى تبديل التبويب أو إغلاقه. قيمة التداول = إجمالي الشراء والبيع بالجنيه؛ قيمة المحفظة = النقد + المراكز المفتوحة بسعر التكلفة.",
+                loading_sessions: "جاري تحميل بيانات الجلسات…", lbl_unique_users: "المستخدمون الفريدون", lbl_total_sessions: "إجمالي الجلسات",
+                lbl_avg_duration: "متوسط الوقت / الجلسة", lbl_per_user: "تفصيل لكل مستخدم", hdr_user: "المستخدم",
+                hdr_sessions: "الجلسات (🌐/🖥️)", hdr_total_time: "إجمالي الوقت", hdr_trades: "الصفقات",
+                hdr_trade_value: "قيمة التداول", hdr_portfolio_value: "قيمة المحفظة", hdr_last_seen: "آخر ظهور",
+                lbl_delete_older_than: "حذف سجلات الجلسات الأقدم من", days_30: "30 يومًا", days_60: "60 يومًا",
+                days_90: "90 يومًا", days_180: "180 يومًا", btn_cleanup_sessions: "تنظيف الجلسات القديمة", btn_close: "إغلاق",
+                modal_calc_title: "حاسبة المخاطر التفاعلية", lbl_ticker_autoload: "رمز السهم / تحميل السعر تلقائيًا:",
+                lbl_stop_loss_mode: "وضع وقف الخسارة:", opt_manual_stop: "وقف يدوي", opt_atr_15: "وقف 1.5x ATR",
+                opt_atr_20: "وقف 2.0x ATR", opt_atr_30: "وقف 3.0x ATR", lbl_target_entry: "سعر الدخول المستهدف (جنيه):",
+                lbl_stop_loss_egp: "وقف الخسارة (جنيه):", lbl_max_risk: "أقصى مخاطرة للحساب (%):",
+                modal_cash_title: "تحديد الرصيد النقدي المتاح", btn_cancel: "إلغاء", btn_save: "حفظ",
+                modal_portfolio_title: "فتح / إضافة مركز", lbl_ticker_symbol: "رمز السهم:",
+                lbl_buy_price_egp: "سعر الشراء (جنيه):", lbl_mode: "الوضع:", opt_scale_in: "📈 إضافة أسهم / زيادة المركز (متوسط تلقائي)",
+                opt_overwrite: "✏️ تصحيح خطأ / استبدال", btn_save_position: "حفظ المركز",
+                btn_usage_analytics: "إحصائيات الاستخدام", tt_sign_out: "تسجيل الخروج", ph_search_ticker: "بحث عن رمز أو كلمة مفتاحية...",
+                opt_all_actions: "كل الإجراءات", opt_strong_buy: "🔥 شراء قوي", opt_breakout_buy: "⚡ شراء اختراق",
+                opt_accumulate: "📈 تجميع", opt_buy_on_dip: "⏳ شراء عند الهبوط", opt_hold_neutral: "🟡 احتفاظ / محايد",
+                opt_sell_avoid: "🛑 بيع / تجنب", opt_all_trends: "كل الاتجاهات", opt_strong_bullish: "صعودي قوي",
+                opt_weak_bullish: "صعودي ضعيف", opt_consolidation: "تماسك / محايد", opt_weak_bearish: "هبوطي ضعيف",
+                opt_strong_bearish: "هبوطي قوي", opt_all_confidence: "كل مستويات دقة البيانات", opt_conf_high: "عالية (سنة+)",
+                opt_conf_medium: "متوسطة (أقل من سنة)", opt_conf_low: "منخفضة (أقل من 3 أشهر)",
+                fin_overview_title: "نظرة عامة على الوضع المالي", fin_cash_balance: "الرصيد النقدي (جنيه)",
+                fin_cost_basis: "تكلفة محفظة الأسهم (جنيه)", fin_market_value: "القيمة السوقية لمحفظة الأسهم (جنيه)",
+                fin_unrealized_pnl: "الربح/الخسارة غير المحققة (جنيه)", fin_realized_pnl: "الربح المحقق من الصفقات المغلقة (جنيه)",
+                fin_total_equity: "إجمالي حقوق الحساب (جنيه)",
+                hero_title_1: "إرث عريق يلتقي", hero_title_2: "بمستقبل رقمي",
+                hero_vision_label: "الرؤية:", hero_vision_text: "سوق أسهم شفاف يمتلك فيه كل مستثمر الرؤى اللازمة للنجاح.",
+                hero_mission_label: "المهمة:", hero_mission_text: "نبني منصات تحليلية متكاملة تفكّ رموز بيانات البورصة المصرية، وتزيل التشويش، وتمكّنك من التداول بذكاء أكبر.",
+                auth_title: "بوابة الدخول", auth_subtitle: "سجّل الدخول لعرض لوحتك الخاصة",
+                lbl_email_address: "البريد الإلكتروني", lbl_password: "كلمة المرور", lnk_forgot_access: "نسيت بيانات الدخول؟",
+                lbl_consent_header: "إقرار المستخدم والإخلاء القانوني للمسؤولية",
+                legal_disclaimer_text: `من خلال الوصول إلى هذا التطبيق أو الاشتراك فيه أو استخدامه، فإنك تقر وتوافق صراحةً على الشروط التالية: 
+
+• <strong>لأغراض المعلومات والتثقيف فقط:</strong> هذا التطبيق مخصص لأغراض إعلامية وتثقيفية فقط، ولا يُشكّل استشارة مالية أو استثمارية. 
+
+• <strong>طبيعة الأدوات:</strong> تعمل الخدمة من خلال توفير أدوات تعليمية وتحليلية، فهي بمثابة مرآة لرؤية السوق. تُولَّد المخرجات من بيانات خام، ورسوم بيانية، واتجاهات تاريخية، وحسابات رياضية، ومؤشرات كمية، وأدوات فرز فني آلية. 
+
+• <strong>لا توجد استشارة مالية مرخصة:</strong> لا يقوم التطبيق أو القائمون عليه بتوجيه إجراءات المستخدم المحددة، ولا يعملون كمدير محفظة. تقديم استشارة استثمارية مباشرة أو إدارة محفظة يتطلب ترخيصًا صارمًا من الهيئة العامة للرقابة المالية المصرية (FRA)، وهو ما لا يوفره هذا البرنامج. 
+
+• <strong>تحليلات، وليست أوامر:</strong> جميع الإشارات والمخرجات التي يقدمها البرنامج تُصنَّف بدقة كتحليلات، مثل "مخرجات مؤشر كمي" أو "أداة مطابقة الأنماط الفنية"، ولا يجب تفسيرها أبدًا كتوصيات شراء أو بيع مباشرة أو أوامر سوقية. يوفر التطبيق البيانات، وعليك أن تقرر بنفسك ماذا تفعل بها. 
+
+• <strong>تحمل المخاطر:</strong> يتحمل المستخدمون وحدهم المسؤولية الكاملة عن قراراتهم التداولية. 
+
+• <strong>عدم التعامل مع أموال العملاء:</strong> يعمل هذا التطبيق حصريًا كأداة تحليلية ضمن نموذج البرمجيات كخدمة (SaaS). لن نطلب أو نحتفظ أو نسمح للمستخدمين بإيداع رأس مال التداول أو الأموال في حساباتنا البنكية أو محافظ التطبيق. 
+
+• <strong>تنفيذ الصفقات عبر طرف ثالث:</strong> لا يمكنك تنفيذ الصفقات بشكل مستقل من خلال هذا التطبيق؛ يجب على جميع المستخدمين تنفيذ صفقاتهم الفعلية عبر شركات وساطة معتمدة ومرخصة في البورصة المصرية (مثل Thndr وEFG هيرميس، وغيرها).`,
+                lbl_consent_checkbox: "أقر وأوافق على إقرار المستخدم والإخلاء القانوني للمسؤولية.",
+                btn_sign_in: "تسجيل الدخول", btn_create_account: "إنشاء حساب", lbl_or: "أو",
+                btn_sign_in_google: "تسجيل الدخول عبر Google",
+                lbl_google_consent_note: "الاستمرار عبر Google لإنشاء حساب جديد يتطلب أيضًا تحديد مربع الموافقة أعلاه.",
+                lbl_encryption_badge: "مصفوفة تشفير AES-256 بمستوى المصارف مُفعّلة",
+                reconsent_title: "تحديث الشروط وإخلاء المسؤولية",
+                reconsent_desc: "تم تحديث إقرار المستخدم والإخلاء القانوني للمسؤولية. يُرجى مراجعته والموافقة عليه مجددًا لمتابعة استخدام التطبيق.",
+                lbl_reconsent_checkbox: "أقر وأوافق على النسخة المحدثة من إقرار المستخدم والإخلاء القانوني للمسؤولية.",
+                btn_accept_continue: "موافقة ومتابعة", btn_sign_out_reconsent: "تسجيل الخروج",
+                err_enter_both: "أدخل البريد الإلكتروني وكلمة المرور.", err_invalid_email: "صيغة البريد الإلكتروني غير صحيحة.",
+                err_sign_in_failed: "فشل تسجيل الدخول. تحقق من بيانات الاعتماد.",
+                err_password_min: "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.", err_password_max: "كلمة المرور طويلة جدًا.",
+                err_must_agree_terms: "يجب الموافقة على الشروط القانونية لإنشاء حساب.",
+                err_account_creation_failed: "فشل إنشاء الحساب. قد يكون البريد الإلكتروني مسجلاً بالفعل.",
+                err_popup_closed: "أُغلقت نافذة تسجيل الدخول عبر Google قبل الانتهاء. إذا ضغطت الزر مرتين، جرّب مرة واحدة وانتظر — أو تحقق من أن متصفحك لا يحظر النوافذ المنبثقة / ملفات تعريف الارتباط الخاصة بأطراف ثالثة لهذا الموقع.",
+                err_popup_blocked: "حظر متصفحك النافذة المنبثقة لتسجيل الدخول. يرجى السماح بالنوافذ المنبثقة لهذا الموقع والمحاولة مجددًا.",
+                err_google_signin_failed: "فشل تسجيل الدخول عبر Google. يرجى المحاولة مرة أخرى.",
+                loading_trading_activity: "جاري تحميل نشاط التداول…",
+                err_analytics_load_failed: "تعذّر تحميل بيانات الجلسات (تحقق من قواعد Firestore / وحدة التحكم لمزيد من التفاصيل).",
+                err_reconsent_save_failed: "تعذّر حفظ موافقتك. يرجى التحقق من اتصالك والمحاولة مجددًا.",
+                rate_limit_wait: "محاولات كثيرة جدًا. يرجى الانتظار {s} ثانية قبل المحاولة مرة أخرى.",
+                rate_limit_locked: "محاولات فاشلة كثيرة جدًا. تم القفل لمدة {s} ثانية.",
+                confirm_clear_demo: "هل أنت متأكد من مسح العينات التجريبية دون حذف الصفقات الحقيقية؟",
+                alert_cash_limit: "قيمة الرصيد النقدي تتجاوز الحد الآمن.", alert_invalid_ticker: "يرجى إدخال رمز سهم صحيح.",
+                alert_price_positive: "يجب أن يكون سعر الشراء أكبر من 0.", alert_shares_positive: "يجب أن يكون عدد الأسهم أكبر من 0.",
+                alert_shares_limit: "عدد الأسهم يتجاوز الحد الآمن.", alert_no_closed_trades: "لا توجد صفقات مغلقة متاحة للتصدير.",
+                alert_sign_out_failed: "فشل تسجيل الخروج. يرجى المحاولة مرة أخرى أو إعادة تحميل الصفحة.",
+                top10_strong_buy: "🔥 أفضل 10 شراء قوي", top10_breakout: "⚡ أفضل 10 اختراق",
+                top10_accumulate: "📈 أفضل 10 تجميع", top10_buy_on_dip: "⏳ أفضل 10 شراء عند الهبوط",
+                lbl_no_stocks_category: "لا توجد أسهم في هذه الفئة",
+                lbl_no_positions: `لا توجد مراكز أسهم نشطة. اضغط "+ إضافة مركز" للبدء في التتبع!`,
+                lbl_no_closed_trades: "لا توجد صفقات مغلقة مسجلة بعد.",
+                lbl_breakout_data_missing: "بيانات قائمة الاختراقات غير متوفرة بعد في تغذية بيانات السوق الحالية.",
+                lbl_no_breakout_qualifiers: "لا توجد أسهم مؤهلة حاليًا لقائمة الاختراقات.",
+                lbl_no_filter_matches: "لا توجد أسهم مطابقة لمعايير التصفية الحالية.",
+                lbl_data_unavailable: "البيانات غير متاحة مؤقتًا. يرجى محاولة التحديث بعد قليل.",
+                toast_welcome_back: "👋 مرحبًا بعودتك، {name}!"
             }
         };
 
-        // Theme Switcher
+        // ===== Dynamic data-value translations =====
+        // The fields below (Action, Trend Class, Volume Trend, Signals text,
+        // Sector names) are generated server-side in Python (decision_matrix.py
+        // / db_manager.py) and shipped as fixed English strings inside
+        // market_data.json. They are finite, known value sets (not free text),
+        // so each one gets its own lookup map here and is translated ONLY at
+        // the point of display — the underlying English string from the JSON
+        // is left untouched everywhere else (filters, sort logic, CSS class
+        // lookups like actionStyle all key off the original English value).
+        const ACTION_AR = {
+            "🛡️ HOLD / TRAIL STOP": "🛡️ احتفاظ / تتبع وقف الخسارة",
+            "⚠️ CUT LOSS / REVIEW (Below VWAP)": "⚠️ قطع الخسارة / مراجعة (تحت VWAP)",
+            "💰 TAKE PROFIT ZONE": "💰 منطقة جني الأرباح",
+            "🛡️ HOLD / TRAIL STOP (Low Data)": "🛡️ احتفاظ / تتبع وقف الخسارة (بيانات محدودة)",
+            "🛑 SELL / AVOID": "🛑 بيع / تجنب",
+            "🔥 STRONG BUY": "🔥 شراء قوي",
+            "⚡ BREAKOUT BUY (X-OVER + MOMENTUM)": "⚡ شراء اختراق (تقاطع + زخم)",
+            "⚡ BREAKOUT BUY (X-OVER)": "⚡ شراء اختراق (تقاطع)",
+            "⚡ BREAKOUT BUY (MOMENTUM)": "⚡ شراء اختراق (زخم)",
+            "⏳ BUY ON DIP": "⏳ شراء عند الهبوط",
+            "📈 ACCUMULATE": "📈 تجميع",
+            // Client-computed simplified variants used in renderPortfolio()
+            // (slightly different wording from the server-side labels above).
+            "⚠️ CUT LOSS / REVIEW": "⚠️ قطع الخسارة / مراجعة",
+        };
+        const TREND_AR = {
+            "Strong Bullish": "صعودي قوي",
+            "Weak Bullish (Low Trend Strength)": "صعودي ضعيف (قوة اتجاه منخفضة)",
+            "Weak Bullish": "صعودي ضعيف",
+            "Consolidation / Neutral": "تماسك / محايد",
+            "Strong Bearish": "هبوطي قوي",
+            "Weak Bearish (Low Trend Strength)": "هبوطي ضعيف (قوة اتجاه منخفضة)",
+            "Weak Bearish": "هبوطي ضعيف",
+            "Insufficient Data": "بيانات غير كافية",
+            "Unknown": "غير معروف",
+            "Consolidation": "تماسك",
+        };
+        const VOLUME_TREND_AR = {
+            "Rising": "متصاعد",
+            "Flat/Falling": "ثابت/متراجع",
+        };
+        const SIGNAL_PHRASE_AR = {
+            "Volatility squeeze": "انضغاط تذبذب",
+            "ADX trend just building": "اتجاه ADX بدأ يتشكل",
+            "RSI bullish with room to run": "RSI صعودي مع مجال للاستمرار",
+            "Volume trending up": "الحجم في اتجاه صاعد",
+            "Near recent high (resistance test)": "قرب أعلى سعر حديث (اختبار مقاومة)",
+            "Positive money flow": "تدفق نقدي إيجابي",
+            "Weekly trend aligned": "الاتجاه الأسبوعي متوافق",
+        };
+        const SECTOR_AR = {
+            "General / Diversified": "عام / متنوع",
+            "Non-Bank Financial Services": "خدمات مالية غير مصرفية",
+            "Food, Beverages & Tobacco": "أغذية ومشروبات وتبغ",
+            "Textiles & Durables": "منسوجات وسلع معمرة",
+            "IT, Media & Communication Services": "تكنولوجيا المعلومات والإعلام والاتصالات",
+            "Industrial Goods, Services & Automobiles": "سلع وخدمات صناعية وسيارات",
+            "Construction & Engineering": "مقاولات وهندسة",
+            "Health Care & Pharmaceuticals": "رعاية صحية وأدوية",
+            "Basic Resources": "موارد أساسية",
+            "Building Materials": "مواد بناء",
+            "Travel & Leisure": "سياحة وترفيه",
+            "Shipping & Transportation Services": "شحن وخدمات نقل",
+            "Trade & Distributors": "تجارة وتوزيع",
+            "Energy & Support Services": "طاقة وخدمات مساندة",
+            "Education Services": "خدمات تعليمية",
+            "Paper & Packaging": "ورق وتغليف",
+            "Banks": "بنوك",
+            "Real Estate": "عقارات",
+            "Chemicals": "كيماويات",
+            "Utilities": "مرافق عامة",
+            "N/A": "غير متاح",
+        };
+
+        const SECTOR_STATUS_AR = {
+            "🟢 STRONG INFLOW": "🟢 تدفق قوي للأموال",
+            "⚡ BREAKOUT": "⚡ اختراق",
+            "📈 ACCUMULATE": "📈 تجميع",
+            "🔴 HEAVY DISTRIBUTION": "🔴 توزيع كثيف",
+            "⚪ CONSOLIDATION": "⚪ تماسك",
+        };
+
+        function trAction(raw) {
+            if (!raw) return '';
+            const display = (currentLang === 'AR' && ACTION_AR[raw]) ? ACTION_AR[raw] : raw;
+            return escapeHtml(display);
+        }
+        function trTrend(raw) {
+            if (!raw) return '';
+            const display = (currentLang === 'AR' && TREND_AR[raw]) ? TREND_AR[raw] : raw;
+            return escapeHtml(display);
+        }
+        function trVolumeTrend(raw) {
+            if (!raw) return '';
+            const display = (currentLang === 'AR' && VOLUME_TREND_AR[raw]) ? VOLUME_TREND_AR[raw] : raw;
+            return escapeHtml(display);
+        }
+        function trSector(raw) {
+            if (!raw) return '';
+            const display = (currentLang === 'AR' && SECTOR_AR[raw]) ? SECTOR_AR[raw] : raw;
+            return escapeHtml(display);
+        }
+        function trSectorStatus(raw) {
+            if (!raw) return '';
+            const display = (currentLang === 'AR' && SECTOR_STATUS_AR[raw]) ? SECTOR_STATUS_AR[raw] : raw;
+            return escapeHtml(display);
+        }
+        // "Signals" is a comma-joined list of individual phrases (see
+        // decision_matrix.py's bw_reasons) — split, translate each piece
+        // individually, then rejoin with an Arabic-appropriate separator.
+        function trSignals(raw) {
+            if (!raw) return '';
+            if (currentLang !== 'AR') return escapeHtml(raw);
+            return escapeHtml(raw.split(", ").map(part => SIGNAL_PHRASE_AR[part] || part).join("، "));
+        }
         function applyTheme(themeName) {
             currentTheme = themeName;
             document.getElementById('html-root').setAttribute('data-theme', themeName !== 'dark' ? themeName : '');
@@ -1034,6 +1392,7 @@
         // Language Switcher
         function switchLanguage(lang) {
             currentLang = lang;
+            localStorage.setItem('quant_lang', lang);
             const t = TRANSLATIONS[lang];
             document.getElementById('html-root').setAttribute('dir', lang === 'AR' ? 'rtl' : 'ltr');
             document.getElementById('lbl-title').innerText = t.title;
@@ -1067,6 +1426,59 @@
             document.getElementById('lbl-alpha-quick').innerText = t.alpha_quick;
             if (document.getElementById('lbl-time-zoom')) document.getElementById('lbl-time-zoom').innerText = t.time_zoom;
             if (chartInstance) plotChart();
+            // Re-render any already-populated dynamic tables so Action/Trend/
+            // Sector labels currently on screen update immediately too, not
+            // just newly-loaded data.
+            if (globalData) {
+                applyFilters();
+                renderSectors();
+                renderTop10();
+                renderBreakouts();
+            }
+            renderAccountBar();
+            renderPortfolio();
+            renderHistory();
+            applyDataI18n();
+        }
+
+        // Generic static-text translator: any element with data-i18n="key"
+        // gets its textContent set from TRANSLATIONS[currentLang][key] (falls
+        // back to English if the key is missing in the current language).
+        // This scales far better than wiring each element by getElementById
+        // for every new string — used for all headers/modals/filters added
+        // below, alongside the older hand-wired labels above for elements
+        // that already worked that way.
+        // Generic translation lookup usable anywhere (not just inside
+        // switchLanguage's local `t` variable) — falls back to English.
+        function tt(key) {
+            const dict = TRANSLATIONS[currentLang] || TRANSLATIONS.EN;
+            return dict[key] ?? TRANSLATIONS.EN[key] ?? key;
+        }
+
+        function applyDataI18n() {
+            const t = TRANSLATIONS[currentLang] || TRANSLATIONS.EN;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                const val = t[key] ?? TRANSLATIONS.EN[key];
+                if (val !== undefined) el.textContent = val;
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                const val = t[key] ?? TRANSLATIONS.EN[key];
+                if (val !== undefined) el.placeholder = val;
+            });
+            document.querySelectorAll('[data-i18n-title]').forEach(el => {
+                const key = el.getAttribute('data-i18n-title');
+                const val = t[key] ?? TRANSLATIONS.EN[key];
+                if (val !== undefined) el.title = val;
+            });
+            // For content with inline markup (e.g. <strong> inside legal
+            // text) that textContent would strip out.
+            document.querySelectorAll('[data-i18n-html]').forEach(el => {
+                const key = el.getAttribute('data-i18n-html');
+                const val = t[key] ?? TRANSLATIONS.EN[key];
+                if (val !== undefined) el.innerHTML = val;
+            });
         }
 
         // Modals & Tabs
@@ -1457,7 +1869,7 @@
         function saveCash() {
             userCash = sanitizeNumber(document.getElementById('input-cash').value, 0);
             if (userCash < 0) userCash = 0;
-            if (userCash > 1e12) { alert("Cash amount exceeds safe limit."); return; } // sanity cap
+            if (userCash > 1e12) { alert(tt("alert_cash_limit")); return; } // sanity cap
             syncUserData();
             closeModal('modal-cash');
             renderAccountBar(); renderPortfolio();
@@ -1470,10 +1882,10 @@
             const shares = sanitizeNumber(document.getElementById('port-shares').value);
             const mode = document.getElementById('port-mode').value;
 
-            if (!ticker) { alert("Please enter a valid ticker symbol."); return; }
-            if (price <= 0) { alert("Buy price must be greater than 0."); return; }
-            if (shares <= 0) { alert("Shares must be greater than 0."); return; }
-            if (shares > 1e9) { alert("Share count exceeds safe limit."); return; }
+            if (!ticker) { alert(tt("alert_invalid_ticker")); return; }
+            if (price <= 0) { alert(tt("alert_price_positive")); return; }
+            if (shares <= 0) { alert(tt("alert_shares_positive")); return; }
+            if (shares > 1e9) { alert(tt("alert_shares_limit")); return; }
 
             const existing = userPortfolio.find(p => p.ticker === ticker);
             if (existing && mode === 'scale') {
@@ -1509,7 +1921,7 @@
             renderPortfolio(); renderHistory(); renderAccountBar();
         }
         function clearDemoData() {
-            if (confirm("Are you sure you want to clear demo samples without deleting real trades?")) {
+            if (confirm(tt("confirm_clear_demo"))) {
                 userPortfolio = userPortfolio.filter(p => !p.is_demo);
                 userHistory = userHistory.filter(h => !h.is_demo);
                 syncUserData();
@@ -1519,7 +1931,7 @@
 
         // Audit Ledger Export
         function exportAuditLedger() {
-            if (userHistory.length === 0) { alert("No closed trades available to export."); return; }
+            if (userHistory.length === 0) { alert(tt("alert_no_closed_trades")); return; }
             let csv = "Ticker,Shares Sold,Buy Price,Sell Price,Realized P&L (EGP),Realized P&L (%),Purchase Date,Sell Date\n";
             let grossGains = 0, grossLosses = 0;
             userHistory.forEach(h => {
@@ -1562,12 +1974,12 @@
             if (barValues[2]) barValues[2].innerText = `${totalEquity.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} EGP`;
             
             document.getElementById('fin-statement-content').innerHTML = `
-                <div class="flex justify-between py-2 border-b border-bordercol"><span>Cash Balance (EGP):</span> <strong>${userCash.toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></div>
-                <div class="flex justify-between py-2 border-b border-bordercol"><span>Stock Portfolio Cost Basis (EGP):</span> <strong>${costBasis.toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></div>
-                <div class="flex justify-between py-2 border-b border-bordercol"><span>Stock Portfolio Market Value (EGP):</span> <strong>${stockVal.toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></div>
-                <div class="flex justify-between py-2 border-b border-bordercol"><span>Unrealized Stock P&L (EGP):</span> <strong class="${unrealizedPnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${unrealizedPnl.toLocaleString(undefined, {minimumFractionDigits: 2})} (${unrealizedPct.toFixed(2)}%)</strong></div>
-                <div class="flex justify-between py-2 border-b border-bordercol"><span>Realized P&L from Closed Trades (EGP):</span> <strong class="${realizedPnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${realizedPnl.toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></div>
-                <div class="flex justify-between py-2 bg-panelbg px-3 rounded text-base"><span>Total Account Equity (EGP):</span> <strong class="text-amber-400">${totalEquity.toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></div>
+                <div class="flex justify-between py-2 border-b border-bordercol"><span>${tt('fin_cash_balance')}:</span> <strong>${userCash.toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></div>
+                <div class="flex justify-between py-2 border-b border-bordercol"><span>${tt('fin_cost_basis')}:</span> <strong>${costBasis.toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></div>
+                <div class="flex justify-between py-2 border-b border-bordercol"><span>${tt('fin_market_value')}:</span> <strong>${stockVal.toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></div>
+                <div class="flex justify-between py-2 border-b border-bordercol"><span>${tt('fin_unrealized_pnl')}:</span> <strong class="${unrealizedPnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${unrealizedPnl.toLocaleString(undefined, {minimumFractionDigits: 2})} (${unrealizedPct.toFixed(2)}%)</strong></div>
+                <div class="flex justify-between py-2 border-b border-bordercol"><span>${tt('fin_realized_pnl')}:</span> <strong class="${realizedPnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${realizedPnl.toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></div>
+                <div class="flex justify-between py-2 bg-panelbg px-3 rounded text-base"><span>${tt('fin_total_equity')}:</span> <strong class="text-amber-400">${totalEquity.toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></div>
             `;
             renderConcentrationRisk(stockVal, totalEquity);
         }
@@ -1629,7 +2041,7 @@
         function renderPortfolio() {
             const tbody = document.getElementById('tbody-exits');
             tbody.innerHTML = '';
-            if (userPortfolio.length === 0) { tbody.innerHTML = '<tr><td colspan="11" class="p-6 text-center text-textmuted font-sans">No active stock positions. Click "+ Add Position" to start tracking!</td></tr>'; return; }
+            if (userPortfolio.length === 0) { tbody.innerHTML = `<tr><td colspan="11" class="p-6 text-center text-textmuted font-sans">${tt('lbl_no_positions')}</td></tr>`; return; }
             userPortfolio.forEach(pos => {
                 let cp = pos.buyPrice, rsi = 50.0, adx = 0.0, trend = "Consolidation", action = "🛡️ HOLD / TRAIL STOP";
                 if (globalData && globalData.market_matrix) {
@@ -1647,8 +2059,8 @@
                 tr.innerHTML = `
                     <td class="p-2.5 font-bold text-sky-400">${escapeHtml(pos.ticker)}</td><td class="p-2.5">${pos.shares.toLocaleString()}</td><td class="p-2.5">${pos.buyPrice.toFixed(4)}</td><td class="p-2.5 font-bold text-white">${cp.toFixed(4)}</td>
                     <td class="p-2.5 font-bold ${pnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${pnl.toLocaleString(undefined, {minimumFractionDigits: 2})}</td><td class="p-2.5 font-bold ${pnlPct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${pnlPct.toFixed(2)}%</td>
-                    <td class="p-2.5 text-center font-sans"><span class="px-3 py-1 rounded-full text-[11px] ${actionBg}">${escapeHtml(action)}</span></td><td class="p-2.5 text-emerald-400">${tp.toFixed(4)}</td><td class="p-2.5 text-rose-400">${stop.toFixed(4)}</td>
-                    <td class="p-2.5 font-sans text-textmuted">${escapeHtml(trend)}</td><td class="p-2.5 text-center font-sans"><button onclick="sellPosition('${sanitizeTicker(pos.ticker)}')" class="bg-rose-700 text-white px-2.5 py-1 rounded text-[11px] font-bold">🤝 Record Sale</button></td>
+                    <td class="p-2.5 text-center font-sans"><span class="px-3 py-1 rounded-full text-[11px] ${actionBg}">${trAction(action)}</span></td><td class="p-2.5 text-emerald-400">${tp.toFixed(4)}</td><td class="p-2.5 text-rose-400">${stop.toFixed(4)}</td>
+                    <td class="p-2.5 font-sans text-textmuted">${trTrend(trend)}</td><td class="p-2.5 text-center font-sans"><button onclick="sellPosition('${sanitizeTicker(pos.ticker)}')" class="bg-rose-700 text-white px-2.5 py-1 rounded text-[11px] font-bold">🤝 Record Sale</button></td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -1657,7 +2069,7 @@
         function renderHistory() {
             const tbody = document.getElementById('tbody-history');
             tbody.innerHTML = '';
-            if (userHistory.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="p-6 text-center text-textmuted font-sans">No closed trades recorded yet.</td></tr>'; return; }
+            if (userHistory.length === 0) { tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-textmuted font-sans">${tt('lbl_no_closed_trades')}</td></tr>`; return; }
             userHistory.forEach(h => {
                 const tr = document.createElement('tr');
                 tr.className = 'border-b border-bordercol hover:bg-panelbg transition';
@@ -1680,12 +2092,12 @@
             const tbody = document.getElementById('tbody-breakout');
             tbody.innerHTML = '';
             if (!globalData || !Array.isArray(globalData.breakout_watchlist)) {
-                tbody.innerHTML = '<tr><td colspan="11" class="p-8 text-center text-textmuted font-sans">Breakout watchlist data isn\'t in the current market data feed yet.</td></tr>';
+                tbody.innerHTML = `<tr><td colspan="11" class="p-8 text-center text-textmuted font-sans">${tt('lbl_breakout_data_missing')}</td></tr>`;
                 return;
             }
             const list = globalData.breakout_watchlist;
             if (list.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="11" class="p-8 text-center text-textmuted font-sans">No stocks currently qualify for the breakout watchlist.</td></tr>';
+                tbody.innerHTML = `<tr><td colspan="11" class="p-8 text-center text-textmuted font-sans">${tt('lbl_no_breakout_qualifiers')}</td></tr>`;
                 return;
             }
             list.forEach((row, i) => {
@@ -1705,9 +2117,9 @@
                     <td class="p-2.5 text-right text-textmain">${row["RSI-14"] ?? '-'}</td>
                     <td class="p-2.5 text-right text-textmain">${row["ADX-14"] ?? '-'}</td>
                     <td class="p-2.5 text-center">${squeezeLabel}</td>
-                    <td class="p-2.5 font-sans text-textmuted">${escapeHtml(row["Volume Trend"]) || '-'}</td>
-                    <td class="p-2.5 font-sans text-textmuted">${escapeHtml(row["Trend Class"]) || '-'}</td>
-                    <td class="p-2.5 font-sans text-textmuted whitespace-normal">${escapeHtml(row.Signals) || '-'}</td>
+                    <td class="p-2.5 font-sans text-textmuted">${trVolumeTrend(row["Volume Trend"]) || '-'}</td>
+                    <td class="p-2.5 font-sans text-textmuted">${trTrend(row["Trend Class"]) || '-'}</td>
+                    <td class="p-2.5 font-sans text-textmuted whitespace-normal">${trSignals(row.Signals) || '-'}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -1726,11 +2138,11 @@
                 const tr = document.createElement('tr');
                 tr.className = 'border-b border-bordercol hover:bg-panelbg transition font-mono';
                 tr.innerHTML = `
-                    <td class="p-2.5 font-sans font-bold text-textmain">${escapeHtml(s.Sector)}</td><td class="p-2.5 text-center">${s.Stocks}</td>
+                    <td class="p-2.5 font-sans font-bold text-textmain">${trSector(s.Sector)}</td><td class="p-2.5 text-center">${s.Stocks}</td>
                     <td class="p-2.5 text-right font-bold ${r1d >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${r1d.toFixed(2)}%</td><td class="p-2.5 text-right font-bold ${r5d >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${r5d.toFixed(2)}%</td>
                     <td class="p-2.5 text-right ${cmf >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${cmf.toFixed(2)}</td><td class="p-2.5 text-right">${s["Bullish Breadth (%)"]}%</td>
                     <td class="p-2.5 text-right text-textmain">${parseFloat(s["Traded Value (EGP)"]).toLocaleString(undefined, {maximumFractionDigits: 0})}</td>
-                    <td class="p-2.5 text-center font-bold text-sky-400">${escapeHtml(s["Sector Leader"])}</td><td class="p-2.5 text-center font-sans"><span class="px-3 py-1 rounded-full text-[11px] ${statusBg}">${escapeHtml(s["Sector Status"])}</span></td>
+                    <td class="p-2.5 text-center font-bold text-sky-400">${escapeHtml(s["Sector Leader"])}</td><td class="p-2.5 text-center font-sans"><span class="px-3 py-1 rounded-full text-[11px] ${statusBg}">${trSectorStatus(s["Sector Status"])}</span></td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -1740,16 +2152,16 @@
             const container = document.getElementById('top10-container');
             container.innerHTML = '';
             if (!globalData || !globalData.top_10) return;
-            [{ key: "🔥 STRONG BUY", title: "🔥 Top 10 Strong Buy", col: "text-emerald-400" }, { key: "⚡ BREAKOUT BUY", title: "⚡ Top 10 Breakout", col: "text-sky-400" }, { key: "📈 ACCUMULATE", title: "📈 Top 10 Accumulate", col: "text-blue-400" }, { key: "⏳ BUY ON DIP", title: "⏳ Top 10 Buy on Dip", col: "text-amber-400" }].forEach(c => {
+            [{ key: "🔥 STRONG BUY", title: tt("top10_strong_buy"), col: "text-emerald-400" }, { key: "⚡ BREAKOUT BUY", title: tt("top10_breakout"), col: "text-sky-400" }, { key: "📈 ACCUMULATE", title: tt("top10_accumulate"), col: "text-blue-400" }, { key: "⏳ BUY ON DIP", title: tt("top10_buy_on_dip"), col: "text-amber-400" }].forEach(c => {
                 const list = globalData.top_10[c.key] || [];
                 let rowsHtml = list.map((row, i) => `
-                    <tr class="border-b border-bordercol/40 hover:bg-panelbg"><td class="p-2 text-textmuted">${i+1}</td><td class="p-2 font-bold text-sky-400">${escapeHtml(row.Ticker)}</td><td class="p-2 text-white font-bold">${row["Current Price"]}</td><td class="p-2 text-textmain">${row["Rank Score"]}</td><td class="p-2 font-sans text-textmuted">${escapeHtml(row["Trend Class"])}</td></tr>
+                    <tr class="border-b border-bordercol/40 hover:bg-panelbg"><td class="p-2 text-textmuted">${i+1}</td><td class="p-2 font-bold text-sky-400">${escapeHtml(row.Ticker)}</td><td class="p-2 text-white font-bold">${row["Current Price"]}</td><td class="p-2 text-textmain">${row["Rank Score"]}</td><td class="p-2 font-sans text-textmuted">${trTrend(row["Trend Class"])}</td></tr>
                 `).join('');
                 const box = document.createElement('div');
                 box.className = 'bg-darkbg p-4 rounded-xl border border-bordercol shadow space-y-3';
                 box.innerHTML = `
                     <h3 class="font-bold text-sm ${c.col} border-b border-bordercol pb-2">${c.title}</h3>
-                    <div class="overflow-x-auto"><table class="w-full text-left border-collapse font-mono text-xs"><thead class="text-textmuted border-b border-bordercol"><tr><th class="p-1">#</th><th class="p-1">Ticker</th><th class="p-1">Price</th><th class="p-1">Score</th><th class="p-1 font-sans">Trend</th></tr></thead><tbody>${rowsHtml || '<tr><td colspan="5" class="p-4 text-center text-textmuted font-sans">No stocks in category</td></tr>'}</tbody></table></div>
+                    <div class="overflow-x-auto"><table class="w-full text-left border-collapse font-mono text-xs"><thead class="text-textmuted border-b border-bordercol"><tr><th class="p-1">#</th><th class="p-1">${tt('hdr_ticker')}</th><th class="p-1">${tt('hdr_price')}</th><th class="p-1">${tt('hdr_score')}</th><th class="p-1 font-sans">${tt('hdr_trend')}</th></tr></thead><tbody>${rowsHtml || `<tr><td colspan="5" class="p-4 text-center text-textmuted font-sans">${tt('lbl_no_stocks_category')}</td></tr>`}</tbody></table></div>
                 `;
                 container.appendChild(box);
             });
@@ -1785,10 +2197,10 @@
                 const tr = document.createElement('tr');
                 tr.className = 'border-b border-bordercol/40 hover:bg-panelbg transition';
                 tr.innerHTML = `
-                    <td class="p-2.5 font-sans text-textmuted">${rowCount}</td><td class="p-2.5 font-bold text-sky-400">${escapeHtml(row.Ticker) || '-'}</td><td class="p-2 text-center font-sans ${actionStyle} rounded-full shadow-sm px-3">${escapeHtml(row.Action) || '-'}</td>
+                    <td class="p-2.5 font-sans text-textmuted">${rowCount}</td><td class="p-2.5 font-bold text-sky-400">${escapeHtml(row.Ticker) || '-'}</td><td class="p-2 text-center font-sans ${actionStyle} rounded-full shadow-sm px-3">${trAction(row.Action) || '-'}</td>
                     <td class="p-2.5 text-textmain font-bold">${row["Rank Score"] || 0}</td><td class="p-2.5 font-bold text-white">${row["Current Price"] || 0}</td><td class="p-2.5 text-textmain">${row["Target Entry (VWAP)"] || 0}</td>
                     <td class="p-2.5 text-rose-400 font-semibold">${row["Suggested Stop-Loss"] || 0}</td><td class="p-2.5 text-textmain" title="Estimated from your own cash balance">${estimateSuggestedShares(row["Target Entry (VWAP)"], row["Suggested Stop-Loss"]).toLocaleString()}</td>
-                    <td class="p-2.5 text-emerald-400 font-semibold">${row["Projected Gain (%)"] || 'N/A'}</td><td class="p-2.5 text-textmain">${row["Pattern Conf (%)"] || 'N/A'}</td><td class="p-2.5 font-sans text-textmuted">${escapeHtml(row["Trend Class"]) || '-'}</td>
+                    <td class="p-2.5 text-emerald-400 font-semibold">${row["Projected Gain (%)"] || 'N/A'}</td><td class="p-2.5 text-textmain">${row["Pattern Conf (%)"] || 'N/A'}</td><td class="p-2.5 font-sans text-textmuted">${trTrend(row["Trend Class"]) || '-'}</td>
                     <td class="p-2.5 text-textmain">${row["RSI-14"] || 0}</td><td class="p-2.5 text-textmain">${row["ADX-14"] || 0}</td><td class="p-2.5 text-textmain">${row["Vol Z-Score"] || 0}</td>
                     <td class="p-2.5 font-sans text-textmain" title="Histogram: ${row["MACD Histogram"] ?? '-'}">${escapeHtml(row["MACD Signal"]) || '-'}</td>
                     <td class="p-2.5 text-textmain">${row["Bollinger %B"] ?? '-'}</td>
@@ -1799,7 +2211,7 @@
                 `;
                 tbody.appendChild(tr);
             });
-            if (rowCount === 0) tbody.innerHTML = '<tr><td colspan="21" class="p-8 text-center text-textmuted font-sans">No stocks match your active filter criteria.</td></tr>';
+            if (rowCount === 0) tbody.innerHTML = `<tr><td colspan="21" class="p-8 text-center text-textmuted font-sans">${tt('lbl_no_filter_matches')}</td></tr>`;
             applyColumnVisibility();
         }
 
@@ -1824,12 +2236,17 @@
                 populateSelects(); applyFilters(); renderSectors(); renderTop10(); renderBreakouts(); renderPortfolio(); renderHistory(); renderAccountBar();
             } catch (error) {
                 console.error("Failed to load market data:", error);
-                document.getElementById('tbody-matrix').innerHTML = `<tr><td colspan="21" class="p-8 text-center text-rose-400 font-sans">⚠️ Data temporarily unavailable. Please try refreshing in a moment.</td></tr>`;
+                document.getElementById('tbody-matrix').innerHTML = `<tr><td colspan="21" class="p-8 text-center text-rose-400 font-sans">⚠️ ${tt('lbl_data_unavailable')}</td></tr>`;
             }
         }
 
         // Initialize
         applyTheme(localStorage.getItem('quant_theme') || 'dark');
+        // Language choice persists across visits; new/first-time visitors
+        // (no stored preference yet) default to English per product decision.
+        const _savedLang = localStorage.getItem('quant_lang') || 'EN';
+        document.getElementById('lang-select').value = _savedLang;
+        switchLanguage(_savedLang);
         loadMarketData();
     </script>
 
@@ -1848,12 +2265,12 @@
                     <img alt="MB-EGX Metallic Logo" class="w-72 md:w-96 h-auto drop-shadow-[0_0_30px_rgba(147,204,255,0.2)]" src="assets/mb-egx-logo.png"/>
                 </div>
                 <h1 class="font-headline-xl text-3xl md:text-[38px] font-bold text-primary mt-4 mb-4 leading-tight">
-                    Ancient Legacy meets <span class="text-on-background">Digital Future</span>
+                    <span data-i18n="hero_title_1">Ancient Legacy meets</span> <span class="text-on-background" data-i18n="hero_title_2">Digital Future</span>
                 </h1>
                 <p class="font-body-md text-on-surface-variant mb-2 leading-relaxed max-w-lg text-[15px]">
-                    <span style="color:#D4AF37; font-weight:800; font-family:'Hanken Grotesk', sans-serif; font-size:17px;">Vision:</span> A transparent stock market where every investor has the insights to succeed.
+                    <span style="color:#D4AF37; font-weight:800; font-family:'Hanken Grotesk', sans-serif; font-size:17px;" data-i18n="hero_vision_label">Vision:</span> <span data-i18n="hero_vision_text">A transparent stock market where every investor has the insights to succeed.</span>
                     <br><br>
-                    <span style="color:#D4AF37; font-weight:800; font-family:'Hanken Grotesk', sans-serif; font-size:17px;">Mission:</span> We build seamless analytical platforms that decode EGX data, cut through the noise, and empower you to trade smarter.
+                    <span style="color:#D4AF37; font-weight:800; font-family:'Hanken Grotesk', sans-serif; font-size:17px;" data-i18n="hero_mission_label">Mission:</span> <span data-i18n="hero_mission_text">We build seamless analytical platforms that decode EGX data, cut through the noise, and empower you to trade smarter.</span>
                 </p>
             </div>
         </div>
@@ -1864,31 +2281,31 @@
                 <!-- Subtle internal shader effect for form depth -->
                 <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16"></div>
                 <div class="relative z-10">
-                    <h2 class="font-headline-lg text-[22px] font-semibold text-on-background mb-1">Terminal Access</h2>
-                    <p class="font-body-sm text-xs text-on-surface-variant mb-3">Sign in to view your private dashboard</p>
+                    <h2 class="font-headline-lg text-[22px] font-semibold text-on-background mb-1" data-i18n="auth_title">Terminal Access</h2>
+                    <p class="font-body-sm text-xs text-on-surface-variant mb-3" data-i18n="auth_subtitle">Sign in to view your private dashboard</p>
 
                     <!-- Auth Error Container -->
                     <div id="auth-error" class="hidden mb-3 text-xs text-rose-400 bg-rose-950/40 border border-rose-800 rounded-lg p-2.5 shadow"></div>
                     
                     <form class="space-y-3" id="loginForm" onsubmit="event.preventDefault();">
                         <div>
-                            <label class="block font-label-mono text-[11px] text-on-surface-variant uppercase mb-1.5 font-medium tracking-wide">Email Address</label>
+                            <label class="block font-label-mono text-[11px] text-on-surface-variant uppercase mb-1.5 font-medium tracking-wide" data-i18n="lbl_email_address">Email Address</label>
                             <input id="auth-email" autocomplete="email" class="w-full bg-surface-container-lowest border border-outline-variant text-on-surface rounded-lg p-2.5 font-body-md focus:ring-0 focus:border-primary focus:outline-none transition-all" placeholder="investor@mb-egx.ai" type="email"/>
                         </div>
                         
                         <div>
                             <div class="flex justify-between mb-1.5">
-                                <label class="block font-label-mono text-[11px] text-on-surface-variant uppercase font-medium tracking-wide">Password</label>
-                                <a class="text-label-mono text-[12px] text-primary hover:underline font-medium" href="#">Forgot Access?</a>
+                                <label class="block font-label-mono text-[11px] text-on-surface-variant uppercase font-medium tracking-wide" data-i18n="lbl_password">Password</label>
+                                <a class="text-label-mono text-[12px] text-primary hover:underline font-medium" href="#" data-i18n="lnk_forgot_access">Forgot Access?</a>
                             </div>
                             <input id="auth-password" autocomplete="current-password" class="w-full bg-surface-container-lowest border border-outline-variant text-on-surface rounded-lg p-2.5 font-body-md focus:ring-0 focus:border-primary focus:outline-none transition-all" placeholder="••••••••" type="password"/>
                         </div>
 
                         <!-- Required Consent Disclaimer Section -->
                         <div class="bg-[#1a1c20] rounded-lg p-3 card-edge">
-                            <h3 class="font-label-mono text-[10px] text-on-surface-variant uppercase mb-1.5 border-b border-outline-variant pb-1 font-semibold">End-User Consent and Legal Disclaimer</h3>
+                            <h3 class="font-label-mono text-[10px] text-on-surface-variant uppercase mb-1.5 border-b border-outline-variant pb-1 font-semibold" data-i18n="lbl_consent_header">End-User Consent and Legal Disclaimer</h3>
                             <div class="h-14 overflow-y-auto pr-2 custom-scrollbar">
-                                <p class="font-body-sm text-[11px] leading-relaxed text-on-surface-variant text-justify whitespace-pre-line">By accessing, subscribing to, or using this application, you explicitly acknowledge, understand, and agree to the following terms: 
+                                <p class="font-body-sm text-[11px] leading-relaxed text-on-surface-variant text-justify whitespace-pre-line" data-i18n-html="legal_disclaimer_text">By accessing, subscribing to, or using this application, you explicitly acknowledge, understand, and agree to the following terms: 
 
 • <strong>Informational and Educational Use Only:</strong> This app is for informational and educational purposes only. It does not constitute financial or investment advice. 
 
@@ -1906,23 +2323,23 @@
                             </div>
                             <label class="flex items-start gap-2 mt-2 cursor-pointer group select-none">
                                 <input class="mt-1 rounded bg-[#1e2024] border-outline-variant text-primary focus:ring-offset-surface-elevated accent-primary" id="consent-checkbox" onchange="onConsentToggle()" type="checkbox"/>
-                                <span class="font-body-sm text-[12px] leading-snug text-on-surface group-hover:text-primary transition-colors">I acknowledge and agree to the End-User Consent and Legal Disclaimer.</span>
+                                <span class="font-body-sm text-[12px] leading-snug text-on-surface group-hover:text-primary transition-colors" data-i18n="lbl_consent_checkbox">I acknowledge and agree to the End-User Consent and Legal Disclaimer.</span>
                             </label>
                         </div>
                         
                         <button id="btn-auth-signin" onclick="handleEmailSignIn()" class="w-full bg-primary text-on-primary font-bold py-2.5 rounded-lg hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-                            <span>Sign In</span>
+                            <span data-i18n="btn_sign_in">Sign In</span>
                             <span class="material-symbols-outlined text-[20px]">login</span>
                         </button>
                         
-                        <button id="btn-auth-signup" onclick="handleEmailSignUp()" disabled class="w-full py-2 rounded-lg bg-transparent border border-outline-variant text-sm text-outline transition cursor-not-allowed opacity-50 hover:bg-[#1a1c20]">
+                        <button id="btn-auth-signup" onclick="handleEmailSignUp()" disabled class="w-full py-2 rounded-lg bg-transparent border border-outline-variant text-sm text-outline transition cursor-not-allowed opacity-50 hover:bg-[#1a1c20]" data-i18n="btn_create_account">
                             Create Account
                         </button>
                     </form>
                     
                     <div class="flex items-center gap-4 my-3">
                         <div class="h-px flex-1 bg-outline-variant/30"></div>
-                        <span class="font-label-mono text-[12px] text-on-surface-variant uppercase font-medium">OR</span>
+                        <span class="font-label-mono text-[12px] text-on-surface-variant uppercase font-medium" data-i18n="lbl_or">OR</span>
                         <div class="h-px flex-1 bg-outline-variant/30"></div>
                     </div>
                     
@@ -1933,10 +2350,10 @@
                             <path d="M5.21 14.34c-.24-.72-.37-1.49-.37-2.34s.13-1.62.37-2.34L1.25 6.61C.45 8.23 0 10.06 0 12c0 1.94.45 3.77 1.25 5.39l3.96-3.05z" fill="#FBBC05"></path>
                             <path d="M12 24c3.24 0 5.97-1.07 7.96-2.91l-3.71-2.88c-1.1.74-2.51 1.18-4.25 1.18-3.18 0-5.84-2.14-6.8-5.04l-3.96 3.07C3.26 21.31 7.31 24 12 24z" fill="#34A853"></path>
                         </svg>
-                        <span class="font-body-md font-medium text-sm">Sign in with Google</span>
+                        <span class="font-body-md font-medium text-sm" data-i18n="btn_sign_in_google">Sign in with Google</span>
                     </button>
                     
-                    <p class="mt-3 text-center font-body-sm text-[11px] text-on-surface-variant/80">
+                    <p class="mt-3 text-center font-body-sm text-[11px] text-on-surface-variant/80" data-i18n="lbl_google_consent_note">
                         Continuing with Google to create a new account also requires the agreement checkbox above to be checked.
                     </p>
                 </div>
@@ -1946,7 +2363,7 @@
             <div class="absolute bottom-6 left-0 w-full flex justify-center items-center pointer-events-none z-0">
                 <div class="bg-surface-container-lowest/50 backdrop-blur-sm px-6 py-2 rounded-full border border-outline-variant/30 flex items-center gap-3">
                     <span class="material-symbols-outlined text-primary text-[16px]">verified_user</span>
-                    <span class="font-label-mono text-[10px] uppercase text-on-surface-variant tracking-wider">AES-256 Bank Grade Encryption Matrix Enabled</span>
+                    <span class="font-label-mono text-[10px] uppercase text-on-surface-variant tracking-wider" data-i18n="lbl_encryption_badge">AES-256 Bank Grade Encryption Matrix Enabled</span>
                 </div>
             </div>
         </div>
@@ -1957,13 +2374,13 @@
          all interaction with the app until re-accepted. -->
     <div id="terms-reconsent-gate" class="hidden fixed inset-0 bg-black/90 z-[10000] flex items-center justify-center p-4">
         <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 max-w-md w-full card-edge">
-            <h2 class="font-label-mono text-sm text-primary uppercase font-bold mb-1">Updated Terms & Disclaimer</h2>
-            <p class="font-body-sm text-[12px] text-on-surface-variant mb-3">
+            <h2 class="font-label-mono text-sm text-primary uppercase font-bold mb-1" data-i18n="reconsent_title">Updated Terms & Disclaimer</h2>
+            <p class="font-body-sm text-[12px] text-on-surface-variant mb-3" data-i18n="reconsent_desc">
                 Our End-User Consent and Legal Disclaimer has been updated. Please review and re-accept it to continue using the app.
             </p>
             <div class="bg-[#1a1c20] rounded-lg p-3 card-edge">
                 <div class="h-40 overflow-y-auto pr-2 custom-scrollbar">
-                    <p class="font-body-sm text-[11px] leading-relaxed text-on-surface-variant text-justify whitespace-pre-line">By accessing, subscribing to, or using this application, you explicitly acknowledge, understand, and agree to the following terms: 
+                    <p class="font-body-sm text-[11px] leading-relaxed text-on-surface-variant text-justify whitespace-pre-line" data-i18n-html="legal_disclaimer_text">By accessing, subscribing to, or using this application, you explicitly acknowledge, understand, and agree to the following terms: 
 
 • <strong>Informational and Educational Use Only:</strong> This app is for informational and educational purposes only. It does not constitute financial or investment advice. 
 
@@ -1982,14 +2399,14 @@
             </div>
             <label class="flex items-start gap-2 mt-3 cursor-pointer group select-none">
                 <input class="mt-1 rounded bg-[#1e2024] border-outline-variant text-primary focus:ring-offset-surface-elevated accent-primary" id="reconsent-checkbox" onchange="document.getElementById('btn-reconsent-accept').disabled = !this.checked; document.getElementById('btn-reconsent-accept').classList.toggle('opacity-50', !this.checked);" type="checkbox"/>
-                <span class="font-body-sm text-[12px] leading-snug text-on-surface group-hover:text-primary transition-colors">I acknowledge and agree to the updated End-User Consent and Legal Disclaimer.</span>
+                <span class="font-body-sm text-[12px] leading-snug text-on-surface group-hover:text-primary transition-colors" data-i18n="lbl_reconsent_checkbox">I acknowledge and agree to the updated End-User Consent and Legal Disclaimer.</span>
             </label>
             <div id="reconsent-error" class="hidden mt-2 text-[#ffb4ab] font-body-sm text-[11px]"></div>
             <div class="flex gap-3 mt-4">
-                <button id="btn-reconsent-accept" disabled onclick="handleReconsentAccept()" class="flex-1 bg-primary text-on-primary font-bold py-2.5 rounded-lg hover:opacity-90 active:scale-[0.98] transition-all opacity-50">
+                <button id="btn-reconsent-accept" disabled onclick="handleReconsentAccept()" class="flex-1 bg-primary text-on-primary font-bold py-2.5 rounded-lg hover:opacity-90 active:scale-[0.98] transition-all opacity-50" data-i18n="btn_accept_continue">
                     Accept & Continue
                 </button>
-                <button onclick="handleSignOut()" class="px-4 py-2.5 rounded-lg border border-outline-variant text-on-surface-variant text-sm hover:bg-[#1a1c20] transition">
+                <button onclick="handleSignOut()" class="px-4 py-2.5 rounded-lg border border-outline-variant text-on-surface-variant text-sm hover:bg-[#1a1c20] transition" data-i18n="btn_sign_out_reconsent">
                     Sign Out
                 </button>
             </div>
@@ -2129,12 +2546,12 @@
             clearAuthError();
             const email = document.getElementById('auth-email').value.trim();
             const password = document.getElementById('auth-password').value;
-            if (!email || !password) { showAuthError("Enter both email and password."); recordAuthAttempt(); return; }
+            if (!email || !password) { showAuthError(tt("err_enter_both")); recordAuthAttempt(); return; }
             // Basic email format validation (defense-in-depth — Firebase also checks this server-side)
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showAuthError("Invalid email format."); recordAuthAttempt(); return; }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showAuthError(tt("err_invalid_email")); recordAuthAttempt(); return; }
             auth.signInWithEmailAndPassword(email, password)
                 .then(() => resetAuthRateLimit())
-                .catch(err => { recordAuthAttempt(); showAuthError("Sign-in failed. Check your credentials."); });
+                .catch(err => { recordAuthAttempt(); showAuthError(tt("err_sign_in_failed")); });
         }
 
         async function handleEmailSignUp() {
@@ -2142,12 +2559,12 @@
             clearAuthError();
             const email = document.getElementById('auth-email').value.trim();
             const password = document.getElementById('auth-password').value;
-            if (!email || !password) { showAuthError("Enter both email and password."); recordAuthAttempt(); return; }
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showAuthError("Invalid email format."); recordAuthAttempt(); return; }
-            if (password.length < 8) { showAuthError("Password must be at least 8 characters."); return; }
-            if (password.length > 128) { showAuthError("Password is too long."); return; }
+            if (!email || !password) { showAuthError(tt("err_enter_both")); recordAuthAttempt(); return; }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showAuthError(tt("err_invalid_email")); recordAuthAttempt(); return; }
+            if (password.length < 8) { showAuthError(tt("err_password_min")); return; }
+            if (password.length > 128) { showAuthError(tt("err_password_max")); return; }
             if (!document.getElementById('consent-checkbox').checked) {
-                showAuthError("You must agree to the legal terms to create an account.");
+                showAuthError(tt("err_must_agree_terms"));
                 return;
             }
             try {
@@ -2161,7 +2578,7 @@
             } catch (err) {
                 recordAuthAttempt();
                 // Don't expose Firebase internal error codes to the client
-                showAuthError("Account creation failed. The email may already be registered.");
+                showAuthError(tt("err_account_creation_failed"));
             }
         }
 
@@ -2184,7 +2601,7 @@
                 if (isNewUser) {
                     if (!document.getElementById('consent-checkbox').checked) {
                         await auth.signOut();
-                        showAuthError("You must agree to the legal terms to create an account.");
+                        showAuthError(tt("err_must_agree_terms"));
                         return;
                     }
                     const ip = await fetchClientIp();
@@ -2202,11 +2619,11 @@
                 console.error('Google sign-in failed:', err && err.code, err);
                 recordAuthAttempt();
                 if (err && (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request')) {
-                    showAuthError("The Google sign-in window closed before finishing. If you clicked the button twice, try once and wait — or check that your browser isn't blocking pop-ups / third-party cookies for this site.");
+                    showAuthError(tt("err_popup_closed"));
                 } else if (err && err.code === 'auth/popup-blocked') {
-                    showAuthError("Your browser blocked the sign-in pop-up. Please allow pop-ups for this site and try again.");
+                    showAuthError(tt("err_popup_blocked"));
                 } else {
-                    showAuthError("Google sign-in failed. Please try again.");
+                    showAuthError(tt("err_google_signin_failed"));
                 }
             } finally {
                 _googleSignInInProgress = false;
@@ -2225,7 +2642,7 @@
                 await auth.signOut();
             } catch (err) {
                 console.error('Sign out failed:', err);
-                alert('Sign out failed. Please try again, or reload the page.');
+                alert(tt("alert_sign_out_failed"));
                 return;
             }
 
@@ -2281,12 +2698,33 @@
             };
         }
 
-        window.cloudSyncUserData = function () {
+        // Debounced: rapid successive actions (adding several positions,
+        // adjusting cash, etc. in one sitting) previously fired one Firestore
+        // write PER action. Now they collapse into a single write after the
+        // user pauses for CLOUD_SYNC_DEBOUNCE_MS — same end state, far fewer
+        // writes against the daily quota. flushCloudSync() below forces an
+        // immediate write (bypassing the wait) when the tab is hidden/closed,
+        // so a pending debounced save is never silently lost.
+        const CLOUD_SYNC_DEBOUNCE_MS = 3000;
+        let _cloudSyncTimer = null;
+        function _writeCloudSyncNow() {
             if (!auth.currentUser) return;
             db.collection('users').doc(auth.currentUser.uid).set({
                 cash: userCash, portfolio: userPortfolio, history: userHistory,
                 web_stats: { ...computeWebDealingStats(), updated: firebase.firestore.FieldValue.serverTimestamp() }
             }, { merge: true }).catch(err => console.error('Cloud sync failed:', err));
+        }
+        function flushCloudSync() {
+            if (_cloudSyncTimer) {
+                clearTimeout(_cloudSyncTimer);
+                _cloudSyncTimer = null;
+                _writeCloudSyncNow();
+            }
+        }
+        window.cloudSyncUserData = function () {
+            if (!auth.currentUser) return;
+            if (_cloudSyncTimer) clearTimeout(_cloudSyncTimer);
+            _cloudSyncTimer = setTimeout(() => { _cloudSyncTimer = null; _writeCloudSyncNow(); }, CLOUD_SYNC_DEBOUNCE_MS);
         };
 
         function getFriendlyName(user) {
@@ -2300,7 +2738,7 @@
 
         function showWelcomeToast(name) {
             const toast = document.getElementById('welcome-toast');
-            toast.textContent = `👋 Welcome back, ${name}!`;
+            toast.textContent = tt('toast_welcome_back').replace('{name}', name);
             toast.style.display = 'block';
             toast.style.opacity = '1';
             setTimeout(() => { toast.style.opacity = '0'; }, 3000);
@@ -2346,10 +2784,10 @@
         }
 
         document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'hidden') _touchSession();
+            if (document.visibilityState === 'hidden') { _touchSession(); flushCloudSync(); }
         });
-        window.addEventListener('pagehide', () => _touchSession(true));
-        window.addEventListener('beforeunload', () => _touchSession(true));
+        window.addEventListener('pagehide', () => { _touchSession(true); flushCloudSync(); });
+        window.addEventListener('beforeunload', () => { _touchSession(true); flushCloudSync(); });
 
         function _formatDuration(totalSeconds) {
             if (!isFinite(totalSeconds) || totalSeconds < 0) return '—';
@@ -2419,7 +2857,7 @@
         async function openAnalyticsModal() {
             openModal('modal-analytics');
             document.getElementById('analytics-loading').classList.remove('hidden');
-            document.getElementById('analytics-loading').textContent = 'Loading session data…';
+            document.getElementById('analytics-loading').textContent = tt('loading_sessions');
             document.getElementById('analytics-summary').classList.add('hidden');
             document.getElementById('analytics-table-wrap').classList.add('hidden');
 
@@ -2453,7 +2891,7 @@
                     if (lastMs > perUser[key].lastSeen) perUser[key].lastSeen = lastMs;
                 });
 
-                document.getElementById('analytics-loading').textContent = 'Loading trading activity…';
+                document.getElementById('analytics-loading').textContent = tt('loading_trading_activity');
                 const uids = Object.values(perUser).map(u => u.uid).filter(Boolean);
                 await Promise.all(uids.map(async uid => {
                     try {
@@ -2502,8 +2940,7 @@
                 document.getElementById('analytics-summary').classList.remove('hidden');
                 document.getElementById('analytics-table-wrap').classList.remove('hidden');
             } catch (err) {
-                document.getElementById('analytics-loading').textContent =
-                    'Could not load session data (check Firestore rules / console for details).';
+                document.getElementById('analytics-loading').textContent = tt('err_analytics_load_failed');
                 console.error('Analytics load failed:', err);
             }
         }
@@ -2544,7 +2981,7 @@
                 proceedAfterAuth(user);
             } catch (err) {
                 console.error('Failed to save re-consent:', err);
-                errEl.textContent = "Couldn't save your acceptance. Please check your connection and try again.";
+                errEl.textContent = tt("err_reconsent_save_failed");
                 errEl.classList.remove('hidden');
             }
         }

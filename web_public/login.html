@@ -83,6 +83,14 @@
 </head>
 <body class="font-body-md antialiased min-h-screen flex flex-col relative">
 
+    <!-- Language toggle -->
+    <div class="fixed top-4 right-4 z-50">
+        <select id="lang-select" onchange="switchLanguage(this.value)" class="bg-surface-elevated border border-outline-variant rounded-lg px-2.5 py-2 text-on-surface font-bold cursor-pointer text-sm">
+            <option value="EN">EN</option>
+            <option value="AR">AR</option>
+        </select>
+    </div>
+
     <main class="flex-1 flex flex-col lg:flex-row relative">
 
         <!-- ============================================================ -->
@@ -102,15 +110,15 @@
 
             <!-- Hero Text -->
             <h1 class="font-headline-xl text-4xl md:text-5xl lg:text-[56px] text-primary mb-6 leading-tight font-bold">
-                Ancient Legacy meets<br/>
-                <span class="text-on-background">Digital Future</span>
+                <span data-i18n="hero_title_1">Ancient Legacy meets</span><br/>
+                <span class="text-on-background" data-i18n="hero_title_2">Digital Future</span>
             </h1>
 
             <!-- Vision & Mission -->
             <div class="mb-10 max-w-xl">
                 <p class="text-on-surface-variant text-[15px] leading-relaxed">
-                    <strong class="text-primary">Vision:</strong> A transparent stock market where every investor has the insights to succeed.<br/><br/>
-                    <strong class="text-primary">Mission:</strong> We build seamless analytical platforms that decode EGX data, cut through the noise, and empower you to trade smarter.
+                    <strong class="text-primary" data-i18n="hero_vision_label">Vision:</strong> <span data-i18n="hero_vision_text">A transparent stock market where every investor has the insights to succeed.</span><br/><br/>
+                    <strong class="text-primary" data-i18n="hero_mission_label">Mission:</strong> <span data-i18n="hero_mission_text">We build seamless analytical platforms that decode EGX data, cut through the noise, and empower you to trade smarter.</span>
                 </p>
             </div>
 
@@ -118,11 +126,11 @@
             <div class="grid grid-cols-2 gap-4">
                 <div class="bg-surface-elevated p-5 rounded-xl card-edge ambient-glow">
                     <div class="text-primary font-stat-lg text-[26px] font-semibold mb-1">20ms</div>
-                    <div class="text-on-surface-variant font-label-mono text-[11px] uppercase tracking-widest">Execution Speed</div>
+                    <div class="text-on-surface-variant font-label-mono text-[11px] uppercase tracking-widest" data-i18n="stat_execution_speed">Execution Speed</div>
                 </div>
                 <div class="bg-surface-elevated p-5 rounded-xl card-edge ambient-glow">
                     <div class="text-primary font-stat-lg text-[26px] font-semibold mb-1">0.01%</div>
-                    <div class="text-on-surface-variant font-label-mono text-[11px] uppercase tracking-widest">Alpha Precision</div>
+                    <div class="text-on-surface-variant font-label-mono text-[11px] uppercase tracking-widest" data-i18n="stat_alpha_precision">Alpha Precision</div>
                 </div>
             </div>
         </section>
@@ -139,8 +147,8 @@
                 <div class="relative z-10">
 
                     <!-- Terminal Access Heading -->
-                    <h2 class="font-headline-lg text-[28px] text-on-background font-semibold mb-1">Terminal Access</h2>
-                    <p class="font-body-sm text-sm text-on-surface-variant mb-7">Sign in to view your private dashboard</p>
+                    <h2 class="font-headline-lg text-[28px] text-on-background font-semibold mb-1" data-i18n="auth_title">Terminal Access</h2>
+                    <p class="font-body-sm text-sm text-on-surface-variant mb-7" data-i18n="auth_subtitle">Sign in to view your private dashboard</p>
 
                     <!-- Auth Error Container -->
                     <div id="auth-error" class="hidden mb-4 text-[13px] text-rose-400 bg-rose-950/40 border border-rose-800 rounded-lg p-3"></div>
@@ -148,7 +156,7 @@
                     <form class="space-y-5" id="loginForm" onsubmit="event.preventDefault();">
                         <!-- Email -->
                         <div>
-                            <label class="block font-label-mono text-[11px] text-on-surface-variant uppercase mb-2 font-bold tracking-wider">Email Address</label>
+                            <label class="block font-label-mono text-[11px] text-on-surface-variant uppercase mb-2 font-bold tracking-wider" data-i18n="lbl_email_address">Email Address</label>
                             <input
                                 id="auth-email"
                                 autocomplete="email"
@@ -161,10 +169,11 @@
                         <!-- Password -->
                         <div>
                             <div class="flex justify-between items-center mb-2">
-                                <label class="block font-label-mono text-[11px] text-on-surface-variant uppercase font-bold tracking-wider">Password</label>
+                                <label class="block font-label-mono text-[11px] text-on-surface-variant uppercase font-bold tracking-wider" data-i18n="lbl_password">Password</label>
                                 <a
                                     class="font-label-mono text-[12px] text-primary hover:underline cursor-pointer font-bold transition-colors"
                                     onclick="handlePasswordReset()"
+                                    data-i18n="lnk_forgot_access"
                                 >Forgot Access?</a>
                             </div>
                             <input
@@ -178,11 +187,11 @@
 
                         <!-- Consent Box -->
                         <div class="bg-[#1a1c20] rounded-lg p-4 card-edge">
-                            <h3 class="font-label-mono text-[10px] text-on-surface-variant uppercase mb-2 border-b border-outline-variant pb-1 font-bold tracking-wider">
+                            <h3 class="font-label-mono text-[10px] text-on-surface-variant uppercase mb-2 border-b border-outline-variant pb-1 font-bold tracking-wider" data-i18n="lbl_consent_header">
                                 End-User Consent and Legal Disclaimer
                             </h3>
                             <div class="h-32 overflow-y-auto pr-2 custom-scrollbar">
-                                <p class="font-body-sm text-[11px] leading-relaxed text-on-surface-variant text-justify whitespace-pre-line">By accessing, subscribing to, or using this application, you explicitly acknowledge, understand, and agree to the following terms:
+                                <p class="font-body-sm text-[11px] leading-relaxed text-on-surface-variant text-justify whitespace-pre-line" data-i18n-html="legal_disclaimer_text">By accessing, subscribing to, or using this application, you explicitly acknowledge, understand, and agree to the following terms:
 
 • <strong>Informational and Educational Use Only:</strong> This app is for informational and educational purposes only. It does not constitute financial or investment advice.
 
@@ -205,7 +214,7 @@
                                     onchange="onConsentToggle()"
                                     type="checkbox"
                                 />
-                                <span class="font-body-sm text-[14px] text-on-surface group-hover:text-primary transition-colors leading-snug">
+                                <span class="font-body-sm text-[14px] text-on-surface group-hover:text-primary transition-colors leading-snug" data-i18n="lbl_consent_checkbox">
                                     I acknowledge and agree to the End-User Consent and Legal Disclaimer.
                                 </span>
                             </label>
@@ -217,7 +226,7 @@
                             onclick="handleEmailSignIn()"
                             class="w-full bg-primary text-on-primary font-bold py-3.5 rounded-lg hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-[15px]"
                         >
-                            Sign In
+                            <span data-i18n="btn_sign_in">Sign In</span>
                             <span class="material-symbols-outlined text-[20px]">login</span>
                         </button>
 
@@ -227,6 +236,7 @@
                             onclick="handleEmailSignUp()"
                             disabled
                             class="w-full py-3 rounded-lg bg-transparent border border-outline-variant text-sm text-[#89929b] transition cursor-not-allowed opacity-50 hover:bg-[#1a1c20] font-medium"
+                            data-i18n="btn_create_account"
                         >
                             Create Account
                         </button>
@@ -235,7 +245,7 @@
                     <!-- OR Divider -->
                     <div class="flex items-center gap-4 my-5">
                         <div class="h-px flex-1 bg-outline-variant/30"></div>
-                        <span class="font-label-mono text-[11px] text-on-surface-variant uppercase font-bold tracking-wider">OR</span>
+                        <span class="font-label-mono text-[11px] text-on-surface-variant uppercase font-bold tracking-wider" data-i18n="lbl_or">OR</span>
                         <div class="h-px flex-1 bg-outline-variant/30"></div>
                     </div>
 
@@ -251,19 +261,20 @@
                             <path d="M5.21 14.34c-.24-.72-.37-1.49-.37-2.34s.13-1.62.37-2.34L1.25 6.61C.45 8.23 0 10.06 0 12c0 1.94.45 3.77 1.25 5.39l3.96-3.05z" fill="#FBBC05"></path>
                             <path d="M12 24c3.24 0 5.97-1.07 7.96-2.91l-3.71-2.88c-1.1.74-2.51 1.18-4.25 1.18-3.18 0-5.84-2.14-6.8-5.04l-3.96 3.07C3.26 21.31 7.31 24 12 24z" fill="#34A853"></path>
                         </svg>
-                        <span class="font-body-md font-medium text-sm">Sign in with Google</span>
+                        <span class="font-body-md font-medium text-sm" data-i18n="btn_sign_in_google">Sign in with Google</span>
                     </button>
 
                     <!-- Don't have an account? Create Account link -->
                     <p class="mt-5 text-center font-body-sm text-[13px] text-on-surface-variant">
-                        Don't have an account?
+                        <span data-i18n="lbl_no_account">Don't have an account?</span>
                         <a
                             onclick="handleEmailSignUp()"
                             class="text-primary hover:underline font-bold cursor-pointer transition-colors"
+                            data-i18n="btn_create_account"
                         >Create Account</a>
                     </p>
 
-                    <p class="mt-2 text-center font-body-sm text-[11px] text-on-surface-variant/70">
+                    <p class="mt-2 text-center font-body-sm text-[11px] text-on-surface-variant/70" data-i18n="lbl_google_consent_note">
                         Continuing with Google to create a new account also requires the agreement checkbox above to be checked.
                     </p>
                 </div>
@@ -275,7 +286,7 @@
     <footer class="w-full p-4 flex justify-center items-center z-10">
         <div class="bg-surface-container-lowest/50 backdrop-blur-sm px-6 py-2.5 rounded-full border border-outline-variant/30 flex items-center gap-3">
             <span class="material-symbols-outlined text-primary text-[16px]">verified_user</span>
-            <span class="font-label-mono text-[10px] uppercase text-on-surface-variant tracking-wider">AES-256 Bank Grade Encryption Matrix Enabled</span>
+            <span class="font-label-mono text-[10px] uppercase text-on-surface-variant tracking-wider" data-i18n="lbl_encryption_badge">AES-256 Bank Grade Encryption Matrix Enabled</span>
         </div>
     </footer>
 
@@ -298,6 +309,129 @@
 
         const TERMS_VERSION = "1.0";
 
+        // ===== i18n (mirrors index.html's system; same keys reused where
+        // content overlaps, so both pages stay consistent) =====
+        let currentLang = 'EN';
+        const TRANSLATIONS = {
+            EN: {
+                hero_title_1: "Ancient Legacy meets", hero_title_2: "Digital Future",
+                hero_vision_label: "Vision:", hero_vision_text: "A transparent stock market where every investor has the insights to succeed.",
+                hero_mission_label: "Mission:", hero_mission_text: "We build seamless analytical platforms that decode EGX data, cut through the noise, and empower you to trade smarter.",
+                stat_execution_speed: "Execution Speed", stat_alpha_precision: "Alpha Precision",
+                auth_title: "Terminal Access", auth_subtitle: "Sign in to view your private dashboard",
+                lbl_email_address: "Email Address", lbl_password: "Password", lnk_forgot_access: "Forgot Access?",
+                lbl_consent_header: "End-User Consent and Legal Disclaimer",
+                legal_disclaimer_text: `By accessing, subscribing to, or using this application, you explicitly acknowledge, understand, and agree to the following terms:
+
+• <strong>Informational and Educational Use Only:</strong> This app is for informational and educational purposes only. It does not constitute financial or investment advice.
+
+• <strong>Nature of the Tools:</strong> The service operates by providing educational and analytical tools, effectively giving you a mirror to look at the market. The outputs are generated via raw data, charts, historical trends, mathematical calculations, quantitative indicators, and automated technical screening tools.
+
+• <strong>No Unlicensed Financial Advisory:</strong> The application and its creators do not direct a user's specific actions, nor do they act as a portfolio manager. Giving direct investment advice or portfolio management requires rigorous licensing from the Egyptian Financial Regulatory Authority (FRA), which this software does not provide.
+
+• <strong>Analytics, Not Commands:</strong> All signals and feature outputs provided by the software are strictly classified as analytics, such as a 'Quantitative Indicator Output' or 'Technical Pattern Matcher'. They are never to be interpreted as direct 'Buy/Sell Recommendations' or market commands. The application provides the data, and you must independently decide what to do with it.
+
+• <strong>Assumption of Risk:</strong> Users are solely responsible for their own trading decisions.
+
+• <strong>No Handling of Client Funds:</strong> This application functions strictly as a Software as a Service (SaaS) analytics tool. We will never request, hold, or allow users to deposit trading capital or funds into our bank accounts or app wallets.
+
+• <strong>Third-Party Trade Execution:</strong> You cannot execute trades independently through this app; all users must execute their actual trades through approved and licensed EGX brokers (such as Thndr, EFG Hermes, etc.).`,
+                lbl_consent_checkbox: "I acknowledge and agree to the End-User Consent and Legal Disclaimer.",
+                btn_sign_in: "Sign In", btn_create_account: "Create Account", lbl_or: "OR",
+                btn_sign_in_google: "Sign in with Google", lbl_no_account: "Don't have an account?",
+                lbl_google_consent_note: "Continuing with Google to create a new account also requires the agreement checkbox above to be checked.",
+                lbl_encryption_badge: "AES-256 Bank Grade Encryption Matrix Enabled",
+                err_enter_both: "Enter both email and password.", err_sign_in_failed: "Sign-in failed. Check your credentials.",
+                err_password_min: "Password must be at least 8 characters.",
+                err_account_creation_failed: "Account creation failed. The email may already be registered.",
+                err_must_agree_terms_new: "You must agree to the legal terms to create a new account.",
+                err_popup_closed: "The Google sign-in window closed before finishing. If you clicked the button twice, try once and wait — or check that your browser isn't blocking pop-ups / third-party cookies for this site.",
+                err_popup_blocked: "Your browser blocked the sign-in pop-up. Please allow pop-ups for this site and try again.",
+                err_google_signin_failed: "Google sign-in failed. Please try again.",
+                err_enter_email_first: "Please type your email address above first, then click 'Forgot Access?'.",
+                err_password_reset_failed: "Couldn't send the reset email. Double-check the address and try again.",
+                alert_password_reset_sent: "If an account exists for {email}, a password reset link has been sent.",
+                rate_limit_wait: "Too many attempts. Please wait {s}s before trying again.",
+                rate_limit_locked: "Too many failed attempts. Locked for {s} seconds.",
+                warn_requires_ack: "⚠️ REQUIRES ACKNOWLEDGEMENT",
+            },
+            AR: {
+                hero_title_1: "إرث عريق يلتقي", hero_title_2: "بمستقبل رقمي",
+                hero_vision_label: "الرؤية:", hero_vision_text: "سوق أسهم شفاف يمتلك فيه كل مستثمر الرؤى اللازمة للنجاح.",
+                hero_mission_label: "المهمة:", hero_mission_text: "نبني منصات تحليلية متكاملة تفكّ رموز بيانات البورصة المصرية، وتزيل التشويش، وتمكّنك من التداول بذكاء أكبر.",
+                stat_execution_speed: "سرعة التنفيذ", stat_alpha_precision: "دقة الأداء",
+                auth_title: "بوابة الدخول", auth_subtitle: "سجّل الدخول لعرض لوحتك الخاصة",
+                lbl_email_address: "البريد الإلكتروني", lbl_password: "كلمة المرور", lnk_forgot_access: "نسيت بيانات الدخول؟",
+                lbl_consent_header: "إقرار المستخدم والإخلاء القانوني للمسؤولية",
+                legal_disclaimer_text: `من خلال الوصول إلى هذا التطبيق أو الاشتراك فيه أو استخدامه، فإنك تقر وتوافق صراحةً على الشروط التالية:
+
+• <strong>لأغراض المعلومات والتثقيف فقط:</strong> هذا التطبيق مخصص لأغراض إعلامية وتثقيفية فقط، ولا يُشكّل استشارة مالية أو استثمارية.
+
+• <strong>طبيعة الأدوات:</strong> تعمل الخدمة من خلال توفير أدوات تعليمية وتحليلية، فهي بمثابة مرآة لرؤية السوق. تُولَّد المخرجات من بيانات خام، ورسوم بيانية، واتجاهات تاريخية، وحسابات رياضية، ومؤشرات كمية، وأدوات فرز فني آلية.
+
+• <strong>لا توجد استشارة مالية مرخصة:</strong> لا يقوم التطبيق أو القائمون عليه بتوجيه إجراءات المستخدم المحددة، ولا يعملون كمدير محفظة. تقديم استشارة استثمارية مباشرة أو إدارة محفظة يتطلب ترخيصًا صارمًا من الهيئة العامة للرقابة المالية المصرية (FRA)، وهو ما لا يوفره هذا البرنامج.
+
+• <strong>تحليلات، وليست أوامر:</strong> جميع الإشارات والمخرجات التي يقدمها البرنامج تُصنَّف بدقة كتحليلات، مثل "مخرجات مؤشر كمي" أو "أداة مطابقة الأنماط الفنية"، ولا يجب تفسيرها أبدًا كتوصيات شراء أو بيع مباشرة أو أوامر سوقية. يوفر التطبيق البيانات، وعليك أن تقرر بنفسك ماذا تفعل بها.
+
+• <strong>تحمل المخاطر:</strong> يتحمل المستخدمون وحدهم المسؤولية الكاملة عن قراراتهم التداولية.
+
+• <strong>عدم التعامل مع أموال العملاء:</strong> يعمل هذا التطبيق حصريًا كأداة تحليلية ضمن نموذج البرمجيات كخدمة (SaaS). لن نطلب أو نحتفظ أو نسمح للمستخدمين بإيداع رأس مال التداول أو الأموال في حساباتنا البنكية أو محافظ التطبيق.
+
+• <strong>تنفيذ الصفقات عبر طرف ثالث:</strong> لا يمكنك تنفيذ الصفقات بشكل مستقل من خلال هذا التطبيق؛ يجب على جميع المستخدمين تنفيذ صفقاتهم الفعلية عبر شركات وساطة معتمدة ومرخصة في البورصة المصرية (مثل Thndr وEFG هيرميس، وغيرها).`,
+                lbl_consent_checkbox: "أقر وأوافق على إقرار المستخدم والإخلاء القانوني للمسؤولية.",
+                btn_sign_in: "تسجيل الدخول", btn_create_account: "إنشاء حساب", lbl_or: "أو",
+                btn_sign_in_google: "تسجيل الدخول عبر Google", lbl_no_account: "ليس لديك حساب؟",
+                lbl_google_consent_note: "الاستمرار عبر Google لإنشاء حساب جديد يتطلب أيضًا تحديد مربع الموافقة أعلاه.",
+                lbl_encryption_badge: "مصفوفة تشفير AES-256 بمستوى المصارف مُفعّلة",
+                err_enter_both: "أدخل البريد الإلكتروني وكلمة المرور.", err_sign_in_failed: "فشل تسجيل الدخول. تحقق من بيانات الاعتماد.",
+                err_password_min: "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.",
+                err_account_creation_failed: "فشل إنشاء الحساب. قد يكون البريد الإلكتروني مسجلاً بالفعل.",
+                err_must_agree_terms_new: "يجب الموافقة على الشروط القانونية لإنشاء حساب جديد.",
+                err_popup_closed: "أُغلقت نافذة تسجيل الدخول عبر Google قبل الانتهاء. إذا ضغطت الزر مرتين، جرّب مرة واحدة وانتظر — أو تحقق من أن متصفحك لا يحظر النوافذ المنبثقة / ملفات تعريف الارتباط الخاصة بأطراف ثالثة لهذا الموقع.",
+                err_popup_blocked: "حظر متصفحك النافذة المنبثقة لتسجيل الدخول. يرجى السماح بالنوافذ المنبثقة لهذا الموقع والمحاولة مجددًا.",
+                err_google_signin_failed: "فشل تسجيل الدخول عبر Google. يرجى المحاولة مرة أخرى.",
+                err_enter_email_first: "يرجى كتابة بريدك الإلكتروني أعلاه أولاً، ثم النقر على 'نسيت بيانات الدخول؟'.",
+                err_password_reset_failed: "تعذّر إرسال رابط إعادة التعيين. تحقق من العنوان وحاول مجددًا.",
+                alert_password_reset_sent: "إذا كان هناك حساب مرتبط بـ {email}، فقد تم إرسال رابط إعادة تعيين كلمة المرور.",
+                rate_limit_wait: "محاولات كثيرة جدًا. يرجى الانتظار {s} ثانية قبل المحاولة مرة أخرى.",
+                rate_limit_locked: "محاولات فاشلة كثيرة جدًا. تم القفل لمدة {s} ثانية.",
+                warn_requires_ack: "⚠️ يتطلب الإقرار",
+            },
+        };
+
+        function tt(key) {
+            const dict = TRANSLATIONS[currentLang] || TRANSLATIONS.EN;
+            return dict[key] ?? TRANSLATIONS.EN[key] ?? key;
+        }
+
+        function applyDataI18n() {
+            const t = TRANSLATIONS[currentLang] || TRANSLATIONS.EN;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                const val = t[key] ?? TRANSLATIONS.EN[key];
+                if (val !== undefined) el.textContent = val;
+            });
+            document.querySelectorAll('[data-i18n-html]').forEach(el => {
+                const key = el.getAttribute('data-i18n-html');
+                const val = t[key] ?? TRANSLATIONS.EN[key];
+                if (val !== undefined) el.innerHTML = val;
+            });
+        }
+
+        function switchLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('quant_lang', lang);
+            document.documentElement.lang = (lang === 'AR') ? 'ar' : 'en';
+            document.documentElement.dir = (lang === 'AR') ? 'rtl' : 'ltr';
+            applyDataI18n();
+        }
+
+        // Language persists across visits; new/first-time visitors (no
+        // stored preference yet) default to English per product decision.
+        const _savedLang = localStorage.getItem('quant_lang') || 'EN';
+        document.getElementById('lang-select').value = _savedLang;
+        switchLanguage(_savedLang);
+
         // Listen for authentication state changes
         auth.onAuthStateChanged(function (user) {
             if (user) {
@@ -309,6 +443,50 @@
             const el = document.getElementById('auth-error');
             el.textContent = msg;
             el.classList.remove('hidden');
+        }
+
+        // Same rate-limit mechanism as index.html, sharing the same localStorage
+        // key — an attempt made here counts toward the same lockout as one made
+        // on the main app's own login gate, and vice versa. See index.html for
+        // the fuller rationale comment.
+        const AUTH_RATE_LIMIT_MS = 30000;
+        const AUTH_MAX_ATTEMPTS = 5;
+        const AUTH_RL_KEY = 'mbegx_auth_rl';
+        function _loadAuthRateLimit() {
+            try {
+                const parsed = JSON.parse(localStorage.getItem(AUTH_RL_KEY) || '{}');
+                return { attempts: Number(parsed.attempts) || 0, lockedUntil: Number(parsed.lockedUntil) || 0 };
+            } catch (e) {
+                return { attempts: 0, lockedUntil: 0 };
+            }
+        }
+        function _saveAuthRateLimit(state) {
+            try { localStorage.setItem(AUTH_RL_KEY, JSON.stringify(state)); } catch (e) { /* fail open on this UX-only guard */ }
+        }
+        function checkAuthRateLimit() {
+            const state = _loadAuthRateLimit();
+            const now = Date.now();
+            if (now < state.lockedUntil) {
+                const remaining = Math.ceil((state.lockedUntil - now) / 1000);
+                showAuthError(tt('rate_limit_wait').replace('{s}', remaining));
+                return false;
+            }
+            return true;
+        }
+        function recordAuthAttempt() {
+            const state = _loadAuthRateLimit();
+            state.attempts++;
+            if (state.attempts >= AUTH_MAX_ATTEMPTS) {
+                state.lockedUntil = Date.now() + AUTH_RATE_LIMIT_MS;
+                state.attempts = 0;
+                _saveAuthRateLimit(state);
+                showAuthError(tt('rate_limit_locked').replace('{s}', AUTH_RATE_LIMIT_MS / 1000));
+                return;
+            }
+            _saveAuthRateLimit(state);
+        }
+        function resetAuthRateLimit() {
+            _saveAuthRateLimit({ attempts: 0, lockedUntil: 0 });
         }
 
         function clearAuthError() {
@@ -325,7 +503,7 @@
                 const warning = document.createElement('div');
                 warning.id = 'consent-warning';
                 warning.className = 'text-[#ffb4ab] font-label-mono text-[10px] mt-2 font-bold';
-                warning.innerText = '⚠️ REQUIRES ACKNOWLEDGEMENT';
+                warning.innerText = tt('warn_requires_ack');
                 label.after(warning);
                 setTimeout(() => warning.remove(), 3000);
             }
@@ -368,21 +546,25 @@
         }
 
         function handleEmailSignIn() {
+            if (!checkAuthRateLimit()) return;
             clearAuthError();
             const email = document.getElementById('auth-email').value.trim();
             const password = document.getElementById('auth-password').value;
-            if (!email || !password) { showAuthError("Enter both email and password."); return; }
+            if (!email || !password) { showAuthError(tt("err_enter_both")); recordAuthAttempt(); return; }
 
-            auth.signInWithEmailAndPassword(email, password).catch(err => { console.error('Sign-in failed:', err.code, err); showAuthError("Sign-in failed. Check your credentials."); });
+            auth.signInWithEmailAndPassword(email, password)
+                .then(() => resetAuthRateLimit())
+                .catch(err => { console.error('Sign-in failed:', err.code, err); recordAuthAttempt(); showAuthError(tt("err_sign_in_failed")); });
         }
 
         async function handleEmailSignUp() {
+            if (!checkAuthRateLimit()) return;
             clearAuthError();
             const email = document.getElementById('auth-email').value.trim();
             const password = document.getElementById('auth-password').value;
 
-            if (!email || !password) { showAuthError("Enter both email and password."); return; }
-            if (password.length < 8) { showAuthError("Password must be at least 8 characters."); return; }
+            if (!email || !password) { showAuthError(tt("err_enter_both")); recordAuthAttempt(); return; }
+            if (password.length < 8) { showAuthError(tt("err_password_min")); return; }
             if (!document.getElementById('consent-checkbox').checked) {
                 triggerConsentShake();
                 return;
@@ -395,9 +577,11 @@
                     cash: 0, portfolio: [], history: [],
                     ...buildConsentFields(ip),
                 }, { merge: true });
+                resetAuthRateLimit();
             } catch (err) {
                 console.error('Account creation failed:', err.code, err);
-                showAuthError("Account creation failed. The email may already be registered.");
+                recordAuthAttempt();
+                showAuthError(tt("err_account_creation_failed"));
             }
         }
 
@@ -405,6 +589,7 @@
 
         async function handleGoogleSignIn() {
             if (_googleSignInInProgress) return;
+            if (!checkAuthRateLimit()) return;
             _googleSignInInProgress = true;
             const googleBtn = document.getElementById('btn-google-signin');
             if (googleBtn) googleBtn.disabled = true;
@@ -418,7 +603,7 @@
                     if (!document.getElementById('consent-checkbox').checked) {
                         await auth.signOut();
                         triggerConsentShake();
-                        showAuthError("You must agree to the legal terms to create a new account.");
+                        showAuthError(tt("err_must_agree_terms_new"));
                         return;
                     }
                     const ip = await fetchClientIp();
@@ -427,14 +612,16 @@
                         ...buildConsentFields(ip),
                     }, { merge: true });
                 }
+                resetAuthRateLimit();
             } catch (err) {
                 console.error('Google sign-in failed:', err.code, err);
+                recordAuthAttempt();
                 if (err && (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request')) {
-                    showAuthError("The Google sign-in window closed before finishing. If you clicked the button twice, try once and wait — or check that your browser isn't blocking pop-ups / third-party cookies for this site.");
+                    showAuthError(tt("err_popup_closed"));
                 } else if (err && err.code === 'auth/popup-blocked') {
-                    showAuthError("Your browser blocked the sign-in pop-up. Please allow pop-ups for this site and try again.");
+                    showAuthError(tt("err_popup_blocked"));
                 } else {
-                    showAuthError("Google sign-in failed. Please try again.");
+                    showAuthError(tt("err_google_signin_failed"));
                 }
             } finally {
                 _googleSignInInProgress = false;
@@ -447,16 +634,16 @@
             const email = document.getElementById('auth-email').value.trim();
 
             if (!email) {
-                showAuthError("Please type your email address above first, then click 'Forgot Access?'.");
+                showAuthError(tt("err_enter_email_first"));
                 return;
             }
 
             try {
                 await auth.sendPasswordResetEmail(email);
-                alert(`If an account exists for ${email}, a password reset link has been sent.`);
+                alert(tt("alert_password_reset_sent").replace('{email}', email));
             } catch (err) {
                 console.error('Password reset failed:', err.code, err);
-                showAuthError("Couldn't send the reset email. Double-check the address and try again.");
+                showAuthError(tt("err_password_reset_failed"));
             }
         }
 
