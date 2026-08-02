@@ -16,7 +16,7 @@ from decision_matrix import DecisionMatrix
 from analytics import QuantitativeEngine
 from chart_widget import StockSectorChartWidget
 from ingestion import IngestionPipeline
-from PyQt6.QtCore import QDate, Qt, QThread, QTimer, pyqtSignal, QAbstractTableModel, QModelIndex
+from PyQt6.QtCore import QDate, Qt, QThread, QTimer, pyqtSignal, QAbstractTableModel, QModelIndex, QSettings
 from PyQt6.QtGui import QFont, QColor, QPixmap, QIcon
 from PyQt6.QtWidgets import (
     QApplication, QComboBox, QCompleter, QDateEdit, QDialog, QDoubleSpinBox,
@@ -77,6 +77,125 @@ DISCLAIMER_TEXT = (
     "through this app; all users must execute their actual trades through "
     "approved and licensed EGX brokers (such as Thndr, EFG Hermes, etc.)."
 )
+
+DISCLAIMER_TEXT_AR = (
+    "إقرار المستخدم والإخلاء القانوني للمسؤولية:\n\n"
+    "من خلال الوصول إلى هذا التطبيق أو الاشتراك فيه أو استخدامه، فإنك تقر "
+    "وتوافق صراحةً على الشروط التالية:\n\n"
+    "• لأغراض المعلومات والتثقيف فقط: هذا التطبيق مخصص لأغراض إعلامية "
+    "وتثقيفية فقط، ولا يُشكّل استشارة مالية أو استثمارية.\n\n"
+    "• طبيعة الأدوات: تعمل الخدمة من خلال توفير أدوات تعليمية وتحليلية، فهي "
+    "بمثابة مرآة لرؤية السوق. تُولَّد المخرجات من بيانات خام، ورسوم بيانية، "
+    "واتجاهات تاريخية، وحسابات رياضية، ومؤشرات كمية، وأدوات فرز فني آلية.\n\n"
+    "• لا توجد استشارة مالية مرخصة: لا يقوم التطبيق أو القائمون عليه بتوجيه "
+    "إجراءات المستخدم المحددة، ولا يعملون كمدير محفظة. تقديم استشارة "
+    "استثمارية مباشرة أو إدارة محفظة يتطلب ترخيصًا صارمًا من الهيئة العامة "
+    "للرقابة المالية المصرية (FRA)، وهو ما لا يوفره هذا البرنامج.\n\n"
+    "• تحليلات، وليست أوامر: جميع الإشارات والمخرجات التي يقدمها البرنامج "
+    "تُصنَّف بدقة كتحليلات، مثل \"مخرجات مؤشر كمي\" أو \"أداة مطابقة الأنماط "
+    "الفنية\"، ولا يجب تفسيرها أبدًا كتوصيات شراء أو بيع مباشرة أو أوامر "
+    "سوقية. يوفر التطبيق البيانات، وعليك أن تقرر بنفسك ماذا تفعل بها.\n\n"
+    "• تحمل المخاطر: يتحمل المستخدمون وحدهم المسؤولية الكاملة عن قراراتهم "
+    "التداولية.\n\n"
+    "• عدم التعامل مع أموال العملاء: يعمل هذا التطبيق حصريًا كأداة تحليلية "
+    "ضمن نموذج البرمجيات كخدمة (SaaS). لن نطلب أو نحتفظ أو نسمح للمستخدمين "
+    "بإيداع رأس مال التداول أو الأموال في حساباتنا البنكية أو محافظ "
+    "التطبيق.\n\n"
+    "• تنفيذ الصفقات عبر طرف ثالث: لا يمكنك تنفيذ الصفقات بشكل مستقل من خلال "
+    "هذا التطبيق؛ يجب على جميع المستخدمين تنفيذ صفقاتهم الفعلية عبر شركات "
+    "وساطة معتمدة ومرخصة في البورصة المصرية (مثل Thndr وEFG هيرميس، وغيرها)."
+)
+
+# =============================================================================
+# i18n (English / Arabic)
+# =============================================================================
+# Language choice persists across launches via QSettings (the standard Qt
+# mechanism for small per-user app preferences — no extra file to manage).
+# New/first-time users (no stored preference yet) default to English.
+_SETTINGS = QSettings("MB-EGX", "QuantDashboard")
+CURRENT_LANG = _SETTINGS.value("lang", "EN")
+
+# Keyed by the exact English string used at the call site — this lets us
+# retrofit i18n onto an existing codebase without inventing a parallel set
+# of semantic keys everywhere; tr() just looks up the literal you already
+# wrote and returns its Arabic counterpart if one exists and Arabic is active.
+AR_TRANSLATIONS = {
+    "MB-EGX Alpha — Terminal Access": "إم بي-إي جي إكس ألفا — بوابة الدخول",
+    "Ancient Legacy meets": "إرث عريق يلتقي",
+    "Digital Future": "بمستقبل رقمي",
+    "Vision:": "الرؤية:",
+    "A transparent stock market where every investor has the insights to succeed.":
+        "سوق أسهم شفاف يمتلك فيه كل مستثمر الرؤى اللازمة للنجاح.",
+    "Mission:": "المهمة:",
+    "We build seamless analytical platforms that decode EGX data, cut through the noise, and empower you to trade smarter.":
+        "نبني منصات تحليلية متكاملة تفكّ رموز بيانات البورصة المصرية، وتزيل التشويش، وتمكّنك من التداول بذكاء أكبر.",
+    "Terminal Access": "بوابة الدخول",
+    "Sign in to view your private dashboard": "سجّل الدخول لعرض لوحتك الخاصة",
+    "EMAIL ADDRESS": "البريد الإلكتروني",
+    "PASSWORD": "كلمة المرور",
+    "Forgot Access?": "نسيت بيانات الدخول؟",
+    "I acknowledge and agree to the Terms.": "أقر وأوافق على الشروط.",
+    "Sign In  →": "تسجيل الدخول  ←",
+    "OR": "أو",
+    "Sign in with Google": "تسجيل الدخول عبر Google",
+    "Google Sign In": "تسجيل الدخول عبر Google",
+    "In the desktop client, please use your Email/Password. If you created your account with Google on the web, click 'Forgot Access?' to set a password for desktop use.":
+        "في تطبيق سطح المكتب، يرجى استخدام البريد الإلكتروني وكلمة المرور. إذا أنشأت حسابك عبر Google على الموقع، اضغط 'نسيت بيانات الدخول؟' لتعيين كلمة مرور لاستخدام سطح المكتب.",
+    "Don't have an account?": "ليس لديك حساب؟",
+    "Create Account": "إنشاء حساب",
+    "🔒 AES-256 BANK GRADE ENCRYPTION MATRIX ENABLED": "🔒 مصفوفة تشفير AES-256 بمستوى المصارف مُفعّلة",
+    "Enter both email and password.": "أدخل البريد الإلكتروني وكلمة المرور.",
+    "Password must be at least {n} characters.": "يجب أن تتكون كلمة المرور من {n} أحرف على الأقل.",
+    "You must explicitly agree to the legal terms to create an account.": "يجب الموافقة صراحةً على الشروط القانونية لإنشاء حساب.",
+    "Sign-in failed. Please check your credentials and try again.": "فشل تسجيل الدخول. يرجى التحقق من بيانات الاعتماد والمحاولة مرة أخرى.",
+    "Type your email above first, then click this link.": "اكتب بريدك الإلكتروني أعلاه أولاً، ثم اضغط هذا الرابط.",
+    "Check Your Email": "تحقق من بريدك الإلكتروني",
+    "If an account exists for {email}, a password-set/reset link has just been sent.\n\n"
+    "This also works if you originally signed up with 'Sign in with Google' on the "
+    "website — that account has no password yet, and this link lets you set one so "
+    "you can sign in here on desktop too.":
+        "إذا كان هناك حساب مرتبط بـ {email}، فقد تم إرسال رابط لتعيين/إعادة تعيين كلمة المرور.\n\n"
+        "يعمل هذا أيضًا إذا سجّلت في الأصل عبر 'تسجيل الدخول عبر Google' على "
+        "الموقع — ذلك الحساب ليس لديه كلمة مرور بعد، وهذا الرابط يتيح لك تعيين واحدة "
+        "لتتمكن من تسجيل الدخول هنا على سطح المكتب أيضًا.",
+    "Couldn't send the reset email. Double-check the address and try again.": "تعذّر إرسال رابط إعادة التعيين. تحقق من العنوان وحاول مجددًا.",
+    "⚙️ Appearance & Theme Settings": "⚙️ إعدادات المظهر والألوان",
+    "Choose your preferred visual dashboard palette:": "اختر لوحة الألوان المفضلة لديك:",
+    "Color Theme:": "لوحة الألوان:",
+    "✅ Close & Save": "✅ إغلاق وحفظ",
+    "⚖️ Interactive Risk & Position-Sizing Calculator": "⚖️ حاسبة المخاطر وحجم المركز التفاعلية",
+    "<b>Available Cash:</b> {v} EGP": "<b>الرصيد النقدي المتاح:</b> {v} جنيه",
+    "Select symbol to auto-load price...": "اختر رمز السهم لتحميل السعر تلقائيًا...",
+    "Ticker Symbol:": "رمز السهم:",
+    "Manual Stop": "وقف يدوي", "1.5x ATR Stop": "وقف 1.5x ATR",
+    "2.0x ATR Stop": "وقف 2.0x ATR", "3.0x ATR Stop": "وقف 3.0x ATR",
+    "Stop-Loss Mode:": "وضع وقف الخسارة:",
+    "Max Account Risk:": "أقصى مخاطرة للحساب:",
+    "Target Entry Price (EGP):": "سعر الدخول المستهدف (جنيه):",
+    "Stop-Loss Price (EGP):": "سعر وقف الخسارة (جنيه):",
+    "⚠️ <b>Invalid Parameters:</b> Stop-Loss must be below Target Entry.": "⚠️ <b>معايير غير صحيحة:</b> يجب أن يكون وقف الخسارة أقل من سعر الدخول المستهدف.",
+    "🎯 <b>Recommended Shares:</b> {shares} shares<br><br>"
+    "💵 <b>Total Outlay (incl. 0.35% fee):</b> {outlay} EGP ({pct}% of cash)<br><br>"
+    "🛡️ <b>Max Capital at Risk:</b> {risk} EGP":
+        "🎯 <b>عدد الأسهم الموصى به:</b> {shares} سهم<br><br>"
+        "💵 <b>إجمالي التكلفة (شاملة رسوم 0.35%):</b> {outlay} جنيه ({pct}% من الرصيد النقدي)<br><br>"
+        "🛡️ <b>أقصى رأس مال معرّض للمخاطرة:</b> {risk} جنيه",
+}
+
+
+def tr(text):
+    """Return the Arabic translation of `text` if Arabic is the active
+    language and a translation exists; otherwise return `text` unchanged."""
+    if CURRENT_LANG == "AR":
+        return AR_TRANSLATIONS.get(text, text)
+    return text
+
+
+def set_language(lang):
+    """Switch the active language and persist the choice for next launch."""
+    global CURRENT_LANG
+    CURRENT_LANG = lang
+    _SETTINGS.setValue("lang", lang)
 
 
 def fetch_client_ip():
@@ -841,7 +960,7 @@ class ColumnChooserDialog(QDialog):
 class ThemeSettingsDialog(QDialog):
     def __init__(self, current_theme_name, apply_callback, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("⚙️ Appearance & Theme Settings")
+        self.setWindowTitle(tr("⚙️ Appearance & Theme Settings"))
         self.resize(400, 180)
         self.apply_callback = apply_callback
         self._init_ui(current_theme_name)
@@ -849,7 +968,7 @@ class ThemeSettingsDialog(QDialog):
     def _init_ui(self, current_theme_name):
         layout = QVBoxLayout(self)
         form = QFormLayout()
-        lbl_info = QLabel("Choose your preferred visual dashboard palette:")
+        lbl_info = QLabel(tr("Choose your preferred visual dashboard palette:"))
         lbl_info.setWordWrap(True)
         lbl_info.setStyleSheet("font-size: 13px;")
         layout.addWidget(lbl_info)
@@ -860,11 +979,11 @@ class ThemeSettingsDialog(QDialog):
             self.cmb_themes.setCurrentText(current_theme_name)
         
         self.cmb_themes.currentTextChanged.connect(self.apply_callback)
-        form.addRow("Color Theme:", self.cmb_themes)
+        form.addRow(tr("Color Theme:"), self.cmb_themes)
         layout.addLayout(form)
 
         btn_layout = QHBoxLayout()
-        btn_close = QPushButton("✅ Close & Save")
+        btn_close = QPushButton(tr("✅ Close & Save"))
         btn_close.setStyleSheet("background-color: #3198dc; color: white; margin-top: 10px; padding: 10px 20px; font-size: 13px; border-radius: 6px;")
         btn_close.clicked.connect(self.accept)
         btn_layout.addStretch()
@@ -875,7 +994,7 @@ class ThemeSettingsDialog(QDialog):
 class PositionSizingDialog(QDialog):
     def __init__(self, dbm, cash_balance, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("⚖️ Interactive Risk & Position-Sizing Calculator")
+        self.setWindowTitle(tr("⚖️ Interactive Risk & Position-Sizing Calculator"))
         self.resize(480, 400)
         self.dbm = dbm
         self.qe = QuantitativeEngine()
@@ -885,7 +1004,7 @@ class PositionSizingDialog(QDialog):
     def _init_ui(self):
         layout = QVBoxLayout(self)
         form = QFormLayout()
-        lbl_cash = QLabel(f"<b>Available Cash:</b> {self.cash:,.2f} EGP")
+        lbl_cash = QLabel(tr("<b>Available Cash:</b> {v} EGP").format(v=f"{self.cash:,.2f}"))
         lbl_cash.setStyleSheet("font-size: 14px; margin-bottom: 8px;")
         layout.addWidget(lbl_cash)
 
@@ -893,36 +1012,36 @@ class PositionSizingDialog(QDialog):
         self.cmb_ticker = QComboBox()
         self.cmb_ticker.setEditable(True)
         self.cmb_ticker.addItems([""] + available_tickers)
-        self.cmb_ticker.setPlaceholderText("Select symbol to auto-load price...")
+        self.cmb_ticker.setPlaceholderText(tr("Select symbol to auto-load price..."))
         self.cmb_ticker.currentIndexChanged.connect(self.on_mode_changed)
         self.cmb_ticker.lineEdit().editingFinished.connect(self.on_mode_changed)
-        form.addRow("Ticker Symbol:", self.cmb_ticker)
+        form.addRow(tr("Ticker Symbol:"), self.cmb_ticker)
 
         self.cmb_stop_mode = QComboBox()
-        self.cmb_stop_mode.addItems(["Manual Stop", "1.5x ATR Stop", "2.0x ATR Stop", "3.0x ATR Stop"])
+        self.cmb_stop_mode.addItems([tr("Manual Stop"), tr("1.5x ATR Stop"), tr("2.0x ATR Stop"), tr("3.0x ATR Stop")])
         self.cmb_stop_mode.currentTextChanged.connect(self.on_mode_changed)
-        form.addRow("Stop-Loss Mode:", self.cmb_stop_mode)
+        form.addRow(tr("Stop-Loss Mode:"), self.cmb_stop_mode)
 
         self.spn_risk_pct = QDoubleSpinBox()
         self.spn_risk_pct.setRange(0.1, 10.0)
         self.spn_risk_pct.setValue(1.0)
         self.spn_risk_pct.setSuffix(" %")
         self.spn_risk_pct.valueChanged.connect(self.calculate)
-        form.addRow("Max Account Risk:", self.spn_risk_pct)
+        form.addRow(tr("Max Account Risk:"), self.spn_risk_pct)
 
         self.spn_entry = QDoubleSpinBox()
         self.spn_entry.setRange(0.01, 100000.0)
         self.spn_entry.setValue(10.00)
         self.spn_entry.setDecimals(4)
         self.spn_entry.valueChanged.connect(self.calculate)
-        form.addRow("Target Entry Price (EGP):", self.spn_entry)
+        form.addRow(tr("Target Entry Price (EGP):"), self.spn_entry)
 
         self.spn_stop = QDoubleSpinBox()
         self.spn_stop.setRange(0.01, 100000.0)
         self.spn_stop.setValue(9.20)
         self.spn_stop.setDecimals(4)
         self.spn_stop.valueChanged.connect(self.calculate)
-        form.addRow("Stop-Loss Price (EGP):", self.spn_stop)
+        form.addRow(tr("Stop-Loss Price (EGP):"), self.spn_stop)
 
         layout.addLayout(form)
         self.lbl_result = QLabel()
@@ -931,8 +1050,11 @@ class PositionSizingDialog(QDialog):
         self.calculate()
 
     def on_mode_changed(self):
-        mode = self.cmb_stop_mode.currentText()
-        if mode == "Manual Stop":
+        # Keyed off index, not the displayed text, so this keeps working
+        # correctly regardless of which language's combo item text is shown.
+        mode_index = self.cmb_stop_mode.currentIndex()
+        atr_multipliers = {1: 1.5, 2: 2.0, 3: 3.0}
+        if mode_index == 0:
             self.spn_stop.setReadOnly(False)
             self.calculate()
             return
@@ -944,7 +1066,7 @@ class PositionSizingDialog(QDialog):
         price, atr = self.qe.get_latest_price_and_atr(ticker)
         if price > 0:
             self.spn_entry.setValue(price)
-            mult = float(mode.split("x")[0])
+            mult = atr_multipliers.get(mode_index, 1.5)
             stop_val = max(0.0001, price - (mult * atr))
             self.spn_stop.setValue(stop_val)
             self.spn_stop.setReadOnly(True)
@@ -956,7 +1078,7 @@ class PositionSizingDialog(QDialog):
         risk_pct = self.spn_risk_pct.value() / 100.0
 
         if stop >= entry:
-            self.lbl_result.setText("⚠️ <b>Invalid Parameters:</b> Stop-Loss must be below Target Entry.")
+            self.lbl_result.setText(tr("⚠️ <b>Invalid Parameters:</b> Stop-Loss must be below Target Entry."))
             return
 
         risk_budget = self.cash * risk_pct
@@ -972,9 +1094,14 @@ class PositionSizingDialog(QDialog):
         pct_of_portfolio = (total_with_fees / self.cash) * 100 if self.cash > 0 else 0.0
 
         self.lbl_result.setText(
-            f"🎯 <b>Recommended Shares:</b> {shares:,} shares<br><br>"
-            f"💵 <b>Total Outlay (incl. 0.35% fee):</b> {total_with_fees:,.2f} EGP ({pct_of_portfolio:.1f}% of cash)<br><br>"
-            f"🛡️ <b>Max Capital at Risk:</b> {min(risk_budget, total_outlay):,.2f} EGP"
+            tr("🎯 <b>Recommended Shares:</b> {shares} shares<br><br>"
+               "💵 <b>Total Outlay (incl. 0.35% fee):</b> {outlay} EGP ({pct}% of cash)<br><br>"
+               "🛡️ <b>Max Capital at Risk:</b> {risk} EGP").format(
+                shares=f"{shares:,}",
+                outlay=f"{total_with_fees:,.2f}",
+                pct=f"{pct_of_portfolio:.1f}",
+                risk=f"{min(risk_budget, total_outlay):,.2f}",
+            )
         )
 
 
@@ -1184,7 +1311,7 @@ class LoginDialog(QDialog):
         
         # Set as full standalone window
         self.setWindowFlags(Qt.WindowType.Window)
-        self.setWindowTitle("MB-EGX Alpha — Terminal Access")
+        self.setWindowTitle(tr("MB-EGX Alpha — Terminal Access"))
         
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.setObjectName("loginDialog")
@@ -1287,21 +1414,28 @@ class LoginDialog(QDialog):
             lbl_logo.setPixmap(pixmap)
             left_layout.addWidget(lbl_logo)
 
+        # Language selector
+        lang_row = QHBoxLayout()
+        lang_row.addStretch()
+        self.cmb_lang = QComboBox()
+        self.cmb_lang.addItems(["EN", "AR"])
+        self.cmb_lang.setCurrentText(CURRENT_LANG)
+        self.cmb_lang.setFixedWidth(70)
+        self.cmb_lang.currentTextChanged.connect(self._on_language_changed)
+        lang_row.addWidget(self.cmb_lang)
+        left_layout.addLayout(lang_row)
+
         # Hero Text
-        lbl_hero = QLabel(f"<span style='color: {self._PRIMARY};'>Ancient Legacy</span> meets<br><span style='color: #ffffff;'>Digital Future</span>")
-        lbl_hero.setStyleSheet("font-family: 'Hanken Grotesk', sans-serif; font-size: 42px; font-weight: bold; line-height: 1.2;")
-        left_layout.addWidget(lbl_hero)
+        self.lbl_hero = QLabel(self._hero_html())
+        self.lbl_hero.setStyleSheet("font-family: 'Hanken Grotesk', sans-serif; font-size: 42px; font-weight: bold; line-height: 1.2;")
+        left_layout.addWidget(self.lbl_hero)
 
         # Vision & Mission text replacing the old description with metallic gold font styling
-        vm_text = (
-            "<span style='color: #D4AF37; font-weight: 800; font-family: \"Hanken Grotesk\", sans-serif; font-size: 17px;'>Vision:</span> A transparent stock market where every investor has the insights to succeed.<br><br>"
-            "<span style='color: #D4AF37; font-weight: 800; font-family: \"Hanken Grotesk\", sans-serif; font-size: 17px;'>Mission:</span> We build seamless analytical platforms that decode EGX data, cut through the noise, and empower you to trade smarter."
-        )
-        lbl_vm = QLabel(vm_text)
-        lbl_vm.setStyleSheet("color: #bfc7d2; font-size: 15px; line-height: 1.6;")
-        lbl_vm.setWordWrap(True)
-        lbl_vm.setMaximumWidth(520)
-        left_layout.addWidget(lbl_vm)
+        self.lbl_vm = QLabel(self._vm_html())
+        self.lbl_vm.setStyleSheet("color: #bfc7d2; font-size: 15px; line-height: 1.6;")
+        self.lbl_vm.setWordWrap(True)
+        self.lbl_vm.setMaximumWidth(520)
+        left_layout.addWidget(self.lbl_vm)
 
         content_layout.addWidget(left_col, stretch=1)
 
@@ -1328,22 +1462,23 @@ class LoginDialog(QDialog):
         f_layout.setSpacing(15)
 
         # Terminal Access Heading
-        lbl_form_title = QLabel("Terminal Access")
-        lbl_form_title.setStyleSheet("font-size: 26px; font-weight: bold; color: #ffffff; border: none;")
-        f_layout.addWidget(lbl_form_title)
+        self.lbl_form_title = QLabel(tr("Terminal Access"))
+        self.lbl_form_title.setStyleSheet("font-size: 26px; font-weight: bold; color: #ffffff; border: none;")
+        f_layout.addWidget(self.lbl_form_title)
 
-        lbl_form_sub = QLabel("Sign in to view your private dashboard")
-        lbl_form_sub.setStyleSheet("color: #bfc7d2; font-size: 13px; margin-bottom: 5px; border: none;")
-        f_layout.addWidget(lbl_form_sub)
+        self.lbl_form_sub = QLabel(tr("Sign in to view your private dashboard"))
+        self.lbl_form_sub.setStyleSheet("color: #bfc7d2; font-size: 13px; margin-bottom: 5px; border: none;")
+        f_layout.addWidget(self.lbl_form_sub)
 
         # Email
         email_container = QWidget()
         email_layout = QVBoxLayout(email_container)
         email_layout.setContentsMargins(0,0,0,0)
         email_layout.setSpacing(6)
-        lbl_email_hdr = QLabel("EMAIL ADDRESS")
+        lbl_email_hdr = QLabel(tr("EMAIL ADDRESS"))
         lbl_email_hdr.setStyleSheet("color: #89929b; font-size: 11px; font-weight: bold; letter-spacing: 1px; border: none;")
         email_layout.addWidget(lbl_email_hdr)
+        self.lbl_email_hdr = lbl_email_hdr
         
         self.txt_email = QLineEdit()
         self.txt_email.setPlaceholderText("investor@mb-egx.ai")
@@ -1358,12 +1493,13 @@ class LoginDialog(QDialog):
         pw_layout.setSpacing(6)
         
         pw_header_row = QHBoxLayout()
-        lbl_pw_hdr = QLabel("PASSWORD")
+        lbl_pw_hdr = QLabel(tr("PASSWORD"))
         lbl_pw_hdr.setStyleSheet("color: #89929b; font-size: 11px; font-weight: bold; letter-spacing: 1px; border: none;")
         pw_header_row.addWidget(lbl_pw_hdr)
+        self.lbl_pw_hdr = lbl_pw_hdr
         pw_header_row.addStretch()
         
-        self.btn_forgot = QPushButton("Forgot Access?")
+        self.btn_forgot = QPushButton(tr("Forgot Access?"))
         self.btn_forgot.setFlat(True)
         self.btn_forgot.setCursor(Qt.CursorShape.PointingHandCursor)
         self.btn_forgot.setStyleSheet(f"background: transparent; border: none; color: {self._PRIMARY}; font-size: 12px; padding: 0;")
@@ -1389,11 +1525,11 @@ class LoginDialog(QDialog):
 
         self.txt_disclaimer = QTextEdit()
         self.txt_disclaimer.setReadOnly(True)
-        self.txt_disclaimer.setPlainText(DISCLAIMER_TEXT)
+        self.txt_disclaimer.setPlainText(DISCLAIMER_TEXT_AR if CURRENT_LANG == "AR" else DISCLAIMER_TEXT)
         self.txt_disclaimer.setFixedHeight(65) # Shorter height leaves plenty of room for checkbox
         consent_layout.addWidget(self.txt_disclaimer)
 
-        self.chk_consent = QCheckBox("I acknowledge and agree to the Terms.")
+        self.chk_consent = QCheckBox(tr("I acknowledge and agree to the Terms."))
         self.chk_consent.stateChanged.connect(self._on_consent_toggled)
         consent_layout.addWidget(self.chk_consent)
         f_layout.addWidget(consent_box)
@@ -1406,7 +1542,7 @@ class LoginDialog(QDialog):
         f_layout.addWidget(self.lbl_error)
 
         # Sign In Button
-        self.btn_signin = QPushButton("Sign In  →")
+        self.btn_signin = QPushButton(tr("Sign In  →"))
         self.btn_signin.setCursor(Qt.CursorShape.PointingHandCursor)
         self.btn_signin.setStyleSheet(
             f"background-color: {self._PRIMARY}; color: {self._ON_PRIMARY}; "
@@ -1420,38 +1556,38 @@ class LoginDialog(QDialog):
         line1 = QFrame()
         line1.setFrameShape(QFrame.Shape.HLine)
         line1.setStyleSheet("border-top: 1px solid #3f4850; background: transparent;")
-        lbl_or = QLabel("OR")
-        lbl_or.setStyleSheet("color: #89929b; font-size: 11px; font-weight: bold; background: transparent; border: none; padding: 0 10px;")
+        self.lbl_or = QLabel(tr("OR"))
+        self.lbl_or.setStyleSheet("color: #89929b; font-size: 11px; font-weight: bold; background: transparent; border: none; padding: 0 10px;")
         line2 = QFrame()
         line2.setFrameShape(QFrame.Shape.HLine)
         line2.setStyleSheet("border-top: 1px solid #3f4850; background: transparent;")
         
         divider_layout.addWidget(line1, stretch=1)
-        divider_layout.addWidget(lbl_or)
+        divider_layout.addWidget(self.lbl_or)
         divider_layout.addWidget(line2, stretch=1)
         f_layout.addLayout(divider_layout)
 
         # Google Button
-        self.btn_google = QPushButton("Sign in with Google")
+        self.btn_google = QPushButton(tr("Sign in with Google"))
         self.btn_google.setCursor(Qt.CursorShape.PointingHandCursor)
         self.btn_google.setStyleSheet(
             "background-color: #282a2e; color: #e2e2e8; padding: 12px; font-size: 14px; font-weight: bold; border-radius: 8px; border: 1px solid #4a5568;"
         )
-        self.btn_google.clicked.connect(lambda: QMessageBox.information(self, "Google Sign In", "In the desktop client, please use your Email/Password. If you created your account with Google on the web, click 'Forgot Access?' to set a password for desktop use."))
+        self.btn_google.clicked.connect(lambda: QMessageBox.information(self, tr("Google Sign In"), tr("In the desktop client, please use your Email/Password. If you created your account with Google on the web, click 'Forgot Access?' to set a password for desktop use.")))
         f_layout.addWidget(self.btn_google)
 
         # Create Account Link
         create_layout = QHBoxLayout()
-        lbl_no_account = QLabel("Don't have an account?")
-        lbl_no_account.setStyleSheet("color: #89929b; font-size: 13px; border: none; background: transparent;")
-        self.btn_signup = QPushButton("Create Account")
+        self.lbl_no_account = QLabel(tr("Don't have an account?"))
+        self.lbl_no_account.setStyleSheet("color: #89929b; font-size: 13px; border: none; background: transparent;")
+        self.btn_signup = QPushButton(tr("Create Account"))
         self.btn_signup.setFlat(True)
         self.btn_signup.setCursor(Qt.CursorShape.PointingHandCursor)
         self.btn_signup.setStyleSheet(f"color: {self._PRIMARY}; font-size: 13px; font-weight: bold; border: none; background: transparent;")
         self.btn_signup.clicked.connect(self.do_sign_up)
         
         create_layout.addStretch()
-        create_layout.addWidget(lbl_no_account)
+        create_layout.addWidget(self.lbl_no_account)
         create_layout.addWidget(self.btn_signup)
         create_layout.addStretch()
         f_layout.addLayout(create_layout)
@@ -1465,11 +1601,55 @@ class LoginDialog(QDialog):
         footer.setFixedHeight(40)
         footer_layout = QHBoxLayout(footer)
         footer_layout.setContentsMargins(0,0,0,15)
-        lbl_footer = QLabel("🔒 AES-256 BANK GRADE ENCRYPTION MATRIX ENABLED")
-        lbl_footer.setStyleSheet("color: #89929b; font-size: 10px; font-weight: bold; letter-spacing: 1px;")
-        lbl_footer.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        footer_layout.addWidget(lbl_footer)
+        self.lbl_footer = QLabel(tr("🔒 AES-256 BANK GRADE ENCRYPTION MATRIX ENABLED"))
+        self.lbl_footer.setStyleSheet("color: #89929b; font-size: 10px; font-weight: bold; letter-spacing: 1px;")
+        self.lbl_footer.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        footer_layout.addWidget(self.lbl_footer)
         outer.addWidget(footer)
+
+    def _hero_html(self):
+        if CURRENT_LANG == "AR":
+            return f"<span style='color: {self._PRIMARY};'>إرث عريق</span> يلتقي<br><span style='color: #ffffff;'>بمستقبل رقمي</span>"
+        return f"<span style='color: {self._PRIMARY};'>Ancient Legacy</span> meets<br><span style='color: #ffffff;'>Digital Future</span>"
+
+    def _vm_html(self):
+        if CURRENT_LANG == "AR":
+            return (
+                "<span style='color: #D4AF37; font-weight: 800; font-family: \"Hanken Grotesk\", sans-serif; font-size: 17px;'>الرؤية:</span> سوق أسهم شفاف يمتلك فيه كل مستثمر الرؤى اللازمة للنجاح.<br><br>"
+                "<span style='color: #D4AF37; font-weight: 800; font-family: \"Hanken Grotesk\", sans-serif; font-size: 17px;'>المهمة:</span> نبني منصات تحليلية متكاملة تفكّ رموز بيانات البورصة المصرية، وتزيل التشويش، وتمكّنك من التداول بذكاء أكبر."
+            )
+        return (
+            "<span style='color: #D4AF37; font-weight: 800; font-family: \"Hanken Grotesk\", sans-serif; font-size: 17px;'>Vision:</span> A transparent stock market where every investor has the insights to succeed.<br><br>"
+            "<span style='color: #D4AF37; font-weight: 800; font-family: \"Hanken Grotesk\", sans-serif; font-size: 17px;'>Mission:</span> We build seamless analytical platforms that decode EGX data, cut through the noise, and empower you to trade smarter."
+        )
+
+    def _on_language_changed(self, lang):
+        set_language(lang)
+        self.retranslate_ui()
+
+    def retranslate_ui(self):
+        """Re-applies all visible text after a language switch — no restart
+        needed. Kept as one explicit pass over the widgets stored as self.xxx
+        during _init_ui, mirroring the same live-toggle behavior as the web
+        dashboard."""
+        self.setWindowTitle(tr("MB-EGX Alpha — Terminal Access"))
+        self.lbl_hero.setText(self._hero_html())
+        self.lbl_vm.setText(self._vm_html())
+        self.lbl_form_title.setText(tr("Terminal Access"))
+        self.lbl_form_sub.setText(tr("Sign in to view your private dashboard"))
+        self.lbl_email_hdr.setText(tr("EMAIL ADDRESS"))
+        self.lbl_pw_hdr.setText(tr("PASSWORD"))
+        self.btn_forgot.setText(tr("Forgot Access?"))
+        self.txt_disclaimer.setPlainText(DISCLAIMER_TEXT_AR if CURRENT_LANG == "AR" else DISCLAIMER_TEXT)
+        self.chk_consent.setText(tr("I acknowledge and agree to the Terms."))
+        self.btn_signin.setText(tr("Sign In  →"))
+        self.lbl_or.setText(tr("OR"))
+        self.btn_google.setText(tr("Sign in with Google"))
+        self.lbl_no_account.setText(tr("Don't have an account?"))
+        self.btn_signup.setText(tr("Create Account"))
+        self.lbl_footer.setText(tr("🔒 AES-256 BANK GRADE ENCRYPTION MATRIX ENABLED"))
+        # Layout direction follows the language so Arabic reads right-to-left.
+        self.setLayoutDirection(Qt.LayoutDirection.RightToLeft if CURRENT_LANG == "AR" else Qt.LayoutDirection.LeftToRight)
 
     def _show_error(self, msg):
         self.lbl_error.setText(msg)
@@ -1489,13 +1669,13 @@ class LoginDialog(QDialog):
         email = self.txt_email.text().strip()
         password = self.txt_password.text()
         if not email or not password:
-            self._show_error("Enter both email and password.")
+            self._show_error(tr("Enter both email and password."))
             return
         if min_password_len and len(password) < min_password_len:
-            self._show_error(f"Password must be at least {min_password_len} characters.")
+            self._show_error(tr("Password must be at least {n} characters.").format(n=min_password_len))
             return
         if require_consent and not self.chk_consent.isChecked():
-            self._show_error("You must explicitly agree to the legal terms to create an account.")
+            self._show_error(tr("You must explicitly agree to the legal terms to create an account."))
             return
 
         self._show_error("")
@@ -1519,7 +1699,7 @@ class LoginDialog(QDialog):
             # diagnosis, but never surface that raw text to the user - it can
             # expose backend config details or just be confusing/unhelpful.
             logger.error(f"Auth attempt failed ({fn.__name__}): {e}")
-            self._show_error("Sign-in failed. Please check your credentials and try again.")
+            self._show_error(tr("Sign-in failed. Please check your credentials and try again."))
         finally:
             QApplication.restoreOverrideCursor()
             self.setEnabled(True)
@@ -1533,7 +1713,7 @@ class LoginDialog(QDialog):
     def do_forgot_password(self):
         email = self.txt_email.text().strip()
         if not email:
-            self._show_error("Type your email above first, then click this link.")
+            self._show_error(tr("Type your email above first, then click this link."))
             return
 
         self._show_error("")
@@ -1542,15 +1722,17 @@ class LoginDialog(QDialog):
         try:
             firebase_send_password_reset(email)
             QMessageBox.information(
-                self, "Check Your Email",
-                f"If an account exists for {email}, a password-set/reset link has just been sent.\n\n"
-                "This also works if you originally signed up with 'Sign in with Google' on the "
-                "website — that account has no password yet, and this link lets you set one so "
-                "you can sign in here on desktop too."
+                self, tr("Check Your Email"),
+                tr(
+                    "If an account exists for {email}, a password-set/reset link has just been sent.\n\n"
+                    "This also works if you originally signed up with 'Sign in with Google' on the "
+                    "website — that account has no password yet, and this link lets you set one so "
+                    "you can sign in here on desktop too."
+                ).format(email=email)
             )
         except Exception as e:
             logger.error(f"Password reset request failed: {e}")
-            self._show_error("Couldn't send the reset email. Double-check the address and try again.")
+            self._show_error(tr("Couldn't send the reset email. Double-check the address and try again."))
         finally:
             QApplication.restoreOverrideCursor()
             self.setEnabled(True)
@@ -1653,7 +1835,9 @@ class QuantDashboard(QMainWindow):
         self.dbm = DatabaseManager()
         self.qe = QuantitativeEngine()
         self.current_theme = "🌙 Institutional Dark"
-        self.current_lang = "EN"
+        # Shares the same persisted preference as LoginDialog (QSettings key
+        # "lang") so a language choice made on either screen carries over.
+        self.current_lang = CURRENT_LANG
         self.theme_highlight = QColor("#3198dc")
         self._raw_buys_data = []
         self.user_info = user_info
@@ -1661,6 +1845,10 @@ class QuantDashboard(QMainWindow):
         self._cloud_threads = set()
         self._init_ui()
         self.apply_theme(self.current_theme)
+        # Widgets are created with hardcoded English text; explicitly apply
+        # the persisted language now so a saved Arabic preference actually
+        # shows up immediately instead of only updating the dropdown itself.
+        self.switch_language(1 if self.current_lang == "AR" else 0)
         self._start_cloud_session()
 
     def _run_cloud(self, fn, *args, on_result=None, **kwargs):
@@ -1936,6 +2124,7 @@ class QuantDashboard(QMainWindow):
 
         self.cmb_lang = QComboBox()
         self.cmb_lang.addItems(["🇬🇧 EN", "🇪🇬 AR"])
+        self.cmb_lang.setCurrentIndex(1 if self.current_lang == "AR" else 0)
         self.cmb_lang.currentIndexChanged.connect(self.switch_language)
         self.cmb_lang.setFixedWidth(80)
         controls_row.addWidget(self.cmb_lang)
@@ -2172,6 +2361,7 @@ class QuantDashboard(QMainWindow):
 
     def switch_language(self, index):
         self.current_lang = "AR" if index == 1 else "EN"
+        set_language(self.current_lang)
         t = TRANSLATIONS[self.current_lang]
 
         if self.current_lang == "AR":
