@@ -21,6 +21,7 @@ CHANGELOG vs the original:
 """
 from __future__ import annotations
 
+import math
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 # MUST be imported before pandas and before `analytics` (below) - config.py
@@ -113,6 +114,78 @@ def _compute_target_fields(qe, df_ind, target_rec, buy_price, shares, curr_price
         "Target Profit %": round(target_pct, 2),
         "Target Profit (EGP)": round(target_profit_egp, 2),
         "Est. Days to Target": eta_display,
+    }
+
+
+def _compute_breakeven_fields(buy_price, shares, curr_price, cash_balance):
+    """For a losing position, work out how many extra shares bought right
+    now at the current (lower) price would blend the average cost down to
+    breakeven — defined as the average cost at which selling the WHOLE
+    (enlarged) position at today's price would net ~0 after round-trip
+    fees. Once averaged down to that point, the stock no longer needs to
+    climb all the way back to the original buy price before any further
+    move up becomes real profit.
+
+    Returns explanatory placeholder values whenever averaging down isn't
+    applicable: the position isn't actually at a loss, or the loss is
+    already smaller than the round-trip fee itself (nothing meaningful to
+    average into).
+    """
+    if buy_price <= 0 or shares <= 0 or curr_price <= 0:
+        return {
+            "Breakeven Shares Needed": None,
+            "Breakeven New Avg Cost": None,
+            "Breakeven Cost (EGP)": None,
+            "Breakeven Note": _t("Not applicable", "غير قابل للتطبيق"),
+        }
+
+    if curr_price >= buy_price:
+        return {
+            "Breakeven Shares Needed": 0,
+            "Breakeven New Avg Cost": round(buy_price, 4),
+            "Breakeven Cost (EGP)": 0.0,
+            "Breakeven Note": _t("Position isn't at a loss", "المركز ليس في خسارة"),
+        }
+
+    # Breakeven target: the average cost at which selling everything right
+    # now at curr_price is a wash after round-trip fees.
+    target = curr_price * (1 + ROUND_TRIP_FEE_PCT)
+    if target >= buy_price:
+        return {
+            "Breakeven Shares Needed": 0,
+            "Breakeven New Avg Cost": round(buy_price, 4),
+            "Breakeven Cost (EGP)": 0.0,
+            "Breakeven Note": _t(
+                "Already near breakeven (loss is inside round-trip fee cost)",
+                "قريب من التعادل بالفعل (الخسارة داخل تكلفة الرسوم)",
+            ),
+        }
+
+    raw_n = shares * (buy_price - target) / (target - curr_price)
+    n_shares = max(0, math.ceil(raw_n))
+    cost_egp = n_shares * curr_price * (1 + TRANSACTION_FEE_PCT)
+    new_total_shares = shares + n_shares
+    new_avg_cost = (
+        (shares * buy_price + n_shares * curr_price) / new_total_shares
+        if new_total_shares > 0
+        else buy_price
+    )
+
+    afford_note = ""
+    if cash_balance is not None and cost_egp > cash_balance:
+        afford_note = _t(
+            f" — needs ~{cost_egp:,.2f} EGP, more than your {cash_balance:,.2f} EGP cash balance",
+            f" — يتطلب ~{cost_egp:,.2f} جنيه، أكثر من رصيدك النقدي البالغ {cash_balance:,.2f} جنيه",
+        )
+
+    return {
+        "Breakeven Shares Needed": n_shares,
+        "Breakeven New Avg Cost": round(new_avg_cost, 4),
+        "Breakeven Cost (EGP)": round(cost_egp, 2),
+        "Breakeven Note": _t(
+            f"Buy {n_shares:,} more shares at {curr_price:,.4f} to reach breakeven{afford_note}",
+            f"اشترِ {n_shares:,} سهمًا إضافيًا بسعر {curr_price:,.4f} للوصول لنقطة التعادل{afford_note}",
+        ),
     }
 
 
@@ -404,6 +477,9 @@ class DecisionMatrix:
                     target_fields = _compute_target_fields(
                         self.qe, df_ind, position_targets.get(norm_ticker), buy_price, shares, curr_price
                     )
+                    breakeven_fields = _compute_breakeven_fields(
+                        buy_price, shares, curr_price, cash_balance
+                    )
                     exit_strategies.append(
                         {
                             "Ticker": norm_ticker,
@@ -421,6 +497,7 @@ class DecisionMatrix:
                             "Data Confidence": data_conf_tier,
                             "Purchase Date": p_date,
                             **target_fields,
+                            **breakeven_fields,
                         }
                     )
                     # The exit-strategy row above always gets computed for an
@@ -757,6 +834,9 @@ class DecisionMatrix:
                 target_fields = _compute_target_fields(
                     self.qe, pd.DataFrame(), position_targets.get(ticker), buy_price, shares, buy_price
                 )
+                breakeven_fields = _compute_breakeven_fields(
+                    buy_price, shares, buy_price, cash_balance
+                )
                 exit_strategies.append(
                     {
                         "Ticker": ticker,
@@ -776,6 +856,7 @@ class DecisionMatrix:
                         "Data Confidence": "None",
                         "Purchase Date": pos["purchase_date"],
                         **target_fields,
+                        **breakeven_fields,
                     }
                 )
 

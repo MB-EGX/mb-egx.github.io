@@ -2671,6 +2671,9 @@ class QuantDashboard(QMainWindow):
             ("My Target %", "Your chosen profit target, as a % gain from your buy price"),
             ("My Target (EGP)", "Your chosen profit target, in EGP profit on this position"),
             ("Est. Time to Target", "Rough estimate of how many trading days it might take to reach your target, based on this stock's own recent pace - not a guarantee"),
+            ("Breakeven Shares", "Extra shares to buy right now at the current price to blend your average cost down to breakeven (net of round-trip fees)"),
+            ("Breakeven Avg Cost", "Your new average cost per share if you bought the Breakeven Shares amount above"),
+            ("Breakeven Cost (EGP)", "Total EGP needed to buy the Breakeven Shares amount at the current price"),
         ]
         self.tbl_exits.setColumnCount(len(self._exit_columns))
         for idx, (header, tooltip) in enumerate(self._exit_columns):
@@ -3134,6 +3137,7 @@ class QuantDashboard(QMainWindow):
                     "Action Command", "Take-Profit Target", "Trailing Stop-Loss", "Trend Class",
                     "RSI-14", "ADX-14", "Data Confidence", "Purchase Date",
                     "Target Price", "Target Profit %", "Target Profit (EGP)", "Est. Days to Target",
+                    "Breakeven Shares Needed", "Breakeven New Avg Cost", "Breakeven Cost (EGP)",
                 ]):
                     raw_val = row_data.get(key, "")
                     val_str = "-" if raw_val is None else str(raw_val)
@@ -3152,6 +3156,18 @@ class QuantDashboard(QMainWindow):
                                 item.setForeground(QColor("#e53e3e"))
                                 item.setFont(QFont("Inter", 10, QFont.Weight.Bold))
                         except ValueError:
+                            pass
+
+                    if key == "Breakeven Shares Needed":
+                        note = row_data.get("Breakeven Note")
+                        if note:
+                            item.setToolTip(note)
+                        try:
+                            val_num = float(row_data.get(key, 0))
+                            if val_num > 0:
+                                item.setForeground(QColor("#d69e2e"))
+                                item.setFont(QFont("Inter", 10, QFont.Weight.Bold))
+                        except (ValueError, TypeError):
                             pass
 
                     # Styling checks stay against the original English value.
