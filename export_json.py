@@ -45,8 +45,13 @@ from decision_matrix import DecisionMatrix
 from db_manager import DatabaseManager
 
 # Any of these keys, if present on a market_matrix/top_10 row, are derived
-# from the real cash balance and must never reach the public JSON.
-_PRIVATE_ROW_KEYS = ("Suggested Shares (1% Risk)",)
+# from real private account data and must never reach the public JSON.
+#   - "Suggested Shares (1% Risk)": derived from the real cash balance.
+#   - "Position": reveals which tickers are actually owned (added so owned
+#     positions can also be re-scored as scale-in candidates in the Action
+#     Matrix) - that's account holdings info, same trust boundary as
+#     cash_balance/closed_trades/portfolio_risk above.
+_PRIVATE_ROW_KEYS = ("Suggested Shares (1% Risk)", "Position")
 
 
 def _strip_private_row_fields(rows):

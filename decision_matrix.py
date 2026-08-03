@@ -74,6 +74,48 @@ def _t(en, ar):
 
 
 
+def _compute_target_fields(qe, df_ind, target_rec, buy_price, shares, curr_price):
+    """Turn a stored profit target (percent-gain or EGP-amount) into the
+    concrete numbers a user actually wants to see: what price to sell at,
+    what % and EGP profit that represents, and a rough ETA based on the
+    stock's own recent pace. Returns placeholder values if no target has
+    been set for this position yet.
+    """
+    if not target_rec:
+        return {
+            "Target Price": None,
+            "Target Profit %": None,
+            "Target Profit (EGP)": None,
+            "Est. Days to Target": _t("Not set", "غير محدد"),
+        }
+
+    mode = target_rec["target_mode"]
+    value = target_rec["target_value"]
+    if mode == "AMOUNT":
+        target_profit_egp = value
+        target_price = buy_price + (value / shares) if shares > 0 else buy_price
+        target_pct = ((target_price - buy_price) / buy_price * 100) if buy_price > 0 else 0.0
+    else:  # 'PCT'
+        target_pct = value
+        target_price = buy_price * (1 + value / 100.0)
+        target_profit_egp = (target_price - buy_price) * shares
+
+    eta = qe.estimate_days_to_target(df_ind, curr_price, target_price)
+    if eta["eta_days"] is None:
+        eta_display = _t(eta["reason"], eta["reason"])
+    elif eta["eta_days"] == 0:
+        eta_display = _t("Target already reached", "تم بلوغ الهدف بالفعل")
+    else:
+        eta_display = _t(f"~{eta['eta_days']} trading days", f"~{eta['eta_days']} يوم تداول")
+
+    return {
+        "Target Price": round(target_price, 4),
+        "Target Profit %": round(target_pct, 2),
+        "Target Profit (EGP)": round(target_profit_egp, 2),
+        "Est. Days to Target": eta_display,
+    }
+
+
 def _confidence_weight(n_bars: int) -> float:
     if n_bars <= MIN_BARS_FOR_PATTERN_TRUST:
         return CONFIDENCE_FLOOR_WEIGHT
@@ -179,6 +221,7 @@ class DecisionMatrix:
         tickers = list(market_data_bulk.keys())
 
         owned_dict = self.dbm.get_all_owned_stocks()
+        position_targets = self.dbm.get_all_position_targets()
         closed_trades = self.dbm.get_all_closed_trades()
         cash_balance = self.dbm.get_cash_balance()
         sector_map = self.dbm.get_sector_map()
@@ -358,6 +401,9 @@ class DecisionMatrix:
                         take_profit = curr_price * (1 + default_tp + ROUND_TRIP_FEE_PCT)
                         action_cmd = "🛡️ HOLD / TRAIL STOP (Low Data)"
 
+                    target_fields = _compute_target_fields(
+                        self.qe, df_ind, position_targets.get(norm_ticker), buy_price, shares, curr_price
+                    )
                     exit_strategies.append(
                         {
                             "Ticker": norm_ticker,
@@ -374,9 +420,20 @@ class DecisionMatrix:
                             "ADX-14": round(adx, 1),
                             "Data Confidence": data_conf_tier,
                             "Purchase Date": p_date,
+                            **target_fields,
                         }
                     )
-                    continue
+                    # The exit-strategy row above always gets computed for an
+                    # owned position - that doesn't change. But unless there's
+                    # no usable market data at all, don't stop here: fall
+                    # through into the same buy-side scoring every other
+                    # ticker gets, so a position that's down can still show
+                    # up as a legitimate "average down / scale in" candidate
+                    # in the Action Matrix, instead of only ever appearing
+                    # in the Exits tab. n_bars < 15 or an empty df_ind means
+                    # there's nothing reliable to score, so those still stop.
+                    if df_ind.empty or n_bars < 15:
+                        continue
 
                 latest = df_ind.iloc[-1]
                 prev = df_ind.iloc[-2] if len(df_ind) > 1 else latest
@@ -649,6 +706,7 @@ class DecisionMatrix:
                 buy_recommendations.append(
                     {
                         "Ticker": norm_ticker,
+                        "Position": "🔁 OWNED - Scale-In Candidate" if is_owned else "New Candidate",
                         "Action": action_cmd,
                         "Rank Score": round(score, 1),
                         "Current Price": round(curr_price, 4),
@@ -696,6 +754,9 @@ class DecisionMatrix:
                 total_invested += invested_val
                 total_market_value += invested_val
                 default_tp = ACTION_THRESHOLDS["default_take_profit_pct"] / 100.0
+                target_fields = _compute_target_fields(
+                    self.qe, pd.DataFrame(), position_targets.get(ticker), buy_price, shares, buy_price
+                )
                 exit_strategies.append(
                     {
                         "Ticker": ticker,
@@ -714,6 +775,7 @@ class DecisionMatrix:
                         "ADX-14": 0.0,
                         "Data Confidence": "None",
                         "Purchase Date": pos["purchase_date"],
+                        **target_fields,
                     }
                 )
 
@@ -727,7 +789,9 @@ class DecisionMatrix:
             filtered = [
                 r
                 for r in buy_recommendations
-                if cat in r["Action"] and "ILLIQUID" not in r["Action"]
+                if cat in r["Action"]
+                and "ILLIQUID" not in r["Action"]
+                and r["Position"] == "New Candidate"
             ]
             top_10_by_category[cat] = filtered[:10]
 
