@@ -12,8 +12,11 @@ Public surface:
     QuantitativeEngine.compute_trendline
     QuantitativeEngine.get_sector_historical_index
     QuantitativeEngine.match_historical_patterns
+    QuantitativeEngine.estimate_days_to_target
 """
 from __future__ import annotations
+
+import math
 
 # MUST be imported before numpy/pandas (below) - sets OPENBLAS/MKL/OMP/
 # NUMEXPR thread caps as a module-level side effect; those only take
@@ -489,6 +492,63 @@ class QuantitativeEngine:
 
         sector_summary.sort(key=lambda x: x["1D Return (%)"], reverse=True)
         return sector_summary
+
+    # -------------------------------------------------------------------------
+    # Target-price ETA (used for the "profit target" scale-in/exit planner)
+    # -------------------------------------------------------------------------
+    @staticmethod
+    def estimate_days_to_target(
+        df: pd.DataFrame, current_price: float, target_price: float, lookback: int = 20
+    ) -> dict:
+        """Rough estimate of how many trading days it might take to reach
+        ``target_price``, extrapolating the stock's own recent compound
+        average daily return over the last ``lookback`` bars.
+
+        This is a pace extrapolation, not a forecast or a promise - it
+        answers "if the stock kept moving the way it has recently, when
+        would it get there", which can change completely tomorrow. Returns
+        eta_days=None (with a plain-language reason) whenever that
+        extrapolation isn't meaningful: no history, flat/negative recent
+        trend, or the target is already at/below the current price.
+        """
+        if current_price <= 0 or target_price <= 0:
+            return {"eta_days": None, "daily_rate_pct": 0.0, "reason": "Invalid price."}
+        if target_price <= current_price:
+            return {
+                "eta_days": 0,
+                "daily_rate_pct": 0.0,
+                "reason": "Target is already at or below the current price.",
+            }
+        if df is None or df.empty or "close" not in df.columns:
+            return {"eta_days": None, "daily_rate_pct": 0.0, "reason": "No price history available."}
+
+        n = min(lookback, len(df) - 1)
+        if n < 3:
+            return {
+                "eta_days": None,
+                "daily_rate_pct": 0.0,
+                "reason": "Not enough history yet to gauge a pace.",
+            }
+
+        start_price = float(df["close"].iloc[-n - 1])
+        end_price = float(df["close"].iloc[-1])
+        if start_price <= 0 or end_price <= 0:
+            return {"eta_days": None, "daily_rate_pct": 0.0, "reason": "Invalid price history."}
+
+        daily_rate = (end_price / start_price) ** (1.0 / n) - 1.0
+        if daily_rate <= 0:
+            return {
+                "eta_days": None,
+                "daily_rate_pct": round(daily_rate * 100, 3),
+                "reason": f"Recent {n}-day trend is flat or negative - can't extrapolate a path to this target.",
+            }
+
+        days_needed = math.log(target_price / current_price) / math.log(1.0 + daily_rate)
+        return {
+            "eta_days": max(1, round(days_needed)),
+            "daily_rate_pct": round(daily_rate * 100, 3),
+            "reason": None,
+        }
 
     # -------------------------------------------------------------------------
     # Linear-regression trendline

@@ -250,6 +250,13 @@ class DatabaseManager:
                     name VARCHAR
                 );
             """)
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS position_targets (
+                    ticker VARCHAR PRIMARY KEY,
+                    target_mode VARCHAR,   -- 'PCT' (percent gain from buy price) or 'AMOUNT' (EGP profit)
+                    target_value DOUBLE    -- meaning depends on target_mode
+                );
+            """)
 
             count_cash = conn.execute("SELECT COUNT(*) FROM account_cash;").fetchone()[0]
             if count_cash == 0:
@@ -416,10 +423,51 @@ class DatabaseManager:
                         return (True, f"📈 تمت الزيادة في {ticker}! دمج {old_s:,.4f} + {shares:,.4f} سهم.\nالإجمالي الجديد: {new_s:,.4f} سهم | متوسط التكلفة المرجح الجديد: {new_p:.4f} جنيه (كان {old_p:.4f}).")
                     return (True, f"📈 Scaled into {ticker}! Combined {old_s:,.4f} + {shares:,.4f} shares.\nNew Total: {new_s:,.4f} shares | New Weighted Average Cost: {new_p:.4f} EGP (was {old_p:.4f}).")
 
+    def set_position_target(self, ticker: str, target_mode: str, target_value: float):
+        """target_mode: 'PCT' (target_value = % gain from buy price) or
+        'AMOUNT' (target_value = EGP profit desired on the whole position)."""
+        ticker = self.normalize_symbol(ticker)
+        target_mode = "AMOUNT" if str(target_mode).upper().startswith("A") else "PCT"
+        with self.get_connection() as conn:
+            conn.execute(
+                "INSERT OR REPLACE INTO position_targets (ticker, target_mode, target_value) VALUES (?, ?, ?);",
+                (ticker, target_mode, float(target_value)),
+            )
+
+    def get_position_target(self, ticker: str):
+        ticker = self.normalize_symbol(ticker)
+        with self.get_connection() as conn:
+            row = conn.cursor().execute(
+                "SELECT target_mode, target_value FROM position_targets WHERE ticker = ?;", (ticker,)
+            ).fetchone()
+        return {"target_mode": row[0], "target_value": float(row[1])} if row else None
+
+    def get_all_position_targets(self) -> dict:
+        with self.get_connection() as conn:
+            rows = conn.cursor().execute(
+                "SELECT ticker, target_mode, target_value FROM position_targets;"
+            ).fetchall()
+        return {
+            self.normalize_symbol(r[0]): {"target_mode": r[1], "target_value": float(r[2])}
+            for r in rows
+        }
+
+    def remove_position_target(self, ticker: str):
+        ticker = self.normalize_symbol(ticker)
+        with self.get_connection() as conn:
+            conn.execute(
+                "DELETE FROM position_targets WHERE ticker = ? OR ticker = ?;",
+                (ticker, ticker.replace(".CA", "")),
+            )
+
     def remove_owned_stock(self, ticker: str):
         ticker = self.normalize_symbol(ticker)
         with self.get_connection() as conn:
             conn.execute("DELETE FROM portfolio_owned WHERE ticker = ? OR ticker = ?;", (ticker, ticker.replace(".CA", "")))
+        # A deleted position's profit target is meaningless once the
+        # position itself is gone - don't leave it behind to silently
+        # reattach if the same ticker gets bought again later.
+        self.remove_position_target(ticker)
 
     def get_all_owned_stocks(self):
         with self.get_connection() as conn:
@@ -459,6 +507,10 @@ class DatabaseManager:
             remaining_shares = current_shares - shares_to_sell
             if remaining_shares <= 0.0001:
                 conn.execute("DELETE FROM portfolio_owned WHERE ticker = ?;", (actual_ticker,))
+                conn.execute(
+                    "DELETE FROM position_targets WHERE ticker = ? OR ticker = ?;",
+                    (actual_ticker, actual_ticker.replace(".CA", "")),
+                )
             else:
                 conn.execute("UPDATE portfolio_owned SET shares = ? WHERE ticker = ?;", (remaining_shares, actual_ticker))
         if _LANG == "AR":

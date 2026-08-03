@@ -1032,6 +1032,7 @@ class MatrixTableModel(QAbstractTableModel):
         self._data = data or []
         self._columns = [
             ("Ticker", "Stock ticker symbol"),
+            ("Position", "Whether this is a fresh candidate or a position you already own being re-evaluated for scaling in"),
             ("Action", "Recommended action based on multi-factor confirmation"),
             ("Score", "Composite rank score (higher = stronger signal)"),
             ("Price", "Current close price"),
@@ -1058,7 +1059,7 @@ class MatrixTableModel(QAbstractTableModel):
             ("S3", "Third (furthest) pivot support level"),
         ]
         self._col_keys = [
-            "Ticker", "Action", "Rank Score", "Current Price", "Target Entry (VWAP)",
+            "Ticker", "Position", "Action", "Rank Score", "Current Price", "Target Entry (VWAP)",
             "Suggested Stop-Loss", "Suggested Shares (1% Risk)", "Projected Gain (%)",
             "Pattern Conf (%)", "Trend Class", "RSI-14", "ADX-14", "Vol Z-Score",
             "MACD Signal", "MACD Histogram", "Bollinger %B",
@@ -1092,16 +1093,18 @@ class MatrixTableModel(QAbstractTableModel):
         val_str = str(val)
 
         if role == Qt.ItemDataRole.DisplayRole:
-            if key in ("Action", "Trend Class", "Data Confidence"):
+            if key in ("Action", "Trend Class", "Data Confidence", "Position"):
                 return tr(val_str)
             return val_str
         elif role == Qt.ItemDataRole.TextAlignmentRole:
-            if key in ["Action", "Data Confidence"]:
+            if key in ["Action", "Data Confidence", "Position"]:
                 return int(Qt.AlignmentFlag.AlignCenter)
-            elif (2 <= col <= 8) or (14 <= col <= 15) or (18 <= col <= 24):
+            elif (3 <= col <= 9) or (15 <= col <= 16) or (19 <= col <= 25):
                 return int(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
             return int(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         elif role == Qt.ItemDataRole.BackgroundRole:
+            if key == "Position" and "OWNED" in val_str:
+                return QColor("#553c9a")
             if key == "Action":
                 if "ILLIQUID" in val_str or "Unconfirmed" in val_str:
                     return QColor("#4a5568")
@@ -1114,7 +1117,9 @@ class MatrixTableModel(QAbstractTableModel):
                 elif "HOLD" in val_str:
                     return QColor("#975a16")
         elif role == Qt.ItemDataRole.ForegroundRole:
-            if key == "Action":
+            if key == "Position" and "OWNED" in val_str:
+                return QColor("#ffffff")
+            elif key == "Action":
                 if any(w in val_str for w in ["ILLIQUID", "Unconfirmed", "STRONG BUY", "BREAKOUT BUY", "ACCUMULATE", "BUY ON DIP", "SELL / AVOID", "HOLD"]):
                     return QColor("#ffffff")
             elif key == "Data Confidence":
@@ -1449,6 +1454,61 @@ class PortfolioDialog(QDialog):
         btn_record_sale.clicked.connect(self.record_stock_sale)
         form_sell.addRow(btn_record_sale)
         self.tabs.addTab(tab_sell, tr("🤝 Record Sale / Close Trade"))
+
+        tab_target = QWidget()
+        form_target = QFormLayout(tab_target)
+        form_target.setSpacing(12)
+
+        owned_tickers = list(self.dbm.get_all_owned_stocks().keys())
+        self.cmb_target_ticker = QComboBox()
+        self.cmb_target_ticker.setEditable(True)
+        self.cmb_target_ticker.addItems([""] + owned_tickers)
+        self.cmb_target_ticker.setPlaceholderText(tr("Select an owned ticker..."))
+        completer_target = self.cmb_target_ticker.completer()
+        if completer_target:
+            completer_target.setCompletionMode(QCompleter.CompletionMode.PopupCompletion)
+            completer_target.setFilterMode(Qt.MatchFlag.MatchContains)
+        self.cmb_target_ticker.currentIndexChanged.connect(self.on_target_ticker_changed)
+        self.cmb_target_ticker.lineEdit().editingFinished.connect(self.on_target_ticker_changed)
+        form_target.addRow(tr("Owned Ticker:"), self.cmb_target_ticker)
+
+        self.lbl_target_current = QLabel("")
+        self.lbl_target_current.setWordWrap(True)
+        self.lbl_target_current.setStyleSheet("color: #a0aec0; font-size: 11px;")
+        form_target.addRow(self.lbl_target_current)
+
+        self.cmb_target_mode = QComboBox()
+        self.cmb_target_mode.addItems([tr("% Gain from Buy Price"), tr("Money Amount (EGP)")])
+        self.cmb_target_mode.currentIndexChanged.connect(self.on_target_mode_changed)
+        form_target.addRow(tr("Target Mode:"), self.cmb_target_mode)
+
+        self.spn_target_value = QDoubleSpinBox()
+        self.spn_target_value.setDecimals(2)
+        self.spn_target_value.setValue(15.0)
+        self.spn_target_value.valueChanged.connect(self.update_target_preview)
+        form_target.addRow(tr("Target Value:"), self.spn_target_value)
+
+        self.lbl_target_preview = QLabel()
+        self.lbl_target_preview.setWordWrap(True)
+        self.lbl_target_preview.setStyleSheet("padding: 12px; border-radius: 8px; font-size: 13px; border: 1px solid #4a5568; background-color: #1a1d24;")
+        form_target.addRow(self.lbl_target_preview)
+
+        btn_save_target = QPushButton(tr("🎯 Save Profit Target"))
+        btn_save_target.setStyleSheet("background-color: #3198dc; color: white; margin-top: 10px; padding: 10px 14px; font-size: 13px; border-radius: 6px;")
+        btn_save_target.clicked.connect(self.save_profit_target)
+
+        btn_clear_target = QPushButton(tr("🗑️ Clear Target"))
+        btn_clear_target.setStyleSheet("background-color: #e53e3e; color: white; padding: 10px 14px; font-size: 13px; border-radius: 6px;")
+        btn_clear_target.clicked.connect(self.clear_profit_target)
+
+        target_btn_layout = QHBoxLayout()
+        target_btn_layout.addWidget(btn_save_target)
+        target_btn_layout.addWidget(btn_clear_target)
+        form_target.addRow(target_btn_layout)
+
+        self.on_target_mode_changed()
+        self.tabs.addTab(tab_target, tr("🎯 Set Profit Target"))
+
         layout.addWidget(self.tabs)
 
         btn_clean = QPushButton(tr("🧹 Clear Sample Demo Data"))
@@ -1503,6 +1563,99 @@ class PortfolioDialog(QDialog):
             self.accept()
         else:
             QMessageBox.warning(self, tr("Sale Error"), msg)
+
+    def on_target_ticker_changed(self):
+        ticker = self.cmb_target_ticker.currentText().strip().upper()
+        if not ticker:
+            self.lbl_target_current.setText("")
+            self.update_target_preview()
+            return
+        norm = self.dbm.normalize_symbol(ticker)
+        owned = self.dbm.get_all_owned_stocks()
+        pos = owned.get(norm)
+        if not pos:
+            self.lbl_target_current.setText(tr("⚠️ You don't currently own {t}.").format(t=norm))
+            self.update_target_preview()
+            return
+        existing = self.dbm.get_position_target(norm)
+        if existing:
+            mode_txt = tr("% Gain") if existing["target_mode"] == "PCT" else tr("Money Amount (EGP)")
+            self.lbl_target_current.setText(
+                tr("Buy Price: {bp} EGP | {n} shares | Current target: {mv} {mode}").format(
+                    bp=f"{pos['buy_price']:.4f}", n=f"{pos['shares']:,.4f}",
+                    mv=f"{existing['target_value']:,.2f}", mode=mode_txt,
+                )
+            )
+            self.cmb_target_mode.setCurrentIndex(0 if existing["target_mode"] == "PCT" else 1)
+            self.spn_target_value.setValue(existing["target_value"])
+        else:
+            self.lbl_target_current.setText(
+                tr("Buy Price: {bp} EGP | {n} shares | No target set yet.").format(
+                    bp=f"{pos['buy_price']:.4f}", n=f"{pos['shares']:,.4f}"
+                )
+            )
+        self.update_target_preview()
+
+    def on_target_mode_changed(self):
+        if self.cmb_target_mode.currentIndex() == 1:
+            self.spn_target_value.setSuffix(" EGP")
+            self.spn_target_value.setRange(0.01, 100000000.0)
+        else:
+            self.spn_target_value.setSuffix(" %")
+            self.spn_target_value.setRange(0.01, 1000.0)
+        self.update_target_preview()
+
+    def update_target_preview(self):
+        ticker = self.cmb_target_ticker.currentText().strip().upper()
+        norm = self.dbm.normalize_symbol(ticker) if ticker else ""
+        pos = self.dbm.get_all_owned_stocks().get(norm)
+        if not pos:
+            self.lbl_target_preview.setText(tr("Select an owned ticker to preview the target price."))
+            return
+        buy_price = pos["buy_price"]
+        shares = pos["shares"]
+        value = self.spn_target_value.value()
+        if self.cmb_target_mode.currentIndex() == 1:  # Money amount
+            target_profit_egp = value
+            target_price = buy_price + (value / shares) if shares > 0 else buy_price
+            target_pct = ((target_price - buy_price) / buy_price * 100) if buy_price > 0 else 0.0
+        else:
+            target_pct = value
+            target_price = buy_price * (1 + value / 100.0)
+            target_profit_egp = (target_price - buy_price) * shares
+        self.lbl_target_preview.setText(
+            tr("🎯 Sell at <b>{p} EGP</b> to hit this target<br>= {pct}% gain from your buy price<br>= {egp} EGP profit on this position").format(
+                p=f"{target_price:,.4f}", pct=f"{target_pct:,.2f}", egp=f"{target_profit_egp:,.2f}",
+            )
+        )
+
+    def save_profit_target(self):
+        ticker = self.cmb_target_ticker.currentText().strip().upper()
+        if not ticker:
+            QMessageBox.warning(self, tr("Input Error"), tr("Please select an owned ticker."))
+            return
+        norm = self.dbm.normalize_symbol(ticker)
+        if norm not in self.dbm.get_all_owned_stocks():
+            QMessageBox.warning(self, tr("Input Error"), tr("You don't currently own {t}.").format(t=norm))
+            return
+        mode = "AMOUNT" if self.cmb_target_mode.currentIndex() == 1 else "PCT"
+        value = self.spn_target_value.value()
+        self.dbm.set_position_target(norm, mode, value)
+        QMessageBox.information(
+            self, tr("Target Saved"),
+            tr("Profit target saved for {t}. It'll show up in the Exits tab next time you run the matrix.").format(t=norm),
+        )
+        self.accept()
+
+    def clear_profit_target(self):
+        ticker = self.cmb_target_ticker.currentText().strip().upper()
+        if not ticker:
+            QMessageBox.warning(self, tr("Input Error"), tr("Please select a ticker."))
+            return
+        norm = self.dbm.normalize_symbol(ticker)
+        self.dbm.remove_position_target(norm)
+        QMessageBox.information(self, tr("Target Cleared"), tr("Removed the profit target for {t}.").format(t=norm))
+        self.accept()
 
     def clean_samples(self):
         self.dbm.clear_sample_data()
@@ -2514,6 +2667,13 @@ class QuantDashboard(QMainWindow):
             ("ADX-14", "14-period trend-strength index"),
             ("Data Conf.", "How much real history backs these numbers"),
             ("Purchase Date", "Date this position was opened"),
+            ("My Target Price", "The exit price that reaches your chosen profit target for this position"),
+            ("My Target %", "Your chosen profit target, as a % gain from your buy price"),
+            ("My Target (EGP)", "Your chosen profit target, in EGP profit on this position"),
+            ("Est. Time to Target", "Rough estimate of how many trading days it might take to reach your target, based on this stock's own recent pace - not a guarantee"),
+            ("Breakeven Shares", "Extra shares to buy right now at the current price to blend your average cost down to breakeven (net of round-trip fees)"),
+            ("Breakeven Avg Cost", "Your new average cost per share if you bought the Breakeven Shares amount above"),
+            ("Breakeven Cost (EGP)", "Total EGP needed to buy the Breakeven Shares amount at the current price"),
         ]
         self.tbl_exits.setColumnCount(len(self._exit_columns))
         for idx, (header, tooltip) in enumerate(self._exit_columns):
@@ -2976,8 +3136,11 @@ class QuantDashboard(QMainWindow):
                     "Ticker", "Shares", "Buy Price", "Current Price", "P&L (EGP)", "P&L (%)",
                     "Action Command", "Take-Profit Target", "Trailing Stop-Loss", "Trend Class",
                     "RSI-14", "ADX-14", "Data Confidence", "Purchase Date",
+                    "Target Price", "Target Profit %", "Target Profit (EGP)", "Est. Days to Target",
+                    "Breakeven Shares Needed", "Breakeven New Avg Cost", "Breakeven Cost (EGP)",
                 ]):
-                    val_str = str(row_data.get(key, ""))
+                    raw_val = row_data.get(key, "")
+                    val_str = "-" if raw_val is None else str(raw_val)
                     display_str = tr(val_str) if key in _exit_translatable else val_str
                     item = QTableWidgetItem(display_str)
                     item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
@@ -2993,6 +3156,18 @@ class QuantDashboard(QMainWindow):
                                 item.setForeground(QColor("#e53e3e"))
                                 item.setFont(QFont("Inter", 10, QFont.Weight.Bold))
                         except ValueError:
+                            pass
+
+                    if key == "Breakeven Shares Needed":
+                        note = row_data.get("Breakeven Note")
+                        if note:
+                            item.setToolTip(note)
+                        try:
+                            val_num = float(row_data.get(key, 0))
+                            if val_num > 0:
+                                item.setForeground(QColor("#d69e2e"))
+                                item.setFont(QFont("Inter", 10, QFont.Weight.Bold))
+                        except (ValueError, TypeError):
                             pass
 
                     # Styling checks stay against the original English value.
