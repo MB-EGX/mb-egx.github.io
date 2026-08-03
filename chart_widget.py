@@ -9,6 +9,34 @@ from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import matplotlib.dates as mdates
 
+# Arabic display names for the canonical sector strings db_manager.py's
+# clean_sector_name() produces. Kept local (rather than importing from
+# app_gui.py) to avoid a circular import — app_gui.py imports this module.
+# Any sector not listed here (e.g. a name clean_sector_name() didn't
+# recognize and passed through unchanged) just falls back to itself.
+_AR_SECTOR_NAMES = {
+    "Non-Bank Financial Services": "خدمات مالية غير مصرفية",
+    "Food, Beverages & Tobacco": "الأغذية والمشروبات والتبغ",
+    "Textiles & Durables": "المنسوجات والسلع المعمرة",
+    "IT, Media & Communication Services": "تكنولوجيا المعلومات والإعلام والاتصالات",
+    "Industrial Goods, Services & Automobiles": "السلع والخدمات الصناعية والسيارات",
+    "Construction & Engineering": "التشييد والهندسة",
+    "Health Care & Pharmaceuticals": "الرعاية الصحية والأدوية",
+    "Basic Resources": "الموارد الأساسية",
+    "Building Materials": "مواد البناء",
+    "Travel & Leisure": "السياحة والترفيه",
+    "Shipping & Transportation Services": "الشحن وخدمات النقل",
+    "Trade & Distributors": "التجارة والموزعون",
+    "Energy & Support Services": "الطاقة والخدمات المساندة",
+    "Education Services": "الخدمات التعليمية",
+    "Paper & Packaging": "الورق والتغليف",
+    "Banks": "البنوك",
+    "Real Estate": "العقارات",
+    "Chemicals": "الكيماويات",
+    "Utilities": "المرافق العامة",
+    "General / Diversified": "عام / متنوع",
+}
+
 class StockSectorChartWidget(QWidget):
     def __init__(self, qe, dbm, parent=None):
         super().__init__(parent)
@@ -25,6 +53,13 @@ class StockSectorChartWidget(QWidget):
         self._bulk_cache = None
         self._sector_map_cache = None
         self._init_ui()
+
+    def _tr_sector(self, name: str) -> str:
+        """Translate a canonical sector name for display when Arabic is
+        active; returns it unchanged in English mode or if unrecognized."""
+        if self.lang == "AR":
+            return _AR_SECTOR_NAMES.get(name, name)
+        return name
 
     def refresh_data(self):
         """Call after new market data has been ingested to drop caches."""
@@ -191,7 +226,19 @@ class StockSectorChartWidget(QWidget):
             self.rad_line.setText("📉 Line")
             self.rad_candle.setText("🕯️ Candles")
             self.chk_sr.setText("📐 Support / Resistance")
-        self.plot_chart()
+
+        if not self.rad_stock.isChecked():
+            # Sector-mode dropdown items are translated display text with the
+            # raw English sector name as itemData — repopulate so the shown
+            # labels switch language too, then restore the same selection.
+            prev_selected = self.cmb_selector.currentData() or self.cmb_selector.currentText().strip()
+            self.populate_selector()
+            if prev_selected:
+                idx = self.cmb_selector.findData(prev_selected)
+                if idx >= 0:
+                    self.cmb_selector.setCurrentIndex(idx)
+        else:
+            self.plot_chart()
 
     def on_mode_changed(self):
         # Hide alphabet bar if in sector mode
@@ -223,13 +270,24 @@ class StockSectorChartWidget(QWidget):
         else:
             sector_map = self._get_sector_map_cached()
             unique_sectors = sorted(list(set(sector_map.values())))
-            self.cmb_selector.addItems(unique_sectors)
+            for sec in unique_sectors:
+                self.cmb_selector.addItem(self._tr_sector(sec), sec)
             
         self.cmb_selector.blockSignals(False)
         self.plot_chart()
 
     def plot_chart(self):
-        selected = self.cmb_selector.currentText().strip()
+        is_stock_mode = self.rad_stock.isChecked()
+        if is_stock_mode:
+            selected = self.cmb_selector.currentText().strip()
+            selected_display = selected
+        else:
+            # itemData holds the raw English sector name (used for data
+            # lookups); the combo's displayed text may be translated.
+            selected = self.cmb_selector.currentData()
+            selected_display = self.cmb_selector.currentText().strip()
+            if not selected:
+                selected = selected_display
         self.fig.clear()
         
         if not selected:
@@ -261,7 +319,8 @@ class StockSectorChartWidget(QWidget):
             else:
                 ax.plot(dates, prices, label="Close Price" if self.lang == "EN" else "سعر الإغلاق", color="#38bdf8", linewidth=1.8)
             if 'vwap_20' in df.columns:
-                ax.plot(dates, df['vwap_20'], label="VWAP (20D)", color="#f59e0b", linestyle=":", alpha=0.8)
+                vwap_label = "VWAP (20D)" if self.lang == "EN" else "متوسط السعر المرجح (20 يوم)"
+                ax.plot(dates, df['vwap_20'], label=vwap_label, color="#f59e0b", linestyle=":", alpha=0.8)
 
             if self.chk_sr.isChecked() and {'high', 'low', 'close'}.issubset(df.columns):
                 pivots = self.qe.compute_pivot_points(df)
@@ -303,7 +362,7 @@ class StockSectorChartWidget(QWidget):
                 trend_label = f"اتجاه القطاع العام ({'+' if slope_pct >= 0 else ''}{slope_pct}%)"
                 
             ax.plot(dates, trend_vals, label=trend_label, color=trend_color, linestyle="--", linewidth=2.0)
-            title = f"Sector: {selected} Index" if self.lang == "EN" else f"قطاع: {selected}"
+            title = f"Sector: {selected_display} Index" if self.lang == "EN" else f"قطاع: {selected_display}"
             ax.set_title(title, color="#ffffff", fontsize=12, fontweight="bold")
 
         if len(dates) > 0:
