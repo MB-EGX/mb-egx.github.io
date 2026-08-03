@@ -262,6 +262,13 @@ AR_TRANSLATIONS = {
     "⚡ BREAKOUT BUY (MOMENTUM)": "⚡ شراء اختراق (زخم)",
     "⏳ BUY ON DIP": "⏳ شراء عند الهبوط",
     "📈 ACCUMULATE": "📈 تجميع",
+    # Live-filter dropdown items (generic/aggregate labels, distinct from
+    # the specific badge variants above)
+    "All Actions": "كل الإجراءات",
+    "⚡ BREAKOUT BUY": "⚡ شراء اختراق",
+    "🟡 HOLD / NEUTRAL": "🟡 احتفاظ / محايد",
+    "All Trends": "كل الاتجاهات",
+    "All Data Confidence": "كل مستويات الثقة",
     # Trend Class (exact strings from analytics.py)
     "Strong Bullish": "صعودي قوي",
     "Weak Bullish (Low Trend Strength)": "صعودي ضعيف (قوة اتجاه منخفضة)",
@@ -292,15 +299,126 @@ AR_TRANSLATIONS = {
     "Invalid Folder": "مجلد غير صحيح",
     "The directory does not exist:\n{dir}": "المجلد غير موجود:\n{dir}",
     "MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard": "إم بي-إي جي إكس — لوحة مصفوفة التداول والقطاعات",
+
+    # --- Sector tab: column headers ---
+    "Stocks": "عدد الشركات",
+    "1D Return (%)": "(%) عائد يوم",
+    "5D Return (%)": "(%) عائد 5 أيام",
+    "Money Flow (CMF)": "التدفق النقدي (CMF)",
+    "Bullish Breadth (%)": "(%) الاتساع الصعودي",
+    "Traded Value (EGP)": "قيمة التداول (جنيه)",
+    "Sector Leader": "قائد القطاع",
+    "Sector Status": "حالة القطاع",
+    # Sector Status badges (exact strings from analytics.py's compute_sector_analytics)
+    "🟢 STRONG INFLOW": "🟢 تدفق قوي للداخل",
+    "⚡ BREAKOUT": "⚡ اختراق",
+    "🔴 HEAVY DISTRIBUTION": "🔴 توزيع كثيف",
+    "⚪ CONSOLIDATION": "⚪ تماسك",
+    # Canonical sector names (exact strings from db_manager.py's clean_sector_name)
+    "Non-Bank Financial Services": "خدمات مالية غير مصرفية",
+    "Food, Beverages & Tobacco": "الأغذية والمشروبات والتبغ",
+    "Textiles & Durables": "المنسوجات والسلع المعمرة",
+    "IT, Media & Communication Services": "تكنولوجيا المعلومات والإعلام والاتصالات",
+    "Industrial Goods, Services & Automobiles": "السلع والخدمات الصناعية والسيارات",
+    "Construction & Engineering": "التشييد والهندسة",
+    "Health Care & Pharmaceuticals": "الرعاية الصحية والأدوية",
+    "Basic Resources": "الموارد الأساسية",
+    "Building Materials": "مواد البناء",
+    "Travel & Leisure": "السياحة والترفيه",
+    "Shipping & Transportation Services": "الشحن وخدمات النقل",
+    "Trade & Distributors": "التجارة والموزعون",
+    "Energy & Support Services": "الطاقة والخدمات المساندة",
+    "Education Services": "الخدمات التعليمية",
+    "Paper & Packaging": "الورق والتغليف",
+    "Banks": "البنوك",
+    "Real Estate": "العقارات",
+    "Chemicals": "الكيماويات",
+    "Utilities": "المرافق العامة",
+    "General / Diversified": "عام / متنوع",
+
+    # --- Exits tab: column headers ---
+    "Shares": "الأسهم",
+    "Buy Price": "سعر الشراء",
+    "P&L (EGP)": "الربح/الخسارة (جنيه)",
+    "P&L (%)": "(%) الربح/الخسارة",
+    "Trail Stop": "وقف متحرك",
+    "Purchase Date": "تاريخ الشراء",
+
+    # --- History (closed trades) tab: column headers ---
+    "Shares Sold": "الأسهم المباعة",
+    "Sell Price": "سعر البيع",
+    "Realized P&L (EGP)": "الربح/الخسارة المحققة (جنيه)",
+    "Realized P&L (%)": "(%) الربح/الخسارة المحققة",
+    "Sell Date": "تاريخ البيع",
+
+    # --- Breakout watch tab: column headers + values ---
+    "Breakout Score": "درجة الاختراق",
+    "Dist. to Resistance %": "المسافة للمقاومة %",
+    "Squeeze": "الانضغاط",
+    "Volume Trend": "اتجاه الحجم",
+    "Signals": "الإشارات",
+    "Rising": "صاعد",
+    "Flat/Falling": "مستقر/هابط",
+    "✅ Yes": "✅ نعم",
+    # Signal-sentence fragments (joined with ", " in decision_matrix.py's
+    # breakout-watch screening — matched as substrings, not exact strings)
+    "Volatility squeeze": "انضغاط تذبذب",
+    "ADX trend just building": "اتجاه ADX في طور التكوّن",
+    "RSI bullish with room to run": "RSI صعودي مع مجال للاستمرار",
+    "Volume trending up": "الحجم في اتجاه صاعد",
+    "Near recent high (resistance test)": "قرب القمة الأخيرة (اختبار مقاومة)",
+    "Positive money flow": "تدفق نقدي إيجابي",
+    "Weekly trend aligned": "توافق الاتجاه الأسبوعي",
+
+    # --- Financials tab: column headers + row labels ---
+    "Accounting Metric / Line Item": "البيان المحاسبي",
+    "Value (EGP / %)": "القيمة (جنيه / %)",
+    "Cash Balance (EGP)": "الرصيد النقدي (جنيه)",
+    "Stock Portfolio Cost Basis (EGP)": "تكلفة محفظة الأسهم (جنيه)",
+    "Stock Portfolio Market Value (EGP)": "القيمة السوقية لمحفظة الأسهم (جنيه)",
+    "Unrealized Stock P&L (EGP)": "الربح/الخسارة غير المحققة للأسهم (جنيه)",
+    "Unrealized Stock P&L (%)": "(%) الربح/الخسارة غير المحققة للأسهم",
+    "Realized P&L from Closed Trades (EGP)": "الربح/الخسارة المحققة من الصفقات المغلقة (جنيه)",
+    "Total Account Equity / Net Worth (EGP)": "إجمالي حقوق الحساب / صافي الثروة (جنيه)",
+
+    # --- Top 10 tab: section titles ---
+    "🔥 Top 10 Strong Buy": "🔥 أفضل 10 شراء قوي",
+    "⚡ Top 10 Breakout": "⚡ أفضل 10 اختراق",
+    "📈 Top 10 Accumulate": "📈 أفضل 10 تجميع",
+    "⏳ Top 10 Buy on Dip": "⏳ أفضل 10 شراء عند الهبوط",
+
+    # --- Action badge fragments (dynamically appended in decision_matrix.py,
+    # so the full assembled string rarely matches a dict entry exactly —
+    # tr() falls back to substituting these as substrings instead). ---
+    " [💥 SQUEEZE]": " [💥 انضغاط]",
+    " [👑 WEEKLY ALIGNED]": " [👑 توافق أسبوعي]",
+    "🚫 ILLIQUID - ": "🚫 سيولة ضعيفة - ",
 }
+
+# Sorted longest-first so multi-word fragments (e.g. an entire action badge)
+# are substituted before any shorter fragment they might contain.
+_AR_FRAGMENTS_BY_LEN = sorted(AR_TRANSLATIONS.keys(), key=len, reverse=True)
 
 
 def tr(text):
     """Return the Arabic translation of `text` if Arabic is the active
-    language and a translation exists; otherwise return `text` unchanged."""
-    if CURRENT_LANG == "AR":
-        return AR_TRANSLATIONS.get(text, text)
-    return text
+    language and a translation exists; otherwise return `text` unchanged.
+
+    Falls back to fragment-level substitution for strings assembled at
+    runtime (action badges with SQUEEZE/WEEKLY ALIGNED suffixes or an
+    ILLIQUID prefix, breakout-watch "Signals" sentences, etc.) that won't
+    have an exact-match entry of their own.
+    """
+    if CURRENT_LANG != "AR":
+        return text
+    direct = AR_TRANSLATIONS.get(text)
+    if direct is not None:
+        return direct
+    result = text
+    for frag in _AR_FRAGMENTS_BY_LEN:
+        if frag in result:
+            result = result.replace(frag, AR_TRANSLATIONS[frag])
+    return result
 
 
 def set_language(lang):
@@ -1519,6 +1637,21 @@ class LoginDialog(QDialog):
         outer.setContentsMargins(0, 0, 0, 0)
         outer.setSpacing(0)
 
+        # 0. TOP BAR (language selector) — kept outside the vertically-centered
+        # content below so it stays anchored to a fixed, predictable corner of
+        # the window instead of drifting into the middle of the screen.
+        top_bar = QWidget()
+        top_bar_layout = QHBoxLayout(top_bar)
+        top_bar_layout.setContentsMargins(40, 16, 40, 0)
+        top_bar_layout.addStretch()
+        self.cmb_lang = QComboBox()
+        self.cmb_lang.addItems(["EN", "AR"])
+        self.cmb_lang.setCurrentText(CURRENT_LANG)
+        self.cmb_lang.setFixedWidth(70)
+        self.cmb_lang.currentTextChanged.connect(self._on_language_changed)
+        top_bar_layout.addWidget(self.cmb_lang)
+        outer.addWidget(top_bar)
+
         # 1. MAIN 2-COLUMN CONTENT
         content_area = QWidget()
         content_layout = QHBoxLayout(content_area)
@@ -1538,17 +1671,6 @@ class LoginDialog(QDialog):
             pixmap = QPixmap(str(LOGO_PATH)).scaledToWidth(300, Qt.TransformationMode.SmoothTransformation)
             lbl_logo.setPixmap(pixmap)
             left_layout.addWidget(lbl_logo)
-
-        # Language selector
-        lang_row = QHBoxLayout()
-        lang_row.addStretch()
-        self.cmb_lang = QComboBox()
-        self.cmb_lang.addItems(["EN", "AR"])
-        self.cmb_lang.setCurrentText(CURRENT_LANG)
-        self.cmb_lang.setFixedWidth(70)
-        self.cmb_lang.currentTextChanged.connect(self._on_language_changed)
-        lang_row.addWidget(self.cmb_lang)
-        left_layout.addLayout(lang_row)
 
         # Hero Text
         self.lbl_hero = QLabel(self._hero_html())
@@ -2306,7 +2428,7 @@ class QuantDashboard(QMainWindow):
         filter_layout.addWidget(self.txt_search, stretch=2)
 
         self.cmb_action = QComboBox()
-        self.cmb_action.addItems([
+        self._action_filter_items = [
             "All Actions",
             "🔥 STRONG BUY",
             "⚡ BREAKOUT BUY",
@@ -2314,30 +2436,33 @@ class QuantDashboard(QMainWindow):
             "⏳ BUY ON DIP",
             "🟡 HOLD / NEUTRAL",
             "🛑 SELL / AVOID",
-        ])
+        ]
+        self.cmb_action.addItems([tr(x) for x in self._action_filter_items])
         self.cmb_action.currentTextChanged.connect(self.apply_filters)
         filter_layout.addWidget(self.cmb_action, stretch=1)
 
         self.cmb_trend = QComboBox()
-        self.cmb_trend.addItems([
+        self._trend_filter_items = [
             "All Trends",
             "Strong Bullish",
             "Weak Bullish",
             "Consolidation / Neutral",
             "Weak Bearish",
             "Strong Bearish",
-        ])
+        ]
+        self.cmb_trend.addItems([tr(x) for x in self._trend_filter_items])
         self.cmb_trend.currentTextChanged.connect(self.apply_filters)
         filter_layout.addWidget(self.cmb_trend, stretch=1)
 
         self.cmb_confidence = QComboBox()
-        self.cmb_confidence.addItems([
+        self._confidence_filter_items = [
             "All Data Confidence",
             "High (1Y+)",
             "Medium (<1 Year)",
             "Low (<3 Months)",
             "Very Low (New/Short History)",
-        ])
+        ]
+        self.cmb_confidence.addItems([tr(x) for x in self._confidence_filter_items])
         self.cmb_confidence.currentTextChanged.connect(self.apply_filters)
         filter_layout.addWidget(self.cmb_confidence, stretch=1)
 
@@ -2364,13 +2489,17 @@ class QuantDashboard(QMainWindow):
         self.tbl_buys = self._create_matrix_table()
         
         self.tbl_sectors = QTableWidget()
-        sector_cols = ["Sector", "Stocks", "1D Return (%)", "5D Return (%)", "Money Flow (CMF)", "Bullish Breadth (%)", "Traded Value (EGP)", "Sector Leader", "Sector Status"]
-        self.tbl_sectors.setColumnCount(len(sector_cols))
-        self.tbl_sectors.setHorizontalHeaderLabels(sector_cols)
+        # Stored in English and re-applied through tr() both here and from
+        # switch_language(), so a language toggle re-translates the headers
+        # of this plain QTableWidget too (unlike tbl_buys/top10, which use
+        # MatrixTableModel and read tr() live on every repaint).
+        self._sector_cols = ["Sector", "Stocks", "1D Return (%)", "5D Return (%)", "Money Flow (CMF)", "Bullish Breadth (%)", "Traded Value (EGP)", "Sector Leader", "Sector Status"]
+        self.tbl_sectors.setColumnCount(len(self._sector_cols))
+        self.tbl_sectors.setHorizontalHeaderLabels([tr(c) for c in self._sector_cols])
         self.tbl_sectors.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
         self.tbl_exits = QTableWidget()
-        exit_columns = [
+        self._exit_columns = [
             ("Ticker", "Stock ticker symbol"),
             ("Shares", "Shares currently held"),
             ("Buy Price", "Your average cost basis"),
@@ -2386,16 +2515,16 @@ class QuantDashboard(QMainWindow):
             ("Data Conf.", "How much real history backs these numbers"),
             ("Purchase Date", "Date this position was opened"),
         ]
-        self.tbl_exits.setColumnCount(len(exit_columns))
-        for idx, (header, tooltip) in enumerate(exit_columns):
-            item = QTableWidgetItem(header)
+        self.tbl_exits.setColumnCount(len(self._exit_columns))
+        for idx, (header, tooltip) in enumerate(self._exit_columns):
+            item = QTableWidgetItem(tr(header))
             item.setToolTip(tooltip)
             self.tbl_exits.setHorizontalHeaderItem(idx, item)
         self.tbl_exits.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
         self.tbl_exits.horizontalHeader().setMinimumSectionSize(70)
 
         self.tbl_breakout_watch = QTableWidget()
-        breakout_watch_columns = [
+        self._breakout_watch_columns = [
             ("Ticker", "Stock ticker symbol"),
             ("Breakout Score", "0-100 composite pre-breakout score (higher = more setup elements aligned)"),
             ("Price", "Current close price"),
@@ -2407,9 +2536,9 @@ class QuantDashboard(QMainWindow):
             ("Trend", "Trend classification"),
             ("Signals", "Which setup elements fired for this ticker"),
         ]
-        self.tbl_breakout_watch.setColumnCount(len(breakout_watch_columns))
-        for idx, (header, tooltip) in enumerate(breakout_watch_columns):
-            item = QTableWidgetItem(header)
+        self.tbl_breakout_watch.setColumnCount(len(self._breakout_watch_columns))
+        for idx, (header, tooltip) in enumerate(self._breakout_watch_columns):
+            item = QTableWidgetItem(tr(header))
             item.setToolTip(tooltip)
             self.tbl_breakout_watch.setHorizontalHeaderItem(idx, item)
         self.tbl_breakout_watch.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
@@ -2424,16 +2553,18 @@ class QuantDashboard(QMainWindow):
 
         self.tbl_closed = QTableWidget()
         self.tbl_closed.setColumnCount(8)
-        self.tbl_closed.setHorizontalHeaderLabels([
+        self._closed_cols = [
             "Ticker", "Shares Sold", "Buy Price", "Sell Price",
             "Realized P&L (EGP)", "Realized P&L (%)", "Purchase Date", "Sell Date",
-        ])
+        ]
+        self.tbl_closed.setHorizontalHeaderLabels([tr(c) for c in self._closed_cols])
         self.tbl_closed.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         history_layout.addWidget(self.tbl_closed)
 
         self.tbl_fin_stmt = QTableWidget()
         self.tbl_fin_stmt.setColumnCount(2)
-        self.tbl_fin_stmt.setHorizontalHeaderLabels(["Accounting Metric / Line Item", "Value (EGP / %)"])
+        self._fin_stmt_cols = ["Accounting Metric / Line Item", "Value (EGP / %)"]
+        self.tbl_fin_stmt.setHorizontalHeaderLabels([tr(c) for c in self._fin_stmt_cols])
         self.tbl_fin_stmt.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
         self.tbl_top_strong = self._create_matrix_table()
@@ -2540,6 +2671,50 @@ class QuantDashboard(QMainWindow):
                 m.layoutChanged.emit()
                 m.headerDataChanged.emit(Qt.Orientation.Horizontal, 0, m.columnCount() - 1)
 
+        # The Sectors / Exits / Breakouts / History / Financials tabs are
+        # plain QTableWidgets (not tr()-aware models like the Action Matrix
+        # / Top 10 tables above), so their headers need to be re-applied by
+        # hand here.
+        if hasattr(self, "_sector_cols"):
+            self.tbl_sectors.setHorizontalHeaderLabels([tr(c) for c in self._sector_cols])
+        if hasattr(self, "_exit_columns"):
+            for idx, (header, tooltip) in enumerate(self._exit_columns):
+                item = QTableWidgetItem(tr(header))
+                item.setToolTip(tooltip)
+                self.tbl_exits.setHorizontalHeaderItem(idx, item)
+        if hasattr(self, "_breakout_watch_columns"):
+            for idx, (header, tooltip) in enumerate(self._breakout_watch_columns):
+                item = QTableWidgetItem(tr(header))
+                item.setToolTip(tooltip)
+                self.tbl_breakout_watch.setHorizontalHeaderItem(idx, item)
+        if hasattr(self, "_closed_cols"):
+            self.tbl_closed.setHorizontalHeaderLabels([tr(c) for c in self._closed_cols])
+        if hasattr(self, "_fin_stmt_cols"):
+            self.tbl_fin_stmt.setHorizontalHeaderLabels([tr(c) for c in self._fin_stmt_cols])
+
+        # Top 10 tab section titles ("🔥 Top 10 Strong Buy", etc.)
+        for english_title, label in getattr(self, "_top10_section_labels", []):
+            label.setText(tr(english_title))
+
+        # Live-filter dropdowns: re-apply translated display text at each
+        # fixed index (filtering logic itself always compares against the
+        # English values in self._*_filter_items, so this is display-only).
+        if hasattr(self, "_action_filter_items"):
+            for i, key in enumerate(self._action_filter_items):
+                self.cmb_action.setItemText(i, tr(key))
+        if hasattr(self, "_trend_filter_items"):
+            for i, key in enumerate(self._trend_filter_items):
+                self.cmb_trend.setItemText(i, tr(key))
+        if hasattr(self, "_confidence_filter_items"):
+            for i, key in enumerate(self._confidence_filter_items):
+                self.cmb_confidence.setItemText(i, tr(key))
+
+        # Re-render already-loaded row data (Sector/Action/Trend/Signals
+        # values, financial statement labels...) in the new language,
+        # without re-running analysis or re-pushing cloud stats.
+        if getattr(self, "_last_populate_args", None):
+            self.populate_tables(**self._last_populate_args, _push_cloud_stats=False)
+
     def _create_matrix_table(self):
         tbl = QTableView()
         model = MatrixTableModel()
@@ -2563,9 +2738,11 @@ class QuantDashboard(QMainWindow):
             ("📈 Top 10 Accumulate", self.tbl_top_accum),
             ("⏳ Top 10 Buy on Dip", self.tbl_top_dip),
         ]
+        self._top10_section_labels = []
         for title, tbl in sections:
-            section_label = QLabel(title)
+            section_label = QLabel(tr(title))
             section_label.setStyleSheet("font-weight: bold; font-size: 14px; padding: 6px 2px 2px 2px;")
+            self._top10_section_labels.append((title, section_label))
             v_layout.addWidget(section_label)
             tbl.setMinimumHeight(260)
             tbl.setMaximumHeight(260)
@@ -2712,13 +2889,22 @@ class QuantDashboard(QMainWindow):
         self.progress_bar.setValue(pct)
         self.lbl_status.setText(msg)
 
-    def populate_tables(self, buys, exits, top10, closed_trades, fin_stmt, sector_summary, breakout_watchlist=None, portfolio_risk=None):
+    def populate_tables(self, buys, exits, top10, closed_trades, fin_stmt, sector_summary, breakout_watchlist=None, portfolio_risk=None, _push_cloud_stats=True):
         breakout_watchlist = breakout_watchlist or []
         self._set_ui_controls_enabled(True)
         self.lbl_status.setText(tr("✅ Quantitative signal matrix & sector heatmaps successfully updated."))
         self.refresh_account_header(fin_stmt)
         self.update_last_data_date_display()
         self._raw_buys_data = buys
+
+        # Cached so a language switch can re-render every table's already-
+        # loaded data in the new language without re-running the matrix or
+        # re-pushing cloud analytics (see _push_cloud_stats below).
+        self._last_populate_args = dict(
+            buys=buys, exits=exits, top10=top10, closed_trades=closed_trades,
+            fin_stmt=fin_stmt, sector_summary=sector_summary,
+            breakout_watchlist=breakout_watchlist, portfolio_risk=portfolio_risk,
+        )
 
         warnings = (portfolio_risk or {}).get("warnings", [])
         if warnings:
@@ -2728,7 +2914,7 @@ class QuantDashboard(QMainWindow):
             self.lbl_concentration_warning.clear()
             self.lbl_concentration_warning.hide()
 
-        if self.user_info:
+        if self.user_info and _push_cloud_stats:
             stats = self._compute_dealing_stats(exits, closed_trades, fin_stmt)
             self._run_cloud(push_dealing_stats, self.user_info["idToken"], self.user_info["uid"], stats)
 
@@ -2742,12 +2928,18 @@ class QuantDashboard(QMainWindow):
             self._fill_matrix_table(self.tbl_top_accum, top10.get("📈 ACCUMULATE", []))
             self._fill_matrix_table(self.tbl_top_dip, top10.get("⏳ BUY ON DIP", []))
 
+            # Columns whose *values* (not just headers) are translatable UI
+            # vocabulary rather than raw numbers/tickers/dates.
+            _sector_translatable = {"Sector", "Sector Status"}
+            _exit_translatable = {"Action Command", "Trend Class", "Data Confidence"}
+
             self.tbl_sectors.setRowCount(len(sector_summary))
             for row_idx, row_data in enumerate(sector_summary):
                 for col_idx, key in enumerate(["Sector", "Stocks", "1D Return (%)", "5D Return (%)", "Money Flow (CMF)", "Bullish Breadth (%)", "Traded Value (EGP)", "Sector Leader", "Sector Status"]):
                     val = row_data.get(key, "")
                     val_str = f"{val:,.2f}" if isinstance(val, float) and "Return" not in key and "Flow" not in key else str(val)
-                    item = QTableWidgetItem(val_str)
+                    display_str = tr(val_str) if key in _sector_translatable else val_str
+                    item = QTableWidgetItem(display_str)
                     item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
                     item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -2763,6 +2955,8 @@ class QuantDashboard(QMainWindow):
                         except ValueError:
                             pass
 
+                    # Styling checks stay against the original English value
+                    # so they keep working regardless of display language.
                     if key == "Sector Status":
                         if "STRONG INFLOW" in val_str or "BREAKOUT" in val_str:
                             item.setBackground(QColor("#276749"))
@@ -2784,7 +2978,8 @@ class QuantDashboard(QMainWindow):
                     "RSI-14", "ADX-14", "Data Confidence", "Purchase Date",
                 ]):
                     val_str = str(row_data.get(key, ""))
-                    item = QTableWidgetItem(val_str)
+                    display_str = tr(val_str) if key in _exit_translatable else val_str
+                    item = QTableWidgetItem(display_str)
                     item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
                     item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -2800,6 +2995,7 @@ class QuantDashboard(QMainWindow):
                         except ValueError:
                             pass
 
+                    # Styling checks stay against the original English value.
                     if key == "Action Command":
                         if "URGENT SELL" in val_str or "CUT LOSS" in val_str:
                             item.setBackground(QColor("#9b2c2c"))
@@ -2839,7 +3035,7 @@ class QuantDashboard(QMainWindow):
 
             self.tbl_fin_stmt.setRowCount(len(fin_stmt))
             for row_idx, (metric_name, val_num) in enumerate(fin_stmt.items()):
-                item_name = QTableWidgetItem(metric_name)
+                item_name = QTableWidgetItem(tr(metric_name))
                 item_name.setFlags(item_name.flags() & ~Qt.ItemFlag.ItemIsEditable)
                 item_name.setFont(QFont("Inter", 11, QFont.Weight.Bold))
 
@@ -2862,6 +3058,8 @@ class QuantDashboard(QMainWindow):
                 self.tbl_fin_stmt.setItem(row_idx, 0, item_name)
                 self.tbl_fin_stmt.setItem(row_idx, 1, item_val)
 
+            _breakout_translatable = {"Squeeze Active", "Volume Trend", "Trend Class", "Signals"}
+
             self.tbl_breakout_watch.setRowCount(len(breakout_watchlist))
             for row_idx, row_data in enumerate(breakout_watchlist):
                 for col_idx, key in enumerate([
@@ -2873,7 +3071,8 @@ class QuantDashboard(QMainWindow):
                         val_str = "✅ Yes" if val else "—"
                     else:
                         val_str = str(val)
-                    item = QTableWidgetItem(val_str)
+                    display_str = tr(val_str) if key in _breakout_translatable else val_str
+                    item = QTableWidgetItem(display_str)
                     item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
                     if key != "Signals":
                         item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -2906,9 +3105,13 @@ class QuantDashboard(QMainWindow):
 
     def apply_filters(self):
         search_text = self.txt_search.text().strip().upper()
-        action_filter = self.cmb_action.currentText()
-        trend_filter = self.cmb_trend.currentText()
-        confidence_filter = self.cmb_confidence.currentText()
+        # Match against the underlying English value (by index), not the
+        # displayed/translated text, so filtering still works correctly
+        # when the UI is in Arabic — row data (Action/Trend/Confidence) is
+        # always stored/compared in English regardless of display language.
+        action_filter = self._action_filter_items[self.cmb_action.currentIndex()]
+        trend_filter = self._trend_filter_items[self.cmb_trend.currentIndex()]
+        confidence_filter = self._confidence_filter_items[self.cmb_confidence.currentIndex()]
         hide_illiquid = self.chk_hide_illiquid.isChecked()
 
         if hasattr(self, "_raw_buys_data") and self._raw_buys_data:
