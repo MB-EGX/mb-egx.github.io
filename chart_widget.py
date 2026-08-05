@@ -37,6 +37,11 @@ _AR_SECTOR_NAMES = {
     "General / Diversified": "عام / متنوع",
 }
 
+# Overlay color per detected-pattern direction (matches the existing
+# up/down palette used for candles and trend lines elsewhere in this file).
+_PATTERN_COLORS = {"bullish": "#22c55e", "bearish": "#ef4444", "neutral": "#a0aec0"}
+
+
 class StockSectorChartWidget(QWidget):
     def __init__(self, qe, dbm, parent=None):
         super().__init__(parent)
@@ -122,9 +127,20 @@ class StockSectorChartWidget(QWidget):
             "QPushButton { background-color: #2d3748; color: #cbd5e0; border-radius: 4px; border: none; padding: 4px 10px; font-size: 11px; font-weight: bold; }"
             "QPushButton:checked { background-color: #3182ce; color: #ffffff; }"
         )
+        # Geometric pattern overlay (chart_patterns.PatternDetector) - off by
+        # default so existing chart behavior/screenshots don't change until
+        # someone opts in.
+        self.chk_patterns = QPushButton("🔺 Patterns")
+        self.chk_patterns.setCheckable(True)
+        self.chk_patterns.setChecked(False)
+        self.chk_patterns.setStyleSheet(
+            "QPushButton { background-color: #2d3748; color: #cbd5e0; border-radius: 4px; border: none; padding: 4px 10px; font-size: 11px; font-weight: bold; }"
+            "QPushButton:checked { background-color: #7c3aed; color: #ffffff; }"
+        )
         style_layout.addWidget(self.rad_line)
         style_layout.addWidget(self.rad_candle)
         style_layout.addWidget(self.chk_sr)
+        style_layout.addWidget(self.chk_patterns)
         style_layout.addStretch()
         layout.addLayout(style_layout)
 
@@ -164,6 +180,7 @@ class StockSectorChartWidget(QWidget):
         self.rad_line.toggled.connect(self.plot_chart)
         self.rad_candle.toggled.connect(self.plot_chart)
         self.chk_sr.toggled.connect(self.plot_chart)
+        self.chk_patterns.toggled.connect(self.plot_chart)
         self.cmb_selector.currentIndexChanged.connect(self.plot_chart)
 
         self.populate_selector()
@@ -200,6 +217,59 @@ class StockSectorChartWidget(QWidget):
                 facecolor=color, edgecolor=color, linewidth=0.5, zorder=3,
             ))
         ax.xaxis_date()
+
+    def _plot_patterns(self, ax, df):
+        """Overlay detected geometric chart patterns (chart_patterns.py) on
+        the current stock-mode axes: a faint shaded span over the pattern's
+        date range, dashed lines for its key price levels (neckline,
+        support/resistance, target, ...), and a name+quality label at the
+        end of the pattern.
+        """
+        from chart_patterns import PatternDetector
+        from config import PATTERN_DETECTION
+
+        if len(df) < PATTERN_DETECTION["min_bars_required"]:
+            return
+        try:
+            patterns = PatternDetector(
+                df,
+                epsilon=PATTERN_DETECTION["epsilon"],
+                order=PATTERN_DETECTION["order"],
+            ).detect_all()
+        except Exception:
+            # A bad fit on one ticker's history should never take the whole
+            # chart down - same "skip and continue" posture used elsewhere
+            # in this codebase for per-ticker failures.
+            return
+
+        min_quality = PATTERN_DETECTION["min_quality"]
+        for p in patterns:
+            if p.get("quality", 1.0) < min_quality:
+                continue
+            color = _PATTERN_COLORS.get(p["direction"], "#a0aec0")
+            start_i = max(0, min(p["start_index"], len(df) - 1))
+            end_i = max(0, min(p["end_index"], len(df) - 1))
+            start_date, end_date = df.index[start_i], df.index[end_i]
+
+            ax.axvspan(start_date, end_date, color=color, alpha=0.06, zorder=0)
+
+            for key, val in p["levels"].items():
+                if "index" in key or not isinstance(val, (int, float)):
+                    continue  # e.g. apex_index is an x-position, not a price level
+                ax.hlines(
+                    y=val, xmin=start_date, xmax=end_date, color=color,
+                    linestyle=(0, (3, 2)), linewidth=1.1, alpha=0.65, zorder=2,
+                )
+
+            label = p["pattern"]
+            if "quality" in p:
+                label += f" ({p['quality']:.0%})"
+            ax.annotate(
+                label, xy=(end_date, float(df["close"].iloc[end_i])),
+                xytext=(4, 10), textcoords="offset points",
+                color=color, fontsize=7.5, fontweight="bold", zorder=6,
+                bbox=dict(boxstyle="round,pad=0.2", facecolor="#1a1d24", edgecolor=color, alpha=0.85),
+            )
 
     def _get_alpha_btn_style(self, is_active=False):
         if is_active:
@@ -332,6 +402,9 @@ class StockSectorChartWidget(QWidget):
                         alpha = 0.85 if tag in ("r1", "s1") else 0.5
                         ax.axhline(y=lvl, color=color, linestyle=(0, (4, 3)), linewidth=weight, alpha=alpha, zorder=1)
                         ax.text(dates[-1], lvl, f" {tag.upper()} {lvl:.4g}", color=color, fontsize=7.5, va=va, ha="right", zorder=4)
+
+            if self.chk_patterns.isChecked():
+                self._plot_patterns(ax, df)
 
             trend_color = "#22c55e" if slope_pct >= 0 else "#ef4444"
             trend_label = f"Trendline ({'+' if slope_pct >= 0 else ''}{slope_pct}%)"

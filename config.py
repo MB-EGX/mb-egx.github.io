@@ -126,6 +126,21 @@ CONFIDENCE_FULL_TRUST_BARS = 250
 # --- Chart history export (used by export_json.py) ---
 CHART_HISTORY_DAYS = 365
 
+# --- Geometric pattern detection (chart_patterns.PatternDetector) ---
+# epsilon: relative tolerance used everywhere two price levels are compared
+# as "roughly equal" (shoulders, necklines, flat triangle edges, ...).
+# order: how many bars on each side a point must beat to count as a swing
+# high/low - higher = fewer, more significant swings; lower = noisier ones.
+# min_quality: patterns below this geometric goodness-of-fit are dropped
+# before they ever reach the chart, so a barely-qualifying match doesn't
+# clutter the view next to a clean one.
+PATTERN_DETECTION = {
+    "epsilon": 0.03,
+    "order": 5,
+    "min_bars_required": 40,   # don't bother scanning very short histories
+    "min_quality": 0.5,
+}
+
 # --- Decision matrix data pull (used by decision_matrix.analyze_market) ---
 # Nothing in the scoring logic looks back further than ~250 trading days
 # (the 52-week range lookback, and the weekly SMA-50/RSI resample). 400
