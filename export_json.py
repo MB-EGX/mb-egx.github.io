@@ -24,6 +24,11 @@ CHANGELOG vs the original:
     cash_balance * RISK_PER_TRADE_PCT / entry_price, so publishing it
     lets anyone back-calculate the exact real cash_balance from a single
     row even with the cash_balance field itself removed.
+  * Each stock's chart_history entry now also carries a "patterns" list
+    (chart_patterns.PatternDetector, quality-filtered via
+    config.PATTERN_DETECTION) - the same geometric pattern overlay the
+    desktop app's chart "Patterns" toggle draws, so the web dashboard can
+    render identical overlays straight from data already in this payload.
 """
 from __future__ import annotations
 
@@ -37,12 +42,13 @@ import numpy as np
 # (below) - config.py sets OPENBLAS/MKL/OMP/NUMEXPR thread caps as a
 # module-level side effect, which only takes effect if set before
 # numpy/pandas load anywhere in this process.
-from config import CHART_HISTORY_DAYS
+from config import CHART_HISTORY_DAYS, PATTERN_DETECTION
 
 import pandas as pd
 
 from decision_matrix import DecisionMatrix
 from db_manager import DatabaseManager
+from chart_patterns import PatternDetector
 
 # Any of these keys, if present on a market_matrix/top_10 row, are derived
 # from real private account data and must never reach the public JSON.
@@ -91,6 +97,31 @@ def sanitize_for_json(obj):
     return obj
 
 
+def _detect_chart_patterns(df_ind: pd.DataFrame) -> list:
+    """Geometric chart patterns (chart_patterns.PatternDetector) for one
+    stock's indicator-enriched history, filtered to PATTERN_DETECTION's
+    quality bar before they ever reach the public JSON. Mirrors the same
+    config-driven behavior as the desktop chart's "Patterns" toggle so
+    the web dashboard and the desktop app never disagree about what
+    counts as a valid match.
+    """
+    if len(df_ind) < PATTERN_DETECTION["min_bars_required"]:
+        return []
+    try:
+        found = PatternDetector(
+            df_ind,
+            epsilon=PATTERN_DETECTION["epsilon"],
+            order=PATTERN_DETECTION["order"],
+        ).detect_all()
+    except Exception:
+        # One ticker's bad fit should never take down the whole nightly
+        # export - same "skip and continue" posture used everywhere else
+        # in this file's per-ticker loop.
+        return []
+    min_quality = PATTERN_DETECTION["min_quality"]
+    return [p for p in found if p.get("quality", 1.0) >= min_quality]
+
+
 def build_chart_history(qe, dbm, sector_map):
     """Up to ``CHART_HISTORY_DAYS`` of close + VWAP per stock & sector index."""
     chart_history = {"stocks": {}, "sectors": {}}
@@ -137,6 +168,7 @@ def build_chart_history(qe, dbm, sector_map):
                 "resistance": resistance,
                 "support": support,
                 "pivots": pivots,
+                "patterns": _detect_chart_patterns(df_ind),
             }
         except Exception:
             continue

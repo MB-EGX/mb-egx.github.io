@@ -497,6 +497,10 @@
                         <input type="checkbox" id="toggle-sr" checked onchange="plotChart()" class="rounded text-sky-500">
                         <span id="lbl-toggle-sr">📐 Support / Resistance</span>
                     </label>
+                    <label class="flex items-center gap-1.5 cursor-pointer" id="wrap-toggle-patterns">
+                        <input type="checkbox" id="toggle-patterns" onchange="plotChart()" class="rounded text-sky-500">
+                        <span id="lbl-toggle-patterns">🔺 Patterns</span>
+                    </label>
                 </div>
             </div>
 
@@ -1693,12 +1697,14 @@
             let vwaps = [];
             let labels = [];
             let opens = [], highs = [], lows = [];
-            let resistance = null, support = null, pivots = null;
+            let resistance = null, support = null, pivots = null, patterns = [];
 
             const wrapCandle = document.getElementById('wrap-style-candle');
             const wrapSr = document.getElementById('wrap-toggle-sr');
+            const wrapPatterns = document.getElementById('wrap-toggle-patterns');
             if (wrapCandle) wrapCandle.style.opacity = (mode === 'stock') ? '1' : '0.4';
             if (wrapSr) wrapSr.style.opacity = (mode === 'stock') ? '1' : '0.4';
+            if (wrapPatterns) wrapPatterns.style.opacity = (mode === 'stock') ? '1' : '0.4';
             const radCandle = document.querySelector('input[name="chart_style"][value="candle"]');
             const radLine = document.querySelector('input[name="chart_style"][value="line"]');
             if (mode !== 'stock' && radCandle && radCandle.checked) { radCandle.checked = false; if (radLine) radLine.checked = true; }
@@ -1715,6 +1721,7 @@
                     resistance = (typeof stockHistory.resistance === 'number') ? stockHistory.resistance : null;
                     support = (typeof stockHistory.support === 'number') ? stockHistory.support : null;
                     pivots = stockHistory.pivots || null;
+                    patterns = stockHistory.patterns || [];
                 } else {
                     const row = globalData.market_matrix.find(r => r.Ticker === selected);
                     const latestPrice = row ? row["Current Price"] || 10.0 : 10.0;
@@ -1773,6 +1780,7 @@
 
             const style = (document.querySelector('input[name="chart_style"]:checked') || {}).value || 'line';
             const showSr = document.getElementById('toggle-sr') && document.getElementById('toggle-sr').checked;
+            const showPatterns = document.getElementById('toggle-patterns') && document.getElementById('toggle-patterns').checked;
             const isCandle = style === 'candle' && mode === 'stock' && opens.length === n && highs.length === n && lows.length === n;
 
             const datasets = [];
@@ -1819,6 +1827,31 @@
                 if (support != null) datasets.push({ label: `Support (${support})`, data: Array(n).fill(support), borderColor: '#22c55e', borderWidth: 1.5, borderDash: [3, 3], pointRadius: 0, order: 4 });
             }
 
+            // Geometric pattern overlay (chart_patterns.PatternDetector output,
+            // exported per-ticker into chart_history.stocks.<ticker>.patterns).
+            // Patterns are indexed against the FULL server-side history, but the
+            // Time Horizon zoom above may have sliced labels/prices down to a
+            // shorter trailing window - so patterns are re-matched here by date
+            // string against the (possibly sliced) visible `labels`, not by their
+            // original start_index/end_index. A pattern that started before the
+            // visible window but is still relevant (its neckline/target still
+            // sits inside the zoomed range) gets clipped to the window's start
+            // rather than dropped; one that ended entirely before the visible
+            // window is skipped outright.
+            let clippedPatterns = [];
+            if (mode === 'stock' && showPatterns && patterns && patterns.length && labels.length) {
+                const firstLabel = labels[0], lastLabel = labels[labels.length - 1];
+                clippedPatterns = patterns
+                    .filter(p => p.end_date >= firstLabel && p.start_date <= lastLabel)
+                    .map(p => {
+                        let startIdx = labels.indexOf(p.start_date);
+                        let endIdx = labels.indexOf(p.end_date);
+                        if (startIdx === -1) startIdx = 0;
+                        if (endIdx === -1) endIdx = labels.length - 1;
+                        return { ...p, _startIdx: startIdx, _endIdx: endIdx, _labelPrice: prices[endIdx] };
+                    });
+            }
+
             // Chart.js's bar controller defaults the value axis to a zero
             // baseline (sensible for a normal count/amount bar chart, wrong
             // here - a stock trading at 200-280 doesn't need axis space down
@@ -1834,6 +1867,9 @@
             if (mode === 'stock' && showSr) {
                 if (pivots) { collect([pivots.r1, pivots.r2, pivots.r3, pivots.s1, pivots.s2, pivots.s3]); }
                 else { collect([resistance, support]); }
+            }
+            if (mode === 'stock' && showPatterns && clippedPatterns.length) {
+                clippedPatterns.forEach(p => collect(Object.values(p.levels || {}).filter(v => typeof v === 'number')));
             }
             let yMin, yMax;
             if (rangeValues.length > 0) {
@@ -1873,6 +1909,58 @@
                 window.__candleWickPluginRegistered = true;
             }
 
+            if (!window.__patternOverlayPluginRegistered) {
+                Chart.register({
+                    id: 'patternOverlay',
+                    afterDatasetsDraw(chart) {
+                        const overlay = chart.$patternOverlayData;
+                        if (!overlay || !overlay.patterns || !overlay.patterns.length) return;
+                        const xScale = chart.scales.x, yScale = chart.scales.y;
+                        if (!xScale || !yScale) return;
+                        const { ctx, chartArea } = chart;
+                        ctx.save();
+                        overlay.patterns.forEach(p => {
+                            const x1 = xScale.getPixelForValue(p._startIdx);
+                            const x2 = xScale.getPixelForValue(p._endIdx);
+                            const xLeft = Math.min(x1, x2), xRight = Math.max(x1, x2);
+                            const color = p.direction === 'bullish' ? '#22c55e' : (p.direction === 'bearish' ? '#ef4444' : '#a0aec0');
+
+                            // Shaded span over the pattern's date range.
+                            ctx.fillStyle = color + '14'; // ~8% alpha
+                            ctx.fillRect(xLeft, chartArea.top, Math.max(xRight - xLeft, 1), chartArea.bottom - chartArea.top);
+
+                            // Dashed line per key price level (neckline, support/resistance,
+                            // target, ...) - skip anything that isn't an actual price (e.g.
+                            // apex_index is an x-position, not a y-level).
+                            ctx.lineWidth = 1.1;
+                            ctx.setLineDash([4, 3]);
+                            Object.entries(p.levels || {}).forEach(([key, val]) => {
+                                if (key.toLowerCase().includes('index') || typeof val !== 'number') return;
+                                const y = yScale.getPixelForValue(val);
+                                ctx.strokeStyle = color;
+                                ctx.globalAlpha = 0.65;
+                                ctx.beginPath();
+                                ctx.moveTo(xLeft, y);
+                                ctx.lineTo(xRight, y);
+                                ctx.stroke();
+                            });
+                            ctx.setLineDash([]);
+                            ctx.globalAlpha = 1;
+
+                            // Name + quality label near the end of the pattern.
+                            const label = (typeof p.quality === 'number') ? `${p.pattern} (${Math.round(p.quality * 100)}%)` : p.pattern;
+                            const labelY = yScale.getPixelForValue(typeof p._labelPrice === 'number' ? p._labelPrice : Object.values(p.levels || {})[0] || 0);
+                            ctx.font = 'bold 10px sans-serif';
+                            ctx.fillStyle = color;
+                            ctx.textAlign = 'right';
+                            ctx.fillText(label, xRight - 4, labelY - 6);
+                        });
+                        ctx.restore();
+                    },
+                });
+                window.__patternOverlayPluginRegistered = true;
+            }
+
             chartInstance = new Chart(ctx, {
                 type: 'line', data: { labels, datasets },
                 options: {
@@ -1884,10 +1972,16 @@
                     plugins: { legend: { labels: { color: textCol, font: { weight: 'bold' } } } }
                 }
             });
+            let needsOverlayUpdate = false;
             if (candleWickPoints) {
                 chartInstance.$candleWickData = { bodyDatasetIndex: 0, points: candleWickPoints };
-                chartInstance.update();
+                needsOverlayUpdate = true;
             }
+            if (clippedPatterns.length) {
+                chartInstance.$patternOverlayData = { patterns: clippedPatterns };
+                needsOverlayUpdate = true;
+            }
+            if (needsOverlayUpdate) chartInstance.update();
         }
 
         // Portfolio & Risk Engine
