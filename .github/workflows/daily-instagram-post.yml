@@ -1,0 +1,54 @@
+name: Daily Instagram Post
+
+# Runs entirely in GitHub's cloud — your PC/desktop app does NOT need to be
+# open. It reads the already-published, privacy-scrubbed market_data.json
+# (see social_poster.py's module docstring for why that file specifically),
+# so the only prerequisite is that `publish.py` has run at least once today
+# (via your normal desktop-app workflow) before this fires.
+#
+# ⏰ Cron is in UTC. 06:00 UTC = 08:00 Cairo time (EET, UTC+2) / 09:00 Cairo
+# summer time (EEST, UTC+3) — adjust the hour below for EGX's actual open
+# and note Egypt's DST rules can shift the offset across the year.
+on:
+  schedule:
+    - cron: "0 6 * * 0-4"   # Sun–Thu (EGX trading week), 06:00 UTC
+  workflow_dispatch: {}       # lets you also trigger it manually from the Actions tab
+
+permissions:
+  contents: write   # needed to commit the rendered PNG back to the repo
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests pillow
+
+      - name: Render today's card + caption
+        env:
+          PAGES_BASE_URL: ${{ vars.PAGES_BASE_URL }}
+        run: python social_poster.py render
+
+      - name: Commit rendered image
+        run: |
+          git config user.name "mb-egx-bot"
+          git config user.email "actions@github.com"
+          git add web_public/social/
+          git diff --staged --quiet || git commit -m "Daily social card $(date -u +%F)"
+          git push
+
+      - name: Publish to Instagram
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+        run: |
+          IMAGE_URL="https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/web_public/social/latest.png"
+          python social_poster.py publish \
+            --image-url "$IMAGE_URL" \
+            --caption-file web_public/social/latest_caption.txt
