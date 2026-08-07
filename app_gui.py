@@ -2147,8 +2147,22 @@ _BIAS_LABEL = {
     None: {"en": "MARKER", "ar": "علامة"},
 }
 
+# Per-theme text palette for the Glossary's QTextBrowser content. Qt's rich-text
+# engine does NOT inherit colors from the dialog's QSS stylesheet for HTML set via
+# setHtml() — the document has its own white canvas by default — so every theme
+# needs its own explicit (background, text, muted-text, accent, border) tuple here,
+# keyed by the exact THEMES_MAP name, to actually match the app's active theme.
+GLOSSARY_PALETTES = {
+    "🌙 Institutional Dark": {"bg": "#0f1115", "panel": "#1a1d24", "text": "#e2e2e8", "muted": "#a0aec0", "accent": "#93ccff", "border": "#2d3748"},
+    "☀️ Professional Light": {"bg": "#ffffff", "panel": "#f8fafc", "text": "#1a202c", "muted": "#4a5568", "accent": "#2b6cb0", "border": "#cbd5e0"},
+    "🌊 Midnight Blue": {"bg": "#0f172a", "panel": "#1e293b", "text": "#f8fafc", "muted": "#94a3b8", "accent": "#38bdf8", "border": "#334155"},
+    "🌸 Soft Blush Rose (Pastel & Cream)": {"bg": "#ffffff", "panel": "#fef6fb", "text": "#500724", "muted": "#831843", "accent": "#be185d", "border": "#fbcfe8"},
+    "✨ Velvet Rose Gold (Warm Elegance)": {"bg": "#20131a", "panel": "#311825", "text": "#ffe4e6", "muted": "#f472b6", "accent": "#fb7185", "border": "#3f2231"},
+}
+_DEFAULT_PALETTE = GLOSSARY_PALETTES["🌙 Institutional Dark"]
 
-def _glossary_entry_html(entry, lang):
+
+def _glossary_entry_html(entry, lang, palette):
     # Content dict keys are lowercase ("en"/"ar"); CURRENT_LANG/self.lang
     # elsewhere in this file is uppercase ("EN"/"AR") — normalize here.
     key = "ar" if str(lang).upper() == "AR" else "en"
@@ -2156,22 +2170,38 @@ def _glossary_entry_html(entry, lang):
     definition = entry["definition"].get(key, entry["definition"]["en"])
     why = entry["why_it_matters"].get(key, entry["why_it_matters"]["en"])
     bias = entry.get("bias", "__none__")
-    badge_html = ""
+    why_label = "Why it matters" if key != "ar" else "لماذا يهم"
+
+    # Badges are rendered as their own small table cell, not an inline <span>
+    # with padding/border-radius — Qt's rich-text engine (QTextDocument) only
+    # reliably supports padding/background-color on table cells, not inline
+    # spans, so the span version visually overlapped the term text next to it.
+    badge_cell = ""
     if bias != "__none__":
         color = _BIAS_COLOR.get(bias, "#475569")
         label = _BIAS_LABEL.get(bias, _BIAS_LABEL[None]).get(key, "")
-        badge_html = f'<span style="background-color:{color}; color:white; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:bold; margin-inline-start:8px;">{label}</span>'
-    why_label = "Why it matters" if key != "ar" else "لماذا يهم"
+        badge_cell = (
+            f'<td align="right" valign="middle" width="92">'
+            f'<table cellspacing="0" align="right"><tr>'
+            f'<td style="background-color:{color}; padding:3px 8px;">'
+            f'<font color="#ffffff" size="2"><b>{label}</b></font>'
+            f'</td></tr></table></td>'
+        )
+
     return f"""
-    <div style="margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid #33415555;">
-      <div style="font-size:15px; font-weight:bold; color:#e2e8f0;">{term}{badge_html}</div>
-      <div style="font-size:13px; color:#cbd5e1; margin-top:4px;">{definition}</div>
-      <div style="font-size:12.5px; color:#7dd3fc; margin-top:4px;"><b>{why_label}:</b> {why}</div>
-    </div>
+    <table width="100%" cellspacing="0" cellpadding="0" style="margin-top:14px;">
+      <tr>
+        <td valign="middle"><font color="{palette['text']}" size="4"><b>{term}</b></font></td>
+        {badge_cell}
+      </tr>
+    </table>
+    <p style="margin:4px 0 2px 0;"><font color="{palette['muted']}" size="3">{definition}</font></p>
+    <p style="margin:2px 0 8px 0;"><font color="{palette['accent']}" size="2"><b>{why_label}:</b> {why}</font></p>
+    <hr style="border:none; border-top:1px solid {palette['border']};">
     """
 
 
-def _glossary_page_html(items, lang, search=""):
+def _glossary_page_html(items, lang, palette, search=""):
     search = (search or "").strip().lower()
     blocks = []
     for entry in items:
@@ -2182,12 +2212,19 @@ def _glossary_page_html(items, lang, search=""):
             ]).lower()
             if search not in haystack:
                 continue
-        blocks.append(_glossary_entry_html(entry, lang))
+        blocks.append(_glossary_entry_html(entry, lang, palette))
+    body = "".join(blocks)
     if not blocks:
         no_results = "No matching terms." if str(lang).upper() != "AR" else "لا توجد نتائج مطابقة."
-        return f'<div style="color:#94a3b8; padding:20px; text-align:center;">{no_results}</div>'
+        body = f'<p align="center"><font color="{palette["muted"]}">{no_results}</font></p>'
     direction = 'dir="rtl"' if str(lang).upper() == "AR" else 'dir="ltr"'
-    return f'<div {direction}>' + "".join(blocks) + "</div>"
+    # Explicit <body> background matches the active theme's palette, since
+    # QTextBrowser's document canvas otherwise defaults to white regardless
+    # of the dialog's own stylesheet.
+    return (
+        f'<html {direction}><body style="background-color:{palette["bg"]}; '
+        f'margin:0; padding:4px 6px;">{body}</body></html>'
+    )
 
 
 class GlossaryDialog(QDialog):
@@ -2195,24 +2232,27 @@ class GlossaryDialog(QDialog):
     geometric chart pattern the engine can display — same content set
     (glossary_content.py) the web dashboard's Glossary modal uses, so a
     user gets an identical explanation regardless of which surface they're
-    reading it on."""
+    reading it on. Matches whichever of the 5 app themes is currently active."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle(tr("📖 Glossary & Chart Patterns"))
         self.resize(760, 640)
-        self.setStyleSheet(THEME_DARK)
+        self.theme_name = getattr(parent, "current_theme", "🌙 Institutional Dark")
+        self.setStyleSheet(THEMES_MAP.get(self.theme_name, THEME_DARK))
+        self.palette_colors = GLOSSARY_PALETTES.get(self.theme_name, _DEFAULT_PALETTE)
         self.lang = CURRENT_LANG
         self._init_ui()
 
     def _init_ui(self):
         layout = QVBoxLayout(self)
+        p = self.palette_colors
 
         lbl_info = QLabel(tr(
             "Every indicator, action label, and chart pattern the app shows you \u2014 explained in plain language."
         ))
         lbl_info.setWordWrap(True)
-        lbl_info.setStyleSheet("color: #a0aec0; font-size: 13px; margin-bottom: 4px;")
+        lbl_info.setStyleSheet(f"color: {p['muted']}; font-size: 13px; margin-bottom: 4px;")
         layout.addWidget(lbl_info)
 
         self.search_box = QLineEdit()
@@ -2220,12 +2260,18 @@ class GlossaryDialog(QDialog):
         self.search_box.textChanged.connect(self._refresh)
         layout.addWidget(self.search_box)
 
+        browser_style = (
+            f"QTextBrowser {{ background-color: {p['bg']}; color: {p['text']}; "
+            f"border: 1px solid {p['border']}; border-radius: 8px; padding: 4px; }}"
+        )
+
         self.tabs = QTabWidget()
         self.browser_terms = QTextBrowser()
         self.browser_actions = QTextBrowser()
         self.browser_patterns = QTextBrowser()
         for b in (self.browser_terms, self.browser_actions, self.browser_patterns):
             b.setOpenExternalLinks(False)
+            b.setStyleSheet(browser_style)
         self.tabs.addTab(self.browser_terms, tr("📊 Indicators & Terms"))
         self.tabs.addTab(self.browser_actions, tr("🏷️ Action Labels"))
         self.tabs.addTab(self.browser_patterns, tr("📐 Chart Patterns"))
@@ -2242,9 +2288,10 @@ class GlossaryDialog(QDialog):
 
     def _refresh(self):
         q = self.search_box.text()
-        self.browser_terms.setHtml(_glossary_page_html(GLOSSARY_TERMS, self.lang, q))
-        self.browser_actions.setHtml(_glossary_page_html(GLOSSARY_ACTIONS, self.lang, q))
-        self.browser_patterns.setHtml(_glossary_page_html(GLOSSARY_PATTERNS, self.lang, q))
+        p = self.palette_colors
+        self.browser_terms.setHtml(_glossary_page_html(GLOSSARY_TERMS, self.lang, p, q))
+        self.browser_actions.setHtml(_glossary_page_html(GLOSSARY_ACTIONS, self.lang, p, q))
+        self.browser_patterns.setHtml(_glossary_page_html(GLOSSARY_PATTERNS, self.lang, p, q))
 
 
 class AnalyticsDialog(QDialog):
