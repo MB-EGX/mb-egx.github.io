@@ -23,8 +23,9 @@ from PyQt6.QtWidgets import (
     QFileDialog, QFormLayout, QHBoxLayout, QHeaderView, QInputDialog, QLabel,
     QLineEdit, QMainWindow, QMessageBox, QProgressBar, QPushButton, QScrollArea,
     QTableWidget, QTableWidgetItem, QTableView, QTabWidget, QVBoxLayout, QWidget,
-    QCheckBox, QTextEdit, QSizePolicy, QRadioButton, QFrame
+    QCheckBox, QTextEdit, QSizePolicy, QRadioButton, QFrame, QTextBrowser
 )
+from glossary_content import TERMS as GLOSSARY_TERMS, ACTION_LABELS as GLOSSARY_ACTIONS, CHART_PATTERNS as GLOSSARY_PATTERNS
 
 logger = get_logger("app_gui")
 
@@ -2138,6 +2139,114 @@ class LoginDialog(QDialog):
             self.setEnabled(True)
 
 
+_BIAS_COLOR = {"bullish": "#0d9488", "bearish": "#dc2626", "neutral": "#a16207", None: "#475569"}
+_BIAS_LABEL = {
+    "bullish": {"en": "BULLISH", "ar": "صاعد"},
+    "bearish": {"en": "BEARISH", "ar": "هابط"},
+    "neutral": {"en": "NEUTRAL", "ar": "محايد"},
+    None: {"en": "MARKER", "ar": "علامة"},
+}
+
+
+def _glossary_entry_html(entry, lang):
+    # Content dict keys are lowercase ("en"/"ar"); CURRENT_LANG/self.lang
+    # elsewhere in this file is uppercase ("EN"/"AR") — normalize here.
+    key = "ar" if str(lang).upper() == "AR" else "en"
+    term = entry["term"].get(key, entry["term"]["en"])
+    definition = entry["definition"].get(key, entry["definition"]["en"])
+    why = entry["why_it_matters"].get(key, entry["why_it_matters"]["en"])
+    bias = entry.get("bias", "__none__")
+    badge_html = ""
+    if bias != "__none__":
+        color = _BIAS_COLOR.get(bias, "#475569")
+        label = _BIAS_LABEL.get(bias, _BIAS_LABEL[None]).get(key, "")
+        badge_html = f'<span style="background-color:{color}; color:white; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:bold; margin-inline-start:8px;">{label}</span>'
+    why_label = "Why it matters" if key != "ar" else "لماذا يهم"
+    return f"""
+    <div style="margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid #33415555;">
+      <div style="font-size:15px; font-weight:bold; color:#e2e8f0;">{term}{badge_html}</div>
+      <div style="font-size:13px; color:#cbd5e1; margin-top:4px;">{definition}</div>
+      <div style="font-size:12.5px; color:#7dd3fc; margin-top:4px;"><b>{why_label}:</b> {why}</div>
+    </div>
+    """
+
+
+def _glossary_page_html(items, lang, search=""):
+    search = (search or "").strip().lower()
+    blocks = []
+    for entry in items:
+        if search:
+            haystack = " ".join([
+                entry["term"].get("en", ""), entry["term"].get("ar", ""),
+                entry["definition"].get("en", ""), entry["definition"].get("ar", ""),
+            ]).lower()
+            if search not in haystack:
+                continue
+        blocks.append(_glossary_entry_html(entry, lang))
+    if not blocks:
+        no_results = "No matching terms." if str(lang).upper() != "AR" else "لا توجد نتائج مطابقة."
+        return f'<div style="color:#94a3b8; padding:20px; text-align:center;">{no_results}</div>'
+    direction = 'dir="rtl"' if str(lang).upper() == "AR" else 'dir="ltr"'
+    return f'<div {direction}>' + "".join(blocks) + "</div>"
+
+
+class GlossaryDialog(QDialog):
+    """Reference guide covering every indicator, action label/marker, and
+    geometric chart pattern the engine can display — same content set
+    (glossary_content.py) the web dashboard's Glossary modal uses, so a
+    user gets an identical explanation regardless of which surface they're
+    reading it on."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(tr("📖 Glossary & Chart Patterns"))
+        self.resize(760, 640)
+        self.setStyleSheet(THEME_DARK)
+        self.lang = CURRENT_LANG
+        self._init_ui()
+
+    def _init_ui(self):
+        layout = QVBoxLayout(self)
+
+        lbl_info = QLabel(tr(
+            "Every indicator, action label, and chart pattern the app shows you \u2014 explained in plain language."
+        ))
+        lbl_info.setWordWrap(True)
+        lbl_info.setStyleSheet("color: #a0aec0; font-size: 13px; margin-bottom: 4px;")
+        layout.addWidget(lbl_info)
+
+        self.search_box = QLineEdit()
+        self.search_box.setPlaceholderText(tr("🔎 Search terms…"))
+        self.search_box.textChanged.connect(self._refresh)
+        layout.addWidget(self.search_box)
+
+        self.tabs = QTabWidget()
+        self.browser_terms = QTextBrowser()
+        self.browser_actions = QTextBrowser()
+        self.browser_patterns = QTextBrowser()
+        for b in (self.browser_terms, self.browser_actions, self.browser_patterns):
+            b.setOpenExternalLinks(False)
+        self.tabs.addTab(self.browser_terms, tr("📊 Indicators & Terms"))
+        self.tabs.addTab(self.browser_actions, tr("🏷️ Action Labels"))
+        self.tabs.addTab(self.browser_patterns, tr("📐 Chart Patterns"))
+        layout.addWidget(self.tabs, stretch=1)
+
+        btn_row = QHBoxLayout()
+        btn_row.addStretch()
+        btn_close = QPushButton(tr("Close"))
+        btn_close.clicked.connect(self.accept)
+        btn_row.addWidget(btn_close)
+        layout.addLayout(btn_row)
+
+        self._refresh()
+
+    def _refresh(self):
+        q = self.search_box.text()
+        self.browser_terms.setHtml(_glossary_page_html(GLOSSARY_TERMS, self.lang, q))
+        self.browser_actions.setHtml(_glossary_page_html(GLOSSARY_ACTIONS, self.lang, q))
+        self.browser_patterns.setHtml(_glossary_page_html(GLOSSARY_PATTERNS, self.lang, q))
+
+
 class AnalyticsDialog(QDialog):
     def __init__(self, id_token, parent=None):
         super().__init__(parent)
@@ -2316,6 +2425,10 @@ class QuantDashboard(QMainWindow):
         if not self.user_info:
             return
         dlg = AnalyticsDialog(self.user_info["idToken"], self)
+        dlg.exec()
+
+    def open_glossary_dialog(self):
+        dlg = GlossaryDialog(self)
         dlg.exec()
 
     def closeEvent(self, event):
@@ -2538,6 +2651,11 @@ class QuantDashboard(QMainWindow):
         self.btn_analytics.clicked.connect(self.open_analytics_dialog)
         self.btn_analytics.setVisible(bool(self.user_info and self.user_info.get("email") in ADMIN_EMAILS))
         controls_row.addWidget(self.btn_analytics)
+
+        self.btn_glossary = QPushButton(tr("📖 Glossary"))
+        self.btn_glossary.setStyleSheet("background-color: #6d28d9; color: white; font-weight: bold; padding: 6px 12px; font-size: 12px; border-radius: 6px;")
+        self.btn_glossary.clicked.connect(self.open_glossary_dialog)
+        controls_row.addWidget(self.btn_glossary)
 
         controls_row.addStretch()
         header_layout.addLayout(controls_row)
