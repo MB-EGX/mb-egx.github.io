@@ -4,15 +4,42 @@ name: Daily Instagram Post
 # open. It reads the already-published, privacy-scrubbed market_data.json
 # (see social_poster.py's module docstring for why that file specifically),
 # so the only prerequisite is that `publish.py` has run at least once today
-# (via your normal desktop-app workflow) before this fires.
+# (via your normal desktop-app workflow) before any of these fire.
 #
-# ⏰ Cron is in UTC. 06:00 UTC = 08:00 Cairo time (EET, UTC+2) / 09:00 Cairo
-# summer time (EEST, UTC+3) — adjust the hour below for EGX's actual open
-# and note Egypt's DST rules can shift the offset across the year.
+# THREE POSTS A DAY, each with its own schedule:
+#   1. Ticker highlights   — evening, timed for engagement (when more
+#      people are online) rather than pre-market trading utility
+#   2. Market overview     — after EGX's 14:30 Cairo close (aggregate of
+#      tracked stocks — NOT the official EGX30/EGX70 index; see
+#      compute_market_overview()'s docstring in social_poster.py for why)
+#   3. Sectors overview    — shortly after, same post-close window
+#
+# ⏰ Cron is in UTC and Egypt observes DST (UTC+3 roughly Apr–Oct, UTC+2
+# the rest of the year) — GitHub cron can't auto-adjust for that.
+#   - Evening ticker post (16:00 UTC) = 19:00 (7pm) Cairo right now in
+#     DST summer. Once Egypt switches back to UTC+2 in autumn, this
+#     same 16:00 UTC becomes 18:00 (6pm) Cairo instead — a full hour
+#     earlier. If you want it pinned to exactly 7pm year-round, this
+#     line needs a manual edit (16:00 → 17:00 UTC) when the clocks
+#     change back; otherwise it drifts by an hour twice a year like
+#     this, which is a minor engagement-timing shift, not a broken post.
+#   - Post-close (13:00/13:20 UTC) = 15:00/15:20 Cairo in winter (30min
+#     after the 14:30 close) / 16:00/16:20 in summer (later than ideal,
+#     but still safely after close — summer's actual close is EARLIER
+#     in UTC terms, 11:30 UTC, so there's no risk of firing too early).
 on:
   schedule:
-    - cron: "0 6 * * 0-4"   # Sun–Thu (EGX trading week), 06:00 UTC
-  workflow_dispatch: {}       # lets you also trigger it manually from the Actions tab
+    - cron: "0 16 * * 0-4"   # tickers — evening (~7pm Cairo in DST)
+    - cron: "0 13 * * 0-4"   # market overview — post-close
+    - cron: "20 13 * * 0-4"  # sectors overview — post-close
+  workflow_dispatch:
+    inputs:
+      post_type:
+        description: "Which post to run (manual test trigger)"
+        required: true
+        default: "tickers"
+        type: choice
+        options: [tickers, market, sectors]
 
 permissions:
   contents: write   # needed to commit the rendered PNG back to the repo
@@ -30,25 +57,59 @@ jobs:
       - name: Install dependencies
         run: pip install requests pillow
 
+      # Manual runs use the dropdown you picked; scheduled runs figure out
+      # which of the 3 crons above fired by checking github.event.schedule.
+      - name: Determine which post this run is for
+        id: posttype
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "type=${{ inputs.post_type }}" >> "$GITHUB_OUTPUT"
+          else
+            case "${{ github.event.schedule }}" in
+              "0 16 * * 0-4")  echo "type=tickers" >> "$GITHUB_OUTPUT" ;;
+              "0 13 * * 0-4")  echo "type=market"  >> "$GITHUB_OUTPUT" ;;
+              "20 13 * * 0-4") echo "type=sectors" >> "$GITHUB_OUTPUT" ;;
+              *)               echo "type=tickers" >> "$GITHUB_OUTPUT" ;;
+            esac
+          fi
+
       - name: Render today's card + caption
         env:
           PAGES_BASE_URL: ${{ vars.PAGES_BASE_URL }}
-        run: python social_poster.py render
+        run: python social_poster.py render --post-type "${{ steps.posttype.outputs.type }}"
 
       - name: Commit rendered image
         run: |
           git config user.name "mb-egx-bot"
           git config user.email "actions@github.com"
           git add web_public/social/
-          git diff --staged --quiet || git commit -m "Daily social card $(date -u +%F)"
+          git diff --staged --quiet || git commit -m "Daily social card (${{ steps.posttype.outputs.type }}) $(date -u +%F)"
           git push
 
       - name: Publish to Instagram
+        id: publish
         env:
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
         run: |
-          IMAGE_URL="https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/web_public/social/latest.png"
+          TYPE="${{ steps.posttype.outputs.type }}"
+          IMAGE_URL="https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/web_public/social/latest_${TYPE}.png"
           python social_poster.py publish \
             --image-url "$IMAGE_URL" \
-            --caption-file web_public/social/latest_caption.txt
+            --caption-file "web_public/social/latest_${TYPE}_caption.txt"
+
+      # Instagram Login tokens expire ~60 days after issue. The publish
+      # step above refreshes the token on every run and, if it changed,
+      # exposes it as this step's `new_token` output (see
+      # social_poster.py's refresh_reminder()). This step rotates the
+      # IG_ACCESS_TOKEN secret to that new value automatically, so the
+      # 60-day expiry never actually becomes your problem — GH_PAT is
+      # the one secret that makes this self-service possible, since the
+      # default GITHUB_TOKEN isn't allowed to write repository secrets.
+      - name: Rotate refreshed token
+        if: steps.publish.outputs.new_token != ''
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          gh secret set IG_ACCESS_TOKEN --body "${{ steps.publish.outputs.new_token }}" --repo "${{ github.repository }}"
+          echo "✅ IG_ACCESS_TOKEN secret rotated to the newly refreshed token."

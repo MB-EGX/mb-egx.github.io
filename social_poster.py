@@ -63,6 +63,15 @@ REQUIRED SETUP (one-time, cannot be done from code):
                              so it doesn't wait on a Pages rebuild)
          GITHUB_REPO      = "<owner>/<repo>"  (for building the raw
                              image URL after the CI commit step)
+    7. For fully automatic token rotation (recommended — otherwise you
+       must manually refresh & update IG_ACCESS_TOKEN every ~60 days):
+       create a GitHub Personal Access Token scoped ONLY to this repo
+       with "Secrets: Read and write" permission (Settings → Developer
+       settings → Fine-grained tokens → Generate new token → Repository
+       access: only this repo → Permissions → Secrets: Read and write).
+       Save it as a repo secret named GH_PAT. The workflow then rotates
+       IG_ACCESS_TOKEN itself whenever Instagram issues a refreshed
+       token — you never need to touch it again.
 """
 from __future__ import annotations
 
@@ -199,6 +208,223 @@ def build_evidence(row: dict | None, sector_context: dict | None = None) -> list
             f"{sector_context['Bullish Breadth (%)']}% of sector bullish)"
         )
     return ev
+
+
+# =============================================================================
+# 2b. MARKET OVERVIEW — an honest proxy, NOT the official EGX30/EGX70
+# =============================================================================
+def compute_market_overview(market_data: dict) -> dict:
+    """Aggregates 1D/5D returns from chart_history across every ticker
+    you actually track. This is deliberately NOT presented as the real
+    EGX30/EGX70 index — those come from the exchange itself, not from
+    a basket of individually-ingested tickers, and the two numbers will
+    diverge (different constituents, no market-cap weighting here).
+    Every piece of copy referencing this must say "tracked stocks",
+    never claim to be an official index value."""
+    stocks = market_data.get("chart_history", {}).get("stocks", {})
+    movers = []
+    for ticker, hist in stocks.items():
+        closes = [c for c in hist.get("close", []) if c is not None]
+        if len(closes) < 2 or not closes[-2]:
+            continue
+        ret_1d = (closes[-1] / closes[-2] - 1) * 100
+        ret_5d = None
+        if len(closes) >= 6 and closes[-6]:
+            ret_5d = (closes[-1] / closes[-6] - 1) * 100
+        movers.append({"ticker": ticker, "ret_1d": ret_1d, "ret_5d": ret_5d})
+
+    last_data_date = market_data.get("last_data_date")
+    if not movers:
+        return {"total": 0, "last_data_date": last_data_date}
+
+    avg_1d = sum(m["ret_1d"] for m in movers) / len(movers)
+    fivers = [m["ret_5d"] for m in movers if m["ret_5d"] is not None]
+    avg_5d = sum(fivers) / len(fivers) if fivers else None
+    advancers = sum(1 for m in movers if m["ret_1d"] > 0)
+    decliners = sum(1 for m in movers if m["ret_1d"] < 0)
+    unchanged = len(movers) - advancers - decliners
+
+    return {
+        "total": len(movers),
+        "avg_1d": avg_1d,
+        "avg_5d": avg_5d,
+        "advancers": advancers,
+        "decliners": decliners,
+        "unchanged": unchanged,
+        "top_gainer": max(movers, key=lambda m: m["ret_1d"]),
+        "top_loser": min(movers, key=lambda m: m["ret_1d"]),
+        "last_data_date": last_data_date,
+    }
+
+
+def render_market_overview_image(overview: dict, out_path: Path) -> Path:
+    img = Image.new("RGB", (1080, 1350), BG)
+    draw = ImageDraw.Draw(img)
+    f_brand = _font("DejaVuSans-Bold.ttf", 44)
+    f_tagline = _font("DejaVuSans.ttf", 24)
+    f_date = _font("DejaVuSans.ttf", 22)
+    f_big = _font("DejaVuSans-Bold.ttf", 88)
+    f_big_small = _font("DejaVuSans-Bold.ttf", 50)
+    f_label = _font("DejaVuSans.ttf", 28)
+    f_section = _font("DejaVuSans-Bold.ttf", 30)
+    f_body = _font("DejaVuSans.ttf", 26)
+
+    draw.text((40, 40), "MB-EGX", font=f_brand, fill=ACCENT)
+    draw.text((40, 96), "Market Overview — Tracked Stocks", font=f_tagline, fill=TEXT_MUTED)
+    date_str = overview.get("last_data_date") or datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    draw.text((40, 130), f"Market data as of {date_str}", font=f_date, fill=TEXT_MUTED)
+
+    if overview.get("total", 0) == 0:
+        draw.text((40, 250), "No data available today", font=f_body, fill=TEXT_MUTED)
+        img.save(out_path, "PNG")
+        return out_path
+
+    avg_1d = overview["avg_1d"]
+    color = GREEN if avg_1d >= 0 else RED
+    draw.rounded_rectangle([40, 200, 1040, 480], radius=18, fill=PANEL)
+    draw.text((70, 230), "AVERAGE 1-DAY RETURN", font=f_label, fill=TEXT_MUTED)
+    draw.text((70, 265), f"{avg_1d:+.2f}%", font=f_big, fill=color)
+    if overview.get("avg_5d") is not None:
+        draw.text((70, 400), f"5-day average: {overview['avg_5d']:+.2f}%", font=f_body, fill=TEXT_MAIN)
+
+    draw.rounded_rectangle([40, 510, 1040, 680], radius=18, fill=PANEL)
+    draw.text((70, 535), "BREADTH", font=f_label, fill=TEXT_MUTED)
+    total = overview["total"]
+    draw.text(
+        (70, 575),
+        f"{overview['advancers']} up  ·  {overview['decliners']} down  ·  {overview['unchanged']} flat",
+        font=f_body, fill=TEXT_MAIN,
+    )
+    draw.text((70, 615), f"out of {total} tracked stocks", font=f_body, fill=TEXT_MUTED)
+
+    gainer, loser = overview.get("top_gainer"), overview.get("top_loser")
+    y = 710
+    for title, mover, color in [("TOP GAINER", gainer, GREEN), ("TOP LOSER", loser, RED)]:
+        draw.rounded_rectangle([40, y, 1040, y + 160], radius=18, fill=PANEL)
+        draw.text((70, y + 24), title, font=f_section, fill=color)
+        if mover:
+            draw.text((70, y + 62), mover["ticker"], font=f_section, fill=TEXT_MAIN)
+            draw.text((70, y + 104), f"{mover['ret_1d']:+.2f}%", font=f_big_small, fill=color)
+        y += 190
+
+    f_disclaimer = _font("DejaVuSans.ttf", 18)
+    draw.text(
+        (40, 1300),
+        "Average of tracked stocks only — not the official EGX30/EGX70 index. Educational content, not investment advice.",
+        font=f_disclaimer, fill=TEXT_MUTED,
+    )
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    img.save(out_path, "PNG")
+    return out_path
+
+
+def build_market_caption(overview: dict) -> str:
+    if overview.get("total", 0) == 0:
+        en = ["📊 MB-EGX Market Overview", "", "No data available today."]
+        ar = ["📊 نظرة عامة على السوق — MB-EGX", "", "لا توجد بيانات متاحة اليوم."]
+        return "\n".join(en) + "\n\n" + "————\n\n" + "\n".join(ar)
+
+    gainer, loser = overview["top_gainer"], overview["top_loser"]
+    en = [
+        "📊 MB-EGX Market Overview (tracked stocks, NOT the official EGX30/EGX70 index)",
+        "",
+        f"Average 1-day return: {overview['avg_1d']:+.2f}%",
+        f"Breadth: {overview['advancers']} up / {overview['decliners']} down / {overview['unchanged']} flat "
+        f"(of {overview['total']} tracked)",
+        f"Top gainer: {gainer['ticker']} {gainer['ret_1d']:+.2f}%",
+        f"Top loser: {loser['ticker']} {loser['ret_1d']:+.2f}%",
+        "",
+        "This is an average across the individual stocks this account tracks — it is NOT the official "
+        "EGX30 or EGX70 index value. Educational content, not investment advice.",
+        "",
+        "#EGX #MBEGX #EgyptStockMarket #StockMarket #EGYPT",
+    ]
+    ar = [
+        "📊 نظرة عامة على السوق — MB-EGX (متوسط الأسهم المتابَعة، وليس مؤشر EGX30/EGX70 الرسمي)",
+        "",
+        f"متوسط عائد اليوم: {overview['avg_1d']:+.2f}%",
+        f"الاتساع: {overview['advancers']} صاعد / {overview['decliners']} هابط / {overview['unchanged']} مستقر "
+        f"(من أصل {overview['total']} سهمًا متابَعًا)",
+        f"الأعلى ارتفاعًا: {gainer['ticker']} {gainer['ret_1d']:+.2f}%",
+        f"الأعلى انخفاضًا: {loser['ticker']} {loser['ret_1d']:+.2f}%",
+        "",
+        "هذا متوسط لأسهم متابَعة فرديًا وليس القيمة الرسمية لمؤشر EGX30 أو EGX70. محتوى تعليمي وليس نصيحة استثمارية.",
+    ]
+    return "\n".join(en) + "\n\n" + "————\n\n" + "\n".join(ar)
+
+
+# =============================================================================
+# 2c. SECTORS OVERVIEW
+# =============================================================================
+def pick_sector_highlights(market_data: dict, limit: int = 5) -> list[dict]:
+    sectors = market_data.get("sectors", [])
+    return sorted(sectors, key=lambda s: s.get("1D Return (%)", 0), reverse=True)[:limit]
+
+
+def render_sectors_image(sectors: list[dict], last_data_date: str | None, out_path: Path) -> Path:
+    img = Image.new("RGB", (1080, 1350), BG)
+    draw = ImageDraw.Draw(img)
+    f_brand = _font("DejaVuSans-Bold.ttf", 44)
+    f_tagline = _font("DejaVuSans.ttf", 24)
+    f_date = _font("DejaVuSans.ttf", 22)
+    f_name = _font("DejaVuSans-Bold.ttf", 34)
+    f_pct = _font("DejaVuSans-Bold.ttf", 40)
+    f_small = _font("DejaVuSans.ttf", 22)
+
+    draw.text((40, 40), "MB-EGX", font=f_brand, fill=ACCENT)
+    draw.text((40, 96), "Sectors Overview — Top Movers", font=f_tagline, fill=TEXT_MUTED)
+    date_str = last_data_date or datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    draw.text((40, 130), f"Market data as of {date_str}", font=f_date, fill=TEXT_MUTED)
+
+    y = 190
+    if not sectors:
+        draw.text((40, y), "No sector data available today", font=f_small, fill=TEXT_MUTED)
+    for sec in sectors:
+        ret_1d = sec.get("1D Return (%)", 0)
+        color = GREEN if ret_1d >= 0 else RED
+        draw.rounded_rectangle([40, y, 1040, y + 200], radius=18, fill=PANEL)
+        draw.text((70, y + 24), sec.get("Sector", "—"), font=f_name, fill=TEXT_MAIN)
+        draw.text((70, y + 74), f"{ret_1d:+.2f}% today", font=f_pct, fill=color)
+        draw.text(
+            (70, y + 130),
+            f"Breadth {sec.get('Bullish Breadth (%)', '—')}% bullish · Leader {sec.get('Sector Leader', '—')}",
+            font=f_small, fill=TEXT_MUTED,
+        )
+        status_clean = "".join(ch for ch in sec.get("Sector Status", "") if ch.isascii()).strip()
+        draw.text((70, y + 160), status_clean, font=f_small, fill=color)
+        y += 220
+
+    f_disclaimer = _font("DejaVuSans.ttf", 18)
+    draw.text(
+        (40, 1300),
+        "Educational content, not investment advice.",
+        font=f_disclaimer, fill=TEXT_MUTED,
+    )
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    img.save(out_path, "PNG")
+    return out_path
+
+
+def build_sectors_caption(sectors: list[dict]) -> str:
+    if not sectors:
+        en = ["📊 MB-EGX Sectors Overview", "", "No sector data available today."]
+        ar = ["📊 نظرة عامة على القطاعات — MB-EGX", "", "لا توجد بيانات قطاعات متاحة اليوم."]
+        return "\n".join(en) + "\n\n" + "————\n\n" + "\n".join(ar)
+
+    en = ["📊 MB-EGX Sectors Overview — today's top movers", ""]
+    ar = ["📊 نظرة عامة على القطاعات — MB-EGX — أبرز تحركات اليوم", ""]
+    for sec in sectors:
+        en.append(f"{sec.get('Sector', '—')}: {sec.get('1D Return (%)', 0):+.2f}% ({sec.get('Sector Status', '—')})")
+        ar.append(f"{sec.get('Sector', '—')}: {sec.get('1D Return (%)', 0):+.2f}% ({sec.get('Sector Status', '—')})")
+    en += [
+        "",
+        "Educational content generated by a mechanical model reading price, volume, and trend data. "
+        "Not investment advice.",
+        "",
+        "#EGX #MBEGX #EgyptStockMarket #StockMarket #EGYPT",
+    ]
+    ar += ["", "محتوى تعليمي من نموذج آلي يحلل بيانات السعر والحجم والاتجاه. ليس نصيحة استثمارية."]
+    return "\n".join(en) + "\n\n" + "————\n\n" + "\n".join(ar)
 
 
 # =============================================================================
@@ -367,14 +593,16 @@ def publish_to_instagram(ig_user_id: str, access_token: str, image_url: str, cap
     return publish_resp.json()["id"]
 
 
-def refresh_reminder(access_token: str) -> None:
+def refresh_reminder(access_token: str) -> str | None:
     """Instagram Login long-lived tokens expire 60 days after issue and
     can only be refreshed once they're at least 24h old. This calls
-    graph.instagram.com's refresh endpoint (harmless to call daily) and
-    prints the NEW token to the CI log whenever it changes, so you can
-    copy it into the IG_ACCESS_TOKEN secret. This does not update the
-    GitHub secret automatically — that needs a separate write-access
-    step this script intentionally doesn't attempt on its own."""
+    graph.instagram.com's refresh endpoint (harmless to call daily/every
+    scheduled run) and, if a new token came back, writes it to
+    $GITHUB_OUTPUT (when running inside GitHub Actions) so a follow-up
+    workflow step can rotate the IG_ACCESS_TOKEN secret automatically —
+    see the "Rotate refreshed token" step in
+    .github/workflows/daily-instagram-post.yml. Returns the new token
+    (or None if nothing changed) so a caller outside CI can also use it."""
     try:
         resp = requests.get(
             f"{GRAPH_BASE}/refresh_access_token",
@@ -386,15 +614,17 @@ def refresh_reminder(access_token: str) -> None:
         new_token = data.get("access_token")
         expires_in_days = data.get("expires_in", 0) / 86400
         if new_token and new_token != access_token:
-            print(
-                "🔄 Token was refreshed. Update the IG_ACCESS_TOKEN GitHub secret "
-                f"with the new value below (expires in ~{expires_in_days:.0f} days):"
-            )
-            print(new_token)
+            print(f"🔄 Token refreshed (new one expires in ~{expires_in_days:.0f} days).")
+            github_output = os.environ.get("GITHUB_OUTPUT")
+            if github_output:
+                with open(github_output, "a", encoding="utf-8") as f:
+                    f.write(f"new_token={new_token}\n")
+            return new_token
         elif expires_in_days and expires_in_days < 10:
             print(f"⚠️  WARNING: IG_ACCESS_TOKEN expires in ~{expires_in_days:.0f} days.")
     except Exception as e:  # noqa: BLE001 — this check must never break the actual post
         print(f"(token-refresh check skipped: {e})")
+    return None
 
 
 # =============================================================================
@@ -405,6 +635,10 @@ def main():
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     p_render = sub.add_parser("render", help="Fetch data, pick highlights, write image + caption")
+    p_render.add_argument(
+        "--post-type", choices=["tickers", "market", "sectors"], default="tickers",
+        help="Which of the 3 daily posts to render",
+    )
     p_render.add_argument("--pages-base-url", default=os.environ.get("PAGES_BASE_URL"))
     p_render.add_argument("--out-dir", default=str(OUT_DIR))
 
@@ -420,20 +654,29 @@ def main():
         if not args.pages_base_url:
             sys.exit("PAGES_BASE_URL is required (env var or --pages-base-url)")
         market_data = fetch_market_data(args.pages_base_url)
-        highlights = pick_daily_highlights(market_data)
-
         out_dir = Path(args.out_dir)
         date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-        image_path = render_post_image(highlights, out_dir / f"{date_str}.png")
-        # Also write a stable "latest.png" so the raw URL never changes,
-        # which keeps the CI workflow's publish step simple.
-        render_post_image(highlights, out_dir / "latest.png")
 
-        caption = build_caption(highlights)
-        caption_path = out_dir / "latest_caption.txt"
+        if args.post_type == "tickers":
+            highlights = pick_daily_highlights(market_data)
+            render_post_image(highlights, out_dir / f"{date_str}_tickers.png")
+            render_post_image(highlights, out_dir / "latest_tickers.png")
+            caption = build_caption(highlights)
+        elif args.post_type == "market":
+            overview = compute_market_overview(market_data)
+            render_market_overview_image(overview, out_dir / f"{date_str}_market.png")
+            render_market_overview_image(overview, out_dir / "latest_market.png")
+            caption = build_market_caption(overview)
+        else:  # sectors
+            sectors = pick_sector_highlights(market_data)
+            last_data_date = market_data.get("last_data_date")
+            render_sectors_image(sectors, last_data_date, out_dir / f"{date_str}_sectors.png")
+            render_sectors_image(sectors, last_data_date, out_dir / "latest_sectors.png")
+            caption = build_sectors_caption(sectors)
+
+        caption_path = out_dir / f"latest_{args.post_type}_caption.txt"
         caption_path.write_text(caption, encoding="utf-8")
-
-        print(f"✅ Rendered {image_path} and {caption_path}")
+        print(f"✅ Rendered {args.post_type} post → {out_dir / f'latest_{args.post_type}.png'} and {caption_path}")
 
     elif args.cmd == "publish":
         if not args.ig_user_id or not args.access_token:
