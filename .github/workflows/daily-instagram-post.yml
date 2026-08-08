@@ -1,4 +1,4 @@
-name: Daily Instagram Post
+name: Daily Instagram + Facebook Post
 
 # Runs entirely in GitHub's cloud — your PC/desktop app does NOT need to be
 # open. It reads the already-published, privacy-scrubbed market_data.json
@@ -95,6 +95,22 @@ jobs:
           TYPE="${{ steps.posttype.outputs.type }}"
           IMAGE_URL="https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/web_public/social/latest_${TYPE}.png"
           python social_poster.py publish \
+            --image-url "$IMAGE_URL" \
+            --caption-file "web_public/social/latest_${TYPE}_caption.txt"
+
+      # Facebook Page posting — separate API, separate token type (a Page
+      # token, not the Instagram User token above), and it does NOT expire
+      # the way the Instagram one does, so no rotation step needed here.
+      # See publish_to_facebook()'s docstring in social_poster.py for how
+      # FB_PAGE_ID / FB_PAGE_ACCESS_TOKEN were obtained.
+      - name: Publish to Facebook Page
+        env:
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+        run: |
+          TYPE="${{ steps.posttype.outputs.type }}"
+          IMAGE_URL="https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/web_public/social/latest_${TYPE}.png"
+          python social_poster.py publish-fb \
             --image-url "$IMAGE_URL" \
             --caption-file "web_public/social/latest_${TYPE}_caption.txt"
 

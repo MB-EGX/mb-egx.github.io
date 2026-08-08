@@ -93,6 +93,11 @@ GRAPH_API_VERSION = "v21.0"
 # /media, /media_publish, and /debug_token-equivalent calls all live
 # under this host once you're using an Instagram Login access token.
 GRAPH_BASE = "https://graph.instagram.com"
+# Facebook Page posting is a genuinely different API + token type from
+# Instagram — it uses the classic graph.facebook.com host and a Page
+# Access Token (not an Instagram User token). See publish_to_facebook()
+# and its setup docstring below.
+FB_GRAPH_BASE = f"https://graph.facebook.com/{GRAPH_API_VERSION}"
 
 OUT_DIR = Path(__file__).parent / "web_public" / "social"
 FONT_DIR = "/usr/share/fonts/truetype/dejavu"  # adjust if your CI image differs
@@ -593,6 +598,43 @@ def publish_to_instagram(ig_user_id: str, access_token: str, image_url: str, cap
     return publish_resp.json()["id"]
 
 
+def publish_to_facebook(page_id: str, page_access_token: str, image_url: str, caption: str) -> str:
+    """Facebook Page posting is a single call — POST the image URL + caption
+    straight to /{page-id}/photos and it's live immediately, no separate
+    container/publish step like Instagram needs. Returns the post ID.
+
+    REQUIRED SETUP (one-time, cannot be done from code) — different from
+    the Instagram setup earlier, since this uses the classic Facebook
+    Login flow and a Page Access Token, not an Instagram User token:
+      1. In the same Meta app (App Dashboard), make sure "Facebook Login
+         for Business" is added as a use case (it may already be there
+         by default for a Business-type app).
+      2. Go to Graph API Explorer (developers.facebook.com/tools/explorer),
+         pick your app, click "Get Token" → "Get User Access Token",
+         and check: pages_show_list, pages_read_engagement,
+         pages_manage_posts. Generate it, approve, copy the token
+         (short-lived, ~1 hour — that's fine, next step fixes that).
+      3. Exchange it for a long-lived USER token: open in a browser —
+         https://graph.facebook.com/v21.0/oauth/access_token?grant_type=fb_exchange_token&client_id=APP_ID&client_secret=APP_SECRET&fb_exchange_token=SHORT_TOKEN
+         (APP_ID/APP_SECRET from App Dashboard → Settings → Basic).
+      4. With that long-lived user token, open in a browser —
+         https://graph.facebook.com/v21.0/me/accounts?access_token=LONG_LIVED_USER_TOKEN
+         The response lists each Page you manage, each with its own
+         "id" (the Page ID) and "access_token" (a Page Access Token).
+         Unlike Instagram's tokens, a Page token derived this way
+         effectively does NOT expire — no rotation system needed.
+      5. Store as GitHub secrets: FB_PAGE_ID = the Page's "id" from step
+         4, FB_PAGE_ACCESS_TOKEN = that Page's "access_token" from step 4.
+    """
+    resp = requests.post(
+        f"{FB_GRAPH_BASE}/{page_id}/photos",
+        data={"url": image_url, "caption": caption, "access_token": page_access_token},
+        timeout=30,
+    )
+    resp.raise_for_status()
+    return resp.json()["post_id"]
+
+
 def refresh_reminder(access_token: str) -> str | None:
     """Instagram Login long-lived tokens expire 60 days after issue and
     can only be refreshed once they're at least 24h old. This calls
@@ -648,6 +690,12 @@ def main():
     p_publish.add_argument("--ig-user-id", default=os.environ.get("IG_USER_ID"))
     p_publish.add_argument("--access-token", default=os.environ.get("IG_ACCESS_TOKEN"))
 
+    p_publish_fb = sub.add_parser("publish-fb", help="Publish an already-rendered image to a Facebook Page")
+    p_publish_fb.add_argument("--image-url", required=True, help="Public URL of the rendered PNG")
+    p_publish_fb.add_argument("--caption-file", required=True)
+    p_publish_fb.add_argument("--fb-page-id", default=os.environ.get("FB_PAGE_ID"))
+    p_publish_fb.add_argument("--fb-access-token", default=os.environ.get("FB_PAGE_ACCESS_TOKEN"))
+
     args = parser.parse_args()
 
     if args.cmd == "render":
@@ -685,6 +733,13 @@ def main():
         caption = Path(args.caption_file).read_text(encoding="utf-8")
         media_id = publish_to_instagram(args.ig_user_id, args.access_token, args.image_url, caption)
         print(f"✅ Published to Instagram — media ID {media_id}")
+
+    elif args.cmd == "publish-fb":
+        if not args.fb_page_id or not args.fb_access_token:
+            sys.exit("FB_PAGE_ID and FB_PAGE_ACCESS_TOKEN are required (env vars or --fb-page-id/--fb-access-token)")
+        caption = Path(args.caption_file).read_text(encoding="utf-8")
+        post_id = publish_to_facebook(args.fb_page_id, args.fb_access_token, args.image_url, caption)
+        print(f"✅ Published to Facebook — post ID {post_id}")
 
 
 if __name__ == "__main__":
