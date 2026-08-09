@@ -73,12 +73,33 @@ jobs:
             esac
           fi
 
+      # Guards against posting stale data: if today's CSVs haven't been fed
+      # into the desktop app yet (publish.py hasn't run/pushed today), skip
+      # rendering + publishing entirely rather than posting yesterday's
+      # numbers as if they were today's. Manual workflow_dispatch runs skip
+      # this check on purpose, so you can still force-test a post any time.
+      - name: Check today's market data is fresh
+        id: freshness
+        run: |
+          LAST_COMMIT_DATE=$(TZ="Africa/Cairo" git log -1 --format=%cd --date=format-local:%F -- web_public/data/market_data.json)
+          TODAY_CAIRO=$(TZ="Africa/Cairo" date +%F)
+          echo "market_data.json last updated (Cairo date): $LAST_COMMIT_DATE"
+          echo "Today (Cairo date):                          $TODAY_CAIRO"
+          if [ "$LAST_COMMIT_DATE" = "$TODAY_CAIRO" ]; then
+            echo "fresh=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "fresh=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Skipping today's post — market_data.json was last updated $LAST_COMMIT_DATE, not today ($TODAY_CAIRO). Feed the CSVs and run launch_and_publish.bat, then this will post normally on the next scheduled run."
+          fi
+
       - name: Render today's card + caption
+        if: github.event_name == 'workflow_dispatch' || steps.freshness.outputs.fresh == 'true'
         env:
           PAGES_BASE_URL: ${{ vars.PAGES_BASE_URL }}
         run: python social_poster.py render --post-type "${{ steps.posttype.outputs.type }}"
 
       - name: Commit rendered image
+        if: github.event_name == 'workflow_dispatch' || steps.freshness.outputs.fresh == 'true'
         run: |
           git config user.name "mb-egx-bot"
           git config user.email "actions@github.com"
@@ -88,6 +109,7 @@ jobs:
 
       - name: Publish to Instagram
         id: publish
+        if: github.event_name == 'workflow_dispatch' || steps.freshness.outputs.fresh == 'true'
         env:
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
@@ -104,6 +126,7 @@ jobs:
       # See publish_to_facebook()'s docstring in social_poster.py for how
       # FB_PAGE_ID / FB_PAGE_ACCESS_TOKEN were obtained.
       - name: Publish to Facebook Page
+        if: github.event_name == 'workflow_dispatch' || steps.freshness.outputs.fresh == 'true'
         env:
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
