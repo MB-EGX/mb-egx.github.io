@@ -631,6 +631,12 @@ def publish_to_facebook(page_id: str, page_access_token: str, image_url: str, ca
         data={"url": image_url, "caption": caption, "access_token": page_access_token},
         timeout=30,
     )
+    if not resp.ok:
+        # requests.HTTPError's default message is just "400 Client Error:
+        # Bad Request for url: ..." — it never includes WHY. Facebook's
+        # actual reason (invalid token, image fetch failure, duplicate
+        # content, etc.) is in the JSON body, so print it before raising.
+        print(f"❌ Facebook API error {resp.status_code}: {resp.text}", file=sys.stderr)
     resp.raise_for_status()
     return resp.json()["post_id"]
 

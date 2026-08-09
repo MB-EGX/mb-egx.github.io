@@ -3,26 +3,28 @@ name: Daily Instagram + Facebook Post
 # Runs entirely in GitHub's cloud — your PC/desktop app does NOT need to be
 # open. It reads the already-published, privacy-scrubbed market_data.json.
 #
-# HOW THIS WORKS NOW (catch-up model, not fixed-time-or-skip):
+# HOW THIS WORKS (catch-up model, not fixed-time-or-skip):
 #   Three posts a day — market overview, sectors overview, evening tickers
 #   — each has a Cairo LOCAL due time (see post_state.py: 16:00, 16:20,
 #   19:00). A run doesn't just fire at a fixed clock time and give up if
-#   data isn't ready; instead, EVERY run (whether triggered by a fresh
-#   data push, or the periodic safety-net check below) asks post_state.py
-#   "which due posts haven't gone out today yet?" and posts ALL of them,
-#   right then — however late that ends up being. Nothing is lost to a
-#   late CSV feed; it just posts as soon as the data shows up, and never
-#   posts the same slot twice in one day.
+#   data isn't ready; EVERY run (whether triggered by a fresh data push,
+#   or the periodic safety-net check below) asks post_state.py "which due
+#   posts haven't gone out today yet?" and posts them, right then —
+#   however late that ends up being. A late CSV feed delays a post, it
+#   never loses it.
+#
+#   Instagram and Facebook are tracked SEPARATELY per post type. If one
+#   platform succeeds and the other fails, only the failed one is retried
+#   next time — the successful one is never re-posted.
 #
 # TWO TRIGGERS:
 #   1. push — fires the moment publish.py pushes new market_data.json,
 #      so a same-day feed usually posts within seconds/minutes.
-#   2. schedule (every 15 min, 10:00-19:59 UTC, Sun-Thu) — a safety net
-#      in case the push trigger is ever missed, and the mechanism that
-#      actually catches a LATE feed (e.g. you feed at 6pm — nothing
-#      triggers a push-based run again until you next run publish.py,
-#      so this periodic check is what notices the already-pushed data
-#      and posts the overdue slot(s) without you doing anything).
+#   2. schedule (every 15 min, 10:00-19:59 UTC, Sun-Thu) — a safety net,
+#      and the actual mechanism that catches a LATE feed (nothing
+#      triggers a push-based run again until you next run publish.py, so
+#      this periodic check is what notices already-pushed data and posts
+#      the overdue slot(s) without you doing anything).
 #   The 10:00-19:59 UTC window comfortably covers all 3 Cairo due times
 #   (16:00/16:20/19:00) in both DST offsets (UTC+2 winter / UTC+3 summer).
 on:
@@ -72,6 +74,30 @@ jobs:
             python post_state.py due
           fi
 
+      - name: Render + commit due card(s)
+        if: steps.due.outputs.types != ''
+        run: |
+          set -e
+          git config user.name "mb-egx-bot"
+          git config user.email "actions@github.com"
+          TYPES="${{ steps.due.outputs.types }}"
+          echo "Rendering: $TYPES"
+
+          for TYPE in $TYPES; do
+            echo "::group::Rendering $TYPE"
+            python social_poster.py render --post-type "$TYPE"
+            echo "::endgroup::"
+          done
+
+          # Must be committed + live before we try to publish — Meta
+          # fetches these via raw.githubusercontent.com.
+          git add web_public/social/
+          if ! git diff --staged --quiet; then
+            git commit -m "Daily social card(s): $TYPES ($(date -u +%F))"
+            git pull --rebase --autostash
+            git push
+          fi
+
       - name: Post each due type to Instagram + Facebook
         if: steps.due.outputs.types != ''
         id: publish
@@ -82,47 +108,46 @@ jobs:
           FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
           PAGES_BASE_URL: ${{ vars.PAGES_BASE_URL }}
         run: |
-          set -e
+          # Deliberately NOT set -e here: one platform failing for one
+          # type must never stop the other platform, or the other due
+          # types, from being attempted. We track failures ourselves and
+          # exit 1 at the very end (still fails the job for visibility)
+          # without ever skipping remaining work.
           git config user.name "mb-egx-bot"
           git config user.email "actions@github.com"
           TYPES="${{ steps.due.outputs.types }}"
-          echo "Posting: $TYPES"
+          ANY_FAILED=0
 
-          # Phase 1: render every due type's card + caption locally first.
-          for TYPE in $TYPES; do
-            echo "::group::Rendering $TYPE"
-            python social_poster.py render --post-type "$TYPE"
-            echo "::endgroup::"
-          done
-
-          # Commit + push all rendered images together — they must be live
-          # on GitHub (Meta fetches them via raw.githubusercontent.com)
-          # before we can publish any of them below.
-          git add web_public/social/
-          if ! git diff --staged --quiet; then
-            git commit -m "Daily social card(s): $TYPES ($(date -u +%F))"
-            git pull --rebase --autostash
-            git push
-          fi
-
-          # Phase 2: publish each due type to both platforms, then mark it
-          # posted so it's never re-sent later today.
           for TYPE in $TYPES; do
             IMAGE_URL="https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/web_public/social/latest_${TYPE}.png"
 
-            echo "::group::Publishing $TYPE to Instagram"
-            python social_poster.py publish \
-              --image-url "$IMAGE_URL" \
-              --caption-file "web_public/social/latest_${TYPE}_caption.txt"
-            echo "::endgroup::"
+            if python post_state.py needs --type "$TYPE" --platform ig; then
+              echo "::group::Publishing $TYPE to Instagram"
+              python social_poster.py publish \
+                --image-url "$IMAGE_URL" \
+                --caption-file "web_public/social/latest_${TYPE}_caption.txt"
+              if [ $? -eq 0 ]; then
+                python post_state.py mark-posted --type "$TYPE" --platform ig
+              else
+                echo "::warning::Instagram publish failed for $TYPE — will retry next run, Facebook still attempted below."
+                ANY_FAILED=1
+              fi
+              echo "::endgroup::"
+            fi
 
-            echo "::group::Publishing $TYPE to Facebook Page"
-            python social_poster.py publish-fb \
-              --image-url "$IMAGE_URL" \
-              --caption-file "web_public/social/latest_${TYPE}_caption.txt"
-            echo "::endgroup::"
-
-            python post_state.py mark-posted --type "$TYPE"
+            if python post_state.py needs --type "$TYPE" --platform fb; then
+              echo "::group::Publishing $TYPE to Facebook Page"
+              python social_poster.py publish-fb \
+                --image-url "$IMAGE_URL" \
+                --caption-file "web_public/social/latest_${TYPE}_caption.txt"
+              if [ $? -eq 0 ]; then
+                python post_state.py mark-posted --type "$TYPE" --platform fb
+              else
+                echo "::warning::Facebook publish failed for $TYPE — will retry next run."
+                ANY_FAILED=1
+              fi
+              echo "::endgroup::"
+            fi
           done
 
           git add web_public/social/post_state.json
@@ -130,6 +155,10 @@ jobs:
             git commit -m "Mark posted: $TYPES ($(date -u +%F))"
             git pull --rebase --autostash
             git push
+          fi
+
+          if [ "$ANY_FAILED" -eq 1 ]; then
+            exit 1
           fi
 
       # Instagram Login tokens expire ~60 days after issue. The publish
@@ -140,8 +169,13 @@ jobs:
       # 60-day expiry never actually becomes your problem — GH_PAT is
       # the one secret that makes this self-service possible, since the
       # default GITHUB_TOKEN isn't allowed to write repository secrets.
+      #
+      # always() here matters: without it, this step would be silently
+      # skipped whenever the publish step above exits 1 (e.g. Facebook
+      # failed for one type) — even though Instagram may have refreshed
+      # its token just fine in that same run.
       - name: Rotate refreshed token
-        if: steps.publish.outputs.new_token != ''
+        if: always() && steps.publish.outputs.new_token != ''
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
