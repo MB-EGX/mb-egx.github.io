@@ -42,6 +42,38 @@ def run_git(*args):
     return result.stdout.strip()
 
 
+def sync_with_remote_before_push():
+    """The daily-instagram-post.yml GitHub Action commits rendered social
+    card PNGs straight to main every time it runs. If that happened since
+    the last time this script ran, a plain `git push` gets rejected
+    (non-fast-forward) even though nothing is actually wrong — Git is just
+    protecting those bot commits from being overwritten.
+
+    Fix: rebase our just-made local commit on top of whatever's on the
+    remote before pushing, so both sets of changes end up in history
+    cleanly with no manual `git pull` ever required. --autostash is a
+    no-op safety net here (our tree is already clean from the commit
+    above) but costs nothing to include.
+    """
+    result = subprocess.run(
+        ["git", "pull", "--rebase", "--autostash"],
+        capture_output=True, text=True,
+    )
+    if result.returncode != 0:
+        print(result.stdout, result.stderr, file=sys.stderr)
+        # Leave the repo in a clean state rather than a half-finished
+        # rebase — safer to abort and surface the problem than to guess.
+        subprocess.run(["git", "rebase", "--abort"], capture_output=True, text=True)
+        raise SystemExit(
+            "git pull --rebase failed — this looks like a REAL conflict "
+            "with remote changes (not just the usual bot commits, which "
+            "sync automatically). The rebase was aborted so your local "
+            "repo is back to a clean state. Open a terminal in this "
+            "folder and run 'git pull --rebase' yourself to see and "
+            "resolve the conflict, then re-run publish.py."
+        )
+
+
 def main():
     print("1/3  Ingesting new spreadsheet/CSV feeds...")
     IngestionPipeline().run_incremental_ingestion(
@@ -64,6 +96,11 @@ def main():
     print("      " + status.replace("\n", "\n      "))
 
     run_git("commit", "-m", "Update market data / app changes")
+
+    print("      Syncing with remote (in case the social-poster bot")
+    print("      pushed a rendered card since your last publish)...")
+    sync_with_remote_before_push()
+
     run_git("push")
     print("✅ Pushed. GitHub Actions will redeploy the site within ~1 minute.")
 
