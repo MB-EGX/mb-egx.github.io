@@ -73,11 +73,15 @@ def _save_state(state):
 
 def _current_state():
     """Loads state, resetting to a fresh empty day if the stored date
-    isn't today (Cairo). Does NOT save — callers save if they mutate."""
+    isn't today (Cairo) OR if the file is in the old pre-per-platform
+    format (posted as a list of type names rather than a dict of
+    {type: {ig, fb}}) — that old shape was committed by an earlier
+    version of this script and would otherwise crash here. Does NOT
+    save — callers save if they mutate."""
     state = _load_state()
-    if state.get("date") != _today_str():
+    posted = state.get("posted")
+    if state.get("date") != _today_str() or not isinstance(posted, dict):
         state = {"date": _today_str(), "posted": _empty_posted()}
-    # Guard against a type missing from an older state file shape.
     for t in DUE_TIMES:
         state["posted"].setdefault(t, {"ig": False, "fb": False})
     return state
