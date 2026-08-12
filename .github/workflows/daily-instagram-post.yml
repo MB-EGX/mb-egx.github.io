@@ -46,6 +46,18 @@ on:
 permissions:
   contents: write   # needed to commit rendered PNGs + post_state.json back to the repo
 
+# Prevents two runs (e.g. a push-triggered run and the periodic safety-net
+# run) from ever executing at the same time. Without this, if a scheduled
+# check happens to start just as you push new data, both could render and
+# push around the same time — and whichever finishes last overwrites the
+# other's committed image, which is exactly the "shows yesterday's data
+# even though I just pushed today's" symptom. cancel-in-progress: false
+# means an overlapping trigger queues and runs afterward instead of being
+# dropped, so a late-arriving push is never silently lost either.
+concurrency:
+  group: daily-social-post
+  cancel-in-progress: false
+
 jobs:
   post:
     runs-on: ubuntu-latest
