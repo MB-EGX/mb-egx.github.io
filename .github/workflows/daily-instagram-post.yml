@@ -49,11 +49,9 @@ permissions:
 # Prevents two runs (e.g. a push-triggered run and the periodic safety-net
 # run) from ever executing at the same time. Without this, if a scheduled
 # check happens to start just as you push new data, both could render and
-# push around the same time — and whichever finishes last overwrites the
-# other's committed image, which is exactly the "shows yesterday's data
-# even though I just pushed today's" symptom. cancel-in-progress: false
-# means an overlapping trigger queues and runs afterward instead of being
-# dropped, so a late-arriving push is never silently lost either.
+# push around the same time — whichever finishes last overwrites the
+# other's committed image. cancel-in-progress: false means an overlapping
+# trigger queues and runs afterward instead of being dropped.
 concurrency:
   group: daily-social-post
   cancel-in-progress: false
@@ -64,9 +62,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # Full history, not the default shallow clone — post_state.py's
-          # freshness check and this job's `git pull --rebase` both need
-          # to see more than just the single latest commit.
+          # Full history, not the default shallow clone — this job's
+          # `git pull --rebase` needs to see more than just the single
+          # latest commit. (post_state.py's freshness check no longer
+          # needs this — it now reads market_data.json's own
+          # "last_data_date" field directly instead of git history.)
           fetch-depth: 0
 
       - uses: actions/setup-python@v5

@@ -8,8 +8,10 @@ fails, a retry must only redo Facebook — re-attempting Instagram would
 duplicate-post it. Tracking both platforms independently for the same
 type prevents that.
 
-State lives in web_public/social/post_state.json and is committed by
-the workflow the same way it already commits rendered images.
+Freshness is judged by the "last_data_date" field INSIDE
+market_data.json (the actual trading session the data represents),
+never by when the file was committed to git — a same-day git commit
+does not guarantee the data itself is for today's session.
 
 State shape:
     {
@@ -29,7 +31,6 @@ Usage:
 import argparse
 import json
 import os
-import subprocess
 import sys
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -88,16 +89,23 @@ def _current_state():
 
 
 def _data_is_fresh_today(today_str):
-    # fetch-depth: 0 in the workflow's checkout step is required for this
-    # to reliably find the last commit that touched DATA_PATH — a shallow
-    # clone would only see the single most recent commit overall, which
-    # might not be the one that last changed this specific file.
-    result = subprocess.run(
-        ["git", "log", "-1", "--format=%cd", "--date=format-local:%F", "--", DATA_PATH],
-        capture_output=True, text=True, env={**os.environ, "TZ": "Africa/Cairo"},
-    )
-    last_commit_date = result.stdout.strip()
-    return last_commit_date == today_str, last_commit_date
+    """Freshness is judged by the DATA's own reported session date
+    (market_data.json's "last_data_date" field), NOT by when the file
+    happened to get committed to git. Those are different things:
+    publish.py can push a fresh git commit today even though the CSVs
+    fed into it — and therefore last_data_date inside the JSON — still
+    represent yesterday's session (source data not caught up yet, wrong
+    file fed by mistake, etc). Checking the field itself is what
+    actually answers "is this today's session," which is what matters
+    for what gets posted — a same-day git commit is not proof of that.
+    """
+    try:
+        with open(DATA_PATH) as f:
+            data = json.load(f)
+        last_data_date = data.get("last_data_date")
+    except (FileNotFoundError, json.JSONDecodeError):
+        last_data_date = None
+    return last_data_date == today_str, last_data_date
 
 
 def cmd_due(args):
@@ -105,7 +113,7 @@ def cmd_due(args):
     today_str = now.strftime("%Y-%m-%d")
 
     state = _current_state()
-    fresh, last_commit_date = _data_is_fresh_today(today_str)
+    fresh, last_data_date = _data_is_fresh_today(today_str)
 
     due_types = []
     if fresh:
@@ -117,7 +125,8 @@ def cmd_due(args):
                 due_types.append(post_type)
 
     print(f"Cairo time now: {now.strftime('%Y-%m-%d %H:%M')}", file=sys.stderr)
-    print(f"Data last updated (Cairo date): {last_commit_date or '(no commits found)'}", file=sys.stderr)
+    print(f"market_data.json last_data_date: {last_data_date or '(missing/unreadable)'}", file=sys.stderr)
+    print(f"Today (Cairo date): {today_str}", file=sys.stderr)
     print(f"Status today: {json.dumps(state['posted'])}", file=sys.stderr)
     print(f"Due now: {due_types or '(none)'}", file=sys.stderr)
 
