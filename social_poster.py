@@ -88,15 +88,7 @@ import requests
 from PIL import Image, ImageDraw, ImageFont
 
 GRAPH_API_VERSION = "v21.0"
-# Instagram API with Instagram Login uses graph.instagram.com, NOT
-# graph.facebook.com (that's the older Facebook Page-token flow). The
-# /media, /media_publish, and /debug_token-equivalent calls all live
-# under this host once you're using an Instagram Login access token.
 GRAPH_BASE = "https://graph.instagram.com"
-# Facebook Page posting is a genuinely different API + token type from
-# Instagram — it uses the classic graph.facebook.com host and a Page
-# Access Token (not an Instagram User token). See publish_to_facebook()
-# and its setup docstring below.
 FB_GRAPH_BASE = f"https://graph.facebook.com/{GRAPH_API_VERSION}"
 
 OUT_DIR = Path(__file__).parent / "web_public" / "social"
@@ -127,22 +119,6 @@ def fetch_market_data(pages_base_url: str) -> dict:
 # 2. PICK THE 3 DAILY HIGHLIGHTS
 # =============================================================================
 def pick_daily_highlights(market_data: dict) -> dict:
-    """
-    NEXT SESSION  -> highest-scoring ticker where a STRONG BUY or
-                      BREAKOUT BUY signal has already fired today
-                      (confirmed move, actionable at the next open).
-    MEDIUM TERM   -> best ACCUMULATE / BUY ON DIP setup by score
-                      (building-position signals, not a same-day trigger).
-    LONG TERM     -> the "Sector Leader" of the strongest-inflow sector
-                      (breadth + money-flow backed, not a single-bar
-                      signal) — falls back to the next-highest overall
-                      score if no sector currently qualifies as
-                      STRONG INFLOW.
-    These are reasonable defaults from your existing categories/labels
-    (decision_matrix.py's action classification + compute_sector_analytics'
-    sector status) — tune the pool selection below if you'd rather define
-    the three horizons differently.
-    """
     matrix = market_data.get("market_matrix", [])
     top10 = market_data.get("top_10", {})
     sectors = market_data.get("sectors", [])
@@ -216,16 +192,9 @@ def build_evidence(row: dict | None, sector_context: dict | None = None) -> list
 
 
 # =============================================================================
-# 2b. MARKET OVERVIEW — an honest proxy, NOT the official EGX30/EGX70
+# 2b. MARKET OVERVIEW
 # =============================================================================
 def compute_market_overview(market_data: dict) -> dict:
-    """Aggregates 1D/5D returns from chart_history across every ticker
-    you actually track. This is deliberately NOT presented as the real
-    EGX30/EGX70 index — those come from the exchange itself, not from
-    a basket of individually-ingested tickers, and the two numbers will
-    diverge (different constituents, no market-cap weighting here).
-    Every piece of copy referencing this must say "tracked stocks",
-    never claim to be an official index value."""
     stocks = market_data.get("chart_history", {}).get("stocks", {})
     movers = []
     for ticker, hist in stocks.items():
@@ -323,41 +292,6 @@ def render_market_overview_image(overview: dict, out_path: Path) -> Path:
     return out_path
 
 
-def build_market_caption(overview: dict) -> str:
-    if overview.get("total", 0) == 0:
-        en = ["📊 MB-EGX Market Overview", "", "No data available today."]
-        ar = ["📊 نظرة عامة على السوق — MB-EGX", "", "لا توجد بيانات متاحة اليوم."]
-        return "\n".join(en) + "\n\n" + "————\n\n" + "\n".join(ar)
-
-    gainer, loser = overview["top_gainer"], overview["top_loser"]
-    en = [
-        "📊 MB-EGX Market Overview (tracked stocks, NOT the official EGX30/EGX70 index)",
-        "",
-        f"Average 1-day return: {overview['avg_1d']:+.2f}%",
-        f"Breadth: {overview['advancers']} up / {overview['decliners']} down / {overview['unchanged']} flat "
-        f"(of {overview['total']} tracked)",
-        f"Top gainer: {gainer['ticker']} {gainer['ret_1d']:+.2f}%",
-        f"Top loser: {loser['ticker']} {loser['ret_1d']:+.2f}%",
-        "",
-        "This is an average across the individual stocks this account tracks — it is NOT the official "
-        "EGX30 or EGX70 index value. Educational content, not investment advice.",
-        "",
-        "#EGX #MBEGX #EgyptStockMarket #StockMarket #EGYPT",
-    ]
-    ar = [
-        "📊 نظرة عامة على السوق — MB-EGX (متوسط الأسهم المتابَعة، وليس مؤشر EGX30/EGX70 الرسمي)",
-        "",
-        f"متوسط عائد اليوم: {overview['avg_1d']:+.2f}%",
-        f"الاتساع: {overview['advancers']} صاعد / {overview['decliners']} هابط / {overview['unchanged']} مستقر "
-        f"(من أصل {overview['total']} سهمًا متابَعًا)",
-        f"الأعلى ارتفاعًا: {gainer['ticker']} {gainer['ret_1d']:+.2f}%",
-        f"الأعلى انخفاضًا: {loser['ticker']} {loser['ret_1d']:+.2f}%",
-        "",
-        "هذا متوسط لأسهم متابَعة فرديًا وليس القيمة الرسمية لمؤشر EGX30 أو EGX70. محتوى تعليمي وليس نصيحة استثمارية.",
-    ]
-    return "\n".join(en) + "\n\n" + "————\n\n" + "\n".join(ar)
-
-
 # =============================================================================
 # 2c. SECTORS OVERVIEW
 # =============================================================================
@@ -408,28 +342,6 @@ def render_sectors_image(sectors: list[dict], last_data_date: str | None, out_pa
     out_path.parent.mkdir(parents=True, exist_ok=True)
     img.save(out_path, "PNG")
     return out_path
-
-
-def build_sectors_caption(sectors: list[dict]) -> str:
-    if not sectors:
-        en = ["📊 MB-EGX Sectors Overview", "", "No sector data available today."]
-        ar = ["📊 نظرة عامة على القطاعات — MB-EGX", "", "لا توجد بيانات قطاعات متاحة اليوم."]
-        return "\n".join(en) + "\n\n" + "————\n\n" + "\n".join(ar)
-
-    en = ["📊 MB-EGX Sectors Overview — today's top movers", ""]
-    ar = ["📊 نظرة عامة على القطاعات — MB-EGX — أبرز تحركات اليوم", ""]
-    for sec in sectors:
-        en.append(f"{sec.get('Sector', '—')}: {sec.get('1D Return (%)', 0):+.2f}% ({sec.get('Sector Status', '—')})")
-        ar.append(f"{sec.get('Sector', '—')}: {sec.get('1D Return (%)', 0):+.2f}% ({sec.get('Sector Status', '—')})")
-    en += [
-        "",
-        "Educational content generated by a mechanical model reading price, volume, and trend data. "
-        "Not investment advice.",
-        "",
-        "#EGX #MBEGX #EgyptStockMarket #StockMarket #EGYPT",
-    ]
-    ar += ["", "محتوى تعليمي من نموذج آلي يحلل بيانات السعر والحجم والاتجاه. ليس نصيحة استثمارية."]
-    return "\n".join(en) + "\n\n" + "————\n\n" + "\n".join(ar)
 
 
 # =============================================================================
@@ -507,19 +419,14 @@ def render_post_image(highlights: dict, out_path: Path) -> Path:
 
 
 # =============================================================================
-# 4. CAPTION (bilingual — Instagram renders the text itself, so no font
-#    risk here the way there would be putting Arabic inside the PNG)
+# 4. CAPTION 
 # =============================================================================
 def append_promotional_footer(text_block: str) -> str:
     """Appends the standard promotional links to the bottom of any caption."""
     footer = (
-        "
-
-"
-        "Follow Facebook Page: https://www.facebook.com/profile.php?id=61593012092507
-"
-        "Follow Instagram: https://www.instagram.com/mb_egx/
-"
+        "\n\n"
+        "Follow Facebook Page: https://www.facebook.com/profile.php?id=61593012092507\n"
+        "Follow Instagram: https://www.instagram.com/mb_egx/\n"
         "Login App: https://mb-egx.github.io/"
     )
     return text_block + footer
@@ -574,13 +481,7 @@ def build_caption(highlights: dict) -> str:
         "والاتجاه، وليس نصيحة استثمارية — قم دائمًا بأبحاثك الخاصة واستخدم حكمك الشخصي.",
     ]
 
-    combined_caption = "
-".join(en) + "
-
-" + "————
-
-" + "
-".join(ar)
+    combined_caption = "\n".join(en) + "\n\n————\n\n" + "\n".join(ar)
     return append_promotional_footer(combined_caption)
 
 
@@ -588,13 +489,7 @@ def build_market_caption(overview: dict) -> str:
     if overview.get("total", 0) == 0:
         en = ["📊 MB-EGX Market Overview", "", "No data available today."]
         ar = ["📊 نظرة عامة على السوق — MB-EGX", "", "لا توجد بيانات متاحة اليوم."]
-        combined_caption = "
-".join(en) + "
-
-" + "————
-
-" + "
-".join(ar)
+        combined_caption = "\n".join(en) + "\n\n————\n\n" + "\n".join(ar)
         return append_promotional_footer(combined_caption)
 
     gainer, loser = overview["top_gainer"], overview["top_loser"]
@@ -624,13 +519,7 @@ def build_market_caption(overview: dict) -> str:
         "هذا متوسط لأسهم متابَعة فرديًا وليس القيمة الرسمية لمؤشر EGX30 أو EGX70. محتوى تعليمي وليس نصيحة استثمارية.",
     ]
     
-    combined_caption = "
-".join(en) + "
-
-" + "————
-
-" + "
-".join(ar)
+    combined_caption = "\n".join(en) + "\n\n————\n\n" + "\n".join(ar)
     return append_promotional_footer(combined_caption)
 
 
@@ -638,13 +527,7 @@ def build_sectors_caption(sectors: list[dict]) -> str:
     if not sectors:
         en = ["📊 MB-EGX Sectors Overview", "", "No sector data available today."]
         ar = ["📊 نظرة عامة على القطاعات — MB-EGX", "", "لا توجد بيانات قطاعات متاحة اليوم."]
-        combined_caption = "
-".join(en) + "
-
-" + "————
-
-" + "
-".join(ar)
+        combined_caption = "\n".join(en) + "\n\n————\n\n" + "\n".join(ar)
         return append_promotional_footer(combined_caption)
 
     en = ["📊 MB-EGX Sectors Overview — today's top movers", ""]
@@ -661,13 +544,7 @@ def build_sectors_caption(sectors: list[dict]) -> str:
     ]
     ar += ["", "محتوى تعليمي من نموذج آلي يحلل بيانات السعر والحجم والاتجاه. ليس نصيحة استثمارية."]
     
-    combined_caption = "
-".join(en) + "
-
-" + "————
-
-" + "
-".join(ar)
+    combined_caption = "\n".join(en) + "\n\n————\n\n" + "\n".join(ar)
     return append_promotional_footer(combined_caption)
 
 
@@ -710,56 +587,19 @@ def publish_to_instagram(ig_user_id: str, access_token: str, image_url: str, cap
 def publish_to_facebook(page_id: str, page_access_token: str, image_url: str, caption: str) -> str:
     """Facebook Page posting is a single call — POST the image URL + caption
     straight to /{page-id}/photos and it's live immediately, no separate
-    container/publish step like Instagram needs. Returns the post ID.
-
-    REQUIRED SETUP (one-time, cannot be done from code) — different from
-    the Instagram setup earlier, since this uses the classic Facebook
-    Login flow and a Page Access Token, not an Instagram User token:
-      1. In the same Meta app (App Dashboard), make sure "Facebook Login
-         for Business" is added as a use case (it may already be there
-         by default for a Business-type app).
-      2. Go to Graph API Explorer (developers.facebook.com/tools/explorer),
-         pick your app, click "Get Token" → "Get User Access Token",
-         and check: pages_show_list, pages_read_engagement,
-         pages_manage_posts. Generate it, approve, copy the token
-         (short-lived, ~1 hour — that's fine, next step fixes that).
-      3. Exchange it for a long-lived USER token: open in a browser —
-         https://graph.facebook.com/v21.0/oauth/access_token?grant_type=fb_exchange_token&client_id=APP_ID&client_secret=APP_SECRET&fb_exchange_token=SHORT_TOKEN
-         (APP_ID/APP_SECRET from App Dashboard → Settings → Basic).
-      4. With that long-lived user token, open in a browser —
-         https://graph.facebook.com/v21.0/me/accounts?access_token=LONG_LIVED_USER_TOKEN
-         The response lists each Page you manage, each with its own
-         "id" (the Page ID) and "access_token" (a Page Access Token).
-         Unlike Instagram's tokens, a Page token derived this way
-         effectively does NOT expire — no rotation system needed.
-      5. Store as GitHub secrets: FB_PAGE_ID = the Page's "id" from step
-         4, FB_PAGE_ACCESS_TOKEN = that Page's "access_token" from step 4.
-    """
+    container/publish step like Instagram needs. Returns the post ID."""
     resp = requests.post(
         f"{FB_GRAPH_BASE}/{page_id}/photos",
         data={"url": image_url, "caption": caption, "access_token": page_access_token},
         timeout=30,
     )
     if not resp.ok:
-        # requests.HTTPError's default message is just "400 Client Error:
-        # Bad Request for url: ..." — it never includes WHY. Facebook's
-        # actual reason (invalid token, image fetch failure, duplicate
-        # content, etc.) is in the JSON body, so print it before raising.
         print(f"❌ Facebook API error {resp.status_code}: {resp.text}", file=sys.stderr)
     resp.raise_for_status()
     return resp.json()["post_id"]
 
 
 def refresh_reminder(access_token: str) -> str | None:
-    """Instagram Login long-lived tokens expire 60 days after issue and
-    can only be refreshed once they're at least 24h old. This calls
-    graph.instagram.com's refresh endpoint (harmless to call daily/every
-    scheduled run) and, if a new token came back, writes it to
-    $GITHUB_OUTPUT (when running inside GitHub Actions) so a follow-up
-    workflow step can rotate the IG_ACCESS_TOKEN secret automatically —
-    see the "Rotate refreshed token" step in
-    .github/workflows/daily-instagram-post.yml. Returns the new token
-    (or None if nothing changed) so a caller outside CI can also use it."""
     try:
         resp = requests.get(
             f"{GRAPH_BASE}/refresh_access_token",
@@ -779,7 +619,7 @@ def refresh_reminder(access_token: str) -> str | None:
             return new_token
         elif expires_in_days and expires_in_days < 10:
             print(f"⚠️  WARNING: IG_ACCESS_TOKEN expires in ~{expires_in_days:.0f} days.")
-    except Exception as e:  # noqa: BLE001 — this check must never break the actual post
+    except Exception as e:
         print(f"(token-refresh check skipped: {e})")
     return None
 
