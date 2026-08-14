@@ -1,12 +1,22 @@
 """
-post_state.py — decides which of today's 3 scheduled posts (market,
-sectors, tickers) are due-and-not-yet-fully-posted RIGHT NOW, tracking
-Instagram and Facebook status SEPARATELY per type.
+post_state.py — decides which of today's posts are due-and-not-yet-fully-
+posted RIGHT NOW, tracking Instagram and Facebook status SEPARATELY per
+type.
 
-Why separately: if Instagram succeeds for a type but Facebook then
-fails, a retry must only redo Facebook — re-attempting Instagram would
-duplicate-post it. Tracking both platforms independently for the same
-type prevents that.
+Two kinds of "due":
+  * market / sectors / tickers — fixed Cairo LOCAL due times (see
+    DUE_TIMES below), same as always.
+  * achievement — NOT time-gated. It's due the moment fresh data shows at
+    least one Session Pick crossed +3% today (market_data.json's
+    "session_picks.achieved_today" — see session_picks.py /
+    export_json.py) and it hasn't been posted yet. A pick achieving its
+    target is itself the trigger, not a clock — "automatic" means it goes
+    out as soon as the data says it happened, same posture as the push
+    trigger already gets you for the other 3 types on a normal day.
+
+Why track ig/fb separately: if Instagram succeeds for a type but Facebook
+then fails, a retry must only redo Facebook — re-attempting Instagram
+would duplicate-post it.
 
 Freshness is judged by the "last_data_date" field INSIDE
 market_data.json (the actual trading session the data represents),
@@ -17,9 +27,10 @@ State shape:
     {
       "date": "2026-08-09",
       "posted": {
-        "market":  {"ig": true,  "fb": false},
-        "sectors": {"ig": false, "fb": false},
-        "tickers": {"ig": false, "fb": false}
+        "market":      {"ig": true,  "fb": false},
+        "sectors":     {"ig": false, "fb": false},
+        "tickers":     {"ig": false, "fb": false},
+        "achievement": {"ig": false, "fb": false}
       }
     }
 
@@ -50,13 +61,18 @@ DUE_TIMES = {
     "tickers": (19, 0),
 }
 
+# "achievement" has no fixed clock time (see module docstring) - it's
+# tracked in the same per-day/per-platform `posted` shape as the 3 timed
+# types above, just checked differently in cmd_due().
+ALL_TYPES = (*DUE_TIMES.keys(), "achievement")
+
 
 def _today_str():
     return datetime.now(CAIRO).strftime("%Y-%m-%d")
 
 
 def _empty_posted():
-    return {t: {"ig": False, "fb": False} for t in DUE_TIMES}
+    return {t: {"ig": False, "fb": False} for t in ALL_TYPES}
 
 
 def _load_state():
@@ -83,9 +99,22 @@ def _current_state():
     posted = state.get("posted")
     if state.get("date") != _today_str() or not isinstance(posted, dict):
         state = {"date": _today_str(), "posted": _empty_posted()}
-    for t in DUE_TIMES:
+    for t in ALL_TYPES:
         state["posted"].setdefault(t, {"ig": False, "fb": False})
     return state
+
+
+def _achieved_today(today_str):
+    """Session Picks marked achieved for today's session (see
+    session_picks.py / export_json.py's "session_picks.achieved_today").
+    Only meaningful when the data itself is fresh for today — caller
+    already gates on that via _data_is_fresh_today()."""
+    try:
+        with open(DATA_PATH) as f:
+            data = json.load(f)
+        return data.get("session_picks", {}).get("achieved_today", [])
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
 
 
 def _data_is_fresh_today(today_str):
@@ -124,6 +153,15 @@ def cmd_due(args):
             if now >= due_time and still_needed:
                 due_types.append(post_type)
 
+        # achievement — due immediately (no clock gate) whenever today's
+        # fresh data shows at least one newly-achieved Session Pick and it
+        # hasn't gone out yet. See module docstring.
+        status = state["posted"]["achievement"]
+        still_needed = not status["ig"] or not status["fb"]
+        achievements = _achieved_today(today_str)
+        if achievements and still_needed:
+            due_types.append("achievement")
+
     print(f"Cairo time now: {now.strftime('%Y-%m-%d %H:%M')}", file=sys.stderr)
     print(f"market_data.json last_data_date: {last_data_date or '(missing/unreadable)'}", file=sys.stderr)
     print(f"Today (Cairo date): {today_str}", file=sys.stderr)
@@ -157,12 +195,12 @@ def main():
     sub.add_parser("due").set_defaults(func=cmd_due)
 
     needs = sub.add_parser("needs")
-    needs.add_argument("--type", required=True, choices=DUE_TIMES.keys())
+    needs.add_argument("--type", required=True, choices=ALL_TYPES)
     needs.add_argument("--platform", required=True, choices=PLATFORMS)
     needs.set_defaults(func=cmd_needs)
 
     mark = sub.add_parser("mark-posted")
-    mark.add_argument("--type", required=True, choices=DUE_TIMES.keys())
+    mark.add_argument("--type", required=True, choices=ALL_TYPES)
     mark.add_argument("--platform", required=True, choices=PLATFORMS)
     mark.set_defaults(func=cmd_mark_posted)
 

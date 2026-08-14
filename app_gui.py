@@ -1683,14 +1683,14 @@ class IngestionWorker(QThread):
 
 class AnalysisWorker(QThread):
     progress_signal = pyqtSignal(int, str)
-    results_signal = pyqtSignal(list, list, dict, list, dict, list, list, dict)
+    results_signal = pyqtSignal(list, list, dict, list, dict, list, list, dict, dict)
 
     def run(self):
         matrix = DecisionMatrix()
-        buys, exits, top10, closed, fin_stmt, sectors, breakout_watchlist, portfolio_risk = matrix.analyze_market(
+        buys, exits, top10, closed, fin_stmt, sectors, breakout_watchlist, portfolio_risk, session_picks = matrix.analyze_market(
             progress_callback=lambda pct, msg: self.progress_signal.emit(pct, msg)
         )
-        self.results_signal.emit(buys, exits, top10, closed, fin_stmt, sectors, breakout_watchlist, portfolio_risk)
+        self.results_signal.emit(buys, exits, top10, closed, fin_stmt, sectors, breakout_watchlist, portfolio_risk, session_picks)
 
 # =============================================================================
 # REDESIGNED FULL-SCREEN LOGIN DIALOG
@@ -2804,6 +2804,26 @@ class QuantDashboard(QMainWindow):
         layout.addWidget(filter_wrap)
 
         self.tabs = QTabWidget()
+        # Force reliable scroll arrows for the tab bar regardless of what the
+        # active theme's stylesheet does to QTabBar - with 9 tabs (several
+        # using emoji + longer labels), the bar can overflow the window
+        # width. Qt normally auto-shows scroll arrows in that case, but a
+        # custom QSS theme can style QTabBar::scroller invisibly (0px,
+        # transparent) without an error anywhere, silently hiding whichever
+        # tabs don't fit - which is what was hiding the Session Picks tab.
+        self.tabs.setUsesScrollButtons(True)
+        self.tabs.tabBar().setElideMode(Qt.TextElideMode.ElideRight)
+        self.tabs.tabBar().setExpanding(False)
+        # Explicit, theme-proof styling for the tab bar's overflow scroll
+        # buttons - applied directly on the tab bar itself (not the window
+        # stylesheet), so no THEMES_MAP entry can zero it out or make it
+        # blend into the background. This guarantees a visible way to reach
+        # any tab that doesn't fit in the bar, regardless of theme.
+        self.tabs.tabBar().setStyleSheet(
+            "QTabBar::scroller { width: 28px; } "
+            "QTabBar QToolButton { background-color: #2b6cb0; border: 1px solid #cbd5e0; "
+            "border-radius: 4px; }"
+        )
         self.tbl_buys = self._create_matrix_table()
         
         self.tbl_sectors = QTableWidget()
@@ -2898,6 +2918,10 @@ class QuantDashboard(QMainWindow):
         self.tbl_top_dip = self._create_matrix_table()
         self.top10_overview_widget = self._build_top10_overview_tab()
 
+        logger.info("Building Session Picks tab...")
+        self.session_picks_widget = self._build_session_picks_tab()
+        logger.info("Session Picks tab widget built OK.")
+
         self.chart_widget = StockSectorChartWidget(self.qe, self.dbm, self)
 
         # Precise 8 Tab mappings matching TRANSLATIONS
@@ -2905,6 +2929,8 @@ class QuantDashboard(QMainWindow):
         self.tabs.addTab(self.tbl_sectors, "🏢 Sectors")
         self.tabs.addTab(self.tbl_exits, "🛡️ Exits")
         self.tabs.addTab(self.tbl_breakout_watch, "🎯 Breakouts")
+        self.tabs.addTab(self.session_picks_widget, "🎯 Session Picks")
+        logger.info(f"Session Picks tab added. Total tab count is now: {self.tabs.count()}")
         self.tabs.addTab(tab_history_widget, "📜 History")
         self.tabs.addTab(self.tbl_fin_stmt, "📊 Financials")
         self.tabs.addTab(self.top10_overview_widget, "🏆 Top 10")
@@ -2975,10 +3001,11 @@ class QuantDashboard(QMainWindow):
         self.tabs.setTabText(1, t.get("tab_sectors", "🏢 Sectors"))
         self.tabs.setTabText(2, t.get("tab_exits", "🛡️ Exits"))
         self.tabs.setTabText(3, t.get("tab_breakout", "🎯 Breakouts"))
-        self.tabs.setTabText(4, t.get("tab_history", "📜 History"))
-        self.tabs.setTabText(5, t.get("tab_fin", "📊 Financials"))
-        self.tabs.setTabText(6, t.get("tab_top10", "🏆 Top 10"))
-        self.tabs.setTabText(7, t.get("tab_charts", "📊 Charts"))
+        self.tabs.setTabText(4, t.get("tab_session_picks", "🎯 Session Picks"))
+        self.tabs.setTabText(5, t.get("tab_history", "📜 History"))
+        self.tabs.setTabText(6, t.get("tab_fin", "📊 Financials"))
+        self.tabs.setTabText(7, t.get("tab_top10", "🏆 Top 10"))
+        self.tabs.setTabText(8, t.get("tab_charts", "📊 Charts"))
 
         if hasattr(self, "chart_widget"):
             self.chart_widget.set_language(self.current_lang)
@@ -3081,6 +3108,159 @@ class QuantDashboard(QMainWindow):
 
     def show_top10_overview(self):
         self.tabs.setCurrentWidget(self.top10_overview_widget)
+
+    # =========================================================================
+    # SESSION PICKS TAB
+    # Forward-looking watchlist: up to 5 next-session / 3 medium-term /
+    # 3 long-term active picks, auto-refilled and achievement-checked by
+    # session_picks.refresh_session_picks() on every "Execute Matrix" run
+    # (see decision_matrix.DecisionMatrix.analyze_market). This tab only
+    # displays what's already in the DB + lets you manually clear a pick;
+    # it never decides which tickers get picked.
+    # =========================================================================
+    _PICKS_COLS = ["Ticker", "Picked On", "Target Gain", "Expected By", "Pick Price", "Current Price", "Change (%)", "Status", ""]
+    _ACHIEVED_COLS = ["Ticker", "Horizon", "Picked On", "Pick Price", "Achieved On", "Achieved Price", "Achieved (%)"]
+
+    def _make_picks_table(self, columns):
+        tbl = QTableWidget()
+        tbl.setColumnCount(len(columns))
+        tbl.setHorizontalHeaderLabels([tr(c) if c else "" for c in columns])
+        tbl.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        tbl.verticalHeader().setVisible(False)
+        return tbl
+
+    def _build_session_picks_tab(self):
+        container = QWidget()
+        v_layout = QVBoxLayout(container)
+        v_layout.setSpacing(4)
+
+        intro = QLabel(tr(
+            "🎯 The app's forward-looking watchlist — auto-picked and auto-refilled every time you run the matrix. "
+            "Each horizon has its own target gain (see the Target Gain column) — a pick moves to Recent "
+            "Achievements once it's up that much from the price it was picked at."
+        ))
+        intro.setWordWrap(True)
+        intro.setStyleSheet("font-size: 11px; color: #a0aec0; padding: 2px 2px 6px 2px;")
+        v_layout.addWidget(intro)
+
+        from config import SESSION_PICKS_EXPECTED_PCT
+        sections = [
+            ("short", f"🚀 Next Session (up to 5, target +{SESSION_PICKS_EXPECTED_PCT.get('short', 3):.0f}%)"),
+            ("medium", f"📈 Medium-Term (up to 3, target +{SESSION_PICKS_EXPECTED_PCT.get('medium', 8):.0f}%)"),
+            ("long", f"🏛️ Long-Term (up to 3, target +{SESSION_PICKS_EXPECTED_PCT.get('long', 15):.0f}%)"),
+        ]
+        self._picks_tables = {}
+        for horizon, title in sections:
+            label = QLabel(tr(title))
+            label.setStyleSheet("font-weight: bold; font-size: 14px; padding: 6px 2px 2px 2px;")
+            v_layout.addWidget(label)
+            tbl = self._make_picks_table(self._PICKS_COLS)
+            tbl.setMinimumHeight(160)
+            tbl.setMaximumHeight(160)
+            self._picks_tables[horizon] = tbl
+            v_layout.addWidget(tbl)
+
+        achieved_label = QLabel(tr("🏆 Recent Achievements"))
+        achieved_label.setStyleSheet("font-weight: bold; font-size: 14px; padding: 10px 2px 2px 2px;")
+        v_layout.addWidget(achieved_label)
+        self.tbl_picks_achieved = self._make_picks_table(self._ACHIEVED_COLS)
+        self.tbl_picks_achieved.setMinimumHeight(220)
+        v_layout.addWidget(self.tbl_picks_achieved)
+
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setWidget(container)
+        return scroll
+
+    def _remove_session_pick(self, pick_id):
+        reply = QMessageBox.question(
+            self, tr("Remove Pick"),
+            tr("Remove this pick from the watchlist? A new candidate will take its slot next time you run the matrix."),
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+        )
+        if reply == QMessageBox.StandardButton.Yes:
+            self.dbm.remove_pick(pick_id)
+            self.start_analysis()
+
+    def _fill_session_picks(self, session_picks: dict):
+        session_picks = session_picks or {}
+        # Current prices come from the same matrix run's buy_recommendations
+        # (cached as self._raw_buys_data by populate_tables) - no extra query.
+        price_map = {r["Ticker"]: r.get("Current Price") for r in (self._raw_buys_data or [])}
+        achieved_today_ids = {p["id"] for p in session_picks.get("achieved_today", [])}
+
+        for horizon, tbl in self._picks_tables.items():
+            picks = session_picks.get(horizon, [])
+            tbl.setRowCount(len(picks))
+            for row_idx, pick in enumerate(picks):
+                current_price = price_map.get(pick["ticker"])
+                ref_price = pick["ref_price"]
+                if current_price is not None and ref_price:
+                    pct = (current_price / ref_price - 1.0) * 100.0
+                    pct_str = f"{pct:+.2f}%"
+                else:
+                    pct, pct_str = None, "-"
+
+                expected_from = pick.get("expected_from")
+                expected_by = pick.get("expected_by")
+                if expected_from and expected_by:
+                    expected_str = f"{expected_from} → {expected_by}" if expected_from != expected_by else expected_from
+                else:
+                    expected_str = "-"
+
+                target_pct = pick.get("expected_pct")
+                target_str = f"+{target_pct:.0f}%" if target_pct is not None else "-"
+
+                values = [
+                    pick["ticker"],
+                    pick["pick_date"],
+                    target_str,
+                    expected_str,
+                    f"{ref_price:.4f}",
+                    f"{current_price:.4f}" if current_price is not None else "-",
+                    pct_str,
+                    tr("🟢 Active"),
+                ]
+                for col_idx, val in enumerate(values):
+                    item = QTableWidgetItem(str(val))
+                    item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
+                    item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+                    if col_idx == 6 and pct is not None:
+                        item.setForeground(QColor("#38a169" if pct >= 0 else "#e53e3e"))
+                        item.setFont(QFont("Inter", 10, QFont.Weight.Bold))
+                    tbl.setItem(row_idx, col_idx, item)
+
+                btn_remove = QPushButton(tr("✖ Remove"))
+                btn_remove.setStyleSheet("background-color: #742a2a; color: white; border-radius: 4px; padding: 2px 8px;")
+                btn_remove.clicked.connect(lambda _, pid=pick["id"]: self._remove_session_pick(pid))
+                tbl.setCellWidget(row_idx, 8, btn_remove)
+
+        # Recent Achievements — pulled fresh from the DB (full history, not
+        # just this run), with today's newly-achieved rows highlighted gold.
+        recent = self.dbm.get_recent_achieved_picks(limit=20)
+        self.tbl_picks_achieved.setRowCount(len(recent))
+        for row_idx, pick in enumerate(recent):
+            values = [
+                pick["ticker"],
+                tr({"short": "Next Session", "medium": "Medium-Term", "long": "Long-Term"}.get(pick["horizon"], pick["horizon"])),
+                pick["pick_date"],
+                f"{pick['ref_price']:.4f}",
+                pick["achieved_date"],
+                f"{pick['achieved_price']:.4f}",
+                f"+{pick['achieved_pct']:.2f}%",
+            ]
+            is_fresh = pick["id"] in achieved_today_ids
+            for col_idx, val in enumerate(values):
+                item = QTableWidgetItem(str(val))
+                item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
+                item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+                if is_fresh:
+                    item.setBackground(QColor("#975a16"))
+                    item.setForeground(Qt.GlobalColor.white)
+                    item.setFont(QFont("Inter", 10, QFont.Weight.Bold))
+                elif col_idx == 6:
+                    item.setForeground(QColor("#38a169"))
+                self.tbl_picks_achieved.setItem(row_idx, col_idx, item)
 
     def browse_folder(self):
         selected_dir = QFileDialog.getExistingDirectory(self, "Select Folder", self.txt_scan_dir.text())
@@ -3214,8 +3394,9 @@ class QuantDashboard(QMainWindow):
         self.progress_bar.setValue(pct)
         self.lbl_status.setText(msg)
 
-    def populate_tables(self, buys, exits, top10, closed_trades, fin_stmt, sector_summary, breakout_watchlist=None, portfolio_risk=None, _push_cloud_stats=True):
+    def populate_tables(self, buys, exits, top10, closed_trades, fin_stmt, sector_summary, breakout_watchlist=None, portfolio_risk=None, session_picks=None, _push_cloud_stats=True):
         breakout_watchlist = breakout_watchlist or []
+        session_picks = session_picks or {}
         self._set_ui_controls_enabled(True)
         self.lbl_status.setText(tr("✅ Quantitative signal matrix & sector heatmaps successfully updated."))
         self.refresh_account_header(fin_stmt)
@@ -3229,6 +3410,7 @@ class QuantDashboard(QMainWindow):
             buys=buys, exits=exits, top10=top10, closed_trades=closed_trades,
             fin_stmt=fin_stmt, sector_summary=sector_summary,
             breakout_watchlist=breakout_watchlist, portfolio_risk=portfolio_risk,
+            session_picks=session_picks,
         )
 
         warnings = (portfolio_risk or {}).get("warnings", [])
@@ -3252,6 +3434,7 @@ class QuantDashboard(QMainWindow):
             self._fill_matrix_table(self.tbl_top_breakout, top10.get("⚡ BREAKOUT BUY", []))
             self._fill_matrix_table(self.tbl_top_accum, top10.get("📈 ACCUMULATE", []))
             self._fill_matrix_table(self.tbl_top_dip, top10.get("⏳ BUY ON DIP", []))
+            self._fill_session_picks(session_picks)
 
             # Columns whose *values* (not just headers) are translatable UI
             # vocabulary rather than raw numbers/tickers/dates.
@@ -3437,6 +3620,22 @@ class QuantDashboard(QMainWindow):
         if hasattr(self, "chart_widget"):
             self.chart_widget.populate_selector()
         self.apply_filters()
+
+        # Guarded by _push_cloud_stats (False on a language-switch replay of
+        # cached results) so this popup only fires for a genuinely fresh
+        # matrix run, never re-shown just from toggling EN/AR.
+        achieved_today = session_picks.get("achieved_today") or []
+        if achieved_today and _push_cloud_stats:
+            lines = "\n".join(
+                f"  • {p['ticker']}  (+{p['achieved_pct']:.2f}%, picked {p['pick_date']} @ {p['ref_price']:.4f})"
+                for p in achieved_today
+            )
+            QMessageBox.information(
+                self, tr("🎯 Session Pick Achieved!"),
+                tr("{n} pick(s) just crossed +3% from their pick price:\n\n{lines}\n\nSee the Session Picks tab for details.").format(
+                    n=len(achieved_today), lines=lines,
+                ),
+            )
 
     def _fill_matrix_table(self, table_view, data_list):
         model = table_view.model()

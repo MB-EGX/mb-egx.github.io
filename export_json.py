@@ -207,8 +207,20 @@ def export_market_matrix():
     # not unpacked into a used variable so it can't accidentally end up in
     # the public payload below. The desktop app (app_gui.py), which reads
     # its own private local DB, is the correct place to display this.
-    buys, exits, top10, closed_trades, fin_stmt, sectors, breakout_watchlist, _portfolio_risk = matrix.analyze_market()
+    buys, exits, top10, closed_trades, fin_stmt, sectors, breakout_watchlist, _portfolio_risk, session_picks = matrix.analyze_market()
     last_data_date = dbm.get_latest_market_date()
+
+    # Overwrite with the FULL set of picks achieved on this session date,
+    # not just whatever this one analyze_market() call happened to detect.
+    # If publish.py runs more than once on the same trading day, each run
+    # only re-checks currently-ACTIVE picks (an already-achieved pick is
+    # skipped), so a later run's own "achieved_today" would only contain
+    # that run's newly-crossed picks. post_state.py/social_poster.py only
+    # ever read this field from market_data.json (they're deliberately
+    # decoupled from the local DuckDB — see social_poster.py's docstring),
+    # so it needs to be the complete day's list every time or an earlier
+    # same-day achievement could be missed by the achievement post.
+    session_picks["achieved_today"] = dbm.get_achievements_for_date(last_data_date)
 
     # PRIVACY: strip the cash-derived "Suggested Shares (1% Risk)" column
     # from every row before it can reach the public JSON.
@@ -228,6 +240,12 @@ def export_market_matrix():
         "sectors": sectors,
         "top_10": top10,
         "breakout_watchlist": breakout_watchlist,
+        # Public, non-sensitive (see session_picks.py) - the forward-looking
+        # watchlist tab's current state, including any picks that crossed
+        # +3% on THIS run ("achieved_today"). post_state.py/social_poster.py
+        # read achieved_today off this same field to decide whether an
+        # "achievement" post is due.
+        "session_picks": session_picks,
         "chart_history": chart_history,
         # Public, non-sensitive (sector classification, not account data) -
         # lets the web client compute its OWN portfolio concentration risk

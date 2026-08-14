@@ -288,6 +288,9 @@
             <button onclick="switchTab('tab-breakout')" id="btn-tab-breakout" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap">
                 🎯 Breakouts
             </button>
+            <button onclick="switchTab('tab-picks')" id="btn-tab-picks" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap" data-i18n="tab_session_picks">
+                🚀 Session Picks
+            </button>
             <button onclick="switchTab('tab-history')" id="btn-tab-history" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap">
                 📜 Trade History & Realized P&L
             </button>
@@ -423,6 +426,36 @@
                         <tr><td colspan="11" class="p-8 text-center text-textmuted font-sans" data-i18n="loading_breakout">Loading breakout watchlist...</td></tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- TAB: SESSION PICKS -->
+        <div id="tab-picks" class="bg-panelbg rounded-b-xl border border-t-0 border-bordercol p-4 shadow-xl hidden space-y-5">
+            <div class="flex justify-between items-center flex-wrap gap-2">
+                <p class="text-textmuted text-xs max-w-2xl" data-i18n="lbl_session_picks_intro">
+                    Forward-looking watchlist, auto-picked and auto-refilled from the same matrix as the tables above. Each horizon carries its own target gain — a pick is flagged as Achieved Today once it's up that much from the price it was picked at.
+                </p>
+                <span class="text-textmuted text-[11px] font-mono" id="picks-session-date"></span>
+            </div>
+            <div id="session-picks-container" class="grid grid-cols-1 lg:grid-cols-3 gap-4"></div>
+            <div>
+                <h3 class="font-bold text-sm text-emerald-400 border-b border-bordercol pb-2 mb-3" data-i18n="hdr_recent_achievements">🏆 Achieved Today</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse whitespace-nowrap font-mono text-xs">
+                        <thead class="bg-[#2d3748] text-white font-sans">
+                            <tr>
+                                <th class="p-2.5 border border-darkbg" data-i18n="hdr_ticker">Ticker</th>
+                                <th class="p-2.5 border border-darkbg font-sans" data-i18n="hdr_horizon">Horizon</th>
+                                <th class="p-2.5 border border-darkbg" data-i18n="hdr_picked_on">Picked On</th>
+                                <th class="p-2.5 border border-darkbg" data-i18n="hdr_pick_price">Pick Price</th>
+                                <th class="p-2.5 border border-darkbg" data-i18n="hdr_achieved_on">Achieved On</th>
+                                <th class="p-2.5 border border-darkbg" data-i18n="hdr_achieved_price">Achieved Price</th>
+                                <th class="p-2.5 border border-darkbg" data-i18n="hdr_achieved_pct">Achieved (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-picks-achieved" class="divide-y divide-bordercol/50"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -1147,6 +1180,17 @@
                 style_line: "📉 Line", style_candle: "🕯️ Candles", toggle_sr: "📐 Support / Resistance",
                 // Table headers
                 hdr_ticker: "Ticker", hdr_action: "Action", hdr_score: "Score", hdr_price: "Price",
+                hdr_horizon: "Horizon", hdr_picked_on: "Picked On", hdr_pick_price: "Pick Price",
+                hdr_achieved_on: "Achieved On", hdr_achieved_price: "Achieved Price", hdr_achieved_pct: "Achieved (%)",
+                hdr_recent_achievements: "🏆 Recent Achievements",
+                tab_session_picks: "🚀 Session Picks",
+                lbl_session_picks_intro: "Forward-looking watchlist, auto-picked and auto-refilled from the same matrix as the tables above. Each horizon carries its own target gain — a pick is flagged as Achieved Today once it's up that much from the price it was picked at.",
+                lbl_no_active_picks: "No active picks right now",
+                lbl_no_achievements: "No achievements yet",
+                lbl_picks_target: "Target",
+                lbl_picks_current: "Current",
+                lbl_picks_since_pick: "since picked",
+                lbl_picks_expected_by: "Expected by",
                 hdr_entry_vwap: "Entry (VWAP)", hdr_stop_loss: "Stop-Loss", hdr_shares_risk: "Shares (1% Risk)",
                 hdr_proj_gain: "Proj. Gain %", hdr_pattern_conf: "Pattern Conf %", hdr_trend: "Trend",
                 hdr_vol_zscore: "Vol Z-Score", hdr_bollinger: "Bollinger %B", hdr_avg_vol: "Avg Vol (20D)",
@@ -1288,6 +1332,17 @@
                 style_line: "📉 خط", style_candle: "🕯️ شموع", toggle_sr: "📐 الدعم / المقاومة",
                 // Table headers
                 hdr_ticker: "الرمز", hdr_action: "الإجراء", hdr_score: "الدرجة", hdr_price: "السعر",
+                hdr_horizon: "المدى", hdr_picked_on: "تاريخ الترشيح", hdr_pick_price: "سعر الترشيح",
+                hdr_achieved_on: "تاريخ التحقق", hdr_achieved_price: "سعر التحقق", hdr_achieved_pct: "نسبة التحقق (%)",
+                hdr_recent_achievements: "🏆 تحقق اليوم",
+                tab_session_picks: "🚀 ترشيحات الجلسة",
+                lbl_session_picks_intro: "قائمة ترشيحات استشرافية، يتم اختيارها وتجديدها تلقائيًا من نفس المصفوفة أعلاه. لكل مدى زمني هدف ربح خاص به — يُصنَّف الترشيح ضمن (تحقق اليوم) بمجرد ارتفاعه بنفس تلك النسبة عن سعر الترشيح.",
+                lbl_no_active_picks: "لا توجد ترشيحات نشطة حاليًا",
+                lbl_no_achievements: "لا توجد إنجازات بعد",
+                lbl_picks_target: "الهدف",
+                lbl_picks_current: "الحالي",
+                lbl_picks_since_pick: "منذ الترشيح",
+                lbl_picks_expected_by: "متوقع بحلول",
                 hdr_entry_vwap: "سعر الدخول (VWAP)", hdr_stop_loss: "وقف الخسارة", hdr_shares_risk: "الأسهم (مخاطرة 1%)",
                 hdr_proj_gain: "الربح المتوقع %", hdr_pattern_conf: "ثقة النموذج %", hdr_trend: "الاتجاه",
                 hdr_vol_zscore: "انحراف الحجم", hdr_bollinger: "بولينجر %B", hdr_avg_vol: "متوسط الحجم (20 يوم)",
@@ -1583,6 +1638,7 @@
                 renderSectors();
                 renderTop10();
                 renderBreakouts();
+                renderSessionPicks();
             }
             renderAccountBar();
             renderPortfolio();
@@ -1632,7 +1688,7 @@
 
         // Modals & Tabs
         function switchTab(tabId) {
-            ['tab-matrix', 'tab-sectors', 'tab-exits', 'tab-breakout', 'tab-history', 'tab-fin', 'tab-top10', 'tab-charts'].forEach(id => {
+            ['tab-matrix', 'tab-sectors', 'tab-exits', 'tab-breakout', 'tab-picks', 'tab-history', 'tab-fin', 'tab-top10', 'tab-charts'].forEach(id => {
                 document.getElementById(id).classList.add('hidden');
                 document.getElementById('btn-' + id).classList.remove('tab-active');
             });
@@ -2555,6 +2611,78 @@
             });
         }
 
+        function renderSessionPicks() {
+            const container = document.getElementById('session-picks-container');
+            const achievedBody = document.getElementById('tbody-picks-achieved');
+            const dateEl = document.getElementById('picks-session-date');
+            if (!container || !globalData) return;
+            container.innerHTML = '';
+            const sp = globalData.session_picks || {};
+            dateEl.innerText = sp.session_date ? `Session: ${sp.session_date}` : '';
+
+            // Current price for each ticker comes from the same market_matrix
+            // rows the rest of the dashboard already uses — no separate fetch.
+            const priceMap = {};
+            (globalData.market_matrix || []).forEach(r => { priceMap[r.Ticker] = r["Current Price"]; });
+
+            const sections = [
+                { key: "short", title: "🚀 Next Session", accent: "text-emerald-400" },
+                { key: "medium", title: "📈 Medium-Term", accent: "text-sky-400" },
+                { key: "long", title: "🏛️ Long-Term", accent: "text-amber-400" },
+            ];
+
+            sections.forEach(sec => {
+                const picks = sp[sec.key] || [];
+                const targetPct = picks.length && picks[0].expected_pct != null ? picks[0].expected_pct : null;
+                const titleWithTarget = targetPct != null ? `${sec.title} (${tt('lbl_picks_target')} +${targetPct.toFixed(0)}%)` : sec.title;
+
+                let rowsHtml = picks.map(p => {
+                    const current = priceMap[p.ticker];
+                    const pct = (current != null && p.ref_price) ? ((current / p.ref_price - 1) * 100) : null;
+                    const pctStr = pct != null ? `${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%` : '-';
+                    const pctColor = pct == null ? 'text-textmuted' : (pct >= 0 ? 'text-emerald-400' : 'text-rose-400');
+                    const expectedStr = (p.expected_from && p.expected_by)
+                        ? (p.expected_from === p.expected_by ? p.expected_from : `${p.expected_from} → ${p.expected_by}`)
+                        : '-';
+                    return `
+                        <div class="bg-panelbg rounded-lg p-3 border border-bordercol/60 space-y-1">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-sky-400 font-mono">${escapeHtml(p.ticker)}</span>
+                                <span class="font-mono font-bold ${pctColor}">${pctStr}</span>
+                            </div>
+                            <div class="text-[11px] text-textmuted font-mono flex justify-between">
+                                <span>${tt('hdr_picked_on')}: ${escapeHtml(p.pick_date)}</span>
+                                <span>${p.ref_price != null ? p.ref_price : '-'} → ${current != null ? current : '-'} EGP</span>
+                            </div>
+                            <div class="text-[11px] text-textmuted font-sans">${tt('lbl_picks_expected_by')}: ${escapeHtml(expectedStr)}</div>
+                        </div>
+                    `;
+                }).join('');
+
+                const box = document.createElement('div');
+                box.className = 'bg-darkbg p-4 rounded-xl border border-bordercol shadow space-y-3';
+                box.innerHTML = `
+                    <h3 class="font-bold text-sm ${sec.accent} border-b border-bordercol pb-2">${titleWithTarget}</h3>
+                    <div class="space-y-2">${rowsHtml || `<div class="p-4 text-center text-textmuted font-sans text-xs">${tt('lbl_no_active_picks')}</div>`}</div>
+                `;
+                container.appendChild(box);
+            });
+
+            const achieved = sp.achieved_today || [];
+            const horizonLabels = { short: "Next Session", medium: "Medium-Term", long: "Long-Term" };
+            achievedBody.innerHTML = achieved.length ? achieved.map(a => `
+                <tr class="border-b border-bordercol/40">
+                    <td class="p-2 font-bold text-sky-400">${escapeHtml(a.ticker)}</td>
+                    <td class="p-2 font-sans text-textmuted">${horizonLabels[a.horizon] || escapeHtml(a.horizon || '-')}</td>
+                    <td class="p-2 text-textmuted">${escapeHtml(a.pick_date)}</td>
+                    <td class="p-2 text-textmain">${a.ref_price}</td>
+                    <td class="p-2 text-textmuted">${escapeHtml(a.achieved_date)}</td>
+                    <td class="p-2 text-textmain">${a.achieved_price}</td>
+                    <td class="p-2 text-emerald-400 font-bold">+${Number(a.achieved_pct).toFixed(2)}%</td>
+                </tr>
+            `).join('') : `<tr><td colspan="7" class="p-4 text-center text-textmuted font-sans">${tt('lbl_no_achievements')}</td></tr>`;
+        }
+
         function applyFilters() {
             const tbody = document.getElementById('tbody-matrix');
             tbody.innerHTML = '';
@@ -2621,7 +2749,7 @@
                 if (typeof raw !== 'object' || raw === null) throw new Error('Invalid data format');
                 globalData = raw;
                 document.getElementById('val-last-date').innerText = escapeHtml(globalData.last_data_date || "N/A");
-                populateSelects(); applyFilters(); renderSectors(); renderTop10(); renderBreakouts(); renderPortfolio(); renderHistory(); renderAccountBar();
+                populateSelects(); applyFilters(); renderSectors(); renderTop10(); renderBreakouts(); renderSessionPicks(); renderPortfolio(); renderHistory(); renderAccountBar();
             } catch (error) {
                 console.error("Failed to load market data:", error);
                 document.getElementById('tbody-matrix').innerHTML = `<tr><td colspan="21" class="p-8 text-center text-rose-400 font-sans">⚠️ ${tt('lbl_data_unavailable')}</td></tr>`;

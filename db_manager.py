@@ -257,6 +257,48 @@ class DatabaseManager:
                     target_value DOUBLE    -- meaning depends on target_mode
                 );
             """)
+            # Session Picks — see session_picks.py. A "pick" is a ticker
+            # stamped with the price/date it was chosen at for a given
+            # horizon; it stays 'active' until either it hits the
+            # horizon's SESSION_PICKS_EXPECTED_PCT gain (-> 'achieved', slot freed for
+            # a new pick) or is manually cleared from the desktop app.
+            # id uses a sequence rather than the ticker as PK because the
+            # same ticker can cycle through this table many times over
+            # (achieved, then picked again later) and we want each cycle
+            # to keep its own achieved_date/achieved_price history.
+            conn.execute("CREATE SEQUENCE IF NOT EXISTS seq_session_picks_id START 1;")
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS session_picks (
+                    id INTEGER PRIMARY KEY DEFAULT nextval('seq_session_picks_id'),
+                    ticker VARCHAR,
+                    horizon VARCHAR,        -- 'short' | 'medium' | 'long'
+                    pick_date DATE,
+                    ref_price DOUBLE,
+                    status VARCHAR DEFAULT 'active',  -- 'active' | 'achieved'
+                    achieved_date DATE,
+                    achieved_price DOUBLE,
+                    achieved_pct DOUBLE
+                );
+            """)
+            # Manual-removal memory (see remove_pick / get_excluded_tickers
+            # below). Without this, clicking "Remove" just deletes the row
+            # and re-runs the matrix - but refresh_session_picks() refills
+            # any freed slot from the SAME ranked candidate pool, so on the
+            # SAME session date the ticker you just removed is very often
+            # still the #1 candidate and gets immediately re-picked into
+            # its own freed slot. That's the "I click yes, it runs, but the
+            # ticker isn't removed" bug. Recording the removal here lets the
+            # refill step skip that ticker for the rest of that session
+            # date only - a new/different session date (real new data) is
+            # free to pick it again if it's still a strong candidate then.
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS session_picks_excluded (
+                    ticker VARCHAR,
+                    horizon VARCHAR,
+                    excluded_date DATE,
+                    PRIMARY KEY (ticker, horizon, excluded_date)
+                );
+            """)
 
             count_cash = conn.execute("SELECT COUNT(*) FROM account_cash;").fetchone()[0]
             if count_cash == 0:
@@ -289,6 +331,120 @@ class DatabaseManager:
             except Exception as e:
                 logger.error(f"get_latest_market_date() failed: {e}")
                 return "N/A"
+
+    # =========================================================================
+    # SESSION PICKS — see session_picks.py for the selection/achievement logic
+    # that drives these. This class only does storage; it never decides
+    # which tickers get picked or what counts as "achieved".
+    # =========================================================================
+    def get_active_picks(self, horizon: str = None) -> list:
+        """Active (not-yet-achieved) picks, newest first. Pass a horizon
+        ('short'/'medium'/'long') to filter to just that bucket, or omit
+        it to get every active pick across all three."""
+        query = "SELECT id, ticker, horizon, pick_date, ref_price FROM session_picks WHERE status = 'active'"
+        params = ()
+        if horizon:
+            query += " AND horizon = ?"
+            params = (horizon,)
+        query += " ORDER BY pick_date DESC, id DESC;"
+        with self.get_connection() as conn:
+            rows = conn.cursor().execute(query, params).fetchall()
+        return [
+            {"id": r[0], "ticker": r[1], "horizon": r[2], "pick_date": str(r[3]), "ref_price": float(r[4])}
+            for r in rows
+        ]
+
+    def add_pick(self, ticker: str, horizon: str, pick_date: str, ref_price: float):
+        ticker = self.normalize_symbol(ticker)
+        with self.get_connection() as conn:
+            conn.execute(
+                "INSERT INTO session_picks (ticker, horizon, pick_date, ref_price, status) "
+                "VALUES (?, ?, ?, ?, 'active');",
+                (ticker, horizon, str(pick_date), float(ref_price)),
+            )
+
+    def mark_pick_achieved(self, pick_id: int, achieved_date: str, achieved_price: float, achieved_pct: float):
+        with self.get_connection() as conn:
+            conn.execute(
+                "UPDATE session_picks SET status = 'achieved', achieved_date = ?, "
+                "achieved_price = ?, achieved_pct = ? WHERE id = ?;",
+                (str(achieved_date), float(achieved_price), float(achieved_pct), int(pick_id)),
+            )
+
+    def remove_pick(self, pick_id: int):
+        """Manual removal from the desktop app (e.g. you've changed your mind
+        on a pick) — frees its slot for the next auto-refill same as an
+        achievement would, just without the achieved_* fields being set.
+
+        Also records the (ticker, horizon) into session_picks_excluded for
+        TODAY's session date, so the very next matrix run (triggered right
+        after this, from the same session data) doesn't just hand the same
+        ticker its freed slot back — see get_excluded_tickers() and
+        session_picks.refresh_session_picks()."""
+        session_date = self.get_latest_market_date()
+        with self.get_connection() as conn:
+            row = conn.cursor().execute(
+                "SELECT ticker, horizon FROM session_picks WHERE id = ?;", (int(pick_id),)
+            ).fetchone()
+            conn.execute("DELETE FROM session_picks WHERE id = ?;", (int(pick_id),))
+            if row and session_date and session_date != "N/A":
+                ticker, horizon = row
+                conn.execute(
+                    "INSERT INTO session_picks_excluded (ticker, horizon, excluded_date) "
+                    "VALUES (?, ?, ?) ON CONFLICT DO NOTHING;",
+                    (ticker, horizon, str(session_date)),
+                )
+
+    def get_excluded_tickers(self, horizon: str, session_date: str) -> set:
+        """Tickers manually removed from this horizon on this exact session
+        date (see remove_pick) — skip these when refilling today's slots."""
+        if not session_date or session_date == "N/A":
+            return set()
+        with self.get_connection() as conn:
+            rows = conn.cursor().execute(
+                "SELECT ticker FROM session_picks_excluded WHERE horizon = ? AND excluded_date = ?;",
+                (horizon, str(session_date)),
+            ).fetchall()
+        return {r[0] for r in rows}
+
+    def get_achievements_for_date(self, achieved_date: str) -> list:
+        """Picks that were marked achieved on a specific session date —
+        used to build/re-build the social 'achievement' post for that day
+        without depending on it still being in the same process run."""
+        with self.get_connection() as conn:
+            rows = conn.cursor().execute(
+                "SELECT id, ticker, horizon, pick_date, ref_price, achieved_date, achieved_price, achieved_pct "
+                "FROM session_picks WHERE status = 'achieved' AND achieved_date = ? "
+                "ORDER BY achieved_pct DESC;",
+                (str(achieved_date),),
+            ).fetchall()
+        return [
+            {
+                "id": r[0], "ticker": r[1], "horizon": r[2], "pick_date": str(r[3]),
+                "ref_price": float(r[4]), "achieved_date": str(r[5]),
+                "achieved_price": float(r[6]), "achieved_pct": float(r[7]),
+            }
+            for r in rows
+        ]
+
+    def get_recent_achieved_picks(self, limit: int = 20) -> list:
+        """Most recently achieved picks across all horizons/dates, newest
+        first — powers the desktop app's 'Recent Achievements' list."""
+        with self.get_connection() as conn:
+            rows = conn.cursor().execute(
+                "SELECT id, ticker, horizon, pick_date, ref_price, achieved_date, achieved_price, achieved_pct "
+                "FROM session_picks WHERE status = 'achieved' "
+                "ORDER BY achieved_date DESC, achieved_pct DESC LIMIT ?;",
+                (int(limit),),
+            ).fetchall()
+        return [
+            {
+                "id": r[0], "ticker": r[1], "horizon": r[2], "pick_date": str(r[3]),
+                "ref_price": float(r[4]), "achieved_date": str(r[5]),
+                "achieved_price": float(r[6]), "achieved_pct": float(r[7]),
+            }
+            for r in rows
+        ]
 
     def get_sector_map(self) -> dict:
         with self.get_connection() as conn:

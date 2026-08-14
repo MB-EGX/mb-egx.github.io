@@ -116,79 +116,45 @@ def fetch_market_data(pages_base_url: str) -> dict:
 
 
 # =============================================================================
-# 2. PICK THE 3 DAILY HIGHLIGHTS
+# 2. PICK THE DAILY HIGHLIGHTS
 # =============================================================================
+# The horizons/quotas here come straight from the app's own Session Picks
+# watchlist (session_picks.py / config.SESSION_PICKS_QUOTA) — up to 5
+# next-session, 3 medium-term, 3 long-term tickers, already auto-picked
+# and auto-refilled by DecisionMatrix.analyze_market(). This no longer
+# re-derives its own "best 1" pick from top10/sectors like the old
+# single-ticker version did — it just reads the SAME picks the desktop
+# app's Session Picks tab shows, so the social post and the app can never
+# disagree about what's currently on the watchlist.
+_HORIZON_LABELS = {"short": "next_session", "medium": "medium_term", "long": "long_term"}
+
+
+def _enrich_pick(pick: dict, by_ticker: dict) -> dict:
+    """Merge a stored pick (ticker/pick_date/ref_price) with that ticker's
+    current matrix row (score, RSI, price, ...) plus the % move since it
+    was picked, for display purposes."""
+    row = dict(by_ticker.get(pick.get("ticker"), {}))
+    ref_price = pick.get("ref_price")
+    current_price = row.get("Current Price")
+    pct_since_pick = None
+    if current_price is not None and ref_price:
+        pct_since_pick = round((current_price / ref_price - 1.0) * 100.0, 2)
+    row.update(pick)
+    row["pct_since_pick"] = pct_since_pick
+    return row
+
+
 def pick_daily_highlights(market_data: dict) -> dict:
     matrix = market_data.get("market_matrix", [])
-    top10 = market_data.get("top_10", {})
-    sectors = market_data.get("sectors", [])
     by_ticker = {r["Ticker"]: r for r in matrix}
-    used: set = set()
+    session_picks = market_data.get("session_picks", {})
 
-    # --- Next session ---
-    next_pool = list(top10.get("🔥 STRONG BUY", []))
-    for cat, rows in top10.items():
-        if "BREAKOUT BUY" in cat:
-            next_pool.extend(rows)
-    next_pool.sort(key=lambda r: r.get("Rank Score", 0), reverse=True)
-    next_session = next_pool[0] if next_pool else None
-    if next_session:
-        used.add(next_session["Ticker"])
-
-    # --- Medium term ---
-    med_pool = [
-        r for r in (top10.get("📈 ACCUMULATE", []) + top10.get("⏳ BUY ON DIP", []))
-        if r["Ticker"] not in used
-    ]
-    med_pool.sort(key=lambda r: r.get("Rank Score", 0), reverse=True)
-    medium_term = med_pool[0] if med_pool else None
-    if medium_term:
-        used.add(medium_term["Ticker"])
-
-    # --- Long term ---
-    long_term, sector_context = None, None
-    strong_sectors = [s for s in sectors if "STRONG INFLOW" in s.get("Sector Status", "")]
-    strong_sectors.sort(key=lambda s: s.get("Bullish Breadth (%)", 0), reverse=True)
-    for s in strong_sectors:
-        leader = s.get("Sector Leader")
-        if leader in by_ticker and leader not in used:
-            long_term = by_ticker[leader]
-            sector_context = s
-            break
-    if long_term is None:
-        fallback_pool = [r for r in matrix if r["Ticker"] not in used]
-        fallback_pool.sort(key=lambda r: r.get("Rank Score", 0), reverse=True)
-        long_term = fallback_pool[0] if fallback_pool else None
-
-    return {
-        "next_session": next_session,
-        "medium_term": medium_term,
-        "long_term": long_term,
-        "long_term_sector": sector_context,
-        "last_data_date": market_data.get("last_data_date"),
+    result = {
+        _HORIZON_LABELS[h]: [_enrich_pick(p, by_ticker) for p in session_picks.get(h, [])]
+        for h in ("short", "medium", "long")
     }
-
-
-def build_evidence(row: dict | None, sector_context: dict | None = None) -> list[str]:
-    if row is None:
-        return []
-    ev = [
-        f"Composite score {row.get('Rank Score', '—')}/100",
-        f"RSI-14: {row.get('RSI-14', '—')}  ·  ADX-14: {row.get('ADX-14', '—')} ({row.get('Trend Class', '—')})",
-    ]
-    pat_conf = row.get("Pattern Conf (%)")
-    if pat_conf not in (None, "N/A"):
-        ev.append(
-            f"Chart pattern confidence {pat_conf}% · projected +{row.get('Projected Gain (%)', '—')}%"
-        )
-    if row.get("Data Confidence"):
-        ev.append(f"Data confidence: {row['Data Confidence']}")
-    if sector_context:
-        ev.append(
-            f"Sector leader — {sector_context['Sector']} ({sector_context['Sector Status']}, "
-            f"{sector_context['Bullish Breadth (%)']}% of sector bullish)"
-        )
-    return ev
+    result["last_data_date"] = market_data.get("last_data_date")
+    return result
 
 
 # =============================================================================
@@ -355,60 +321,125 @@ def _font(name: str, size: int) -> ImageFont.FreeTypeFont:
         return ImageFont.load_default()
 
 
-def _draw_section(draw, x, y, w, title, row, evidence, accent):
-    draw.rounded_rectangle([x, y, x + w, y + 330], radius=18, fill=PANEL)
-    f_title = _font("DejaVuSans-Bold.ttf", 30)
-    f_ticker = _font("DejaVuSans-Bold.ttf", 56)
-    f_body = _font("DejaVuSans.ttf", 26)
-    f_small = _font("DejaVuSans.ttf", 22)
+def _draw_pick_row(draw, x, y, w, row_h, pick, fonts):
+    f_ticker, f_body = fonts
+    draw.rounded_rectangle([x, y + 4, x + w, y + row_h - 6], radius=8, fill=PANEL)
+    ticker = pick.get("Ticker") or pick.get("ticker", "—")
+    draw.text((x + 20, y + 12), ticker, font=f_ticker, fill=TEXT_MAIN)
 
-    draw.text((x + 30, y + 24), title, font=f_title, fill=accent)
-    if row is None:
-        draw.text((x + 30, y + 90), "No qualifying setup today", font=f_body, fill=TEXT_MUTED)
-        return
-    ticker = row.get("Ticker", "—")
-    draw.text((x + 30, y + 76), ticker, font=f_ticker, fill=TEXT_MAIN)
-
-    price = row.get("Current Price")
+    bits = []
+    score = pick.get("Rank Score")
+    if score is not None:
+        bits.append(f"score {score}/100")
+    price = pick.get("Current Price")
     if price is not None:
-        draw.text((x + 30, y + 150), f"{price} EGP", font=f_body, fill=TEXT_MUTED)
-
-    ey = y + 195
-    for line in evidence[:3]:
-        draw.text((x + 30, ey), f"• {line}", font=f_small, fill=TEXT_MAIN)
-        ey += 32
+        bits.append(f"{price} EGP")
+    pct = pick.get("pct_since_pick")
+    if pct is not None:
+        bits.append(f"{pct:+.2f}% since picked")
+    draw.text((x + 240, y + 16), "  ·  ".join(bits) or "—", font=f_body, fill=TEXT_MUTED)
 
 
 def render_post_image(highlights: dict, out_path: Path) -> Path:
-    img = Image.new("RGB", (1080, 1350), BG)
+    """One card listing every active Session Pick, grouped by horizon —
+    up to 5 next-session + 3 medium-term + 3 long-term rows (see
+    config.SESSION_PICKS_QUOTA). Height grows with however many picks are
+    actually active so a thin watchlist doesn't leave a mostly-empty card
+    and a full one never gets cut off. Each section header shows that
+    horizon's own target % gain (config.SESSION_PICKS_EXPECTED_PCT), read
+    off the first pick in that bucket since every pick in a bucket shares
+    the same horizon-wide target — falls back to config directly if the
+    bucket is empty."""
+    from config import SESSION_PICKS_EXPECTED_PCT
+
+    def _section_title(base_title, horizon_key, rows):
+        pct = (rows[0].get("expected_pct") if rows else None) or SESSION_PICKS_EXPECTED_PCT.get(horizon_key)
+        return f"{base_title} (target +{pct:.0f}%)" if pct is not None else base_title
+
+    sections = [
+        (_section_title("🚀 NEXT SESSION", "short", highlights.get("next_session", [])), highlights.get("next_session", []), GREEN),
+        (_section_title("📈 MEDIUM TERM", "medium", highlights.get("medium_term", [])), highlights.get("medium_term", []), ACCENT),
+        (_section_title("🏛️ LONG TERM", "long", highlights.get("long_term", [])), highlights.get("long_term", []), AMBER),
+    ]
+    ROW_H, HEADER_H, SECTION_H, FOOTER_H = 62, 200, 46, 70
+    total_rows = sum(max(len(rows), 1) for _, rows, _ in sections)
+    height = HEADER_H + SECTION_H * len(sections) + ROW_H * total_rows + FOOTER_H + 30
+
+    img = Image.new("RGB", (1080, height), BG)
     draw = ImageDraw.Draw(img)
 
     f_brand = _font("DejaVuSans-Bold.ttf", 44)
     f_tagline = _font("DejaVuSans.ttf", 24)
     f_date = _font("DejaVuSans.ttf", 22)
+    f_section = _font("DejaVuSans-Bold.ttf", 26)
+    f_row_ticker = _font("DejaVuSans-Bold.ttf", 26)
+    f_row_body = _font("DejaVuSans.ttf", 20)
 
     draw.text((40, 40), "MB-EGX", font=f_brand, fill=ACCENT)
-    draw.text((40, 96), "Daily Ticker Highlights", font=f_tagline, fill=TEXT_MUTED)
+    draw.text((40, 96), "Session Picks", font=f_tagline, fill=TEXT_MUTED)
     date_str = highlights.get("last_data_date") or datetime.now(timezone.utc).strftime("%Y-%m-%d")
     draw.text((40, 130), f"Market data as of {date_str}", font=f_date, fill=TEXT_MUTED)
 
-    sections = [
-        ("NEXT SESSION", highlights["next_session"], GREEN,
-         build_evidence(highlights["next_session"])),
-        ("MEDIUM TERM", highlights["medium_term"], ACCENT,
-         build_evidence(highlights["medium_term"])),
-        ("LONG TERM / SECTOR LEADER", highlights["long_term"], AMBER,
-         build_evidence(highlights["long_term"], highlights.get("long_term_sector"))),
-    ]
-    y = 200
-    for title, row, accent, evidence in sections:
-        draw.rounded_rectangle([40, y, 46, y + 330], radius=3, fill=accent)
-        _draw_section(draw, 40, y, 1000, title, row, evidence, accent)
-        y += 360
+    y = HEADER_H
+    for title, rows, accent in sections:
+        draw.text((40, y), title, font=f_section, fill=accent)
+        y += SECTION_H
+        if not rows:
+            draw.text((60, y + 10), "No active picks right now", font=f_row_body, fill=TEXT_MUTED)
+            y += ROW_H
+            continue
+        for pick in rows:
+            _draw_pick_row(draw, 40, y, 1000, ROW_H, pick, (f_row_ticker, f_row_body))
+            y += ROW_H
 
     f_disclaimer = _font("DejaVuSans.ttf", 18)
     draw.text(
-        (40, 1300),
+        (40, height - 44),
+        "Educational content, not investment advice. Not financial advice.",
+        font=f_disclaimer, fill=TEXT_MUTED,
+    )
+
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    img.save(out_path, "PNG")
+    return out_path
+
+
+def render_achievement_image(achievements: list[dict], last_data_date: str | None, out_path: Path) -> Path:
+    """One card announcing every Session Pick that crossed its horizon's
+    own target % gain this run (config.SESSION_PICKS_EXPECTED_PCT — see
+    session_picks.py)."""
+    ROW_H, HEADER_H, FOOTER_H = 74, 200, 70
+    height = HEADER_H + ROW_H * max(len(achievements), 1) + FOOTER_H + 30
+
+    img = Image.new("RGB", (1080, height), BG)
+    draw = ImageDraw.Draw(img)
+
+    f_brand = _font("DejaVuSans-Bold.ttf", 44)
+    f_tagline = _font("DejaVuSans.ttf", 24)
+    f_date = _font("DejaVuSans.ttf", 22)
+    f_ticker = _font("DejaVuSans-Bold.ttf", 30)
+    f_body = _font("DejaVuSans.ttf", 22)
+    f_pct = _font("DejaVuSans-Bold.ttf", 30)
+
+    draw.text((40, 40), "MB-EGX", font=f_brand, fill=ACCENT)
+    draw.text((40, 96), "🎯 Session Pick Achieved!", font=f_tagline, fill=GREEN)
+    date_str = last_data_date or datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    draw.text((40, 130), f"Market data as of {date_str}", font=f_date, fill=TEXT_MUTED)
+
+    y = HEADER_H
+    horizon_labels = {"short": "Next Session", "medium": "Medium-Term", "long": "Long-Term"}
+    for a in achievements:
+        draw.rounded_rectangle([40, y + 4, 1040, y + ROW_H - 10], radius=10, fill=PANEL)
+        draw.text((60, y + 12), a["ticker"], font=f_ticker, fill=TEXT_MAIN)
+        label = horizon_labels.get(a.get("horizon"), a.get("horizon", ""))
+        draw.text((280, y + 10), label, font=f_body, fill=ACCENT)
+        draw.text((280, y + 38), f"picked {a['pick_date']} @ {a['ref_price']} EGP", font=f_body, fill=TEXT_MUTED)
+        draw.text((820, y + 20), f"+{a['achieved_pct']:.2f}%", font=f_pct, fill=GREEN)
+        y += ROW_H
+
+    f_disclaimer = _font("DejaVuSans.ttf", 18)
+    draw.text(
+        (40, height - 44),
         "Educational content, not investment advice. Not financial advice.",
         font=f_disclaimer, fill=TEXT_MUTED,
     )
@@ -431,32 +462,49 @@ def append_promotional_footer(text_block: str) -> str:
     return text_block + footer
 
 
-def _row_line_en(label: str, row: dict | None) -> str:
-    if row is None:
-        return f"{label}: no qualifying setup today"
-    return f"{label}: {row['Ticker']} — score {row.get('Rank Score', '—')}/100, RSI {row.get('RSI-14', '—')}"
+def _pick_lines_en(rows: list[dict]) -> list[str]:
+    if not rows:
+        return ["  (no active picks right now)"]
+    return [
+        f"  • {r.get('Ticker') or r.get('ticker', '—')} — score {r.get('Rank Score', '—')}/100, RSI {r.get('RSI-14', '—')}"
+        for r in rows
+    ]
 
 
-def _row_line_ar(label: str, row: dict | None) -> str:
-    if row is None:
-        return f"{label}: لا يوجد إعداد مؤهل اليوم"
-    return f"{label}: {row['Ticker']} — الدرجة {row.get('Rank Score', '—')}/100، RSI {row.get('RSI-14', '—')}"
+def _pick_lines_ar(rows: list[dict]) -> list[str]:
+    if not rows:
+        return ["  (لا توجد ترشيحات نشطة حاليًا)"]
+    return [
+        f"  • {r.get('Ticker') or r.get('ticker', '—')} — الدرجة {r.get('Rank Score', '—')}/100، RSI {r.get('RSI-14', '—')}"
+        for r in rows
+    ]
+
+
+def _target_pct(rows: list[dict], horizon_key: str) -> float | None:
+    """Horizon-wide target % gain (config.SESSION_PICKS_EXPECTED_PCT),
+    read off the first pick if the bucket has one, else straight from
+    config — so an empty bucket still shows its target."""
+    from config import SESSION_PICKS_EXPECTED_PCT
+    if rows and rows[0].get("expected_pct") is not None:
+        return rows[0]["expected_pct"]
+    return SESSION_PICKS_EXPECTED_PCT.get(horizon_key)
 
 
 def build_caption(highlights: dict) -> str:
     ns, mt, lt = highlights["next_session"], highlights["medium_term"], highlights["long_term"]
-    lt_sector = highlights.get("long_term_sector")
+    pct_ns, pct_mt, pct_lt = _target_pct(ns, "short"), _target_pct(mt, "medium"), _target_pct(lt, "long")
 
     en = [
-        "📊 MB-EGX Daily Ticker Highlights",
+        "📊 MB-EGX Session Picks",
         "",
-        _row_line_en("🔥 Next session", ns),
-        _row_line_en("📈 Medium term", mt),
-        _row_line_en("🏛️ Long term / sector leader", lt),
-    ]
-    if lt_sector:
-        en.append(f"   Sector: {lt_sector['Sector']} ({lt_sector['Sector Status']})")
-    en += [
+        f"🔥 Next session (target +{pct_ns:.0f}%):" if pct_ns is not None else "🔥 Next session:",
+        *_pick_lines_en(ns),
+        "",
+        f"📈 Medium term (target +{pct_mt:.0f}%):" if pct_mt is not None else "📈 Medium term:",
+        *_pick_lines_en(mt),
+        "",
+        f"🏛️ Long term (target +{pct_lt:.0f}%):" if pct_lt is not None else "🏛️ Long term:",
+        *_pick_lines_en(lt),
         "",
         "This is educational content generated by a mechanical multi-factor model reading price, volume, and trend data. It is NOT investment advice — always do your own research and apply your own judgment.",
         "",
@@ -464,17 +512,57 @@ def build_caption(highlights: dict) -> str:
     ]
 
     ar = [
-        "📊 أبرز الأسهم اليومية — MB-EGX",
+        "📊 ترشيحات الجلسة — MB-EGX",
         "",
-        _row_line_ar("🔥 الجلسة القادمة", ns),
-        _row_line_ar("📈 متوسط المدى", mt),
-        _row_line_ar("🏛️ طويل المدى / رائد القطاع", lt),
-    ]
-    if lt_sector:
-        ar.append(f"   القطاع: {lt_sector['Sector']} ({lt_sector['Sector Status']})")
-    ar += [
+        f"🔥 الجلسة القادمة (الهدف +{pct_ns:.0f}%):" if pct_ns is not None else "🔥 الجلسة القادمة:",
+        *_pick_lines_ar(ns),
+        "",
+        f"📈 متوسط المدى (الهدف +{pct_mt:.0f}%):" if pct_mt is not None else "📈 متوسط المدى:",
+        *_pick_lines_ar(mt),
+        "",
+        f"🏛️ طويل المدى (الهدف +{pct_lt:.0f}%):" if pct_lt is not None else "🏛️ طويل المدى:",
+        *_pick_lines_ar(lt),
         "",
         "هذا محتوى تعليمي من نموذج آلي متعدد العوامل يحلل بيانات السعر والحجم والاتجاه، وليس نصيحة استثمارية — قم دائمًا بأبحاثك الخاصة واستخدم حكمك الشخصي.",
+    ]
+
+    combined_caption = "\n".join(en) + "\n\n————\n\n" + "\n".join(ar)
+    return append_promotional_footer(combined_caption)
+
+
+def build_achievement_caption(achievements: list[dict]) -> str:
+    from config import SESSION_PICKS_EXPECTED_PCT
+    horizon_labels_en = {"short": "Next Session", "medium": "Medium-Term", "long": "Long-Term"}
+    horizon_labels_ar = {"short": "الجلسة القادمة", "medium": "متوسط المدى", "long": "طويل المدى"}
+
+    en = ["🎯 MB-EGX Session Pick(s) Achieved!", ""]
+    for a in achievements:
+        label = horizon_labels_en.get(a.get("horizon"), a.get("horizon", ""))
+        target = SESSION_PICKS_EXPECTED_PCT.get(a.get("horizon"))
+        target_str = f", target was +{target:.0f}%" if target is not None else ""
+        en.append(
+            f"✅ {a['ticker']} ({label}{target_str}): +{a['achieved_pct']:.2f}% since picked on "
+            f"{a['pick_date']} @ {a['ref_price']} EGP"
+        )
+    en += [
+        "",
+        "Flagged on our Session Picks watchlist before the move. Educational content generated by a mechanical multi-factor model — NOT investment advice.",
+        "",
+        "#EGX #MBEGX #EgyptStockMarket #StockMarket #Investing #Trading #EGYPT",
+    ]
+
+    ar = ["🎯 تحقق هدف ترشيح! — MB-EGX", ""]
+    for a in achievements:
+        label = horizon_labels_ar.get(a.get("horizon"), a.get("horizon", ""))
+        target = SESSION_PICKS_EXPECTED_PCT.get(a.get("horizon"))
+        target_str = f"، الهدف كان +{target:.0f}%" if target is not None else ""
+        ar.append(
+            f"✅ {a['ticker']} ({label}{target_str}): +{a['achieved_pct']:.2f}% منذ الترشيح بتاريخ "
+            f"{a['pick_date']} بسعر {a['ref_price']} جنيه"
+        )
+    ar += [
+        "",
+        "تم رصد هذه الفرصة في قائمة ترشيحات الجلسة قبل الحركة. محتوى تعليمي من نموذج آلي — وليس نصيحة استثمارية.",
     ]
 
     combined_caption = "\n".join(en) + "\n\n————\n\n" + "\n".join(ar)
@@ -618,8 +706,8 @@ def main():
 
     p_render = sub.add_parser("render", help="Fetch data, pick highlights, write image + caption")
     p_render.add_argument(
-        "--post-type", choices=["tickers", "market", "sectors"], default="tickers",
-        help="Which of the 3 daily posts to render",
+        "--post-type", choices=["tickers", "market", "sectors", "achievement"], default="tickers",
+        help="Which post to render",
     )
     p_render.add_argument("--pages-base-url", default=os.environ.get("PAGES_BASE_URL"))
     p_render.add_argument("--out-dir", default=str(OUT_DIR))
@@ -655,12 +743,21 @@ def main():
             render_market_overview_image(overview, out_dir / f"{date_str}_market.png")
             render_market_overview_image(overview, out_dir / "latest_market.png")
             caption = build_market_caption(overview)
-        else:  # sectors
+        elif args.post_type == "sectors":
             sectors = pick_sector_highlights(market_data)
             last_data_date = market_data.get("last_data_date")
             render_sectors_image(sectors, last_data_date, out_dir / f"{date_str}_sectors.png")
             render_sectors_image(sectors, last_data_date, out_dir / "latest_sectors.png")
             caption = build_sectors_caption(sectors)
+        else:  # achievement
+            achievements = market_data.get("session_picks", {}).get("achieved_today", [])
+            last_data_date = market_data.get("last_data_date")
+            if not achievements:
+                print("⚠️  No achieved Session Picks in market_data.json — nothing to render.")
+                return
+            render_achievement_image(achievements, last_data_date, out_dir / f"{date_str}_achievement.png")
+            render_achievement_image(achievements, last_data_date, out_dir / "latest_achievement.png")
+            caption = build_achievement_caption(achievements)
 
         caption_path = out_dir / f"latest_{args.post_type}_caption.txt"
         caption_path.write_text(caption, encoding="utf-8")

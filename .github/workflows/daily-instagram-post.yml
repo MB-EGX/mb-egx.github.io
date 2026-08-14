@@ -4,14 +4,16 @@ name: Daily Instagram + Facebook Post
 # open. It reads the already-published, privacy-scrubbed market_data.json.
 #
 # HOW THIS WORKS (catch-up model, not fixed-time-or-skip):
-#   Three posts a day — market overview, sectors overview, evening tickers
-#   — each has a Cairo LOCAL due time (see post_state.py: 16:00, 16:20,
-#   19:00). A run doesn't just fire at a fixed clock time and give up if
-#   data isn't ready; EVERY run (whether triggered by a fresh data push,
-#   or the periodic safety-net check below) asks post_state.py "which due
-#   posts haven't gone out today yet?" and posts them, right then —
-#   however late that ends up being. A late CSV feed delays a post, it
-#   never loses it.
+#   Four posts — market overview, sectors overview, evening tickers (each
+#   with a fixed Cairo LOCAL due time — see post_state.py: 16:00, 16:20,
+#   19:00), plus a 4th "achievement" post that is NOT time-gated: it fires
+#   as soon as fresh data shows a Session Pick crossed +3% (see
+#   session_picks.py / export_json.py's "session_picks.achieved_today").
+#   A run doesn't just fire at a fixed clock time and give up if data
+#   isn't ready; EVERY run (whether triggered by a fresh data push, or the
+#   periodic safety-net check below) asks post_state.py "which due posts
+#   haven't gone out today yet?" and posts them, right then — however late
+#   that ends up being. A late CSV feed delays a post, it never loses it.
 #
 #   Instagram and Facebook are tracked SEPARATELY per post type. If one
 #   platform succeeds and the other fails, only the failed one is retried
@@ -41,7 +43,7 @@ on:
         required: true
         default: "auto"
         type: choice
-        options: [auto, tickers, market, sectors]
+        options: [auto, tickers, market, sectors, achievement]
 
 permissions:
   contents: write   # needed to commit rendered PNGs + post_state.json back to the repo

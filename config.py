@@ -149,6 +149,51 @@ PATTERN_DETECTION = {
 # multi-year history on every single "Execute Matrix" run.
 MATRIX_LOOKBACK_DAYS = 400
 
+# --- Session Picks (forward-looking watchlist tab + achievement posts) ---
+# Every matrix run keeps up to this many ACTIVE picks per horizon, each
+# stamped with the price it was picked at. When an active pick's current
+# price is >= that horizon's SESSION_PICKS_EXPECTED_PCT above its stamped
+# price, it's marked "achieved" (see session_picks.py) — highlighted in
+# the desktop app and announced on Instagram/Facebook.
+SESSION_PICKS_QUOTA = {
+    "short": 5,   # next-session candidates (STRONG BUY / BREAKOUT BUY pool)
+    "medium": 3,  # medium-term candidates (ACCUMULATE / BUY ON DIP pool)
+    "long": 3,    # long-term candidates (strong-inflow sector leaders)
+}
+
+# Per-horizon expected % gain target. A LONGER horizon gets a bigger
+# target, not just a bigger window — a 3% move over 2-6 months would be a
+# weak long-term call, so "achieved" means something different (and
+# bigger) at each horizon. This is what's shown in the app/web "Expected
+# Gain" column and in the Instagram/Facebook captions, and it's also the
+# threshold session_picks.py checks a pick's current price against to
+# decide it has been achieved.
+#   short  -> 3%  (matches the quick 1-3 session window)
+#   medium -> 8%  (matches the 2-6 week window)
+#   long   -> 15% (matches the 2-6 month window)
+# Tune per horizon if you want a tighter/wider target.
+SESSION_PICKS_EXPECTED_PCT = {
+    "short": 3.0,
+    "medium": 8.0,
+    "long": 15.0,
+}
+
+# Display-only estimate of how long a pick might realistically take to
+# reach its horizon's SESSION_PICKS_EXPECTED_PCT, per horizon - shown in
+# the Session Picks tab as an "expected by" date range (pick_date +
+# margin). This is NOT a guarantee or a trading signal, purely a
+# horizon-appropriate expectation-setting window (see session_picks.py's
+# _expected_window):
+#   short  -> next 1-3 trading sessions (matches "Next Session" framing)
+#   medium -> roughly 2-6 weeks out
+#   long   -> roughly 2-6 months out
+# Tune these two numbers per horizon if you want a tighter/wider margin.
+SESSION_PICKS_EXPECTED_DAYS = {
+    "short": (1, 3),
+    "medium": (14, 45),
+    "long": (60, 180),
+}
+
 # --- Portfolio concentration risk (analyze_market's portfolio_risk output) ---
 # Flags when too much of the account sits in one sector or one ticker -
 # a common blind spot that per-stock risk metrics (ATR stops, Sortino, etc.)

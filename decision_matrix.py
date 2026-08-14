@@ -48,6 +48,7 @@ import pandas as pd
 
 from analytics import QuantitativeEngine
 from db_manager import DatabaseManager
+from session_picks import refresh_session_picks
 
 logger = get_logger("decision_matrix")
 
@@ -329,6 +330,9 @@ class DecisionMatrix:
                 "position_allocations": [],
                 "warnings": [],
             }
+            session_picks = refresh_session_picks(
+                self.dbm, buy_recommendations, {}, [], self.dbm.get_latest_market_date()
+            )
             return (
                 buy_recommendations,
                 exit_strategies,
@@ -338,6 +342,7 @@ class DecisionMatrix:
                 [],
                 breakout_watchlist,
                 empty_risk,
+                session_picks,
             )
 
         eligible = []
@@ -902,6 +907,15 @@ class DecisionMatrix:
         breakout_watchlist.sort(key=lambda x: x["Breakout Score"], reverse=True)
         breakout_watchlist = breakout_watchlist[: ACTION_THRESHOLDS["breakout_watch_max_results"]]
 
+        # Session Picks: check active picks for achievement + refill each
+        # bucket back up to quota. Runs here (not in export_json.py / the
+        # GUI separately) so "Execute Matrix" in the desktop app and the
+        # unattended nightly export always agree on picks/achievements.
+        session_picks = refresh_session_picks(
+            self.dbm, buy_recommendations, top_10_by_category, sector_summary,
+            self.dbm.get_latest_market_date(),
+        )
+
         if progress_callback:
             progress_callback(100, _t("Multi-factor confirmation matrix scan complete.", "اكتمل فحص مصفوفة التأكيد متعددة العوامل."))
         return (
@@ -913,4 +927,5 @@ class DecisionMatrix:
             sector_summary,
             breakout_watchlist,
             portfolio_risk,
+            session_picks,
         )
