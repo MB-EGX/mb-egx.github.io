@@ -1,10 +1,15 @@
 """
 social_poster.py
 =================
-Generates and publishes a daily Instagram post: the best ticker for the
-next session, the best medium-term setup, and the best long-term/sector
-pick — each with the evidence (score, RSI/ADX, pattern, sector strength)
-straight from the same market_data.json the web dashboard already reads.
+Generates and publishes daily Instagram/Facebook posts: the best ticker
+for the next session, the best medium-term setup, and the best
+long-term/sector pick (post-type "tickers"); a market overview and a
+sectors overview; an "achievement" post the moment a Session Pick crosses
+its horizon's target; and a "track_record" post showing the recent
+history of picks that actually hit their target ("daily, if present" —
+see post_state.py). Each with the evidence (score, RSI/ADX, pattern,
+sector strength) straight from the same market_data.json the web
+dashboard already reads.
 
 DESIGN — why this reads market_data.json instead of the local DuckDB:
     market_data.json is already the PUBLIC, privacy-scrubbed payload
@@ -155,6 +160,21 @@ def pick_daily_highlights(market_data: dict) -> dict:
     }
     result["last_data_date"] = market_data.get("last_data_date")
     return result
+
+
+# =============================================================================
+# 2a2. TRACK RECORD (history of achieved picks — "correct expectations")
+# =============================================================================
+# Reads session_picks.achieved_history (see export_json.py / session_picks.py
+# / db_manager.get_recent_achieved_picks) — the full recent list of Session
+# Picks that actually hit their horizon's target, not just today's. This is
+# what powers the "daily, if present" track_record post: post_state.py
+# already refuses to mark it due at all when this list is empty (see that
+# module's docstring), so by the time this runs there's guaranteed to be at
+# least one entry.
+def pick_track_record_highlights(market_data: dict, limit: int = 10) -> list[dict]:
+    history = market_data.get("session_picks", {}).get("achieved_history", [])
+    return history[:limit]
 
 
 # =============================================================================
@@ -449,6 +469,54 @@ def render_achievement_image(achievements: list[dict], last_data_date: str | Non
     return out_path
 
 
+def render_track_record_image(history: list[dict], last_data_date: str | None, out_path: Path) -> Path:
+    """One card listing our recent track record — Session Picks that
+    actually hit their horizon's target (session_picks.achieved_history,
+    already capped to `limit` by pick_track_record_highlights). Visually
+    close to render_achievement_image (same row style) since both show
+    "picked X, hit target Y%", but this one is a rolling history rather
+    than a single run's fresh crossings."""
+    ROW_H, HEADER_H, FOOTER_H = 74, 200, 70
+    height = HEADER_H + ROW_H * max(len(history), 1) + FOOTER_H + 30
+
+    img = Image.new("RGB", (1080, height), BG)
+    draw = ImageDraw.Draw(img)
+
+    f_brand = _font("DejaVuSans-Bold.ttf", 44)
+    f_tagline = _font("DejaVuSans.ttf", 24)
+    f_date = _font("DejaVuSans.ttf", 22)
+    f_ticker = _font("DejaVuSans-Bold.ttf", 30)
+    f_body = _font("DejaVuSans.ttf", 22)
+    f_pct = _font("DejaVuSans-Bold.ttf", 30)
+
+    draw.text((40, 40), "MB-EGX", font=f_brand, fill=ACCENT)
+    draw.text((40, 96), "📜 Track Record — Calls That Hit", font=f_tagline, fill=GREEN)
+    date_str = last_data_date or datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    draw.text((40, 130), f"Market data as of {date_str}", font=f_date, fill=TEXT_MUTED)
+
+    y = HEADER_H
+    horizon_labels = {"short": "Next Session", "medium": "Medium-Term", "long": "Long-Term"}
+    for a in history:
+        draw.rounded_rectangle([40, y + 4, 1040, y + ROW_H - 10], radius=10, fill=PANEL)
+        draw.text((60, y + 12), a["ticker"], font=f_ticker, fill=TEXT_MAIN)
+        label = horizon_labels.get(a.get("horizon"), a.get("horizon", ""))
+        draw.text((280, y + 10), label, font=f_body, fill=ACCENT)
+        draw.text((280, y + 38), f"picked {a['pick_date']} → hit {a['achieved_date']}", font=f_body, fill=TEXT_MUTED)
+        draw.text((820, y + 20), f"+{a['achieved_pct']:.2f}%", font=f_pct, fill=GREEN)
+        y += ROW_H
+
+    f_disclaimer = _font("DejaVuSans.ttf", 18)
+    draw.text(
+        (40, height - 44),
+        "Past calls hitting target does not guarantee future results. Educational content, not investment advice.",
+        font=f_disclaimer, fill=TEXT_MUTED,
+    )
+
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    img.save(out_path, "PNG")
+    return out_path
+
+
 # =============================================================================
 # 4. CAPTION 
 # =============================================================================
@@ -563,6 +631,40 @@ def build_achievement_caption(achievements: list[dict]) -> str:
     ar += [
         "",
         "تم رصد هذه الفرصة في قائمة ترشيحات الجلسة قبل الحركة. محتوى تعليمي من نموذج آلي — وليس نصيحة استثمارية.",
+    ]
+
+    combined_caption = "\n".join(en) + "\n\n————\n\n" + "\n".join(ar)
+    return append_promotional_footer(combined_caption)
+
+
+def build_track_record_caption(history: list[dict]) -> str:
+    horizon_labels_en = {"short": "Next Session", "medium": "Medium-Term", "long": "Long-Term"}
+    horizon_labels_ar = {"short": "الجلسة القادمة", "medium": "متوسط المدى", "long": "طويل المدى"}
+
+    en = ["📜 MB-EGX Track Record — Calls That Hit", ""]
+    for a in history:
+        label = horizon_labels_en.get(a.get("horizon"), a.get("horizon", ""))
+        en.append(
+            f"✅ {a['ticker']} ({label}): +{a['achieved_pct']:.2f}% — picked "
+            f"{a['pick_date']} @ {a['ref_price']} EGP, hit target on {a['achieved_date']} @ {a['achieved_price']} EGP"
+        )
+    en += [
+        "",
+        "A rolling look back at recent Session Picks that reached their target. Past calls hitting target does not guarantee future results — educational content generated by a mechanical multi-factor model, NOT investment advice.",
+        "",
+        "#EGX #MBEGX #EgyptStockMarket #StockMarket #Investing #Trading #EGYPT",
+    ]
+
+    ar = ["📜 سجل الأداء — MB-EGX", ""]
+    for a in history:
+        label = horizon_labels_ar.get(a.get("horizon"), a.get("horizon", ""))
+        ar.append(
+            f"✅ {a['ticker']} ({label}): +{a['achieved_pct']:.2f}% — تم الترشيح بتاريخ "
+            f"{a['pick_date']} بسعر {a['ref_price']} جنيه، وتحقق الهدف بتاريخ {a['achieved_date']} بسعر {a['achieved_price']} جنيه"
+        )
+    ar += [
+        "",
+        "نظرة على أحدث ترشيحات الجلسة التي حققت هدفها. تحقق الهدف سابقًا لا يضمن نتائج مماثلة مستقبلًا — محتوى تعليمي من نموذج آلي، وليس نصيحة استثمارية.",
     ]
 
     combined_caption = "\n".join(en) + "\n\n————\n\n" + "\n".join(ar)
@@ -706,7 +808,7 @@ def main():
 
     p_render = sub.add_parser("render", help="Fetch data, pick highlights, write image + caption")
     p_render.add_argument(
-        "--post-type", choices=["tickers", "market", "sectors", "achievement"], default="tickers",
+        "--post-type", choices=["tickers", "market", "sectors", "achievement", "track_record"], default="tickers",
         help="Which post to render",
     )
     p_render.add_argument("--pages-base-url", default=os.environ.get("PAGES_BASE_URL"))
@@ -749,7 +851,7 @@ def main():
             render_sectors_image(sectors, last_data_date, out_dir / f"{date_str}_sectors.png")
             render_sectors_image(sectors, last_data_date, out_dir / "latest_sectors.png")
             caption = build_sectors_caption(sectors)
-        else:  # achievement
+        elif args.post_type == "achievement":
             achievements = market_data.get("session_picks", {}).get("achieved_today", [])
             last_data_date = market_data.get("last_data_date")
             if not achievements:
@@ -758,6 +860,15 @@ def main():
             render_achievement_image(achievements, last_data_date, out_dir / f"{date_str}_achievement.png")
             render_achievement_image(achievements, last_data_date, out_dir / "latest_achievement.png")
             caption = build_achievement_caption(achievements)
+        else:  # track_record
+            history = pick_track_record_highlights(market_data)
+            last_data_date = market_data.get("last_data_date")
+            if not history:
+                print("⚠️  No achieved_history in market_data.json yet — nothing to render.")
+                return
+            render_track_record_image(history, last_data_date, out_dir / f"{date_str}_track_record.png")
+            render_track_record_image(history, last_data_date, out_dir / "latest_track_record.png")
+            caption = build_track_record_caption(history)
 
         caption_path = out_dir / f"latest_{args.post_type}_caption.txt"
         caption_path.write_text(caption, encoding="utf-8")

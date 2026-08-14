@@ -3,16 +3,26 @@ post_state.py — decides which of today's posts are due-and-not-yet-fully-
 posted RIGHT NOW, tracking Instagram and Facebook status SEPARATELY per
 type.
 
-Two kinds of "due":
+Three kinds of "due":
   * market / sectors / tickers — fixed Cairo LOCAL due times (see
     DUE_TIMES below), same as always.
   * achievement — NOT time-gated. It's due the moment fresh data shows at
-    least one Session Pick crossed +3% today (market_data.json's
-    "session_picks.achieved_today" — see session_picks.py /
-    export_json.py) and it hasn't been posted yet. A pick achieving its
-    target is itself the trigger, not a clock — "automatic" means it goes
-    out as soon as the data says it happened, same posture as the push
-    trigger already gets you for the other 3 types on a normal day.
+    least one Session Pick crossed its horizon's target gain today
+    (market_data.json's "session_picks.achieved_today" — see
+    session_picks.py / export_json.py; the target itself is per-horizon,
+    see config.SESSION_PICKS_EXPECTED_PCT) and it hasn't been posted yet.
+    A pick achieving its target is itself the trigger, not a clock —
+    "automatic" means it goes out as soon as the data says it happened,
+    same posture as the push trigger already gets you for the other 3
+    types on a normal day.
+  * track_record — fixed Cairo LOCAL due time (see TRACK_RECORD_DUE_TIME)
+    like market/sectors/tickers, PLUS an extra data-presence gate: it
+    only actually becomes due once today's fresh data has at least one
+    entry in "session_picks.achieved_history" (see session_picks.py /
+    export_json.py) — i.e. "daily, if present". A brand-new account with
+    no achieved picks yet simply never posts an empty track record; once
+    the first pick is ever achieved, this starts firing daily like the
+    other 3 timed posts.
 
 Why track ig/fb separately: if Instagram succeeds for a type but Facebook
 then fails, a retry must only redo Facebook — re-attempting Instagram
@@ -27,10 +37,11 @@ State shape:
     {
       "date": "2026-08-09",
       "posted": {
-        "market":      {"ig": true,  "fb": false},
-        "sectors":     {"ig": false, "fb": false},
-        "tickers":     {"ig": false, "fb": false},
-        "achievement": {"ig": false, "fb": false}
+        "market":        {"ig": true,  "fb": false},
+        "sectors":       {"ig": false, "fb": false},
+        "tickers":       {"ig": false, "fb": false},
+        "achievement":   {"ig": false, "fb": false},
+        "track_record":  {"ig": false, "fb": false}
       }
     }
 
@@ -61,10 +72,18 @@ DUE_TIMES = {
     "tickers": (19, 0),
 }
 
+# track_record's own fixed due time — after "tickers" so the day's other
+# 3 posts always go out first. Kept separate from DUE_TIMES (rather than
+# just adding a 4th entry there) because, unlike those 3, it ALSO needs
+# the data-presence gate below — see cmd_due().
+TRACK_RECORD_DUE_TIME = (19, 30)
+
 # "achievement" has no fixed clock time (see module docstring) - it's
-# tracked in the same per-day/per-platform `posted` shape as the 3 timed
-# types above, just checked differently in cmd_due().
-ALL_TYPES = (*DUE_TIMES.keys(), "achievement")
+# tracked in the same per-day/per-platform `posted` shape as the other
+# types, just checked differently in cmd_due(). "track_record" does have
+# a fixed time (TRACK_RECORD_DUE_TIME above) but isn't in DUE_TIMES
+# because its due-check needs the extra data-presence condition.
+ALL_TYPES = (*DUE_TIMES.keys(), "achievement", "track_record")
 
 
 def _today_str():
@@ -117,6 +136,20 @@ def _achieved_today(today_str):
         return []
 
 
+def _achieved_history():
+    """Full recent track record of achieved Session Picks (see
+    session_picks.py / export_json.py's "session_picks.achieved_history"),
+    NOT just today's — this is what gates the track_record post's "daily,
+    if present" rule: an empty list here means nothing has ever been
+    achieved yet, so track_record stays not-due regardless of the clock."""
+    try:
+        with open(DATA_PATH) as f:
+            data = json.load(f)
+        return data.get("session_picks", {}).get("achieved_history", [])
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+
 def _data_is_fresh_today(today_str):
     """Freshness is judged by the DATA's own reported session date
     (market_data.json's "last_data_date" field), NOT by when the file
@@ -161,6 +194,17 @@ def cmd_due(args):
         achievements = _achieved_today(today_str)
         if achievements and still_needed:
             due_types.append("achievement")
+
+        # track_record — fixed due time like market/sectors/tickers, PLUS
+        # gated on "if present": only due once achieved_history actually
+        # has at least one entry. See module docstring.
+        hh, mm = TRACK_RECORD_DUE_TIME
+        due_time = now.replace(hour=hh, minute=mm, second=0, microsecond=0)
+        status = state["posted"]["track_record"]
+        still_needed = not status["ig"] or not status["fb"]
+        history_present = bool(_achieved_history())
+        if now >= due_time and still_needed and history_present:
+            due_types.append("track_record")
 
     print(f"Cairo time now: {now.strftime('%Y-%m-%d %H:%M')}", file=sys.stderr)
     print(f"market_data.json last_data_date: {last_data_date or '(missing/unreadable)'}", file=sys.stderr)

@@ -29,6 +29,11 @@ CHANGELOG vs the original:
     config.PATTERN_DETECTION) - the same geometric pattern overlay the
     desktop app's chart "Patterns" toggle draws, so the web dashboard can
     render identical overlays straight from data already in this payload.
+  * session_picks now also carries "achieved_history" - the most recent
+    achieved Session Picks across ALL days (not just today's
+    achieved_today), so a daily "track record" post/tab has real history
+    to show even on a day when nothing newly achieved. Same trust
+    boundary as achieved_today (ticker + achievement stats only).
 """
 from __future__ import annotations
 
@@ -221,6 +226,14 @@ def export_market_matrix():
     # so it needs to be the complete day's list every time or an earlier
     # same-day achievement could be missed by the achievement post.
     session_picks["achieved_today"] = dbm.get_achievements_for_date(last_data_date)
+
+    # Public, non-sensitive — same trust boundary as achieved_today above
+    # (ticker + achievement stats, no account data). This is the FULL
+    # recent track record, not just today's, so the new daily
+    # "track record" post/tab has something to show on days when nothing
+    # newly achieved. Capped so the payload doesn't grow unbounded over
+    # the life of the account.
+    session_picks["achieved_history"] = dbm.get_recent_achieved_picks(limit=50)
 
     # PRIVACY: strip the cash-derived "Suggested Shares (1% Risk)" column
     # from every row before it can reach the public JSON.

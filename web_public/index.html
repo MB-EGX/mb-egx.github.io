@@ -457,6 +457,25 @@
                     </table>
                 </div>
             </div>
+            <div>
+                <h3 class="font-bold text-sm text-emerald-400 border-b border-bordercol pb-2 mb-3" data-i18n="hdr_track_record">📜 Track Record — Calls That Hit</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse whitespace-nowrap font-mono text-xs">
+                        <thead class="bg-[#2d3748] text-white font-sans">
+                            <tr>
+                                <th class="p-2.5 border border-darkbg" data-i18n="hdr_ticker">Ticker</th>
+                                <th class="p-2.5 border border-darkbg font-sans" data-i18n="hdr_horizon">Horizon</th>
+                                <th class="p-2.5 border border-darkbg" data-i18n="hdr_picked_on">Picked On</th>
+                                <th class="p-2.5 border border-darkbg" data-i18n="hdr_pick_price">Pick Price</th>
+                                <th class="p-2.5 border border-darkbg" data-i18n="hdr_achieved_on">Achieved On</th>
+                                <th class="p-2.5 border border-darkbg" data-i18n="hdr_achieved_price">Achieved Price</th>
+                                <th class="p-2.5 border border-darkbg" data-i18n="hdr_achieved_pct">Achieved (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-picks-history" class="divide-y divide-bordercol/50"></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
         <!-- TAB 4: TRADE HISTORY -->
@@ -1182,7 +1201,9 @@
                 hdr_ticker: "Ticker", hdr_action: "Action", hdr_score: "Score", hdr_price: "Price",
                 hdr_horizon: "Horizon", hdr_picked_on: "Picked On", hdr_pick_price: "Pick Price",
                 hdr_achieved_on: "Achieved On", hdr_achieved_price: "Achieved Price", hdr_achieved_pct: "Achieved (%)",
-                hdr_recent_achievements: "🏆 Recent Achievements",
+                hdr_recent_achievements: "🏆 Achieved Today",
+                hdr_track_record: "📜 Track Record — Calls That Hit",
+                lbl_no_track_record: "No achieved picks yet — check back once one hits its target.",
                 tab_session_picks: "🚀 Session Picks",
                 lbl_session_picks_intro: "Forward-looking watchlist, auto-picked and auto-refilled from the same matrix as the tables above. Each horizon carries its own target gain — a pick is flagged as Achieved Today once it's up that much from the price it was picked at.",
                 lbl_no_active_picks: "No active picks right now",
@@ -1335,6 +1356,8 @@
                 hdr_horizon: "المدى", hdr_picked_on: "تاريخ الترشيح", hdr_pick_price: "سعر الترشيح",
                 hdr_achieved_on: "تاريخ التحقق", hdr_achieved_price: "سعر التحقق", hdr_achieved_pct: "نسبة التحقق (%)",
                 hdr_recent_achievements: "🏆 تحقق اليوم",
+                hdr_track_record: "📜 سجل الأداء — ترشيحات تحققت",
+                lbl_no_track_record: "لا توجد ترشيحات متحققة بعد — تحقق مجددًا عند تحقق أول هدف.",
                 tab_session_picks: "🚀 ترشيحات الجلسة",
                 lbl_session_picks_intro: "قائمة ترشيحات استشرافية، يتم اختيارها وتجديدها تلقائيًا من نفس المصفوفة أعلاه. لكل مدى زمني هدف ربح خاص به — يُصنَّف الترشيح ضمن (تحقق اليوم) بمجرد ارتفاعه بنفس تلك النسبة عن سعر الترشيح.",
                 lbl_no_active_picks: "لا توجد ترشيحات نشطة حاليًا",
@@ -2614,6 +2637,7 @@
         function renderSessionPicks() {
             const container = document.getElementById('session-picks-container');
             const achievedBody = document.getElementById('tbody-picks-achieved');
+            const historyBody = document.getElementById('tbody-picks-history');
             const dateEl = document.getElementById('picks-session-date');
             if (!container || !globalData) return;
             container.innerHTML = '';
@@ -2681,6 +2705,23 @@
                     <td class="p-2 text-emerald-400 font-bold">+${Number(a.achieved_pct).toFixed(2)}%</td>
                 </tr>
             `).join('') : `<tr><td colspan="7" class="p-4 text-center text-textmuted font-sans">${tt('lbl_no_achievements')}</td></tr>`;
+
+            // Track record — full recent history of picks that hit their
+            // target (session_picks.achieved_history), not just today's.
+            // Same "if present" posture as the daily social post: an
+            // empty list just shows a friendly empty state, nothing breaks.
+            const history = sp.achieved_history || [];
+            historyBody.innerHTML = history.length ? history.map(a => `
+                <tr class="border-b border-bordercol/40">
+                    <td class="p-2 font-bold text-sky-400">${escapeHtml(a.ticker)}</td>
+                    <td class="p-2 font-sans text-textmuted">${horizonLabels[a.horizon] || escapeHtml(a.horizon || '-')}</td>
+                    <td class="p-2 text-textmuted">${escapeHtml(a.pick_date)}</td>
+                    <td class="p-2 text-textmain">${a.ref_price}</td>
+                    <td class="p-2 text-textmuted">${escapeHtml(a.achieved_date)}</td>
+                    <td class="p-2 text-textmain">${a.achieved_price}</td>
+                    <td class="p-2 text-emerald-400 font-bold">+${Number(a.achieved_pct).toFixed(2)}%</td>
+                </tr>
+            `).join('') : `<tr><td colspan="7" class="p-4 text-center text-textmuted font-sans">${tt('lbl_no_track_record')}</td></tr>`;
         }
 
         function applyFilters() {
