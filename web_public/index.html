@@ -1312,12 +1312,6 @@
                 reconsent_desc: "Our End-User Consent and Legal Disclaimer has been updated. Please review and re-accept it to continue using the app.",
                 lbl_reconsent_checkbox: "I acknowledge and agree to the updated End-User Consent and Legal Disclaimer.",
                 btn_accept_continue: "Accept & Continue", btn_sign_out_reconsent: "Sign Out",
-                sub_gate_title: "Your Free Trial Has Ended",
-                sub_gate_desc: "Subscribe to keep using MB-EGX. Pay with Visa/Mastercard, mobile wallet, or Fawry.",
-                sub_plan_monthly: "Monthly", sub_plan_quarterly: "3 Months",
-                sub_gate_recheck: "I already paid via Fawry — check again",
-                err_payment_start_failed: "Couldn't start the payment. Please try again.",
-                err_payment_not_confirmed_yet: "We haven't received your payment yet. If you paid via Fawry, this can take a little while — try again shortly.",
                 err_enter_both: "Enter both email and password.", err_invalid_email: "Invalid email format.",
                 err_sign_in_failed: "Sign-in failed. Check your credentials.",
                 err_password_min: "Password must be at least 8 characters.", err_password_max: "Password is too long.",
@@ -1469,12 +1463,6 @@
                 reconsent_desc: "تم تحديث إقرار المستخدم والإخلاء القانوني للمسؤولية. يُرجى مراجعته والموافقة عليه مجددًا لمتابعة استخدام التطبيق.",
                 lbl_reconsent_checkbox: "أقر وأوافق على النسخة المحدثة من إقرار المستخدم والإخلاء القانوني للمسؤولية.",
                 btn_accept_continue: "موافقة ومتابعة", btn_sign_out_reconsent: "تسجيل الخروج",
-                sub_gate_title: "انتهت فترتك التجريبية المجانية",
-                sub_gate_desc: "اشترك لمتابعة استخدام MB-EGX. ادفع عبر فيزا/ماستركارد، أو محفظة موبايل، أو فوري.",
-                sub_plan_monthly: "شهري", sub_plan_quarterly: "3 أشهر",
-                sub_gate_recheck: "دفعت بالفعل عبر فوري — تحقق مرة أخرى",
-                err_payment_start_failed: "تعذّر بدء عملية الدفع. يرجى المحاولة مرة أخرى.",
-                err_payment_not_confirmed_yet: "لم نستلم دفعتك بعد. إذا دفعت عبر فوري، قد يستغرق ذلك بعض الوقت — حاول مرة أخرى بعد قليل.",
                 err_enter_both: "أدخل البريد الإلكتروني وكلمة المرور.", err_invalid_email: "صيغة البريد الإلكتروني غير صحيحة.",
                 err_sign_in_failed: "فشل تسجيل الدخول. تحقق من بيانات الاعتماد.",
                 err_password_min: "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.", err_password_max: "كلمة المرور طويلة جدًا.",
@@ -3016,40 +3004,6 @@
         </div>
     </div>
 
-    <!-- Subscription Paywall Gate: shown once a user's free trial has
-         ended and they don't have an active paid subscription. Blocks all
-         interaction with the app until they subscribe. -->
-    <div id="subscription-gate" class="hidden fixed inset-0 bg-black/90 z-[10000] flex items-center justify-center p-4">
-        <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 max-w-md w-full card-edge">
-            <h2 class="font-label-mono text-sm text-primary uppercase font-bold mb-1" data-i18n="sub_gate_title">Your Free Trial Has Ended</h2>
-            <p class="font-body-sm text-[12px] text-on-surface-variant mb-4" data-i18n="sub_gate_desc">
-                Subscribe to keep using MB-EGX. Pay with Visa/Mastercard, mobile wallet, or Fawry.
-            </p>
-
-            <div class="space-y-3">
-                <button id="btn-sub-monthly" onclick="startCheckout('monthly')" class="w-full bg-primary text-on-primary font-bold py-3 rounded-lg hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-between px-4">
-                    <span data-i18n="sub_plan_monthly">Monthly</span>
-                    <span class="font-label-mono">30 EGP</span>
-                </button>
-                <button id="btn-sub-quarterly" onclick="startCheckout('quarterly')" class="w-full bg-[#333539] text-white font-bold py-3 rounded-lg hover:bg-[#37393e] active:scale-[0.98] transition-all flex items-center justify-between px-4">
-                    <span data-i18n="sub_plan_quarterly">3 Months</span>
-                    <span class="font-label-mono">70 EGP</span>
-                </button>
-            </div>
-
-            <div id="subscription-error" class="hidden mt-3 text-[#ffb4ab] font-body-sm text-[11px]"></div>
-
-            <div class="flex items-center justify-between mt-4">
-                <button id="btn-sub-recheck" onclick="recheckSubscription()" class="text-[12px] text-primary hover:underline" data-i18n="sub_gate_recheck">
-                    I already paid via Fawry — check again
-                </button>
-                <button onclick="handleSignOut()" class="text-[12px] text-on-surface-variant hover:text-on-surface" data-i18n="btn_sign_out_reconsent">
-                    Sign Out
-                </button>
-            </div>
-        </div>
-    </div>
-
     <script>
         // --- Firebase setup ---
         const firebaseConfig = {
@@ -3063,6 +3017,14 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
+        // Some mobile carriers/networks (common on mobile data in Egypt, and
+        // behind some proxies/firewalls) silently break Firestore's default
+        // streaming (WebChannel/gRPC) connection - reads/writes then hang or
+        // fail intermittently, which is exactly the "logs in fine, then the
+        // terms/consent write or re-check fails" symptom reported on mobile.
+        // This makes the SDK auto-detect that case and transparently fall
+        // back to plain long-polling instead, per Firebase's own guidance.
+        db.settings({ experimentalAutoDetectLongPolling: true, merge: true });
         let analytics = null;
         try { analytics = firebase.analytics(); } catch (e) { console.warn('Firebase Analytics not available:', e); }
 
@@ -3178,111 +3140,6 @@
             };
         }
 
-        // --- Subscription / free trial ---
-        // Free trial length. Grants every new account 3 months of free
-        // access from the moment they sign up. This is a client-set date,
-        // which is fine for a trial (worst case someone fudges their local
-        // clock for a few extra trial days) - the actual PAID subscription
-        // status (subscription_status / subscription_expires_at) is only
-        // ever written by the Cloudflare Worker after a verified Paymob
-        // webhook, never by this client code.
-        const TRIAL_DAYS = 90;
-        const PAYMENT_WORKER_URL = "https://mb-egx-payments.drmo071990.workers.dev";
-
-        function buildTrialFields() {
-            const trialEnds = new Date(Date.now() + TRIAL_DAYS * 24 * 60 * 60 * 1000);
-            return {
-                trial_ends_at: trialEnds,
-                subscription_status: "trial",
-            };
-        }
-
-        // True if this user doc currently grants access - either an active
-        // paid subscription that hasn't expired, or a free trial that
-        // hasn't expired.
-        function hasActiveAccess(data) {
-            const now = Date.now();
-            const toMillis = (v) => {
-                if (!v) return 0;
-                if (typeof v.toMillis === 'function') return v.toMillis();
-                const d = new Date(v);
-                return isNaN(d.getTime()) ? 0 : d.getTime();
-            };
-            if (data.subscription_status === 'active' && toMillis(data.subscription_expires_at) > now) {
-                return true;
-            }
-            if (toMillis(data.trial_ends_at) > now) {
-                return true;
-            }
-            return false;
-        }
-
-        let _pendingSubscribeUser = null;
-
-        function showSubscriptionGate(user) {
-            _pendingSubscribeUser = user;
-            document.getElementById('subscription-gate').classList.remove('hidden');
-        }
-
-        async function startCheckout(plan) {
-            const user = _pendingSubscribeUser || auth.currentUser;
-            if (!user) return;
-            const btnId = plan === 'monthly' ? 'btn-sub-monthly' : 'btn-sub-quarterly';
-            const btn = document.getElementById(btnId);
-            const errEl = document.getElementById('subscription-error');
-            errEl.classList.add('hidden');
-            btn.disabled = true;
-            const otherBtn = document.getElementById(plan === 'monthly' ? 'btn-sub-quarterly' : 'btn-sub-monthly');
-            if (otherBtn) otherBtn.disabled = true;
-            try {
-                const idToken = await user.getIdToken();
-                const resp = await fetch(PAYMENT_WORKER_URL + '/create-payment', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ idToken, plan }),
-                });
-                const data = await resp.json();
-                if (resp.ok && data.checkoutUrl) {
-                    window.location.href = data.checkoutUrl;
-                    return;
-                }
-                throw new Error(data.error || 'Payment could not be started');
-            } catch (err) {
-                console.error('startCheckout failed:', err);
-                errEl.textContent = tt('err_payment_start_failed');
-                errEl.classList.remove('hidden');
-                btn.disabled = false;
-                if (otherBtn) otherBtn.disabled = false;
-            }
-        }
-
-        // For users who paid via Fawry (not instant) - re-checks Firestore
-        // without a full page reload.
-        async function recheckSubscription() {
-            const user = _pendingSubscribeUser || auth.currentUser;
-            if (!user) return;
-            const btn = document.getElementById('btn-sub-recheck');
-            const errEl = document.getElementById('subscription-error');
-            errEl.classList.add('hidden');
-            if (btn) btn.disabled = true;
-            try {
-                const doc = await db.collection('users').doc(user.uid).get();
-                const data = doc.exists ? doc.data() : {};
-                if (hasActiveAccess(data)) {
-                    document.getElementById('subscription-gate').classList.add('hidden');
-                    _pendingSubscribeUser = null;
-                    proceedAfterAuth(user);
-                } else {
-                    errEl.textContent = tt('err_payment_not_confirmed_yet');
-                    errEl.classList.remove('hidden');
-                }
-            } catch (err) {
-                console.error('recheckSubscription failed:', err);
-            } finally {
-                if (btn) btn.disabled = false;
-            }
-        }
-
         function handleEmailSignIn() {
             if (!checkAuthRateLimit()) return;
             clearAuthError();
@@ -3315,7 +3172,6 @@
                 await db.collection('users').doc(cred.user.uid).set({
                     cash: 0, portfolio: [], history: [],
                     ...buildConsentFields(ip),
-                    ...buildTrialFields(),
                 }, { merge: true });
                 resetAuthRateLimit();
             } catch (err) {
@@ -3351,7 +3207,6 @@
                     await db.collection('users').doc(result.user.uid).set({
                         cash: 0, portfolio: [], history: [],
                         ...buildConsentFields(ip),
-                        ...buildTrialFields(),
                     }, { merge: true });
                 }
                 resetAuthRateLimit();
@@ -3724,7 +3579,11 @@
                 _pendingReconsentUser = null;
                 proceedAfterAuth(user);
             } catch (err) {
-                console.error('Failed to save re-consent:', err);
+                // Log the real Firestore error code (permission-denied,
+                // unavailable, deadline-exceeded, etc.) so a future report
+                // of this is actually diagnosable, same as Google sign-in's
+                // error logging above.
+                console.error('Failed to save re-consent:', err && err.code, err);
                 errEl.textContent = tt("err_reconsent_save_failed");
                 errEl.classList.remove('hidden');
             }
@@ -3754,7 +3613,6 @@
                 // TERMS_VERSION constant) blocks everything below until the
                 // user re-accepts via the modal instead of silently letting
                 // them keep using the app under an outdated agreement.
-                document.getElementById('subscription-gate').classList.add('hidden');
                 db.collection('users').doc(user.uid).get().then(async doc => {
                     const data = doc.exists ? doc.data() : {};
                     if (data.terms_version !== TERMS_VERSION) {
@@ -3764,25 +3622,6 @@
                         document.getElementById('btn-reconsent-accept').classList.add('opacity-50');
                         document.getElementById('reconsent-error').classList.add('hidden');
                         reconsentGate.classList.remove('hidden');
-                        return;
-                    }
-
-                    // Accounts created before the trial/subscription system
-                    // existed have no trial_ends_at yet - grant them a fresh
-                    // trial starting now, once, instead of locking them out.
-                    if (!data.trial_ends_at) {
-                        const fields = buildTrialFields();
-                        try {
-                            await db.collection('users').doc(user.uid).set(fields, { merge: true });
-                            data.trial_ends_at = fields.trial_ends_at;
-                            data.subscription_status = data.subscription_status || fields.subscription_status;
-                        } catch (err) {
-                            console.error('Could not migrate trial fields:', err);
-                        }
-                    }
-
-                    if (!hasActiveAccess(data)) {
-                        showSubscriptionGate(user);
                         return;
                     }
 

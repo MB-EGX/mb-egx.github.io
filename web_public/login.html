@@ -304,6 +304,8 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
+        // See index.html for why this is needed on mobile networks.
+        db.settings({ experimentalAutoDetectLongPolling: true, merge: true });
         let analytics = null;
         try { analytics = firebase.analytics(); } catch (e) { console.warn('Firebase Analytics not available:', e); }
 
@@ -545,18 +547,6 @@
             };
         }
 
-        // Free trial - mirrors the same logic in index.html. New accounts
-        // get 3 months free from signup; the actual paid subscription
-        // status is only ever written server-side by the Cloudflare Worker
-        // after a verified Paymob webhook, never from client code.
-        const TRIAL_DAYS = 90;
-        function buildTrialFields() {
-            return {
-                trial_ends_at: new Date(Date.now() + TRIAL_DAYS * 24 * 60 * 60 * 1000),
-                subscription_status: "trial",
-            };
-        }
-
         function handleEmailSignIn() {
             if (!checkAuthRateLimit()) return;
             clearAuthError();
@@ -588,7 +578,6 @@
                 await db.collection('users').doc(cred.user.uid).set({
                     cash: 0, portfolio: [], history: [],
                     ...buildConsentFields(ip),
-                    ...buildTrialFields(),
                 }, { merge: true });
                 resetAuthRateLimit();
             } catch (err) {
@@ -623,7 +612,6 @@
                     await db.collection('users').doc(result.user.uid).set({
                         cash: 0, portfolio: [], history: [],
                         ...buildConsentFields(ip),
-                        ...buildTrialFields(),
                     }, { merge: true });
                 }
                 resetAuthRateLimit();
