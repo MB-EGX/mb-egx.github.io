@@ -999,6 +999,13 @@
                 <button onclick="closeModal('modal-cash')" class="bg-slate-700 text-white px-3 py-1.5 rounded font-bold text-xs" data-i18n="btn_cancel">Cancel</button>
                 <button onclick="saveCash()" class="bg-blue-600 text-white px-4 py-1.5 rounded font-bold text-xs" data-i18n="btn_save">Save</button>
             </div>
+            <div class="border-t border-bordercol pt-3 space-y-2">
+                <p class="text-textmuted text-[11px]" data-i18n="lbl_cash_recalc_intro">Balance drifted out of sync with your trades? Enter what you started with before your first-ever trade and rebuild it from your full buy/sell history instead.</p>
+                <input type="number" id="input-cash-starting" placeholder="e.g. 50000" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono text-sm">
+                <div class="flex justify-end">
+                    <button onclick="recalculateCashFromHistory()" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-1.5 rounded font-bold text-xs" data-i18n="btn_recalc_cash">📜 Recalculate From Trades</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1259,6 +1266,8 @@
                 opt_atr_20: "2.0x ATR Stop", opt_atr_30: "3.0x ATR Stop", lbl_target_entry: "Target Entry (EGP):",
                 lbl_stop_loss_egp: "Stop-Loss (EGP):", lbl_max_risk: "Max Account Risk (%):",
                 modal_cash_title: "Set Available Cash Balance", btn_cancel: "Cancel", btn_save: "Save",
+                lbl_cash_recalc_intro: "Balance drifted out of sync with your trades? Enter what you started with before your first-ever trade and rebuild it from your full buy/sell history instead.",
+                btn_recalc_cash: "📜 Recalculate From Trades",
                 modal_portfolio_title: "Open / Add Position", lbl_ticker_symbol: "Ticker Symbol:",
                 lbl_buy_price_egp: "Buy Price (EGP):", lbl_mode: "Mode:", opt_scale_in: "📈 Add Shares / Scale In (Auto-Avg)",
                 opt_overwrite: "✏️ Correct Mistake / Overwrite", btn_save_position: "Save Position",
@@ -1324,6 +1333,7 @@
                 rate_limit_locked: "Too many failed attempts. Locked for {s} seconds.",
                 confirm_clear_demo: "Are you sure you want to clear demo samples without deleting real trades?",
                 alert_cash_limit: "Cash amount exceeds safe limit.", alert_invalid_ticker: "Please enter a valid ticker symbol.",
+                alert_starting_capital_required: "Please enter the cash you started with before your first trade (0 or more).",
                 alert_price_positive: "Buy price must be greater than 0.", alert_shares_positive: "Shares must be greater than 0.",
                 alert_shares_limit: "Share count exceeds safe limit.", alert_no_closed_trades: "No closed trades available to export.",
                 alert_sign_out_failed: "Sign out failed. Please try again, or reload the page.",
@@ -1413,6 +1423,8 @@
                 opt_atr_20: "وقف 2.0x ATR", opt_atr_30: "وقف 3.0x ATR", lbl_target_entry: "سعر الدخول المستهدف (جنيه):",
                 lbl_stop_loss_egp: "وقف الخسارة (جنيه):", lbl_max_risk: "أقصى مخاطرة للحساب (%):",
                 modal_cash_title: "تحديد الرصيد النقدي المتاح", btn_cancel: "إلغاء", btn_save: "حفظ",
+                lbl_cash_recalc_intro: "هل انحرف رصيدك عن التوافق مع صفقاتك الفعلية؟ أدخل رأس المال الذي بدأت به قبل أول صفقة، وسيتم إعادة بنائه من سجل الشراء والبيع الكامل بدلاً من ذلك.",
+                btn_recalc_cash: "📜 إعادة الحساب من الصفقات",
                 modal_portfolio_title: "فتح / إضافة مركز", lbl_ticker_symbol: "رمز السهم:",
                 lbl_buy_price_egp: "سعر الشراء (جنيه):", lbl_mode: "الوضع:", opt_scale_in: "📈 إضافة أسهم / زيادة المركز (متوسط تلقائي)",
                 opt_overwrite: "✏️ تصحيح خطأ / استبدال", btn_save_position: "حفظ المركز",
@@ -1478,6 +1490,7 @@
                 rate_limit_locked: "محاولات فاشلة كثيرة جدًا. تم القفل لمدة {s} ثانية.",
                 confirm_clear_demo: "هل أنت متأكد من مسح العينات التجريبية دون حذف الصفقات الحقيقية؟",
                 alert_cash_limit: "قيمة الرصيد النقدي تتجاوز الحد الآمن.", alert_invalid_ticker: "يرجى إدخال رمز سهم صحيح.",
+                alert_starting_capital_required: "يرجى إدخال رأس المال الذي بدأت به قبل أول صفقة (0 أو أكثر).",
                 alert_price_positive: "يجب أن يكون سعر الشراء أكبر من 0.", alert_shares_positive: "يجب أن يكون عدد الأسهم أكبر من 0.",
                 alert_shares_limit: "عدد الأسهم يتجاوز الحد الآمن.", alert_no_closed_trades: "لا توجد صفقات مغلقة متاحة للتصدير.",
                 alert_sign_out_failed: "فشل تسجيل الخروج. يرجى المحاولة مرة أخرى أو إعادة تحميل الصفحة.",
@@ -2192,6 +2205,31 @@
             closeModal('modal-cash');
             renderAccountBar(); renderPortfolio();
         }
+        function recalculateCashFromHistory() {
+            // One-time fix for a balance that drifted out of sync with real
+            // trades (e.g. buys recorded before the buy-side cash deduction
+            // above existed). Rebuilds from scratch as:
+            //   starting_capital
+            //   - cost basis of every currently OPEN position (userPortfolio)
+            //   - buy cost of every CLOSED trade ever made (userHistory)
+            //   + sell proceeds of every CLOSED trade ever made (userHistory)
+            // Mirrors db_manager.recalculate_cash_from_history() in the
+            // desktop app so both sides fix drift the same way.
+            const startingCapital = sanitizeNumber(document.getElementById('input-cash-starting').value, null);
+            if (startingCapital == null || startingCapital < 0) { alert(tt("alert_starting_capital_required")); return; }
+
+            const openCost = userPortfolio.reduce((sum, p) => sum + (p.buyPrice * p.shares), 0);
+            const closedCost = userHistory.reduce((sum, h) => sum + (h.buyPrice * h.shares), 0);
+            const closedProceeds = userHistory.reduce((sum, h) => sum + (h.sellPrice * h.shares), 0);
+
+            userCash = startingCapital - openCost - closedCost + closedProceeds;
+            if (userCash > 1e12) { alert(tt("alert_cash_limit")); return; }
+            syncUserData();
+            document.getElementById('input-cash').value = userCash;
+            document.getElementById('input-cash-starting').value = '';
+            closeModal('modal-cash');
+            renderAccountBar(); renderPortfolio();
+        }
         function addPortfolioPosition() {
             // Strict validation: sanitize all inputs to prevent XSS / injection
             const rawTicker = document.getElementById('port-ticker').value;
@@ -2210,10 +2248,18 @@
                 const total = existing.shares + shares;
                 existing.buyPrice = ((existing.shares * existing.buyPrice) + (shares * price)) / total;
                 existing.shares = total;
+                // Cash flow: scaling in spends cash - this was missing before,
+                // which is why the balance never moved after a buy (sells
+                // already credited cash back below in sellPosition).
+                userCash -= (price * shares);
             } else if (existing && mode === 'overwrite') {
+                // Data-entry correction, not a real trade - deliberately does
+                // NOT touch cash, same as the desktop app's OVERWRITE mode.
                 existing.buyPrice = price; existing.shares = shares;
             } else {
                 userPortfolio.push({ ticker, buyPrice: price, shares, date: new Date().toISOString().split('T')[0] });
+                // Cash flow: opening a fresh position spends cash too.
+                userCash -= (price * shares);
             }
             localStorage.setItem('quant_portfolio', JSON.stringify(userPortfolio));
             syncUserData();

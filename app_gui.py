@@ -288,6 +288,13 @@ AR_TRANSLATIONS = {
     "Enter available cash balance in EGP:": "أدخل الرصيد النقدي المتاح بالجنيه:",
     "Cash Updated": "تم تحديث الرصيد النقدي",
     "Account cash balance successfully updated to: {v} EGP.": "تم تحديث الرصيد النقدي للحساب بنجاح إلى: {v} جنيه.",
+    "How would you like to update your cash balance?\n\n• Set Exact Amount — directly overwrite the balance (use this if you already know the correct number).\n• Recalculate From Trades — enter what you started with BEFORE your first trade, and the app rebuilds the balance from your full buy/sell history (fixes drift from before cash tracking was wired up).": "كيف تريد تحديث رصيدك النقدي؟\n\n• تحديد مبلغ محدد — استبدال الرصيد مباشرة (استخدم هذا إذا كنت تعرف الرقم الصحيح بالفعل).\n• إعادة الحساب من الصفقات — أدخل رأس المال الذي بدأت به قبل أول صفقة، وسيقوم التطبيق بإعادة بناء الرصيد من سجل الشراء والبيع الكامل (يصلح أي انحراف حدث قبل ربط تتبع النقد بشكل صحيح).",
+    "Set Exact Amount": "تحديد مبلغ محدد",
+    "Recalculate From Trades": "إعادة الحساب من الصفقات",
+    "Recalculate Cash From Trade History": "إعادة حساب النقد من سجل الصفقات",
+    "Enter the cash you started with BEFORE your very first trade (EGP):": "أدخل رأس المال الذي بدأت به قبل أول صفقة (بالجنيه):",
+    "Cash Recalculated": "تمت إعادة حساب الرصيد النقدي",
+    "Rebuilt from your full trade history. New cash balance: {v} EGP.": "تمت إعادة البناء من سجل صفقاتك الكامل. الرصيد النقدي الجديد: {v} جنيه.",
     "No real (non-demo) closed trades available to export.": "لا توجد صفقات مغلقة حقيقية (غير تجريبية) متاحة للتصدير.",
     "({n} demo trade(s) were excluded.)": "(تم استبعاد {n} صفقة/صفقات تجريبية.)",
     "Export Error": "خطأ في التصدير",
@@ -3136,8 +3143,8 @@ class QuantDashboard(QMainWindow):
 
         intro = QLabel(tr(
             "🎯 The app's forward-looking watchlist — auto-picked and auto-refilled every time you run the matrix. "
-            "Each horizon has its own target gain (see the Target Gain column) — a pick moves to Recent "
-            "Achievements once it's up that much from the price it was picked at."
+            "Each horizon has its own target gain (see the Target Gain column) — a pick moves down to Track "
+            "Record once it's up that much from the price it was picked at."
         ))
         intro.setWordWrap(True)
         intro.setStyleSheet("font-size: 11px; color: #a0aec0; padding: 2px 2px 6px 2px;")
@@ -3160,7 +3167,7 @@ class QuantDashboard(QMainWindow):
             self._picks_tables[horizon] = tbl
             v_layout.addWidget(tbl)
 
-        achieved_label = QLabel(tr("🏆 Recent Achievements"))
+        achieved_label = QLabel(tr("📜 Track Record — Calls That Hit"))
         achieved_label.setStyleSheet("font-weight: bold; font-size: 14px; padding: 10px 2px 2px 2px;")
         v_layout.addWidget(achieved_label)
         self.tbl_picks_achieved = self._make_picks_table(self._ACHIEVED_COLS)
@@ -3235,8 +3242,8 @@ class QuantDashboard(QMainWindow):
                 btn_remove.clicked.connect(lambda _, pid=pick["id"]: self._remove_session_pick(pid))
                 tbl.setCellWidget(row_idx, 8, btn_remove)
 
-        # Recent Achievements — pulled fresh from the DB (full history, not
-        # just this run), with today's newly-achieved rows highlighted gold.
+        # Track Record — pulled fresh from the DB (full history, not just
+        # this run), with today's newly-achieved rows highlighted gold.
         recent = self.dbm.get_recent_achieved_picks(limit=20)
         self.tbl_picks_achieved.setRowCount(len(recent))
         for row_idx, pick in enumerate(recent):
@@ -3283,11 +3290,32 @@ class QuantDashboard(QMainWindow):
 
     def prompt_set_cash(self):
         current_cash = self.dbm.get_cash_balance()
-        val, ok = QInputDialog.getDouble(self, tr("Set Account Cash Balance"), tr("Enter available cash balance in EGP:"), current_cash, 0.0, 1000000000.0, 2)
-        if ok:
-            self.dbm.set_cash_balance(val)
-            QMessageBox.information(self, tr("Cash Updated"), tr("Account cash balance successfully updated to: {v} EGP.").format(v=f"{val:,.2f}"))
-            self.start_analysis()
+        box = QMessageBox(self)
+        box.setWindowTitle(tr("Set Account Cash Balance"))
+        box.setText(tr(
+            "How would you like to update your cash balance?\n\n"
+            "• Set Exact Amount — directly overwrite the balance (use this if you already know the correct number).\n"
+            "• Recalculate From Trades — enter what you started with BEFORE your first trade, and the app rebuilds "
+            "the balance from your full buy/sell history (fixes drift from before cash tracking was wired up)."
+        ))
+        btn_exact = box.addButton(tr("Set Exact Amount"), QMessageBox.ButtonRole.AcceptRole)
+        btn_recalc = box.addButton(tr("Recalculate From Trades"), QMessageBox.ButtonRole.ActionRole)
+        box.addButton(QMessageBox.StandardButton.Cancel)
+        box.exec()
+        clicked = box.clickedButton()
+
+        if clicked == btn_exact:
+            val, ok = QInputDialog.getDouble(self, tr("Set Account Cash Balance"), tr("Enter available cash balance in EGP:"), current_cash, 0.0, 1000000000.0, 2)
+            if ok:
+                self.dbm.set_cash_balance(val)
+                QMessageBox.information(self, tr("Cash Updated"), tr("Account cash balance successfully updated to: {v} EGP.").format(v=f"{val:,.2f}"))
+                self.start_analysis()
+        elif clicked == btn_recalc:
+            start_val, ok = QInputDialog.getDouble(self, tr("Recalculate Cash From Trade History"), tr("Enter the cash you started with BEFORE your very first trade (EGP):"), current_cash, 0.0, 1000000000.0, 2)
+            if ok:
+                new_balance = self.dbm.recalculate_cash_from_history(start_val)
+                QMessageBox.information(self, tr("Cash Recalculated"), tr("Rebuilt from your full trade history. New cash balance: {v} EGP.").format(v=f"{new_balance:,.2f}"))
+                self.start_analysis()
 
     def export_trade_ledger(self):
         all_trades = self.dbm.get_all_closed_trades()

@@ -523,8 +523,52 @@ class DatabaseManager:
                 return 0.0
 
     def set_cash_balance(self, amount: float):
+        """Manual override (the 'Set Cash' button) - replaces the balance
+        outright. Buys/sells do NOT go through this; they go through
+        _adjust_cash_balance() below so the balance keeps moving on its
+        own as trades happen, instead of staying frozen at whatever this
+        was last manually set to."""
         with self.get_connection() as conn:
             conn.execute("INSERT OR REPLACE INTO account_cash (id, balance) VALUES (1, ?);", (float(amount),))
+
+    def _adjust_cash_balance(self, conn, delta: float) -> float:
+        """Adds `delta` (negative to spend cash on a buy, positive to add
+        proceeds from a sell) to the account cash balance, using the SAME
+        connection/transaction as the caller's buy/sell write - so the
+        position change and the cash change always commit (or roll back)
+        together and the balance can never drift out of sync with the
+        trades that produced it. Returns the new balance."""
+        row = conn.cursor().execute("SELECT balance FROM account_cash WHERE id = 1;").fetchone()
+        current = float(row[0]) if row else 0.0
+        new_balance = current + delta
+        conn.execute("INSERT OR REPLACE INTO account_cash (id, balance) VALUES (1, ?);", (new_balance,))
+        return new_balance
+
+    def recalculate_cash_from_history(self, starting_capital: float) -> float:
+        """One-time fix for a cash balance that drifted out of sync with
+        real trades (e.g. trades recorded before buy/sell started adjusting
+        cash automatically - see add_owned_stock/record_sale). Rebuilds the
+        balance from scratch as:
+
+            starting_capital
+            - cost basis of every currently OPEN position (portfolio_owned)
+            - buy cost of every CLOSED trade ever made (portfolio_closed)
+            + sell proceeds of every CLOSED trade ever made (portfolio_closed)
+
+        `starting_capital` is the cash you had BEFORE your very first trade -
+        not today's balance. After this runs once, ordinary buys/sells keep
+        the balance correct on their own via _adjust_cash_balance(), so this
+        never needs to be re-run unless a trade was entered/edited directly
+        in a way that bypassed that automatic adjustment.
+        """
+        with self.get_connection() as conn:
+            cur = conn.cursor()
+            open_cost = cur.execute("SELECT COALESCE(SUM(buy_price * shares), 0) FROM portfolio_owned;").fetchone()[0]
+            closed_cost = cur.execute("SELECT COALESCE(SUM(buy_price * shares), 0) FROM portfolio_closed;").fetchone()[0]
+            closed_proceeds = cur.execute("SELECT COALESCE(SUM(sell_price * shares), 0) FROM portfolio_closed;").fetchone()[0]
+            new_balance = float(starting_capital) - float(open_cost) - float(closed_cost) + float(closed_proceeds)
+            conn.execute("INSERT OR REPLACE INTO account_cash (id, balance) VALUES (1, ?);", (new_balance,))
+        return new_balance
 
     def clear_sample_data(self):
         with self.get_connection() as conn:
@@ -563,6 +607,11 @@ class DatabaseManager:
                         "INSERT INTO portfolio_owned (ticker, buy_price, shares, purchase_date, is_demo) VALUES (?, ?, ?, ?, ?);",
                         (ticker, float(buy_price), float(shares), str(purchase_date), bool(is_demo)),
                     )
+                    # Cash flow: a real buy spends cash - this is what was
+                    # missing before, which is why the balance never moved
+                    # after trades. OVERWRITE mode (data-entry correction)
+                    # deliberately does NOT hit this - see that branch above.
+                    self._adjust_cash_balance(conn, -(float(buy_price) * float(shares)))
                     if _LANG == "AR":
                         return (True, f"🛒 تم فتح مركز جديد لـ {ticker}:\n{shares:,.4f} سهم بسعر {buy_price:.4f} جنيه.")
                     return (True, f"🛒 Opened fresh position for {ticker}:\n{shares:,.4f} shares @ {buy_price:.4f} EGP.")
@@ -575,6 +624,9 @@ class DatabaseManager:
                         return (False, "⚠️ Error: Combined share quantity cannot be zero or less.")
                     new_p = ((old_s * old_p) + (float(shares) * float(buy_price))) / new_s
                     conn.execute("UPDATE portfolio_owned SET buy_price = ?, shares = ?, purchase_date = ?, is_demo = ? WHERE ticker = ?;", (new_p, new_s, str(purchase_date), bool(is_demo), ticker))
+                    # Cash flow: scaling in spends cash too - same reasoning
+                    # as the fresh-position branch above.
+                    self._adjust_cash_balance(conn, -(float(buy_price) * float(shares)))
                     if _LANG == "AR":
                         return (True, f"📈 تمت الزيادة في {ticker}! دمج {old_s:,.4f} + {shares:,.4f} سهم.\nالإجمالي الجديد: {new_s:,.4f} سهم | متوسط التكلفة المرجح الجديد: {new_p:.4f} جنيه (كان {old_p:.4f}).")
                     return (True, f"📈 Scaled into {ticker}! Combined {old_s:,.4f} + {shares:,.4f} shares.\nNew Total: {new_s:,.4f} shares | New Weighted Average Cost: {new_p:.4f} EGP (was {old_p:.4f}).")
@@ -669,6 +721,12 @@ class DatabaseManager:
                 )
             else:
                 conn.execute("UPDATE portfolio_owned SET shares = ? WHERE ticker = ?;", (remaining_shares, actual_ticker))
+
+            # Cash flow: a sale returns cash - proceeds = sell_price *
+            # shares actually sold. Same connection/transaction as the
+            # portfolio_closed insert and the portfolio_owned update above,
+            # so the sale and the cash credit always commit together.
+            self._adjust_cash_balance(conn, float(sell_price) * float(shares_to_sell))
         if _LANG == "AR":
             return (True, f"تم تسجيل بيع {shares_to_sell} سهم من {actual_ticker} بسعر {sell_price} جنيه بنجاح.\nالربح/الخسارة المحققة: {realized_pnl:.2f} جنيه ({pnl_pct:.2f}%).")
         return (True, f"Successfully recorded sale of {shares_to_sell} shares of {actual_ticker} @ {sell_price} EGP.\nRealized P&L: {realized_pnl:.2f} EGP ({pnl_pct:.2f}%).")
