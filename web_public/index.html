@@ -3572,7 +3572,14 @@
             if (!user || !document.getElementById('reconsent-checkbox').checked) return;
             const errEl = document.getElementById('reconsent-error');
             errEl.classList.add('hidden');
+            const btn = document.getElementById('btn-reconsent-accept');
+            if (btn) btn.disabled = true;
             try {
+                // Force a fresh ID token before writing. On mobile, a tab that
+                // sat backgrounded for a while can attempt this write on a
+                // stale/near-expired token; forcing a refresh here costs one
+                // extra round-trip but rules out that class of failure.
+                await user.getIdToken(true);
                 const ip = await fetchClientIp();
                 await db.collection('users').doc(user.uid).set(buildConsentFields(ip), { merge: true });
                 document.getElementById('terms-reconsent-gate').classList.add('hidden');
@@ -3582,10 +3589,16 @@
                 // Log the real Firestore error code (permission-denied,
                 // unavailable, deadline-exceeded, etc.) so a future report
                 // of this is actually diagnosable, same as Google sign-in's
-                // error logging above.
-                console.error('Failed to save re-consent:', err && err.code, err);
-                errEl.textContent = tt("err_reconsent_save_failed");
+                // error logging above. Also surfaced ON SCREEN (not just
+                // console) since affected users can't open devtools on
+                // mobile - a screenshot of this message is now enough to
+                // tell us exactly which failure mode we're looking at.
+                const code = (err && err.code) ? err.code : 'unknown-error';
+                console.error('Failed to save re-consent:', code, err);
+                errEl.textContent = tt("err_reconsent_save_failed") + " [write:" + code + "]";
                 errEl.classList.remove('hidden');
+            } finally {
+                if (btn) btn.disabled = false;
             }
         }
 
@@ -3629,8 +3642,21 @@
                 }).catch(err => {
                     // Fail safe: if we can't confirm the user's consent record,
                     // don't silently grant access — surface the re-consent gate.
-                    console.error('Could not verify terms acceptance:', err);
+                    // Also reset checkbox/button state here (previously only
+                    // done on the success branch above) and surface the error
+                    // code on screen - this catch fires on a failed READ,
+                    // which is a different failure point than a failed WRITE
+                    // in handleReconsentAccept, and telling the two apart from
+                    // a user's screenshot is what actually pins down the cause.
+                    const code = (err && err.code) ? err.code : 'unknown-error';
+                    console.error('Could not verify terms acceptance:', code, err);
                     _pendingReconsentUser = user;
+                    document.getElementById('reconsent-checkbox').checked = false;
+                    document.getElementById('btn-reconsent-accept').disabled = true;
+                    document.getElementById('btn-reconsent-accept').classList.add('opacity-50');
+                    const errEl = document.getElementById('reconsent-error');
+                    errEl.textContent = tt("err_reconsent_save_failed") + " [read:" + code + "]";
+                    errEl.classList.remove('hidden');
                     reconsentGate.classList.remove('hidden');
                 });
             } else {
