@@ -1108,6 +1108,16 @@
         let userHistory = JSON.parse(localStorage.getItem('quant_history')) || [];
         let hiddenCols = JSON.parse(localStorage.getItem('quant_hidden_cols')) || [];
 
+        // Paper Trading state - mirrors userCash/userPortfolio/userHistory
+        // above exactly (same localStorage-cache + cloud-sync pattern), but
+        // kept in totally separate variables/keys/Firestore fields so paper
+        // trades NEVER touch the real portfolio. null = "not loaded yet"
+        // (distinct from 0), so a brand-new visitor doesn't briefly render
+        // "0.00 EGP" before their starting balance loads from the cloud.
+        let paperCash = localStorage.getItem('quant_paper_cash') !== null ? parseFloat(localStorage.getItem('quant_paper_cash')) : null;
+        let paperPortfolio = JSON.parse(localStorage.getItem('quant_paper_portfolio')) || [];
+        let paperHistory = JSON.parse(localStorage.getItem('quant_paper_history')) || [];
+
         // ===== SECURITY: Input sanitization helpers =====
         // Escape HTML special chars to prevent XSS when injecting user/JSON data into innerHTML.
         function escapeHtml(str) {
@@ -1143,6 +1153,9 @@
         // and breakeven-shares calculators below so their math matches the
         // desktop app's decision_matrix.py exactly.
         const ROUND_TRIP_FEE_PCT = TRANSACTION_FEE_PCT * 2;
+        // Mirrors config.py's PAPER_TRADING_DEFAULTS.starting_cash_egp - the
+        // balance a brand-new visitor's paper account starts with.
+        const PAPER_TRADING_STARTING_CASH_EGP = 100000.0;
         function estimateSuggestedShares(entryPrice, stopLoss) {
             const price = sanitizeNumber(entryPrice), stop = sanitizeNumber(stopLoss);
             const stopDistance = price - stop;
@@ -1206,6 +1219,15 @@
             localStorage.setItem('quant_cash', userCash);
             localStorage.setItem('quant_portfolio', JSON.stringify(userPortfolio));
             localStorage.setItem('quant_history', JSON.stringify(userHistory));
+            if (window.cloudSyncUserData) window.cloudSyncUserData();
+        }
+        // Paper-trading counterpart of syncUserData() - same localStorage
+        // cache + debounced cloud-sync pattern, own keys/fields so it never
+        // collides with the real portfolio's sync.
+        function syncPaperData() {
+            localStorage.setItem('quant_paper_cash', paperCash);
+            localStorage.setItem('quant_paper_portfolio', JSON.stringify(paperPortfolio));
+            localStorage.setItem('quant_paper_history', JSON.stringify(paperHistory));
             if (window.cloudSyncUserData) window.cloudSyncUserData();
         }
 
@@ -2320,6 +2342,107 @@
             syncUserData();
             renderPortfolio(); renderHistory(); renderAccountBar();
         }
+        // Looks up a ticker's current price from the loaded market matrix,
+        // falling back to null if the ticker isn't in this export.
+        function getCurrentPrice(ticker) {
+            if (!globalData || !globalData.market_matrix) return null;
+            const found = globalData.market_matrix.find(m => m.Ticker === ticker);
+            return found ? found["Current Price"] : null;
+        }
+
+        // ===== Paper Trading (mirrors db_manager.py's paper_buy/paper_sell
+        // EXACTLY: same 0.35% per-side fee, same insufficient-cash / oversell
+        // guards) - runs entirely client-side against the visitor's OWN
+        // paperCash/paperPortfolio/paperHistory, synced to their own
+        // Firestore doc via syncPaperData(). Never touches the real
+        // portfolio (userCash/userPortfolio/userHistory) or anyone else's
+        // paper account. =====
+        function paperOpenShares(ticker) {
+            const pos = paperPortfolio.find(p => p.ticker === ticker);
+            return pos ? pos.shares : 0;
+        }
+        function paperBuy(ticker, price, shares) {
+            ticker = sanitizeTicker(ticker);
+            price = sanitizeNumber(price);
+            shares = sanitizeNumber(shares);
+            if (!ticker) { alert(tt("alert_invalid_ticker")); return false; }
+            if (!(price > 0)) { alert(tt("alert_price_positive")); return false; }
+            if (!(shares > 0)) { alert(tt("alert_shares_positive")); return false; }
+            if (shares > 1e9) { alert(tt("alert_shares_limit")); return false; }
+            if (paperCash === null) paperCash = PAPER_TRADING_STARTING_CASH_EGP;
+            const cost = price * shares;
+            const fee = cost * TRANSACTION_FEE_PCT;
+            if (cost + fee > paperCash + 1e-6) {
+                alert(currentLang === 'AR'
+                    ? `رصيد التداول التجريبي غير كافٍ: يلزم ${(cost + fee).toFixed(2)} جنيه، المتاح ${paperCash.toFixed(2)} جنيه.`
+                    : `Insufficient paper cash: need ${(cost + fee).toFixed(2)} EGP, have ${paperCash.toFixed(2)} EGP.`);
+                return false;
+            }
+            const existing = paperPortfolio.find(p => p.ticker === ticker);
+            if (existing) {
+                const total = existing.shares + shares;
+                existing.buyPrice = ((existing.shares * existing.buyPrice) + (shares * price)) / total;
+                existing.shares = total;
+            } else {
+                paperPortfolio.push({ ticker, buyPrice: price, shares, date: new Date().toISOString().split('T')[0] });
+            }
+            paperCash -= (cost + fee);
+            paperHistory.unshift({ ticker, side: 'BUY', price, shares, fee, date: new Date().toISOString().split('T')[0] });
+            syncPaperData();
+            renderPaperTradingPreview();
+            return true;
+        }
+        function paperSell(ticker, shares, price) {
+            ticker = sanitizeTicker(ticker);
+            shares = sanitizeNumber(shares);
+            const idx = paperPortfolio.findIndex(p => p.ticker === ticker);
+            if (idx === -1) return false;
+            const pos = paperPortfolio[idx];
+            const openShares = pos.shares;
+            if (!(shares > 0)) shares = openShares; // no amount given -> sell the whole position
+            if (shares > openShares + 1e-6) {
+                alert(currentLang === 'AR'
+                    ? `لا يمكن بيع ${shares}؛ المتاح فقط ${openShares.toLocaleString()}.`
+                    : `Cannot sell ${shares}; only ${openShares.toLocaleString()} open.`);
+                return false;
+            }
+            price = sanitizeNumber(price) || getCurrentPrice(ticker) || pos.buyPrice;
+            const fee = price * shares * TRANSACTION_FEE_PCT;
+            const proceeds = price * shares - fee;
+            const pnl = (price - pos.buyPrice) * shares - fee;
+            const pnlPct = pos.buyPrice > 0 ? ((price - pos.buyPrice) / pos.buyPrice) * 100 : 0;
+            if (shares >= openShares - 1e-6) {
+                paperPortfolio.splice(idx, 1);
+            } else {
+                pos.shares -= shares;
+            }
+            if (paperCash === null) paperCash = PAPER_TRADING_STARTING_CASH_EGP;
+            paperCash += proceeds;
+            paperHistory.unshift({
+                ticker, side: 'SELL', price, shares, fee, date: new Date().toISOString().split('T')[0],
+                buyPrice: pos.buyPrice, realizedPnl: pnl, pnlPct: pnlPct
+            });
+            syncPaperData();
+            renderPaperTradingPreview();
+            return true;
+        }
+        function paperBuyFromForm() {
+            const ticker = document.getElementById('paper-ticker').value;
+            const price = document.getElementById('paper-price').value;
+            const shares = document.getElementById('paper-shares').value;
+            if (paperBuy(ticker, price, shares)) {
+                document.getElementById('paper-shares').value = '';
+            }
+        }
+        function paperSellPosition(ticker) {
+            paperSell(ticker, 0, getCurrentPrice(ticker));
+        }
+        function paperTickerPriceAutofill() {
+            const ticker = sanitizeTicker(document.getElementById('paper-ticker').value);
+            const cp = getCurrentPrice(ticker);
+            if (cp !== null) document.getElementById('paper-price').value = cp;
+        }
+
         function openTargetModal(ticker) {
             const pos = userPortfolio.find(p => p.ticker === ticker);
             if (!pos) return;
@@ -2575,28 +2698,76 @@
             return { shares: nShares, avgCost: newAvgCost, cost, note };
         }
 
+        // Fully interactive: backed by the VISITOR'S OWN paperCash/
+        // paperPortfolio/paperHistory (client-side + their own Firestore
+        // doc), not the desktop app's server-exported snapshot - every
+        // visitor gets their own independent paper account, funded with
+        // PAPER_TRADING_STARTING_CASH_EGP, same as the desktop app's
+        // PaperTradingDialog / db_manager.py paper_buy/paper_sell.
         function renderPaperTradingPreview() {
             const el = document.getElementById('paper-trading-preview');
             if (!el) return;
-            const snap = (globalData && globalData.paper_trading) || null;
-            if (!snap) {
-                el.innerHTML = `<div class="text-sm font-bold text-sky-400 mb-2">🧪 ${currentLang === 'AR' ? 'التداول التجريبي' : 'Paper Trading'}</div><div class="text-textmuted">${currentLang === 'AR' ? 'لا توجد لقطة تداول تجريبي في هذا التصدير بعد.' : 'No paper-trading snapshot is present in this export yet.'}</div>`;
-                return;
-            }
-            const positions = snap.open_positions || [];
-            const trades = snap.recent_trades || [];
+            const ar = currentLang === 'AR';
+            const cash = paperCash === null ? PAPER_TRADING_STARTING_CASH_EGP : paperCash;
+            let stockVal = 0;
+            paperPortfolio.forEach(p => { stockVal += (getCurrentPrice(p.ticker) ?? p.buyPrice) * p.shares; });
+            const equity = cash + stockVal;
+
+            const rowsHtml = paperPortfolio.length ? paperPortfolio.map(p => {
+                const cp = getCurrentPrice(p.ticker) ?? p.buyPrice;
+                const pnl = (cp - p.buyPrice) * p.shares;
+                const pnlPct = p.buyPrice > 0 ? ((cp - p.buyPrice) / p.buyPrice) * 100 : 0;
+                return `<tr class="border-t border-bordercol">
+                    <td class="p-1.5 font-bold text-sky-300">${escapeHtml(p.ticker)}</td>
+                    <td class="p-1.5">${p.shares.toLocaleString()}</td>
+                    <td class="p-1.5">${p.buyPrice.toFixed(4)}</td>
+                    <td class="p-1.5">${cp.toFixed(4)}</td>
+                    <td class="p-1.5 font-bold ${pnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${pnl.toLocaleString(undefined,{maximumFractionDigits:2})} (${pnlPct.toFixed(2)}%)</td>
+                    <td class="p-1.5"><button onclick="paperSellPosition('${sanitizeTicker(p.ticker)}')" class="bg-rose-700 hover:bg-rose-600 text-white px-2 py-1 rounded text-[11px] font-bold">${ar ? 'بيع' : 'Sell'}</button></td>
+                </tr>`;
+            }).join('') : `<tr><td colspan="6" class="p-3 text-center text-textmuted">${ar ? 'لا توجد مراكز تجريبية مفتوحة.' : 'No open paper positions.'}</td></tr>`;
+
+            const tradesHtml = paperHistory.slice(0, 5).map(t => {
+                const sideColor = t.side === 'BUY' ? 'text-sky-300' : 'text-rose-300';
+                const pnlBadge = (t.side === 'SELL' && typeof t.realizedPnl === 'number')
+                    ? ` · <span class="${t.realizedPnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${t.realizedPnl.toLocaleString(undefined,{maximumFractionDigits:2})} EGP</span>`
+                    : '';
+                return `<div class="bg-darkbg rounded-lg border border-bordercol p-2 text-xs"><span class="font-bold text-sky-300">${escapeHtml(t.ticker || '')}</span> · <span class="${sideColor} font-bold">${escapeHtml(t.side || '')}</span> · <span>${Number(t.shares || 0).toLocaleString()}</span> @ <span>${Number(t.price || 0).toFixed(4)}</span>${pnlBadge}</div>`;
+            }).join('') || `<div class="text-textmuted">${ar ? 'لا توجد صفقات بعد.' : 'No paper trades yet.'}</div>`;
+
             el.innerHTML = `
                 <div class="flex items-center justify-between gap-3 mb-3">
-                    <div class="text-sm font-bold text-sky-400">🧪 ${currentLang === 'AR' ? 'التداول التجريبي' : 'Paper Trading'}</div>
-                    <div class="text-xs text-textmuted">${currentLang === 'AR' ? 'لقطة تصدير فقط' : 'Export snapshot only'}</div>
+                    <div class="text-sm font-bold text-sky-400">🧪 ${ar ? 'التداول التجريبي' : 'Paper Trading'}</div>
+                    <button onclick="resetPaperAccount()" class="text-[11px] text-textmuted hover:text-rose-400 underline">${ar ? 'إعادة تعيين الحساب' : 'Reset account'}</button>
                 </div>
-                <div class="grid grid-cols-2 gap-3 mb-3">
-                    <div class="bg-darkbg rounded-lg border border-bordercol p-3"><div class="text-textmuted text-[11px]">${currentLang === 'AR' ? 'الرصيد النقدي' : 'Cash Balance'}</div><div class="text-emerald-400 font-bold text-base">${Number(snap.cash_balance || 0).toLocaleString(undefined,{maximumFractionDigits:2})} EGP</div></div>
-                    <div class="bg-darkbg rounded-lg border border-bordercol p-3"><div class="text-textmuted text-[11px]">${currentLang === 'AR' ? 'المراكز المفتوحة' : 'Open Positions'}</div><div class="text-sky-300 font-bold text-base">${positions.length}</div></div>
+                <div class="grid grid-cols-3 gap-2 mb-3">
+                    <div class="bg-darkbg rounded-lg border border-bordercol p-2.5"><div class="text-textmuted text-[10px]">${ar ? 'النقد' : 'Cash'}</div><div class="text-emerald-400 font-bold text-sm">${cash.toLocaleString(undefined,{maximumFractionDigits:2})}</div></div>
+                    <div class="bg-darkbg rounded-lg border border-bordercol p-2.5"><div class="text-textmuted text-[10px]">${ar ? 'قيمة الأسهم' : 'Stock Value'}</div><div class="text-sky-300 font-bold text-sm">${stockVal.toLocaleString(undefined,{maximumFractionDigits:2})}</div></div>
+                    <div class="bg-darkbg rounded-lg border border-bordercol p-2.5"><div class="text-textmuted text-[10px]">${ar ? 'إجمالي حقوق الملكية' : 'Total Equity'}</div><div class="text-amber-400 font-bold text-sm">${equity.toLocaleString(undefined,{maximumFractionDigits:2})}</div></div>
                 </div>
-                <div class="text-[11px] text-textmuted mb-1">${currentLang === 'AR' ? 'أحدث الصفقات' : 'Recent trades'}</div>
-                <div class="space-y-2">${trades.slice(0,5).map(t => `<div class="bg-darkbg rounded-lg border border-bordercol p-2 text-xs"><span class="font-bold text-sky-300">${escapeHtml(t.ticker || '')}</span> · <span>${escapeHtml(t.side || '')}</span> · <span>${Number(t.shares || 0).toLocaleString()}</span> @ <span>${Number(t.price || 0).toFixed(4)}</span></div>`).join('') || `<div class="text-textmuted">${currentLang === 'AR' ? 'لا توجد صفقات بعد.' : 'No paper trades yet.'}</div>`}</div>
+                <div class="flex flex-wrap items-end gap-2 mb-3 bg-darkbg rounded-lg border border-bordercol p-2.5">
+                    <div><label class="block text-[10px] text-textmuted mb-1">${ar ? 'السهم' : 'Ticker'}</label><input type="text" id="paper-ticker" list="portfolio-ticker-list" onchange="paperTickerPriceAutofill()" placeholder="COMI.CA" class="w-24 bg-panelbg border border-bordercol rounded p-1.5 text-textmain font-mono uppercase text-xs"></div>
+                    <div><label class="block text-[10px] text-textmuted mb-1">${ar ? 'السعر' : 'Price'}</label><input type="number" id="paper-price" step="0.01" class="w-20 bg-panelbg border border-bordercol rounded p-1.5 text-textmain font-mono text-xs"></div>
+                    <div><label class="block text-[10px] text-textmuted mb-1">${ar ? 'الأسهم' : 'Shares'}</label><input type="number" id="paper-shares" step="1" min="1" class="w-20 bg-panelbg border border-bordercol rounded p-1.5 text-textmain font-mono text-xs"></div>
+                    <button onclick="paperBuyFromForm()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-1.5 rounded text-xs font-bold">${ar ? 'شراء' : 'Buy'}</button>
+                </div>
+                <div class="overflow-x-auto mb-3">
+                    <table class="w-full text-xs">
+                        <thead><tr class="text-textmuted text-left"><th class="p-1.5">${ar ? 'السهم' : 'Ticker'}</th><th class="p-1.5">${ar ? 'الكمية' : 'Shares'}</th><th class="p-1.5">${ar ? 'شراء' : 'Buy'}</th><th class="p-1.5">${ar ? 'الحالي' : 'Current'}</th><th class="p-1.5">${ar ? 'ر.خ' : 'P&L'}</th><th class="p-1.5"></th></tr></thead>
+                        <tbody>${rowsHtml}</tbody>
+                    </table>
+                </div>
+                <div class="text-[11px] text-textmuted mb-1">${ar ? 'أحدث الصفقات' : 'Recent trades'}</div>
+                <div class="space-y-2">${tradesHtml}</div>
             `;
+        }
+        function resetPaperAccount() {
+            if (!confirm(currentLang === 'AR' ? 'إعادة تعيين حساب التداول التجريبي إلى الرصيد الافتتاحي؟' : 'Reset your paper-trading account back to the starting balance?')) return;
+            paperCash = PAPER_TRADING_STARTING_CASH_EGP;
+            paperPortfolio = [];
+            paperHistory = [];
+            syncPaperData();
+            renderPaperTradingPreview();
         }
 
         function renderLeaderboardPreview() {
@@ -3527,12 +3698,26 @@
                 localStorage.setItem('quant_cash', userCash);
                 localStorage.setItem('quant_portfolio', JSON.stringify(userPortfolio));
                 localStorage.setItem('quant_history', JSON.stringify(userHistory));
+                // paper_cash may be absent on an account created before this
+                // feature existed - fall back to the standard starting
+                // balance rather than 0, same as a brand-new account gets.
+                paperCash = (data.paper_cash != null) ? data.paper_cash : PAPER_TRADING_STARTING_CASH_EGP;
+                paperPortfolio = data.paper_portfolio || [];
+                paperHistory = data.paper_history || [];
+                localStorage.setItem('quant_paper_cash', paperCash);
+                localStorage.setItem('quant_paper_portfolio', JSON.stringify(paperPortfolio));
+                localStorage.setItem('quant_paper_history', JSON.stringify(paperHistory));
             } else {
-                await docRef.set({ cash: userCash, portfolio: userPortfolio, history: userHistory });
+                paperCash = PAPER_TRADING_STARTING_CASH_EGP;
+                await docRef.set({
+                    cash: userCash, portfolio: userPortfolio, history: userHistory,
+                    paper_cash: paperCash, paper_portfolio: paperPortfolio, paper_history: paperHistory,
+                });
             }
             if (typeof renderAccountBar === 'function') renderAccountBar();
             if (typeof renderPortfolio === 'function') renderPortfolio();
             if (typeof renderHistory === 'function') renderHistory();
+            if (typeof renderPaperTradingPreview === 'function') renderPaperTradingPreview();
         }
 
         function computeWebDealingStats() {
@@ -3564,6 +3749,8 @@
             if (!auth.currentUser) return;
             db.collection('users').doc(auth.currentUser.uid).set({
                 cash: userCash, portfolio: userPortfolio, history: userHistory,
+                paper_cash: paperCash === null ? PAPER_TRADING_STARTING_CASH_EGP : paperCash,
+                paper_portfolio: paperPortfolio, paper_history: paperHistory,
                 web_stats: { ...computeWebDealingStats(), updated: firebase.firestore.FieldValue.serverTimestamp() }
             }, { merge: true }).catch(err => console.error('Cloud sync failed:', err));
         }

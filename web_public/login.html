@@ -287,8 +287,21 @@
         try { analytics = firebase.analytics(); } catch (e) { console.warn('Firebase Analytics not available:', e); }
 
         const TERMS_VERSION = "1.0";
+        // Mirrors config.py's PAPER_TRADING_DEFAULTS.starting_cash_egp - the
+        // balance a brand-new account's paper-trading account starts with,
+        // funded at account-creation time so it matches the web app
+        // (index.html) and desktop app (db_manager.py paper_buy) from the
+        // very first session, instead of starting at 0.
+        const PAPER_TRADING_STARTING_CASH_EGP = 100000.0;
         let _authCompleted = false;
         let _pendingRedirect = false;
+        // Whichever Google flow (popup or redirect) is currently checking/
+        // creating the Firestore user doc, shared with onAuthStateChanged
+        // below so it never redirects to the dashboard before that finishes
+        // - and never redirects at all if the check failed (e.g. new
+        // account, consent box wasn't checked, so the user was signed back
+        // out). Resolves to true on success, false on a handled failure.
+        let _pendingGoogleFinish = null;
 
         // ===== i18n =====
         let currentLang = 'EN';
@@ -338,7 +351,7 @@
                 inapp_banner_btn: "Open in Browser",
                 inapp_link_copied: "Link copied! Paste it into Chrome or Safari to sign in.",
                 inapp_link_copy_failed: "Couldn't copy automatically. Please copy this link and open it in Chrome or Safari: {url}",
-                err_google_inapp_browser: "Google Sign-In can't complete inside this app's built-in browser (this is a restriction from Google, not a bug). Tap "Open in Browser" above, or use Email/Password sign-in instead.",
+                err_google_inapp_browser: "Google Sign-In can't complete inside this app's built-in browser (this is a restriction from Google, not a bug). Tap \"Open in Browser\" above, or use Email/Password sign-in instead.",
                 loading_signing_in: "Signing you in...",
                 loading_creating_account: "Creating your account...",
                 loading_redirecting: "Redirecting to dashboard...",
@@ -388,7 +401,7 @@
                 inapp_banner_btn: "افتح في المتصفح",
                 inapp_link_copied: "تم نسخ الرابط! الصقه في Chrome أو Safari لتسجيل الدخول.",
                 inapp_link_copy_failed: "تعذّر النسخ تلقائيًا. يرجى نسخ هذا الرابط وفتحه في Chrome أو Safari: {url}",
-                err_google_inapp_browser: "لا يمكن إتمام تسجيل الدخول عبر Google داخل المتصفح المدمج في هذا التطبيق (هذا قيد من Google وليس خطأً برمجيًا). اضغط "افتح في المتصفح" أعلاه، أو استخدم تسجيل الدخول بالبريد الإلكتروني وكلمة المرور بدلاً من ذلك.",
+                err_google_inapp_browser: "لا يمكن إتمام تسجيل الدخول عبر Google داخل المتصفح المدمج في هذا التطبيق (هذا قيد من Google وليس خطأً برمجيًا). اضغط \"افتح في المتصفح\" أعلاه، أو استخدم تسجيل الدخول بالبريد الإلكتروني وكلمة المرور بدلاً من ذلك.",
                 loading_signing_in: "جاري تسجيل الدخول...",
                 loading_creating_account: "جاري إنشاء الحساب...",
                 loading_redirecting: "جاري التوجيه للوحة التحكم...",
@@ -444,9 +457,15 @@
                 showLoading('loading_creating_account');
                 const consentChecked = sessionStorage.getItem('mbegx_pending_consent') === '1';
                 sessionStorage.removeItem('mbegx_pending_consent');
-                await finishGoogleSignIn(result, consentChecked);
-                // Mark auth as fully completed so onAuthStateChanged knows not to redirect again
-                _authCompleted = true;
+                _pendingGoogleFinish = finishGoogleSignIn(result, consentChecked);
+                // Only mark auth as fully completed - and therefore eligible
+                // to redirect to the dashboard - if finishGoogleSignIn
+                // actually succeeded. If it returned false (e.g. a new
+                // account with the consent box unchecked), the user was
+                // already signed back out inside finishGoogleSignIn and must
+                // stay on this page to see the error, not bounce to a
+                // dashboard they're no longer signed in to.
+                _authCompleted = await _pendingGoogleFinish;
             }
         }).catch(err => {
             console.error('Redirect sign-in failed:', err && err.code, err);
@@ -473,6 +492,16 @@
             // Wait for redirect processing to complete (no-op if no redirect happened)
             showLoading('loading_signing_in');
             await _redirectResultPromise;
+
+            // A popup-based Google sign-in (handleGoogleSignIn) can also be
+            // mid-flight right now, racing this same callback - wait for it
+            // too, and never redirect if it failed (e.g. a new account
+            // whose consent box wasn't checked, already signed back out).
+            if (_pendingGoogleFinish) {
+                const ok = await _pendingGoogleFinish;
+                _pendingGoogleFinish = null;
+                if (!ok) return;
+            }
 
             // Give Firestore a moment to settle, then redirect
             setTimeout(() => {
@@ -621,6 +650,7 @@
                 const ip = await fetchClientIp();
                 await db.collection('users').doc(cred.user.uid).set({
                     cash: 0, portfolio: [], history: [],
+                    paper_cash: PAPER_TRADING_STARTING_CASH_EGP, paper_portfolio: [], paper_history: [],
                     ...buildConsentFields(ip),
                 }, { merge: true });
                 resetAuthRateLimit();
@@ -683,16 +713,19 @@
             if (!existing.exists) {
                 if (!consentChecked) {
                     await auth.signOut();
+                    hideLoading();
                     triggerConsentShake();
                     showAuthError(tt("err_must_agree_terms_new"));
-                    return;
+                    return false;
                 }
                 const ip = await fetchClientIp();
                 await docRef.set({
                     cash: 0, portfolio: [], history: [],
+                    paper_cash: PAPER_TRADING_STARTING_CASH_EGP, paper_portfolio: [], paper_history: [],
                     ...buildConsentFields(ip),
                 }, { merge: true });
             }
+            return true;
         }
 
         async function handleGoogleSignIn() {
@@ -716,8 +749,13 @@
                 }
                 showLoading('loading_signing_in');
                 const result = await auth.signInWithPopup(provider);
-                await finishGoogleSignIn(result, document.getElementById('consent-checkbox').checked);
-                resetAuthRateLimit();
+                // Set this BEFORE awaiting it, so a concurrent
+                // onAuthStateChanged firing off the back of this same
+                // sign-in (see below) is guaranteed to see and wait on it
+                // too, instead of redirecting to the dashboard early.
+                _pendingGoogleFinish = finishGoogleSignIn(result, document.getElementById('consent-checkbox').checked);
+                const ok = await _pendingGoogleFinish;
+                if (ok) resetAuthRateLimit();
             } catch (err) {
                 console.error('Google sign-in failed:', err.code, err);
                 hideLoading();
