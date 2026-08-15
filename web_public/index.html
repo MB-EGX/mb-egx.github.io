@@ -207,8 +207,11 @@
                 <button onclick="toggleCompactMode()" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
                     <span>↕️</span> <span id="btn-compact-text">Compact</span>
                 </button>
-                <button onclick="openModal('modal-guide')" class="bg-teal-600 hover:bg-teal-500 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
+                <button onclick="openModal('modal-guide')" id="btn-guide" class="bg-teal-600 hover:bg-teal-500 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
                     <span>❓</span> <span id="btn-guide-text">Guide</span>
+                </button>
+                <button onclick="startOnboardingTour()" id="btn-tour" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
+                    <span>▶️</span> <span id="btn-tour-text" data-i18n="btn_tour">Tour</span>
                 </button>
                 <select id="lang-select" onchange="switchLanguage(this.value)" class="bg-darkbg border border-bordercol rounded-lg px-2.5 py-2 text-white font-bold cursor-pointer">
                     <option value="EN">🇬🇧 English</option>
@@ -244,7 +247,7 @@
         </div>
 
         <!-- Live Filters Bar -->
-        <div class="bg-panelbg p-3 rounded-xl border border-bordercol shadow flex flex-wrap items-center gap-3">
+        <div id="live-filters-bar" class="bg-panelbg p-3 rounded-xl border border-bordercol shadow flex flex-wrap items-center gap-3">
             <span id="lbl-filter" class="font-bold text-sky-400 flex items-center gap-1 whitespace-nowrap">🔍 Live Filters:</span>
             
             <input type="text" id="filter-search" oninput="applyFilters()" data-i18n-placeholder="ph_search_ticker" placeholder="Search Ticker or keyword..." 
@@ -290,8 +293,14 @@
             </button>
         </div>
 
+        <!-- Screener Presets -->
+        <div id="screener-presets-bar" class="bg-panelbg p-3 rounded-xl border border-bordercol shadow flex flex-wrap items-center gap-2">
+            <span class="font-bold text-sky-400 flex items-center gap-1 whitespace-nowrap text-xs" data-i18n="lbl_screener_presets">🧪 Screener Presets:</span>
+            <div id="screener-presets" class="flex flex-wrap gap-2"></div>
+        </div>
+
         <!-- Navigation Tabs -->
-        <div class="border-b border-bordercol flex flex-wrap gap-1 bg-panelbg px-2 pt-2 rounded-t-xl">
+        <div id="nav-tabs-bar" class="border-b border-bordercol flex flex-wrap gap-1 bg-panelbg px-2 pt-2 rounded-t-xl">
             <button onclick="switchTab('tab-matrix')" id="btn-tab-matrix" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap tab-active">
                 📈 Full Market Action Matrix
             </button>
@@ -318,6 +327,9 @@
             </button>
             <button onclick="switchTab('tab-charts')" id="btn-tab-charts" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap">
                 📊 Charts & Trend Lines
+            </button>
+            <button onclick="switchTab('tab-leaderboard')" id="btn-tab-leaderboard" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap" data-i18n="tab_leaderboard">
+                🥇 Leaderboard
             </button>
         </div>
 
@@ -534,6 +546,30 @@
         <!-- TAB 6: TOP 10 -->
         <div id="tab-top10" class="bg-panelbg rounded-b-xl border border-t-0 border-bordercol p-4 shadow-xl hidden">
             <div id="top10-container" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+        </div>
+
+        <!-- TAB: LEADERBOARD -->
+        <div id="tab-leaderboard" class="bg-panelbg rounded-b-xl border border-t-0 border-bordercol p-4 shadow-xl hidden space-y-3">
+            <p id="lbl-leaderboard-intro" class="text-xs text-textmuted" data-i18n="lbl_leaderboard_intro">Every ticker that has ever hit a Session Pick target, ranked by how many times it's hit and its average return per hit. Built entirely from public, non-account data.</p>
+            <div class="flex flex-wrap items-center gap-2">
+                <input type="text" id="leaderboard-search" oninput="renderLeaderboardTab()" data-i18n-placeholder="ph_search_ticker" placeholder="Search Ticker or keyword..."
+                    class="bg-darkbg border border-bordercol rounded px-3 py-1.5 text-textmain w-full sm:w-56 focus:outline-none focus:border-sky-500">
+                <span class="text-xs text-textmuted" id="lbl-leaderboard-count"></span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-xs">
+                    <thead>
+                        <tr class="border-b border-bordercol">
+                            <th class="text-left p-2">#</th>
+                            <th class="text-left p-2 cursor-pointer hover:text-sky-400" onclick="setLeaderboardSort('ticker')" id="lb-th-ticker" data-i18n="hdr_ticker">Ticker</th>
+                            <th class="text-left p-2 cursor-pointer hover:text-sky-400" onclick="setLeaderboardSort('hits')" id="lb-th-hits" data-i18n="hdr_lb_hits">Hits</th>
+                            <th class="text-left p-2 cursor-pointer hover:text-sky-400" onclick="setLeaderboardSort('avg_return_pct')" id="lb-th-avg" data-i18n="hdr_lb_avg">Avg Return (%)</th>
+                            <th class="text-left p-2 cursor-pointer hover:text-sky-400" onclick="setLeaderboardSort('last_achieved_date')" id="lb-th-last" data-i18n="hdr_lb_last">Last Hit</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-leaderboard"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- TAB 7: CHARTS & TREND LINES -->
@@ -1243,6 +1279,32 @@
                 tab_matrix: "📈 Full Market Action Matrix", tab_sectors: "🏢 Sector Heatmap & Rotation",
                 tab_exits: "🛡️ Owned Portfolio Exit Strategy", tab_history: "📜 Trade History & Realized P&L",
                 tab_fin: "📊 Financial Statement", tab_top10: "🏆 Top 10 Overview", tab_charts: "📊 Charts & Trend Lines",
+                tab_leaderboard: "🥇 Leaderboard",
+                lbl_leaderboard_intro: "Every ticker that has ever hit a Session Pick target, ranked by how many times it's hit and its average return per hit. Built entirely from public, non-account data.",
+                hdr_lb_hits: "Hits", hdr_lb_avg: "Avg Return (%)", hdr_lb_last: "Last Hit",
+                lbl_no_leaderboard: "No leaderboard data yet — check back once a Session Pick hits its target.",
+                lbl_screener_presets: "🧪 Screener Presets:",
+                preset_strong_momentum: "🔥 Strong Momentum", preset_low_vol_accumulate: "📈 Low-Vol Accumulation",
+                preset_oversold_dip: "⏳ Oversold Dip", preset_high_confidence: "💎 High Confidence",
+                preset_pattern_confirmed: "🎯 Pattern Confirmed",
+                btn_tour: "Tour",
+                tour_welcome_title: "👋 Welcome to MB-EGX",
+                tour_welcome_text: "Quick 8-step tour of the dashboard. You can skip anytime — this only shows once, and you can replay it later from the Tour button.",
+                tour_filters_title: "🔍 Live Filters",
+                tour_filters_text: "Search a ticker, or filter the Action Matrix by signal, trend, or data confidence — updates instantly as you type.",
+                tour_presets_title: "🧪 Screener Presets",
+                tour_presets_text: "One-click screens built from the matrix's own signals — momentum, low-vol accumulation, oversold dips, high-confidence picks, and pattern-confirmed setups.",
+                tour_tabs_title: "📑 Tabs",
+                tour_tabs_text: "Switch between the full matrix, sector heatmap, your portfolio's exit strategy, breakouts, and more.",
+                tour_picks_title: "🚀 Session Picks",
+                tour_picks_text: "A forward-looking watchlist, auto-picked and auto-refilled from the matrix. Each pick is flagged 'Achieved' once it hits its target gain.",
+                tour_leaderboard_title: "🥇 Leaderboard",
+                tour_leaderboard_text: "Every ticker that's ever hit a Session Pick target, ranked by hit count and average return.",
+                tour_guide_title: "❓ Guide",
+                tour_guide_text: "A full glossary of every indicator, action label, and chart pattern used across the app, in English and Arabic.",
+                tour_done_title: "🎉 You're set!",
+                tour_done_text: "Explore freely. Replay this tour anytime from the Tour button, and toggle Compact mode or Themes to match your setup.",
+                btn_tour_next: "Next", btn_tour_prev: "Back", btn_tour_skip: "Skip", btn_tour_done: "Done",
                 rad_stock: "📈 Per Stock", rad_sector: "🏢 Per Sector", select_item: "Select Item:", alpha_quick: "🔤 Quick Filter:",
                 time_zoom: "⏱️ Time Horizon:", guide: "Guide",
                 style_line: "📉 Line", style_candle: "🕯️ Candles", toggle_sr: "📐 Support / Resistance",
@@ -1403,6 +1465,32 @@
                 tab_matrix: "📈 مصفوفة السوق الكاملة", tab_sectors: "🏢 خريطة القطاعات والسيولة",
                 tab_exits: "🛡️ إستراتيجية الخروج للمحفظة", tab_history: "📜 سجل الصفقات والربح المحقق",
                 tab_fin: "📊 القوائم المالية", tab_top10: "🏆 أفضل 10 أسهم", tab_charts: "📊 الرسوم البيانية والاتجاهات",
+                tab_leaderboard: "🥇 لوحة الصدارة",
+                lbl_leaderboard_intro: "كل رمز حقق هدف ترشيح جلسة من قبل، مرتب حسب عدد مرات التحقيق ومتوسط العائد لكل تحقيق. مبني بالكامل على بيانات عامة غير مرتبطة بالحساب.",
+                hdr_lb_hits: "مرات التحقيق", hdr_lb_avg: "متوسط العائد (%)", hdr_lb_last: "آخر تحقيق",
+                lbl_no_leaderboard: "لا توجد بيانات لوحة صدارة بعد — راجع الصفحة عند تحقيق أول ترشيح لهدفه.",
+                lbl_screener_presets: "🧪 اختيارات جاهزة:",
+                preset_strong_momentum: "🔥 زخم قوي", preset_low_vol_accumulate: "📈 تجميع منخفض التقلب",
+                preset_oversold_dip: "⏳ ارتداد من تشبع بيعي", preset_high_confidence: "💎 ثقة عالية",
+                preset_pattern_confirmed: "🎯 نمط مؤكد",
+                btn_tour: "جولة",
+                tour_welcome_title: "👋 أهلاً بك في MB-EGX",
+                tour_welcome_text: "جولة سريعة من 8 خطوات على لوحة التحكم. يمكنك تخطيها في أي وقت — تظهر مرة واحدة فقط، ويمكنك إعادتها لاحقًا من زر الجولة.",
+                tour_filters_title: "🔍 التصفية المباشرة",
+                tour_filters_text: "ابحث عن رمز، أو صفِّ مصفوفة الإجراءات حسب الإشارة أو الاتجاه أو ثقة البيانات — تتحدث فورًا أثناء الكتابة.",
+                tour_presets_title: "🧪 اختيارات جاهزة",
+                tour_presets_text: "تصفيات بضغطة واحدة مبنية على إشارات المصفوفة نفسها — زخم، تجميع منخفض التقلب، ارتداد من تشبع بيعي، اختيارات عالية الثقة، وأنماط مؤكدة.",
+                tour_tabs_title: "📑 التبويبات",
+                tour_tabs_text: "تنقّل بين المصفوفة الكاملة وخريطة القطاعات واستراتيجية خروج محفظتك والاختراقات والمزيد.",
+                tour_picks_title: "🚀 ترشيحات الجلسة",
+                tour_picks_text: "قائمة مراقبة تطلعية، تُختار وتُجدد تلقائيًا من المصفوفة. يُوسم كل ترشيح بـ 'تم التحقيق' عند بلوغه هدف الربح.",
+                tour_leaderboard_title: "🥇 لوحة الصدارة",
+                tour_leaderboard_text: "كل رمز حقق هدف ترشيح جلسة من قبل، مرتب حسب عدد مرات التحقيق ومتوسط العائد.",
+                tour_guide_title: "❓ الدليل",
+                tour_guide_text: "قاموس كامل لكل مؤشر وتصنيف إجراء ونمط رسم بياني مستخدم في التطبيق، بالعربية والإنجليزية.",
+                tour_done_title: "🎉 كل شيء جاهز!",
+                tour_done_text: "استكشف بحرية. أعد هذه الجولة في أي وقت من زر الجولة، وبدّل وضع الإحكام أو المظاهر ليناسب إعدادك.",
+                btn_tour_next: "التالي", btn_tour_prev: "السابق", btn_tour_skip: "تخطي", btn_tour_done: "تم",
                 rad_stock: "📈 تحليل الأسهم", rad_sector: "🏢 تحليل القطاعات", select_item: "اختر العنصر:", alpha_quick: "🔤 تصفية بالحرف:",
                 time_zoom: "⏱️ الفترة الزمنية:", guide: "الدليل",
                 style_line: "📉 خط", style_candle: "🕯️ شموع", toggle_sr: "📐 الدعم / المقاومة",
@@ -1742,6 +1830,9 @@
                 renderTop10();
                 renderBreakouts();
                 renderSessionPicks();
+                renderLeaderboardTab();
+                renderLeaderboardPreview();
+                renderScreenerPresetChips();
             }
             renderAccountBar();
             renderPortfolio();
@@ -1791,7 +1882,7 @@
 
         // Modals & Tabs
         function switchTab(tabId) {
-            ['tab-matrix', 'tab-sectors', 'tab-exits', 'tab-breakout', 'tab-picks', 'tab-history', 'tab-fin', 'tab-top10', 'tab-charts'].forEach(id => {
+            ['tab-matrix', 'tab-sectors', 'tab-exits', 'tab-breakout', 'tab-picks', 'tab-history', 'tab-fin', 'tab-top10', 'tab-charts', 'tab-leaderboard'].forEach(id => {
                 document.getElementById(id).classList.add('hidden');
                 document.getElementById('btn-' + id).classList.remove('tab-active');
             });
@@ -2801,7 +2892,171 @@
                     <div class="text-xs text-textmuted">${currentLang === 'AR' ? 'أفضل الترشيحات المحققة' : 'Top achieved picks'}</div>
                 </div>
                 ${rows.length ? `<div class="overflow-x-auto"><table class="w-full text-xs"><thead><tr><th class="text-left p-2">Ticker</th><th class="text-left p-2">Hits</th><th class="text-left p-2">Avg %</th><th class="text-left p-2">Last</th></tr></thead><tbody>${rows.slice(0,8).map(r => `<tr class="border-t border-bordercol"><td class="p-2 font-bold text-sky-300">${escapeHtml(r.ticker || '')}</td><td class="p-2">${r.hits ?? ''}</td><td class="p-2">${Number((r.avg_return_pct ?? r.avg_pct) || 0).toFixed(2)}</td><td class="p-2 text-textmuted">${escapeHtml((r.last_achieved_date || r.last_hit_date || '—').toString())}</td></tr>`).join('')}</tbody></table></div>` : `<div class="text-textmuted">${currentLang === 'AR' ? 'لا توجد بيانات لوحة صدارة بعد.' : 'No leaderboard data yet.'}</div>`}
+                ${rows.length ? `<button onclick="switchTab('tab-leaderboard')" class="mt-3 text-xs font-semibold text-sky-400 hover:text-sky-300 transition">${currentLang === 'AR' ? 'عرض اللوحة الكاملة →' : 'View full leaderboard →'}</button>` : ''}
             `;
+        }
+
+        // Full Leaderboard tab: client-side sort/search over the same
+        // globalData.leaderboard already fetched for the preview widget above
+        // (leaderboard.json - see export_json.py's _write_shards()) — no
+        // extra network request needed for the full view.
+        let leaderboardSort = { key: 'hits', dir: 'desc' };
+        function setLeaderboardSort(key) {
+            if (leaderboardSort.key === key) {
+                leaderboardSort.dir = leaderboardSort.dir === 'desc' ? 'asc' : 'desc';
+            } else {
+                leaderboardSort = { key, dir: key === 'ticker' ? 'asc' : 'desc' };
+            }
+            renderLeaderboardTab();
+        }
+        function renderLeaderboardTab() {
+            const tbody = document.getElementById('tbody-leaderboard');
+            if (!tbody) return;
+            const searchEl = document.getElementById('leaderboard-search');
+            const q = (searchEl ? searchEl.value : '').trim().toUpperCase();
+            let rows = ((globalData && globalData.leaderboard) || []).slice();
+
+            if (q) rows = rows.filter(r => (r.ticker || '').toUpperCase().includes(q));
+
+            const { key, dir } = leaderboardSort;
+            rows.sort((a, b) => {
+                let av = a[key], bv = b[key];
+                if (key === 'ticker' || key === 'last_achieved_date') {
+                    av = (av || '').toString(); bv = (bv || '').toString();
+                    return dir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
+                }
+                av = Number(av ?? 0); bv = Number(bv ?? 0);
+                return dir === 'asc' ? av - bv : bv - av;
+            });
+
+            const countEl = document.getElementById('lbl-leaderboard-count');
+            if (countEl) countEl.textContent = `${rows.length} ${currentLang === 'AR' ? 'رمز' : 'tickers'}`;
+
+            ['ticker', 'hits', 'avg_return_pct', 'last_achieved_date'].forEach(k => {
+                const th = document.getElementById(k === 'avg_return_pct' ? 'lb-th-avg' : k === 'last_achieved_date' ? 'lb-th-last' : `lb-th-${k}`);
+                if (th) th.classList.toggle('text-sky-400', k === key);
+            });
+
+            if (!rows.length) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-textmuted font-sans">${tt('lbl_no_leaderboard')}</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = rows.map((r, i) => `
+                <tr class="border-t border-bordercol hover:bg-darkbg/50">
+                    <td class="p-2 text-textmuted">${i + 1}</td>
+                    <td class="p-2 font-bold text-sky-300">${escapeHtml(r.ticker || '')}</td>
+                    <td class="p-2">${r.hits ?? ''}</td>
+                    <td class="p-2 ${Number(r.avg_return_pct || 0) >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${Number(r.avg_return_pct || 0).toFixed(2)}%</td>
+                    <td class="p-2 text-textmuted">${escapeHtml((r.last_achieved_date || '—').toString())}</td>
+                </tr>
+            `).join('');
+        }
+
+        // ===================== Onboarding Tour =====================
+        // Pure client-side spotlight tour over elements already in the DOM -
+        // no new data, no backend change. Auto-launches once per browser on
+        // a user's first successful login (see proceedAfterAuth() above),
+        // and can be replayed any time via the Tour button (id="btn-tour").
+        const ONBOARDING_TOUR_STEPS = [
+            { target: null, titleKey: 'tour_welcome_title', textKey: 'tour_welcome_text' },
+            { target: '#live-filters-bar', titleKey: 'tour_filters_title', textKey: 'tour_filters_text' },
+            { target: '#screener-presets-bar', titleKey: 'tour_presets_title', textKey: 'tour_presets_text' },
+            { target: '#nav-tabs-bar', titleKey: 'tour_tabs_title', textKey: 'tour_tabs_text' },
+            { target: '#btn-tab-picks', titleKey: 'tour_picks_title', textKey: 'tour_picks_text' },
+            { target: '#btn-tab-leaderboard', titleKey: 'tour_leaderboard_title', textKey: 'tour_leaderboard_text' },
+            { target: '#btn-guide', titleKey: 'tour_guide_title', textKey: 'tour_guide_text' },
+            { target: null, titleKey: 'tour_done_title', textKey: 'tour_done_text' },
+        ];
+        let tourStepIndex = 0;
+        let tourReposition = null;
+
+        function startOnboardingTour() {
+            tourStepIndex = 0;
+            renderTourStep();
+        }
+
+        function endOnboardingTour() {
+            const overlay = document.getElementById('tour-overlay');
+            if (overlay) overlay.remove();
+            if (tourReposition) {
+                window.removeEventListener('resize', tourReposition);
+                window.removeEventListener('scroll', tourReposition, true);
+                tourReposition = null;
+            }
+            localStorage.setItem('quant_tour_seen', '1');
+        }
+
+        function tourNext() {
+            if (tourStepIndex >= ONBOARDING_TOUR_STEPS.length - 1) { endOnboardingTour(); return; }
+            tourStepIndex += 1;
+            renderTourStep();
+        }
+
+        function tourPrev() {
+            if (tourStepIndex <= 0) return;
+            tourStepIndex -= 1;
+            renderTourStep();
+        }
+
+        function renderTourStep() {
+            let overlay = document.getElementById('tour-overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'tour-overlay';
+                document.body.appendChild(overlay);
+            }
+            const step = ONBOARDING_TOUR_STEPS[tourStepIndex];
+            const targetEl = step.target ? document.querySelector(step.target) : null;
+            if (targetEl) targetEl.scrollIntoView({ block: 'center', behavior: 'smooth' });
+
+            const draw = () => {
+                let spotlightHtml, cardStyle;
+                if (targetEl) {
+                    const r = targetEl.getBoundingClientRect();
+                    const pad = 8;
+                    spotlightHtml = `<div style="position:fixed; left:${r.left - pad}px; top:${r.top - pad}px; width:${r.width + pad * 2}px; height:${r.height + pad * 2}px; border:2px solid #38bdf8; border-radius:10px; box-shadow:0 0 0 9999px rgba(0,0,0,0.72); pointer-events:none; transition:all .15s ease; z-index:10051;"></div>`;
+                    const spaceBelow = window.innerHeight - r.bottom;
+                    const placeAbove = spaceBelow < 190 && r.top > 190;
+                    const top = placeAbove ? Math.max(16, r.top - 16) : r.bottom + 16;
+                    const translateY = placeAbove ? 'translateY(-100%)' : 'translateY(0)';
+                    const left = Math.min(Math.max(16, r.left), Math.max(16, window.innerWidth - 336));
+                    cardStyle = `left:${left}px; top:${top}px; transform:${translateY};`;
+                } else {
+                    spotlightHtml = `<div style="position:fixed; inset:0; background:rgba(0,0,0,0.72); z-index:10051;"></div>`;
+                    cardStyle = `left:50%; top:50%; transform:translate(-50%,-50%);`;
+                }
+                const dots = ONBOARDING_TOUR_STEPS.map((_, i) =>
+                    `<span style="display:inline-block;width:6px;height:6px;border-radius:9999px;margin:0 2px;background:${i === tourStepIndex ? '#38bdf8' : '#475569'};"></span>`
+                ).join('');
+                const isFirst = tourStepIndex === 0, isLast = tourStepIndex === ONBOARDING_TOUR_STEPS.length - 1;
+                overlay.innerHTML = `
+                    ${spotlightHtml}
+                    <div style="position:fixed; ${cardStyle} width:320px; max-width:calc(100vw - 32px); z-index:10052;" class="bg-panelbg border border-sky-500 rounded-xl shadow-2xl p-4 space-y-2">
+                        <div class="font-bold text-sky-400 text-sm">${tt(step.titleKey)}</div>
+                        <div class="text-xs text-textmuted leading-relaxed">${tt(step.textKey)}</div>
+                        <div class="flex items-center justify-between pt-2">
+                            <div>${dots}</div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="endOnboardingTour()" class="text-xs text-textmuted hover:text-rose-400 font-semibold">${tt('btn_tour_skip')}</button>
+                                ${!isFirst ? `<button onclick="tourPrev()" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-2.5 py-1 rounded font-semibold">${tt('btn_tour_prev')}</button>` : ''}
+                                <button onclick="tourNext()" class="text-xs bg-sky-600 hover:bg-sky-500 text-white px-2.5 py-1 rounded font-bold">${isLast ? tt('btn_tour_done') : tt('btn_tour_next')}</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            };
+            // Two rAFs: let scrollIntoView's smooth scroll begin settling
+            // before measuring the target's post-scroll bounding rect.
+            requestAnimationFrame(() => requestAnimationFrame(draw));
+
+            if (tourReposition) {
+                window.removeEventListener('resize', tourReposition);
+                window.removeEventListener('scroll', tourReposition, true);
+            }
+            tourReposition = draw;
+            window.addEventListener('resize', tourReposition);
+            window.addEventListener('scroll', tourReposition, true);
         }
 
         function renderPortfolio() {
@@ -3062,6 +3317,10 @@
                 if (trendFilter !== "All" && trend !== trendFilter) return false;
                 if (confFilter !== "All" && !conf.includes(confFilter)) return false;
                 if (hideIlliquid && (action.includes("ILLIQUID") || action.includes("Unconfirmed"))) return false;
+                if (activeScreenerPreset) {
+                    const preset = SCREENER_PRESETS.find(p => p.id === activeScreenerPreset);
+                    if (preset && !preset.predicate(row)) return false;
+                }
                 return true;
             });
             // Any change to filters/search starts back at page 1 - otherwise a
@@ -3164,7 +3423,66 @@
             document.getElementById('filter-trend').value = 'All';
             document.getElementById('filter-confidence').value = 'All';
             document.getElementById('filter-illiquid').checked = true;
+            activeScreenerPreset = null;
+            renderScreenerPresetChips();
             applyFilters();
+        }
+
+        // ===================== Screener Presets =====================
+        // One-click filters over fields that already exist on every
+        // market_matrix row (see decision_matrix.py's buy_recommendations
+        // dict) - no new data, no backend change. Fields specific to the
+        // Breakouts tab only (Squeeze Active, Breakout Score, Dist. to
+        // Resistance) are deliberately NOT used here since they aren't
+        // present on Action Matrix rows.
+        const SCREENER_PRESETS = [
+            {
+                id: 'strong_momentum', icon: '🔥', labelKey: 'preset_strong_momentum',
+                predicate: r => {
+                    const a = r.Action || '';
+                    return (a.includes('STRONG BUY') || a.includes('BREAKOUT BUY')) && Number(r['ADX-14'] || 0) >= 20;
+                },
+            },
+            {
+                id: 'low_vol_accumulate', icon: '📈', labelKey: 'preset_low_vol_accumulate',
+                predicate: r => {
+                    const vz = Number(r['Vol Z-Score'] || 0);
+                    return (r.Action || '').includes('ACCUMULATE') && Number(r['ADX-14'] || 0) < 20 && vz > -1 && vz < 1;
+                },
+            },
+            {
+                id: 'oversold_dip', icon: '⏳', labelKey: 'preset_oversold_dip',
+                predicate: r => (r.Action || '').includes('BUY ON DIP') && Number(r['RSI-14'] ?? 100) <= 38,
+            },
+            {
+                id: 'high_confidence', icon: '💎', labelKey: 'preset_high_confidence',
+                predicate: r => {
+                    const a = r.Action || '', conf = r['Data Confidence'] || '';
+                    return conf.includes('High') && (a.includes('STRONG BUY') || a.includes('BREAKOUT BUY') || a.includes('ACCUMULATE') || a.includes('BUY ON DIP'));
+                },
+            },
+            {
+                id: 'pattern_confirmed', icon: '🎯', labelKey: 'preset_pattern_confirmed',
+                predicate: r => typeof r['Pattern Conf (%)'] === 'number' && r['Pattern Conf (%)'] >= 60,
+            },
+        ];
+        let activeScreenerPreset = null;
+
+        function applyScreenerPreset(id) {
+            activeScreenerPreset = (activeScreenerPreset === id) ? null : id;
+            renderScreenerPresetChips();
+            applyFilters();
+        }
+
+        function renderScreenerPresetChips() {
+            const el = document.getElementById('screener-presets');
+            if (!el) return;
+            el.innerHTML = SCREENER_PRESETS.map(p => `
+                <button onclick="applyScreenerPreset('${p.id}')"
+                    class="px-3 py-1.5 rounded-full text-xs font-semibold border transition whitespace-nowrap ${activeScreenerPreset === p.id ? 'bg-sky-600 border-sky-500 text-white' : 'bg-darkbg border-bordercol text-textmuted hover:text-textmain hover:border-sky-500'}">
+                    ${p.icon} ${tt(p.labelKey)}
+                </button>
+            `).join('');
         }
 
         function updateStaleBanner(lastDataDate) {
@@ -3244,7 +3562,7 @@
 
                 updateStaleBanner(globalData.last_data_date);
                 document.getElementById('val-last-date').innerText = escapeHtml(globalData.last_data_date || "N/A");
-                populateSelects(); applyFilters(); renderSectors(); renderTop10(); renderBreakouts(); renderSessionPicks(); renderPortfolio(); renderHistory(); renderAccountBar(); renderPaperTradingPreview(); renderLeaderboardPreview();
+                populateSelects(); applyFilters(); renderSectors(); renderTop10(); renderBreakouts(); renderSessionPicks(); renderPortfolio(); renderHistory(); renderAccountBar(); renderPaperTradingPreview(); renderLeaderboardPreview(); renderLeaderboardTab(); renderScreenerPresetChips();
 
                 prefetchChartHistoryInBackground();
             } catch (error) {
@@ -4204,6 +4522,14 @@
                 _welcomedThisSession = true;
                 try { showWelcomeToast(name); } catch (err) { console.error('Welcome toast failed:', err); }
                 try { startSessionTracking(user); } catch (err) { console.error('Session tracking failed:', err); }
+                // First-ever login (no stored dismissal yet) gets the onboarding
+                // tour automatically, once the dashboard has had a moment to
+                // paint behind the auth gate. Later logins never auto-trigger it
+                // again - see endOnboardingTour()'s localStorage flag - the
+                // Tour button (id="btn-tour") replays it manually any time.
+                if (!localStorage.getItem('quant_tour_seen')) {
+                    setTimeout(() => { try { startOnboardingTour(); } catch (err) { console.error('Onboarding tour failed:', err); } }, 900);
+                }
             }
             try { loadUserDataFromCloud(user.uid); } catch (err) { console.error('Loading cloud data failed:', err); }
         }
