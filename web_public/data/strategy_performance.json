@@ -1,0 +1,33 @@
+{
+  "generated_at": "2026-08-15T16:59:29+00:00",
+  "config": {
+    "min_train_bars": 250,
+    "test_bars": 60,
+    "step_bars": 60,
+    "min_folds": 4,
+    "max_hold_bars": 60
+  },
+  "tickers_backtested": 0,
+  "fold_count": 0,
+  "is_reliable": false,
+  "reliability_note": "Only 0 out-of-sample fold(s) produced trades - below min_folds=4. Treat this result as illustrative, not a validated edge: a handful of folds can look good or bad by chance alone.",
+  "trade_count": 0,
+  "win_rate_pct": 0.0,
+  "avg_return_pct": 0.0,
+  "profit_factor": null,
+  "overall": {
+    "mean": 0.0,
+    "vol": 0.0,
+    "sharpe": 0.0,
+    "sortino": 0.0,
+    "max_drawdown": 0.0
+  },
+  "by_action": [],
+  "equity_curve": [
+    {
+      "date": null,
+      "equity": 100.0,
+      "trade_count": 0
+    }
+  ]
+}

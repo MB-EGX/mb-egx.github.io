@@ -2,6 +2,7 @@ import os
 import sys
 import time
 import traceback
+import json
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -1710,6 +1711,246 @@ class AnalysisWorker(QThread):
 
 
 # =============================================================================
+# N6 (desktop) — Strategy Calculator
+#
+# The web dashboard's "🧮 Strategy Calculator" tab (index.html) reads a
+# small public JSON shard, web_public/data/strategy_performance.json,
+# written by the standalone export_backtest_summary.py script (see that
+# file's own docstring for why it's deliberately NOT part of the nightly
+# publish.py pipeline — a multi-year walk-forward run is too slow to
+# block every publish). The desktop app has direct DuckDB access and its
+# own "Execute Matrix" background-thread pattern already (AnalysisWorker
+# above), so instead of just reading that JSON file (which may be stale
+# or missing on a machine that's never run publish.py), this dialog can
+# also trigger backtester.run_walk_forward_backtest() itself, off the UI
+# thread, and writes the SAME strategy_performance.json shape via
+# export_backtest_summary.build_summary() — so a desktop-triggered run
+# updates the exact file the web dashboard reads next time you publish,
+# same "one code path, no drift" rule the rest of this app already
+# follows for session_picks (see session_picks.py's own docstring).
+# =============================================================================
+class BacktestWorker(QThread):
+    progress_signal = pyqtSignal(int, str)
+    finished_result = pyqtSignal(dict)
+    failed = pyqtSignal(str)
+
+    def run(self):
+        try:
+            from backtester import run_walk_forward_backtest
+            result = run_walk_forward_backtest(
+                progress_callback=lambda pct, msg: self.progress_signal.emit(pct, msg)
+            )
+            self.finished_result.emit(result)
+        except Exception as e:
+            self.failed.emit(str(e))
+
+
+class StrategyCalculatorDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(tr("🧮 Strategy Calculator"))
+        self.resize(680, 560)
+        self._worker = None
+        self._last_summary = None
+
+        layout = QVBoxLayout(self)
+        self.lbl_info = QLabel(tr(
+            "Walk-forward backtest of every qualifying BUY signal this app's Action "
+            "Matrix has ever produced — same rules, same thresholds. Describes the "
+            "STRATEGY's historical behavior, not any account's real results."
+        ))
+        self.lbl_info.setWordWrap(True)
+        layout.addWidget(self.lbl_info)
+
+        self.lbl_reliability = QLabel("")
+        self.lbl_reliability.setWordWrap(True)
+        self.lbl_reliability.setStyleSheet("color: #d69e2e;")
+        self.lbl_reliability.hide()
+        layout.addWidget(self.lbl_reliability)
+
+        self.progress = QProgressBar()
+        self.progress.setRange(0, 100)
+        self.progress.hide()
+        layout.addWidget(self.progress)
+
+        stats_row = QHBoxLayout()
+        self.lbl_trades = QLabel(tr("Trades: —"))
+        self.lbl_winrate = QLabel(tr("Win Rate: —"))
+        self.lbl_avgret = QLabel(tr("Avg Return: —"))
+        self.lbl_pf = QLabel(tr("Profit Factor: —"))
+        for lbl in (self.lbl_trades, self.lbl_winrate, self.lbl_avgret, self.lbl_pf):
+            lbl.setStyleSheet("font-weight: bold;")
+            stats_row.addWidget(lbl)
+        layout.addLayout(stats_row)
+
+        stats_row2 = QHBoxLayout()
+        self.lbl_sharpe = QLabel(tr("Sharpe: —"))
+        self.lbl_sortino = QLabel(tr("Sortino: —"))
+        self.lbl_dd = QLabel(tr("Max Drawdown: —"))
+        for lbl in (self.lbl_sharpe, self.lbl_sortino, self.lbl_dd):
+            stats_row2.addWidget(lbl)
+        layout.addLayout(stats_row2)
+
+        self.table = QTableWidget()
+        self.table.setColumnCount(4)
+        self.table.setHorizontalHeaderLabels([tr("Signal"), tr("Trades"), tr("Win Rate"), tr("Avg Return")])
+        self.table.horizontalHeader().setStretchLastSection(True)
+        self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        layout.addWidget(self.table, stretch=1)
+
+        calc_row = QHBoxLayout()
+        calc_row.addWidget(QLabel(tr("Hypothetical amount (EGP):")))
+        self.input_amount = QLineEdit("10000")
+        self.input_amount.textChanged.connect(self._update_calc_result)
+        calc_row.addWidget(self.input_amount)
+        layout.addLayout(calc_row)
+        self.lbl_calc_result = QLabel("")
+        self.lbl_calc_result.setWordWrap(True)
+        self.lbl_calc_result.setStyleSheet("color: #48bb78; font-weight: bold;")
+        layout.addWidget(self.lbl_calc_result)
+        self.lbl_calc_note = QLabel(tr(
+            "Illustrative only — trades from different tickers can overlap in real "
+            "time, so a real account could hold more than one position at once. "
+            "This treats every trade as if taken one after another in a single "
+            "account. Not investment advice."
+        ))
+        self.lbl_calc_note.setWordWrap(True)
+        self.lbl_calc_note.setStyleSheet("color: gray; font-size: 10px;")
+        layout.addWidget(self.lbl_calc_note)
+
+        btn_row = QHBoxLayout()
+        self.btn_load_cached = QPushButton(tr("📂 Load Last Published Result"))
+        self.btn_load_cached.clicked.connect(self._load_cached_summary)
+        btn_row.addWidget(self.btn_load_cached)
+        self.btn_run = QPushButton(tr("▶ Run Backtest Now"))
+        self.btn_run.clicked.connect(self._run_backtest)
+        btn_row.addWidget(self.btn_run)
+        btn_row.addStretch()
+        btn_close = QPushButton(tr("Close"))
+        btn_close.clicked.connect(self.accept)
+        btn_row.addWidget(btn_close)
+        layout.addLayout(btn_row)
+
+        self._load_cached_summary(silent=True)
+
+    def _summary_file_path(self):
+        return str((Path(__file__).parent / "web_public" / "data" / "strategy_performance.json").resolve())
+
+    def _load_cached_summary(self, silent: bool = False):
+        path = self._summary_file_path()
+        if not os.path.exists(path):
+            if not silent:
+                QMessageBox.information(
+                    self, tr("No Cached Result"),
+                    tr("No strategy_performance.json found yet at:\n{path}\n\nClick "
+                       "\"Run Backtest Now\" to generate one.").format(path=path),
+                )
+            return
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                summary = json.load(f)
+            self._apply_summary(summary)
+        except (OSError, json.JSONDecodeError) as e:
+            if not silent:
+                QMessageBox.warning(self, tr("Load Failed"), str(e))
+
+    def _run_backtest(self):
+        self.btn_run.setEnabled(False)
+        self.btn_load_cached.setEnabled(False)
+        self.progress.setValue(0)
+        self.progress.show()
+        self._worker = BacktestWorker()
+        self._worker.progress_signal.connect(lambda pct, msg: (self.progress.setValue(pct), self.progress.setFormat(f"{msg} (%p%)")))
+        self._worker.finished_result.connect(self._on_backtest_finished)
+        self._worker.failed.connect(self._on_backtest_failed)
+        self._worker.start()
+
+    def _on_backtest_finished(self, result: dict):
+        self.progress.hide()
+        self.btn_run.setEnabled(True)
+        self.btn_load_cached.setEnabled(True)
+        try:
+            from export_backtest_summary import build_summary
+            summary = build_summary(result, equity_points=200)
+            # Persist it so this desktop run also updates the file the
+            # web dashboard reads next time publish.py runs — same
+            # shape/location export_backtest_summary.py itself writes.
+            out_path = Path(self._summary_file_path())
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(out_path, "w", encoding="utf-8") as f:
+                json.dump(summary, f, ensure_ascii=False, indent=2)
+            self._apply_summary(summary)
+            QMessageBox.information(
+                self, tr("Backtest Complete"),
+                tr("Saved to {path}. This will be picked up next time you run "
+                   "publish.py.").format(path=out_path),
+            )
+        except Exception as e:
+            QMessageBox.warning(self, tr("Backtest Finished, Save Failed"), str(e))
+
+    def _on_backtest_failed(self, error_text: str):
+        self.progress.hide()
+        self.btn_run.setEnabled(True)
+        self.btn_load_cached.setEnabled(True)
+        QMessageBox.warning(self, tr("Backtest Failed"), error_text)
+
+    def _apply_summary(self, summary: dict):
+        self._last_summary = summary
+        if not summary.get("is_reliable", True) and summary.get("reliability_note"):
+            self.lbl_reliability.setText("⚠️ " + summary["reliability_note"])
+            self.lbl_reliability.show()
+        else:
+            self.lbl_reliability.hide()
+
+        self.lbl_trades.setText(tr("Trades: {n}").format(n=summary.get("trade_count", 0)))
+        self.lbl_winrate.setText(tr("Win Rate: {pct}%").format(pct=summary.get("win_rate_pct", 0)))
+        avg_ret = summary.get("avg_return_pct", 0)
+        self.lbl_avgret.setText(tr("Avg Return: {sign}{pct}%").format(sign="+" if avg_ret >= 0 else "", pct=avg_ret))
+        pf = summary.get("profit_factor")
+        self.lbl_pf.setText(tr("Profit Factor: {pf}").format(pf="∞" if pf is None else pf))
+        overall = summary.get("overall", {})
+        self.lbl_sharpe.setText(tr("Sharpe: {v}").format(v=overall.get("sharpe", "—")))
+        self.lbl_sortino.setText(tr("Sortino: {v}").format(v=overall.get("sortino", "—")))
+        dd = overall.get("max_drawdown")
+        self.lbl_dd.setText(tr("Max Drawdown: {v}").format(v=f"{dd * 100:.2f}%" if dd is not None else "—"))
+
+        by_action = summary.get("by_action", [])
+        self.table.setRowCount(len(by_action))
+        for i, row in enumerate(by_action):
+            vals = [row.get("action", ""), str(row.get("trade_count", 0)), f"{row.get('win_rate_pct', 0)}%", f"{row.get('avg_return_pct', 0):+.2f}%"]
+            for j, val in enumerate(vals):
+                self.table.setItem(i, j, QTableWidgetItem(str(val)))
+        self.table.resizeColumnsToContents()
+
+        self._update_calc_result()
+
+    def _update_calc_result(self):
+        if not self._last_summary:
+            self.lbl_calc_result.setText("")
+            return
+        try:
+            amount = float(self.input_amount.text())
+        except ValueError:
+            self.lbl_calc_result.setText("")
+            return
+        curve = self._last_summary.get("equity_curve", [])
+        if not curve or amount <= 0:
+            self.lbl_calc_result.setText("")
+            return
+        start = curve[0].get("equity", 100) or 100
+        end = curve[-1].get("equity", start) or start
+        final_value = amount * (end / start)
+        pct = (end / start - 1) * 100
+        self.lbl_calc_result.setStyleSheet(f"color: {'#48bb78' if final_value >= amount else '#f56565'}; font-weight: bold;")
+        self.lbl_calc_result.setText(
+            tr("{amount} EGP → {final} EGP ({sign}{pct}%) across {n} sequential trades").format(
+                amount=f"{amount:,.0f}", final=f"{final_value:,.0f}",
+                sign="+" if pct >= 0 else "", pct=f"{pct:.1f}", n=self._last_summary.get("trade_count", 0),
+            )
+        )
+
+
+# =============================================================================
 # W1 — VISIBLE DB-LOCK RETRY (startup connect dialog)
 #
 # DatabaseManager() previously either connected instantly or, if
@@ -2752,6 +2993,10 @@ class QuantDashboard(QMainWindow):
         dlg = LeaderboardDialog(self.dbm, self)
         dlg.exec()
 
+    def open_strategy_calculator_dialog(self):
+        dlg = StrategyCalculatorDialog(self)
+        dlg.exec()
+
     def closeEvent(self, event):
         if self._session_id and self.user_info and requests is not None:
             try:
@@ -2971,6 +3216,9 @@ class QuantDashboard(QMainWindow):
         self.btn_top10 = QPushButton("🏆 Top 10")
         self.btn_top10.clicked.connect(self.show_top10_overview)
 
+        self.btn_strategy_calc = QPushButton("🧮 Strategy Calculator")
+        self.btn_strategy_calc.clicked.connect(self.open_strategy_calculator_dialog)
+
         controls_row.addWidget(self.btn_ingest)
         controls_row.addWidget(self.btn_analyze)
         controls_row.addWidget(self.btn_manage_portfolio)
@@ -2981,6 +3229,7 @@ class QuantDashboard(QMainWindow):
         controls_row.addWidget(self.btn_settings)
         controls_row.addWidget(self.btn_density)
         controls_row.addWidget(self.btn_top10)
+        controls_row.addWidget(self.btn_strategy_calc)
 
         self.cmb_lang = QComboBox()
         self.cmb_lang.addItems(["🇬🇧 EN", "🇪🇬 AR"])
