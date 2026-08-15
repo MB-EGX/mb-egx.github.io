@@ -11,6 +11,7 @@ import glob
 import pandas as pd
 from pathlib import Path
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from concurrent.futures.process import BrokenProcessPool
 
 try:
     from python_calamine import CalamineWorkbook
@@ -382,18 +383,47 @@ class IngestionPipeline:
                 batch_tracker.clear()
                 batch_errors.clear()
         else:
-            with ProcessPoolExecutor(max_workers=MAX_WORKERS) as executor:
-                for i in range(0, len(files_to_process), CHUNK_SIZE):
-                    chunk = files_to_process[i:i + CHUNK_SIZE]
-                    futures = {executor.submit(parse_excel_worker, meta): meta for meta in chunk}
+            # W7: BrokenProcessPool (the OpenBLAS/memory issue config.py's
+            # own module docstring warns about on Windows) used to
+            # propagate straight out of run_incremental_ingestion and
+            # abort the whole ingestion run, even though every file NOT
+            # yet submitted to the dead pool could still be processed
+            # sequentially. Now: if the pool itself dies mid-batch, fall
+            # back to processing the REMAINING files in this chunk (and
+            # any later chunks) one-by-one in this same process instead
+            # of losing the run entirely. Slower, but a slow successful
+            # ingestion beats a fast total failure.
+            i = 0
+            pool_broken = False
+            while i < len(files_to_process):
+                chunk = files_to_process[i:i + CHUNK_SIZE]
+                if not pool_broken:
+                    try:
+                        with ProcessPoolExecutor(max_workers=MAX_WORKERS) as executor:
+                            futures = {executor.submit(parse_excel_worker, meta): meta for meta in chunk}
+                            for future in as_completed(futures):
+                                _handle_result(future.result())
+                    except BrokenProcessPool as e:
+                        logger.warning(
+                            f"ProcessPoolExecutor died ({e}); falling back to sequential "
+                            f"processing for this and all remaining chunks."
+                        )
+                        pool_broken = True
+                        # This chunk's own results are indeterminate (some
+                        # futures may have completed, some may not have) -
+                        # safest is to reprocess the whole chunk
+                        # sequentially rather than guess which succeeded.
+                        for meta in chunk:
+                            _handle_result(parse_excel_worker(meta))
+                else:
+                    for meta in chunk:
+                        _handle_result(parse_excel_worker(meta))
 
-                    for future in as_completed(futures):
-                        _handle_result(future.result())
-
-                    self._flush_to_db(batch_data, batch_tracker, batch_errors)
-                    batch_data.clear()
-                    batch_tracker.clear()
-                    batch_errors.clear()
+                self._flush_to_db(batch_data, batch_tracker, batch_errors)
+                batch_data.clear()
+                batch_tracker.clear()
+                batch_errors.clear()
+                i += CHUNK_SIZE
 
         if progress_callback:
             progress_callback(99, _t("Compacting DuckDB database file...", "جاري ضغط ملف قاعدة بيانات DuckDB..."))

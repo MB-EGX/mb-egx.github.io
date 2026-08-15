@@ -1,0 +1,97 @@
+"""
+alerts.py
+=========
+Push-alert channels for session_picks.py's existing ALERT_CHANNELS /
+register_alert_channel() hook (see that module's docstring). The hook
+already existed and already fires on every "pick_achieved" event from
+refresh_session_picks() — nothing was ever actually listening. This adds
+one real listener: Telegram, via config.SESSION_PICKS_TELEGRAM_WEBHOOK.
+
+WHY TELEGRAM FIRST: it's the only channel in config.py (SESSION_PICKS_
+TELEGRAM_WEBHOOK / MBEGX_TELEGRAM_WEBHOOK) that needs nothing but a bot
+token — no paid API, no domain/SPF/DKIM setup like email, no app-store
+review like a push notification. A Telegram bot is free to create via
+@BotFather; SESSION_PICKS_TELEGRAM_WEBHOOK should be set to
+``https://api.telegram.org/bot<TOKEN>/sendMessage?chat_id=<CHAT_ID>`` (a
+plain POST to that URL with a JSON body is all sendMessage needs).
+
+Auto-registration: this module registers its Telegram channel with
+session_picks.py the moment it's imported, IF the webhook is configured.
+It is imported for its side effect (see the bottom of this file and
+session_picks.py's own import of it) from wherever session_picks already
+runs — the desktop app's "Execute Matrix" button and the nightly
+publish.py pipeline both call DecisionMatrix.analyze_market(), which is
+session_picks.py's own single entry point (see that module's docstring),
+so importing it there is enough to cover both paths with one line, no
+per-caller wiring needed.
+
+If SESSION_PICKS_TELEGRAM_WEBHOOK is empty (the default), nothing is
+registered and this module is a no-op import — no network calls, no
+behavior change for anyone who hasn't set the env var.
+"""
+from __future__ import annotations
+
+import json
+from urllib import request as _urlrequest
+from urllib.error import URLError
+
+from config import SESSION_PICKS_TELEGRAM_WEBHOOK, get_logger
+
+logger = get_logger("alerts")
+
+
+def _post_telegram_message(text: str) -> bool:
+    """POSTs ``text`` to SESSION_PICKS_TELEGRAM_WEBHOOK. Returns False
+    (and logs a warning) on any failure instead of raising — an alert
+    channel must never be able to break the matrix run that triggered
+    it (see session_picks._emit_alert's own try/except around every
+    callback, which this relies on as a second line of defense)."""
+    if not SESSION_PICKS_TELEGRAM_WEBHOOK:
+        return False
+    body = json.dumps({"text": text, "parse_mode": "HTML", "disable_web_page_preview": True}).encode("utf-8")
+    req = _urlrequest.Request(
+        SESSION_PICKS_TELEGRAM_WEBHOOK, data=body, method="POST",
+        headers={"Content-Type": "application/json"},
+    )
+    try:
+        with _urlrequest.urlopen(req, timeout=15) as resp:
+            ok = 200 <= resp.status < 300
+            if not ok:
+                logger.warning(f"Telegram alert returned HTTP {resp.status}")
+            return ok
+    except URLError as e:
+        logger.warning(f"Telegram alert failed: {e}")
+        return False
+
+
+def send_telegram_pick_achieved(event_type: str, payload: dict) -> None:
+    """session_picks.py ALERT_CHANNELS callback signature: (event_type,
+    payload). Only handles 'pick_achieved' for now — other event types
+    are silently ignored so a future new event type doesn't crash an
+    already-deployed channel that doesn't know about it yet."""
+    if event_type != "pick_achieved":
+        return
+    ticker = payload.get("ticker", "?")
+    horizon = payload.get("horizon", "?")
+    achieved_pct = payload.get("achieved_pct")
+    ref_price = payload.get("ref_price")
+    achieved_price = payload.get("achieved_price")
+    pct_str = f"+{achieved_pct}%" if achieved_pct is not None else "?"
+    text = (
+        f"🚀 <b>{ticker}</b> hit its {horizon}-term Session Pick target: {pct_str}\n"
+        f"Picked at {ref_price} → achieved at {achieved_price}"
+    )
+    _post_telegram_message(text)
+
+
+def register_default_channels() -> None:
+    """Idempotent — safe to call from multiple import sites."""
+    if not SESSION_PICKS_TELEGRAM_WEBHOOK:
+        return
+    import session_picks  # local import: avoids a hard import-time
+    # dependency from session_picks.py -> alerts.py -> session_picks.py;
+    # session_picks.py imports THIS module for its side effect instead.
+    session_picks.register_alert_channel(send_telegram_pick_achieved)
+
+
+register_default_channels()

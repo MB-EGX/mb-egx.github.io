@@ -154,8 +154,21 @@ jobs:
           git config user.email "actions@github.com"
           TYPES="${{ steps.due.outputs.types }}"
           ANY_FAILED=0
+          FIRST_TYPE=1
 
           for TYPE in $TYPES; do
+            # W12: after a downtime catch-up, several post types can go
+            # due in the same run. Posting all of them in the same second
+            # looks bot-like and can trip Instagram/Facebook's own abuse
+            # heuristics. A short stagger between TYPES (not between
+            # platforms of the SAME type - that gap is fine) spreads a
+            # multi-post catch-up run over a couple of minutes instead.
+            if [ "$FIRST_TYPE" -eq 0 ]; then
+              echo "Staggering next post type by 45s..."
+              sleep 45
+            fi
+            FIRST_TYPE=0
+
             IMAGE_URL="https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/web_public/social/latest_${TYPE}.png"
 
             if python post_state.py needs --type "$TYPE" --platform ig; then

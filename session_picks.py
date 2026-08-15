@@ -43,6 +43,16 @@ def register_alert_channel(callback):
         ALERT_CHANNELS.append(callback)
 
 
+# Auto-registers the Telegram channel (I5/N2) if config.SESSION_PICKS_
+# TELEGRAM_WEBHOOK is set — see alerts.py's own docstring for why this is
+# a plain side-effect import rather than a call from every place that
+# might run a matrix (desktop app_gui.py / publish.py / run_backtest.py
+# would each otherwise need their own wiring). A no-op if the webhook
+# isn't configured. Placed after register_alert_channel() above since
+# alerts.register_default_channels() calls back into this module.
+import alerts  # noqa: E402,F401
+
+
 def _emit_alert(event_type: str, payload: dict):
     for cb in list(ALERT_CHANNELS):
         try:

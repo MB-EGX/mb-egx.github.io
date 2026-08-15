@@ -18,6 +18,7 @@ Run this from the repo root (same folder as export_json.py / config.py).
 """
 import json
 import os
+import shutil
 import subprocess
 import sys
 from urllib import request as _urlrequest
@@ -98,6 +99,35 @@ def validate_export_files():
             json.load(fh)
 
 
+def backup_export_dir():
+    """W5: snapshot web_public/data BEFORE export_market_matrix() overwrites
+    it, so a bad export (crash mid-write, invalid JSON, a schema change
+    that breaks validate_export_files()) can be rolled back instead of
+    leaving the live site on half-written/broken data until someone
+    notices and fixes it by hand. Returns the backup dir, or None if
+    there was nothing to back up yet (first-ever run)."""
+    base_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "web_public", "data")
+    if not os.path.isdir(base_dir):
+        return None
+    backup_dir = base_dir + ".backup"
+    if os.path.isdir(backup_dir):
+        shutil.rmtree(backup_dir)
+    shutil.copytree(base_dir, backup_dir)
+    return backup_dir
+
+
+def restore_export_dir(backup_dir):
+    """Counterpart to backup_export_dir() — used when export_market_matrix()
+    or validate_export_files() fails, so the working tree (and therefore
+    `git add -A` below) never sees the broken output at all."""
+    base_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "web_public", "data")
+    if not backup_dir or not os.path.isdir(backup_dir):
+        return
+    if os.path.isdir(base_dir):
+        shutil.rmtree(base_dir)
+    shutil.move(backup_dir, base_dir)
+
+
 def purge_cdn_if_configured():
     if not CDN_PURGE_URL:
         return
@@ -116,8 +146,20 @@ def main():
     )
 
     print("2/3  Recomputing decision matrix and exporting market_data.json...")
-    export_market_matrix()
-    validate_export_files()
+    backup_dir = backup_export_dir()
+    try:
+        export_market_matrix()
+        validate_export_files()
+    except Exception:
+        print("      [!] Export failed or produced invalid output — rolling back")
+        print("          web_public/data to the last known-good export so the")
+        print("          working tree (and git) never sees the broken output.")
+        restore_export_dir(backup_dir)
+        raise
+    else:
+        # No longer needed once the new export has validated successfully.
+        if backup_dir and os.path.isdir(backup_dir):
+            shutil.rmtree(backup_dir)
 
     print("3/3  Publishing everything (data + code + website changes)...")
     # Stage the whole repo, not just the data file, so code fixes and
