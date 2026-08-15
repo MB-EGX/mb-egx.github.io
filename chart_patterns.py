@@ -848,6 +848,16 @@ class PatternDetector:
         return deduped
 
 
+def summarize_patterns(patterns: list[dict]) -> dict:
+    summary = {"total": len(patterns), "by_pattern": {}, "by_direction": {}}
+    for item in patterns:
+        name = item.get("pattern", "Unknown")
+        direction = item.get("direction", "neutral")
+        summary["by_pattern"][name] = summary["by_pattern"].get(name, 0) + 1
+        summary["by_direction"][direction] = summary["by_direction"].get(direction, 0) + 1
+    return summary
+
+
 def detect_patterns(df: pd.DataFrame, epsilon: float = 0.03, order: int = 5) -> list[dict]:
     """One-shot convenience wrapper: ``PatternDetector(df, ...).detect_all()``."""
     return PatternDetector(df, epsilon=epsilon, order=order).detect_all()

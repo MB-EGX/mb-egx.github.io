@@ -145,26 +145,21 @@ def _clean_volume(val):
 
 
 _HTML_METACHARS = str.maketrans({
-    '<': '', '>': '', '"': "'", '&': 'and',
+    '<': '', '>': '', '"': "'", '&': 'and', '`': ''
 })
+_BIDI_DANGEROUS = ''.join(chr(c) for c in (0x202A, 0x202B, 0x202D, 0x202E, 0x2066, 0x2067, 0x2068, 0x2069))
 
 
 def _sanitize_text_field(val: str, max_len: int = 200) -> str:
-    """Strip HTML metacharacters and control chars from ingested text.
-
-    SECURITY: name/sector (and ticker) columns come straight from
-    user-supplied Excel/CSV files. They flow DB -> export_json.py ->
-    market_data.json -> index.html, where several sites do
-    el.innerHTML = TEMPLATE_LITERAL(value) with no escaping. A malicious
-    cell value (e.g. "<img src=x onerror=...>") would otherwise become
-    stored XSS served to every visitor. Stripping '<' and '>' at the
-    ingestion boundary neutralizes this regardless of what any
-    downstream renderer does or forgets to do.
-    """
+    """Strip HTML/script-ish and invisible-directional characters from
+    ingested text before it can reach desktop/web surfaces."""
     if val is None:
         return ""
     s = str(val).translate(_HTML_METACHARS)
-    s = re.sub(r'[\x00-\x1f\x7f]', '', s)  # strip control chars
+    s = re.sub(r'(?i)javascript\s*:', '', s)
+    s = re.sub(r'(?i)<\s*/?\s*script[^>]*>', '', s)
+    s = re.sub(r'[\x00-\x1f\x7f]', '', s)
+    s = ''.join(ch for ch in s if ch not in _BIDI_DANGEROUS)
     return s.strip()[:max_len]
 
 
@@ -182,14 +177,14 @@ def _parse_excel_date(val):
 
 
 def parse_excel_worker(file_info):
-    file_path, last_mod, file_hash = file_info
+    file_path, last_mod, file_hash, override_map = file_info
     path_obj = Path(file_path)
 
     try:
         if path_obj.suffix.lower() == '.csv':
             df_raw = pd.read_csv(file_path)
             headers = [str(c).strip().lower() for c in df_raw.columns]
-            col_map = resolve_column_map(headers)
+            col_map = dict(override_map) if override_map else resolve_column_map(headers)
             required_keys = ['date', 'ticker', 'close']
             if not all(k in col_map for k in required_keys):
                 return ("ERROR", file_path, f"Missing required CSV schema (need date/ticker/close). Found headers: {headers}")
@@ -207,7 +202,7 @@ def parse_excel_worker(file_info):
                 temp_rows = workbook.get_sheet_by_name(name).to_python()
                 if len(temp_rows) >= 2:
                     temp_headers = [str(col).strip().lower() for col in temp_rows[0]]
-                    temp_map = resolve_column_map(temp_headers)
+                    temp_map = dict(override_map) if override_map else resolve_column_map(temp_headers)
                     if all(k in temp_map for k in ['date', 'ticker', 'close']):
                         rows = temp_rows
                         headers = temp_headers
@@ -262,7 +257,7 @@ def parse_excel_worker(file_info):
             return ("ERROR", file_path, f"No valid data rows could be parsed ({skipped_rows} row(s) skipped).")
 
         df = pd.DataFrame(data_records)
-        return ("SUCCESS", file_path, last_mod, file_hash, df)
+        return ("SUCCESS", file_path, last_mod, file_hash, df, col_map)
 
     except Exception as e:
         return ("ERROR", file_path, f"Fatal parse failure: {str(e)}")
@@ -293,11 +288,12 @@ class IngestionPipeline:
                 conn.cursor().execute("SELECT file_path, file_hash FROM file_tracker").fetchall()
             )
 
+        override_map_by_file = self.dbm.get_all_ingest_overrides()
         files_to_process = []
         for f in all_files:
             meta = self.DatabaseManager.compute_file_metadata(f)
             if meta[0] not in existing_files or existing_files[meta[0]] != meta[2]:
-                files_to_process.append(meta)
+                files_to_process.append((*meta, override_map_by_file.get(str(f), {})))
 
         if not files_to_process:
             if progress_callback: 
@@ -320,10 +316,14 @@ class IngestionPipeline:
                 ))
 
             if res[0] == "SUCCESS":
-                _, f_path, l_mod, f_hash, df = res
+                _, f_path, l_mod, f_hash, df, used_col_map = res
                 df['_file_mod_time'] = l_mod
                 batch_data.append(df)
                 batch_tracker.append((f_path, l_mod, f_hash))
+                try:
+                    self.dbm.save_ingest_override(f_path, used_col_map)
+                except Exception:
+                    pass
             else:
                 _, f_path, err_msg = res
                 batch_errors.append((f_path, err_msg))

@@ -47,30 +47,41 @@ import numpy as np
 # (below) - config.py sets OPENBLAS/MKL/OMP/NUMEXPR thread caps as a
 # module-level side effect, which only takes effect if set before
 # numpy/pandas load anywhere in this process.
-from config import CHART_HISTORY_DAYS, PATTERN_DETECTION
+from config import CACHE_CONTROL_HEADER, CHART_HISTORY_DAYS, PATTERN_DETECTION
 
 import pandas as pd
 
 from decision_matrix import DecisionMatrix
-from db_manager import DatabaseManager
+from db_manager import DatabaseManager, strip_private_export_fields
 from chart_patterns import PatternDetector
 
-# Any of these keys, if present on a market_matrix/top_10 row, are derived
-# from real private account data and must never reach the public JSON.
-#   - "Suggested Shares (1% Risk)": derived from the real cash balance.
-#   - "Position": reveals which tickers are actually owned (added so owned
-#     positions can also be re-scored as scale-in candidates in the Action
-#     Matrix) - that's account holdings info, same trust boundary as
-#     cash_balance/closed_trades/portfolio_risk above.
-_PRIVATE_ROW_KEYS = ("Suggested Shares (1% Risk)", "Position")
-
-
 def _strip_private_row_fields(rows):
-    """Remove cash-balance-derived fields from a list of signal-row dicts."""
-    for row in rows:
-        for key in _PRIVATE_ROW_KEYS:
-            row.pop(key, None)
-    return rows
+    """Remove account-derived fields from a list of signal-row dicts."""
+    return [strip_private_export_fields(dict(row)) for row in rows]
+
+
+def _write_json(path, payload):
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(sanitize_for_json(payload), f, ensure_ascii=False, indent=2)
+
+
+def _write_shards(output_dir: str, payload: dict):
+    shards = {
+        "matrix.json": {"last_data_date": payload["last_data_date"], "market_matrix": payload["market_matrix"]},
+        "sectors.json": {"last_data_date": payload["last_data_date"], "sectors": payload["sectors"]},
+        "top_10.json": {"last_data_date": payload["last_data_date"], "top_10": payload["top_10"]},
+        "session_picks.json": {"last_data_date": payload["last_data_date"], "session_picks": payload["session_picks"]},
+        "chart_history.json": {"last_data_date": payload["last_data_date"], "chart_history": payload["chart_history"]},
+        "ticker_sectors.json": {"ticker_sectors": payload["ticker_sectors"]},
+        "leaderboard.json": {"leaderboard": payload.get("leaderboard", [])},
+        "paper_trading.json": payload.get("paper_trading", {}),
+    }
+    for filename, shard_payload in shards.items():
+        _write_json(os.path.join(output_dir, filename), shard_payload)
+    _write_json(
+        os.path.join(output_dir, "cache_manifest.json"),
+        {name: {"cache_control": CACHE_CONTROL_HEADER} for name in shards},
+    )
 
 
 def sanitize_for_json(obj):
@@ -237,9 +248,9 @@ def export_market_matrix():
 
     # PRIVACY: strip the cash-derived "Suggested Shares (1% Risk)" column
     # from every row before it can reach the public JSON.
-    _strip_private_row_fields(buys)
-    for rows in top10.values():
-        _strip_private_row_fields(rows)
+    buys = _strip_private_row_fields(buys)
+    for cat, rows in list(top10.items()):
+        top10[cat] = _strip_private_row_fields(rows)
 
     print(
         f"📊 Extracting up to {CHART_HISTORY_DAYS} days of historical chart data "
@@ -265,6 +276,12 @@ def export_market_matrix():
         # from its own privately-stored positions, without the server ever
         # seeing position sizes. See portfolio_risk privacy note above.
         "ticker_sectors": sector_map,
+        "leaderboard": dbm.get_leaderboard(limit=25),
+        "paper_trading": {
+            "cash_balance": dbm.get_paper_cash_balance(),
+            "open_positions": dbm.get_paper_open_positions(),
+            "recent_trades": dbm.get_paper_trades(limit=100),
+        },
     }
 
     print("🧹 Sanitizing data payload (removing NaN / Infinity)...")
@@ -277,12 +294,12 @@ def export_market_matrix():
     os.makedirs(output_dir, exist_ok=True)
 
     file_path = os.path.join(output_dir, "market_data.json")
-    with open(file_path, "w", encoding="utf-8") as f:
-        json.dump(clean_payload, f, ensure_ascii=False, indent=2)
+    _write_json(file_path, clean_payload)
+    _write_shards(output_dir, clean_payload)
 
     print(
         f"✅ Successfully exported {CHART_HISTORY_DAYS}-day market matrix & "
-        f"charts to {file_path}"
+        f"charts to {file_path} and sharded companion files"
     )
 
 

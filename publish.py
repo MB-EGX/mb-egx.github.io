@@ -16,8 +16,11 @@ same 3 things, so you never have to think about which command to use:
 
 Run this from the repo root (same folder as export_json.py / config.py).
 """
+import json
+import os
 import subprocess
 import sys
+from urllib import request as _urlrequest
 
 # MUST be imported before ingestion/export_json (and, transitively,
 # analytics/decision_matrix) - config.py sets the OPENBLAS_NUM_THREADS /
@@ -28,6 +31,7 @@ import sys
 # 'spawn') inherits the already-capped environment for its child
 # processes, regardless of each module's own internal import order.
 import config  # noqa: F401
+from config import CDN_PURGE_URL
 
 from ingestion import IngestionPipeline
 from export_json import export_market_matrix
@@ -74,6 +78,37 @@ def sync_with_remote_before_push():
         )
 
 
+def validate_export_files():
+    base_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "web_public", "data")
+    required = [
+        "market_data.json",
+        "matrix.json",
+        "sectors.json",
+        "top_10.json",
+        "session_picks.json",
+        "chart_history.json",
+        "ticker_sectors.json",
+        "cache_manifest.json",
+    ]
+    missing = [name for name in required if not os.path.exists(os.path.join(base_dir, name))]
+    if missing:
+        raise SystemExit(f"export validation failed; missing shards: {missing}")
+    for name in required:
+        with open(os.path.join(base_dir, name), "r", encoding="utf-8") as fh:
+            json.load(fh)
+
+
+def purge_cdn_if_configured():
+    if not CDN_PURGE_URL:
+        return
+    req = _urlrequest.Request(CDN_PURGE_URL, data=b"{}", method="POST", headers={"Content-Type": "application/json"})
+    try:
+        with _urlrequest.urlopen(req, timeout=20) as resp:
+            print(f"      CDN purge triggered ({resp.status}).")
+    except Exception as e:
+        print(f"      CDN purge skipped/failed: {e}")
+
+
 def main():
     print("1/3  Ingesting new spreadsheet/CSV feeds...")
     IngestionPipeline().run_incremental_ingestion(
@@ -82,6 +117,7 @@ def main():
 
     print("2/3  Recomputing decision matrix and exporting market_data.json...")
     export_market_matrix()
+    validate_export_files()
 
     print("3/3  Publishing everything (data + code + website changes)...")
     # Stage the whole repo, not just the data file, so code fixes and
@@ -102,6 +138,7 @@ def main():
     sync_with_remote_before_push()
 
     run_git("push")
+    purge_cdn_if_configured()
     print("✅ Pushed. GitHub Actions will redeploy the site within ~1 minute.")
 
 

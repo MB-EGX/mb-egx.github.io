@@ -201,6 +201,27 @@ def _confidence_weight(n_bars: int) -> float:
 
 
 # Pass connect_db=False so background workers never try to open DuckDB!
+def _kelly_fraction(win_rate: float, payoff_ratio: float) -> float:
+    win_rate = max(0.0, min(1.0, float(win_rate)))
+    payoff_ratio = max(float(payoff_ratio), 1e-6)
+    raw = win_rate - ((1.0 - win_rate) / payoff_ratio)
+    return max(0.0, min(raw * 0.5, 0.25))
+
+
+def _build_signal_reason(action_cmd: str, trend_latest: str, confirmed: bool, weekly_aligned: bool, is_squeezed: bool, cmf: float, vol_ratio: float) -> str:
+    reasons = [action_cmd, f"trend={trend_latest}"]
+    reasons.append("confirmed" if confirmed else "awaiting confirmation")
+    if weekly_aligned:
+        reasons.append("weekly aligned")
+    if is_squeezed:
+        reasons.append("volatility squeeze")
+    if cmf > 0:
+        reasons.append("positive money flow")
+    if vol_ratio >= 1.0:
+        reasons.append(f"vol x{vol_ratio:.2f}")
+    return " | ".join(reasons)
+
+
 def _worker_compute_chunk(chunk_data):
     qe = QuantitativeEngine(connect_db=False)
     results = {}
@@ -784,6 +805,14 @@ class DecisionMatrix:
                 )
                 raw_shares = int(risk_budget / stop_distance) if stop_distance > 0 else 0
                 suggested_shares = min(raw_shares, max_affordable_shares)
+                reward_risk = (max(take_profit_target - curr_price, 0.0) / stop_distance) if stop_distance > 0 else 0.0
+                win_rate_est = (pattern_data.get("confidence", 45.0) / 100.0) if pattern_data.get("match_found") else 0.45
+                kelly_pct = round(_kelly_fraction(win_rate_est, reward_risk) * 100.0, 2)
+                projected_band = (
+                    f"{pattern_data.get('lower_95_pct', 'N/A')}% to {pattern_data.get('upper_95_pct', 'N/A')}%"
+                    if pattern_data.get("match_found") else "N/A"
+                )
+                signal_reason = _build_signal_reason(action_cmd, trend_latest, confirmed, weekly_aligned, is_squeezed, cmf, vol_ratio)
 
                 buy_recommendations.append(
                     {
@@ -813,6 +842,10 @@ class DecisionMatrix:
                         "Pattern Conf (%)": (
                             pattern_data["confidence"] if pattern_data["match_found"] else "N/A"
                         ),
+                        "Projected Range 95%": projected_band,
+                        "Kelly %": kelly_pct,
+                        "Signal Reason": signal_reason,
+                        "Regime": pattern_data.get("regime", "N/A") if pattern_data else "N/A",
                         "Trend Class": trend_latest,
                         "RSI-14": round(rsi, 1),
                         "ADX-14": round(adx, 1),

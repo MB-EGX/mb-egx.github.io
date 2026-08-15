@@ -61,6 +61,7 @@ CAIRO = ZoneInfo("Africa/Cairo")
 STATE_PATH = "web_public/social/post_state.json"
 DATA_PATH = "web_public/data/market_data.json"
 PLATFORMS = ("ig", "fb")
+JITTER_MINUTES = 5
 
 # Cairo LOCAL due times. Using the system tz database (via zoneinfo) means
 # DST transitions are handled automatically here — unlike the raw UTC cron
@@ -180,7 +181,7 @@ def cmd_due(args):
     due_types = []
     if fresh:
         for post_type, (hh, mm) in DUE_TIMES.items():
-            due_time = now.replace(hour=hh, minute=mm, second=0, microsecond=0)
+            due_time = now.replace(hour=hh, minute=max(0, mm - JITTER_MINUTES), second=0, microsecond=0)
             status = state["posted"][post_type]
             still_needed = not status["ig"] or not status["fb"]
             if now >= due_time and still_needed:
@@ -199,7 +200,7 @@ def cmd_due(args):
         # gated on "if present": only due once achieved_history actually
         # has at least one entry. See module docstring.
         hh, mm = TRACK_RECORD_DUE_TIME
-        due_time = now.replace(hour=hh, minute=mm, second=0, microsecond=0)
+        due_time = now.replace(hour=hh, minute=max(0, mm - JITTER_MINUTES), second=0, microsecond=0)
         status = state["posted"]["track_record"]
         still_needed = not status["ig"] or not status["fb"]
         history_present = bool(_achieved_history())
@@ -228,6 +229,8 @@ def cmd_needs(args):
 
 def cmd_mark_posted(args):
     state = _current_state()
+    if state["posted"][args.type][args.platform]:
+        return
     state["posted"][args.type][args.platform] = True
     _save_state(state)
 

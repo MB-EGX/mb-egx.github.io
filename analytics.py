@@ -166,6 +166,60 @@ class QuantitativeEngine:
         else:
             return "High (1Y+)"
 
+    @staticmethod
+    def classify_regime(df: pd.DataFrame) -> str:
+        if df is None or df.empty or len(df) < 20:
+            return "Insufficient Data"
+        latest = df.iloc[-1]
+        adx = float(latest.get("adx_14", 0.0) or 0.0)
+        atr = float(latest.get("atr_14", 0.0) or 0.0)
+        close = float(latest.get("close", 0.0) or 0.0)
+        atr_pct = (atr / close) * 100 if close > 0 else 0.0
+        if adx >= 25 and atr_pct >= 2.5:
+            return "Trending / Volatile"
+        if adx >= 25:
+            return "Trending"
+        if atr_pct >= 3.5:
+            return "Volatile Range"
+        return "Range / Consolidation"
+
+    @staticmethod
+    def compute_perf_metrics(returns: list[float]) -> dict:
+        arr = np.array([float(r) for r in returns if pd.notna(r)], dtype=float)
+        if arr.size == 0:
+            return {"mean": 0.0, "vol": 0.0, "sharpe": 0.0, "sortino": 0.0, "max_drawdown": 0.0}
+        mean = float(arr.mean())
+        vol = float(arr.std())
+        downside = arr[arr < 0]
+        downside_dev = float(downside.std()) if downside.size else 0.0
+        equity = np.cumprod(1.0 + arr)
+        peaks = np.maximum.accumulate(equity)
+        drawdown = np.where(peaks > 0, (equity - peaks) / peaks, 0.0)
+        return {
+            "mean": round(mean, 6),
+            "vol": round(vol, 6),
+            "sharpe": round(mean / vol, 4) if vol > 1e-9 else 0.0,
+            "sortino": round(mean / downside_dev, 4) if downside_dev > 1e-9 else 0.0,
+            "max_drawdown": round(float(drawdown.min()) if drawdown.size else 0.0, 6),
+        }
+
+    @staticmethod
+    def validate_indicator_outputs(df: pd.DataFrame) -> pd.DataFrame:
+        if df is None or df.empty:
+            return df
+        for col in ("rsi_14", "adx_14", "atr_14", "macd", "macd_signal", "macd_histogram"):
+            if col in df.columns:
+                df[col] = pd.to_numeric(df[col], errors="coerce")
+        if "rsi_14" in df.columns:
+            df["rsi_14"] = df["rsi_14"].clip(lower=0, upper=100).fillna(50.0)
+        if "adx_14" in df.columns:
+            df["adx_14"] = df["adx_14"].clip(lower=0, upper=100).fillna(0.0)
+        if "atr_14" in df.columns:
+            df["atr_14"] = df["atr_14"].clip(lower=0).fillna(0.0)
+        if {"macd", "macd_signal", "macd_histogram"}.issubset(df.columns):
+            df["macd_histogram"] = (df["macd"] - df["macd_signal"]).fillna(0.0)
+        return df
+
     # -------------------------------------------------------------------------
     # ADX with proper Wilder smoothing
     # -------------------------------------------------------------------------
@@ -388,7 +442,7 @@ class QuantitativeEngine:
             "Weak Bearish (Low Trend Strength)",
         ]
         df["trend_class"] = np.select(conditions, choices, default="Weak Bearish")
-        return df
+        return QuantitativeEngine.validate_indicator_outputs(df)
 
     # -------------------------------------------------------------------------
     # Sector roll-up
@@ -722,6 +776,10 @@ class QuantitativeEngine:
         avg_sim = np.mean([s for s, _ in top_k])
         avg_return = np.mean(returns)
         return_std = np.std(returns)
+        lower_95 = float(np.percentile(returns, 5)) if returns else 0.0
+        upper_95 = float(np.percentile(returns, 95)) if returns else 0.0
+        perf = QuantitativeEngine.compute_perf_metrics(returns)
+        regime = QuantitativeEngine.classify_regime(df)
         agreement_penalty = max(0.0, 1.0 - min(return_std * 5, 0.5))
 
         downside_sq = [min(0.0, r) ** 2 for r in returns]
@@ -737,6 +795,10 @@ class QuantitativeEngine:
             "sample_size": len(top_k),
             "windows_searched": n_windows,
             "return_dispersion_pct": round(float(return_std) * 100, 2),
+            "lower_95_pct": round(lower_95 * 100, 2),
+            "upper_95_pct": round(upper_95 * 100, 2),
+            "regime": regime,
+            "perf": perf,
             "sortino_penalty": round(sortino_penalty, 2),
         }
 

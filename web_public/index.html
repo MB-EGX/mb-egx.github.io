@@ -203,6 +203,9 @@
                 <button onclick="openModal('modal-theme')" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
                     <span>⚙️</span> <span id="btn-theme-text">Themes</span>
                 </button>
+                <button onclick="toggleCompactMode()" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
+                    <span>↕️</span> <span id="btn-compact-text">Compact</span>
+                </button>
                 <button onclick="openModal('modal-guide')" class="bg-teal-600 hover:bg-teal-500 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
                     <span>❓</span> <span id="btn-guide-text">Guide</span>
                 </button>
@@ -1081,6 +1084,8 @@
         </div>
     </div>
 
+    <div id="stale-banner" class="hidden mx-4 mt-3 rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-100"></div>
+
     <!-- CORE JAVASCRIPT ENGINE -->
     <script>
         // State
@@ -1090,6 +1095,7 @@
         let currentAlpha = 'ALL';
         let currentTimeFrame = 'ALL';
         let chartInstance = null;
+        let compactMode = localStorage.getItem('quant_compact') === '1';
         let userCash = parseFloat(localStorage.getItem('quant_cash')) || 0;
 
         let userPortfolio = JSON.parse(localStorage.getItem('quant_portfolio')) || [];
@@ -1627,11 +1633,30 @@
             if (currentLang !== 'AR') return escapeHtml(raw);
             return escapeHtml(raw.split(", ").map(part => SIGNAL_PHRASE_AR[part] || part).join("، "));
         }
+        function syncPreferenceHash() {
+            const params = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+            params.set('theme', currentTheme);
+            params.set('compact', compactMode ? '1' : '0');
+            history.replaceState(null, '', '#' + params.toString());
+        }
+        function applyCompactMode() {
+            document.documentElement.classList.toggle('compact-mode', compactMode);
+            document.body.classList.toggle('compact-mode', compactMode);
+            localStorage.setItem('quant_compact', compactMode ? '1' : '0');
+            const btn = document.getElementById('btn-compact-text');
+            if (btn) btn.innerText = currentLang === 'AR' ? (compactMode ? 'وضع مريح' : 'وضع مضغوط') : (compactMode ? 'Comfort' : 'Compact');
+            syncPreferenceHash();
+        }
+        function toggleCompactMode() {
+            compactMode = !compactMode;
+            applyCompactMode();
+        }
         function applyTheme(themeName) {
             currentTheme = themeName;
             document.getElementById('html-root').setAttribute('data-theme', themeName !== 'dark' ? themeName : '');
             localStorage.setItem('quant_theme', themeName);
             if (chartInstance) plotChart();
+            syncPreferenceHash();
         }
 
         // Language Switcher
@@ -2832,6 +2857,20 @@
             applyFilters();
         }
 
+        function updateStaleBanner(lastDataDate) {
+            const banner = document.getElementById('stale-banner');
+            if (!banner || !lastDataDate) return;
+            const today = new Date().toISOString().slice(0, 10);
+            const diffDays = Math.floor((Date.parse(today) - Date.parse(lastDataDate)) / 86400000);
+            if (Number.isFinite(diffDays) && diffDays > 1) {
+                banner.textContent = (currentLang === 'AR' ? 'تنبيه: البيانات المعروضة متأخرة بمقدار ' : 'Notice: displayed data is stale by ') + diffDays + (currentLang === 'AR' ? ' يوم/أيام.' : ' day(s).');
+                banner.classList.remove('hidden');
+            } else {
+                banner.classList.add('hidden');
+                banner.textContent = '';
+            }
+        }
+
         async function loadMarketData() {
             try {
                 const response = await fetch('./data/market_data.json');
@@ -2840,6 +2879,7 @@
                 // Validate expected top-level structure (defense-in-depth)
                 if (typeof raw !== 'object' || raw === null) throw new Error('Invalid data format');
                 globalData = raw;
+                updateStaleBanner(globalData.last_data_date);
                 document.getElementById('val-last-date').innerText = escapeHtml(globalData.last_data_date || "N/A");
                 populateSelects(); applyFilters(); renderSectors(); renderTop10(); renderBreakouts(); renderSessionPicks(); renderPortfolio(); renderHistory(); renderAccountBar();
             } catch (error) {
@@ -2849,7 +2889,12 @@
         }
 
         // Initialize
+        const __hashPrefs = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+        if (__hashPrefs.get('theme')) localStorage.setItem('quant_theme', __hashPrefs.get('theme'));
+        if (__hashPrefs.get('compact')) localStorage.setItem('quant_compact', __hashPrefs.get('compact'));
+        compactMode = localStorage.getItem('quant_compact') === '1';
         applyTheme(localStorage.getItem('quant_theme') || 'dark');
+        applyCompactMode();
         // Language choice persists across visits; new/first-time visitors
         // (no stored preference yet) default to English per product decision.
         const _savedLang = localStorage.getItem('quant_lang') || 'EN';

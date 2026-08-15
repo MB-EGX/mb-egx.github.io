@@ -520,6 +520,11 @@ def render_track_record_image(history: list[dict], last_data_date: str | None, o
 # =============================================================================
 # 4. CAPTION 
 # =============================================================================
+def _maybe_override_caption(kind: str, text_block: str) -> str:
+    override = os.environ.get(f"MBEGX_{kind.upper()}_CAPTION_OVERRIDE", "").strip()
+    return override if override else text_block
+
+
 def append_promotional_footer(text_block: str) -> str:
     footer = (
         "\n\n"
@@ -595,7 +600,7 @@ def build_caption(highlights: dict) -> str:
     ]
 
     combined_caption = "\n".join(en) + "\n\n————\n\n" + "\n".join(ar)
-    return append_promotional_footer(combined_caption)
+    return append_promotional_footer(_maybe_override_caption("session", combined_caption))
 
 
 def build_achievement_caption(achievements: list[dict]) -> str:
@@ -634,7 +639,7 @@ def build_achievement_caption(achievements: list[dict]) -> str:
     ]
 
     combined_caption = "\n".join(en) + "\n\n————\n\n" + "\n".join(ar)
-    return append_promotional_footer(combined_caption)
+    return append_promotional_footer(_maybe_override_caption("achievement", combined_caption))
 
 
 def build_track_record_caption(history: list[dict]) -> str:
@@ -668,7 +673,7 @@ def build_track_record_caption(history: list[dict]) -> str:
     ]
 
     combined_caption = "\n".join(en) + "\n\n————\n\n" + "\n".join(ar)
-    return append_promotional_footer(combined_caption)
+    return append_promotional_footer(_maybe_override_caption("track_record", combined_caption))
 
 
 def build_market_caption(overview: dict) -> str:
@@ -676,7 +681,7 @@ def build_market_caption(overview: dict) -> str:
         en = ["📊 MB-EGX Market Overview", "", "No data available today."]
         ar = ["📊 نظرة عامة على السوق — MB-EGX", "", "لا توجد بيانات متاحة اليوم."]
         combined_caption = "\n".join(en) + "\n\n————\n\n" + "\n".join(ar)
-        return append_promotional_footer(combined_caption)
+        return append_promotional_footer(_maybe_override_caption("market", combined_caption))
 
     gainer, loser = overview["top_gainer"], overview["top_loser"]
     en = [
@@ -703,7 +708,7 @@ def build_market_caption(overview: dict) -> str:
     ]
     
     combined_caption = "\n".join(en) + "\n\n————\n\n" + "\n".join(ar)
-    return append_promotional_footer(combined_caption)
+    return append_promotional_footer(_maybe_override_caption("sectors", combined_caption))
 
 
 def build_sectors_caption(sectors: list[dict]) -> str:
@@ -729,6 +734,22 @@ def build_sectors_caption(sectors: list[dict]) -> str:
     combined_caption = "\n".join(en) + "\n\n————\n\n" + "\n".join(ar)
     return append_promotional_footer(combined_caption)
 
+
+def build_telegram_caption(highlights: dict) -> str:
+    rows = []
+    for title, bucket in (("Next session", highlights.get("next_session", [])), ("Medium term", highlights.get("medium_term", [])), ("Long term", highlights.get("long_term", []))):
+        if bucket:
+            rows.append(title + ': ' + ', '.join((r.get("Ticker") or r.get("ticker", "—")) for r in bucket[:3]))
+    return "\n".join(rows) if rows else "No active highlights."
+
+
+def build_shorts_payload(post_type: str, caption: str) -> dict:
+    return {
+        "post_type": post_type,
+        "aspect_ratio": "9:16",
+        "headline": caption.splitlines()[0] if caption else "MB-EGX",
+        "caption": caption,
+    }
 
 # =============================================================================
 # 5. GRAPH API PUBLISH

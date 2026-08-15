@@ -578,3 +578,46 @@ CHART_PATTERNS = [
         },
     },
 ]
+
+
+EXTRA_TERMS = [
+    {
+        "term": {"en": "Paper Trading", "ar": "التداول التجريبي"},
+        "bias": None,
+        "definition": {"en": "A simulated portfolio that lets a user practice entries, exits, and sizing without risking real cash.", "ar": "محفظة محاكاة تتيح للمستخدم التدرّب على الدخول والخروج وإدارة الحجم دون المخاطرة بأموال حقيقية."},
+        "why_it_matters": {"en": "Useful for testing whether the model's signals fit a user's discipline before going live.", "ar": "مفيد لاختبار مدى ملاءمة إشارات النموذج لانضباط المستخدم قبل التداول الحقيقي."},
+    },
+    {
+        "term": {"en": "Leaderboard", "ar": "لوحة الصدارة"},
+        "bias": None,
+        "definition": {"en": "A ranked view of the most consistent achieved picks or simulated performance records.", "ar": "عرض ترتيبي لأكثر الترشيحات تحقيقًا أو لسجلات الأداء التجريبي الأكثر اتساقًا."},
+        "why_it_matters": {"en": "Helps users compare hit-rate consistency instead of focusing on a single lucky trade.", "ar": "يساعد المستخدمين على مقارنة اتساق النتائج بدل التركيز على صفقة محظوظة واحدة."},
+    },
+    {
+        "term": {"en": "Kelly %", "ar": "نسبة كيلي"},
+        "bias": None,
+        "definition": {"en": "A position-sizing heuristic based on estimated edge and payoff ratio. In this app it is deliberately capped for safety.", "ar": "قاعدة لتحديد حجم الصفقة بناءً على الميزة المتوقعة ونسبة العائد إلى المخاطرة. ويتم تقييدها في هذا التطبيق لأسباب تتعلق بالسلامة."},
+        "why_it_matters": {"en": "It converts signal quality into a sizing hint instead of treating every signal equally.", "ar": "تحول جودة الإشارة إلى تلميح لحجم الصفقة بدل التعامل مع كل الإشارات على أنها متساوية."},
+    },
+    {
+        "term": {"en": "Regime", "ar": "نظام السوق"},
+        "bias": None,
+        "definition": {"en": "A broad market state such as trending, ranging, or volatile.", "ar": "حالة عامة للسوق مثل الاتجاه الواضح أو التذبذب الجانبي أو التقلب العالي."},
+        "why_it_matters": {"en": "A pattern that works in a trend can fail in a choppy regime; labeling the regime improves interpretation.", "ar": "النمط الذي ينجح في سوق اتجاهي قد يفشل في سوق متذبذب؛ لذا فإن تصنيف النظام يحسن التفسير."},
+    },
+]
+
+TERMS.extend(EXTRA_TERMS)
+TERMS_INDEX = {entry["term"]["en"].lower(): entry for entry in TERMS if entry.get("term", {}).get("en")}
+
+def search_terms(query: str, lang: str = "en") -> list[dict]:
+    q = (query or "").strip().lower()
+    if not q:
+        return TERMS
+    lang = "ar" if str(lang).lower().startswith("ar") else "en"
+    out = []
+    for entry in TERMS:
+        hay = " ".join([entry.get("term", {}).get(lang, ""), entry.get("definition", {}).get(lang, ""), entry.get("why_it_matters", {}).get(lang, "")]).lower()
+        if q in hay:
+            out.append(entry)
+    return out

@@ -3,7 +3,7 @@ import pandas as pd
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QComboBox, QLabel, 
-    QRadioButton, QButtonGroup, QPushButton, QScrollArea, QFrame
+    QRadioButton, QButtonGroup, QPushButton, QScrollArea, QFrame, QFileDialog
 )
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -137,10 +137,21 @@ class StockSectorChartWidget(QWidget):
             "QPushButton { background-color: #2d3748; color: #cbd5e0; border-radius: 4px; border: none; padding: 4px 10px; font-size: 11px; font-weight: bold; }"
             "QPushButton:checked { background-color: #7c3aed; color: #ffffff; }"
         )
+        self.chk_volume = QPushButton("📊 Volume")
+        self.chk_volume.setCheckable(True)
+        self.chk_volume.setChecked(True)
+        self.chk_volume.setStyleSheet(
+            "QPushButton { background-color: #2d3748; color: #cbd5e0; border-radius: 4px; border: none; padding: 4px 10px; font-size: 11px; font-weight: bold; }"
+            "QPushButton:checked { background-color: #0891b2; color: #ffffff; }"
+        )
+        self.btn_save_chart = QPushButton("💾 Save Chart")
+        self.btn_save_chart.setStyleSheet("QPushButton { background-color: #0f766e; color: white; border-radius: 4px; border: none; padding: 4px 10px; font-size: 11px; font-weight: bold; }")
         style_layout.addWidget(self.rad_line)
         style_layout.addWidget(self.rad_candle)
         style_layout.addWidget(self.chk_sr)
         style_layout.addWidget(self.chk_patterns)
+        style_layout.addWidget(self.chk_volume)
+        style_layout.addWidget(self.btn_save_chart)
         style_layout.addStretch()
         layout.addLayout(style_layout)
 
@@ -181,6 +192,8 @@ class StockSectorChartWidget(QWidget):
         self.rad_candle.toggled.connect(self.plot_chart)
         self.chk_sr.toggled.connect(self.plot_chart)
         self.chk_patterns.toggled.connect(self.plot_chart)
+        self.chk_volume.toggled.connect(self.plot_chart)
+        self.btn_save_chart.clicked.connect(self._save_chart)
         self.cmb_selector.currentIndexChanged.connect(self.plot_chart)
 
         self.populate_selector()
@@ -287,6 +300,8 @@ class StockSectorChartWidget(QWidget):
             self.rad_line.setText("📉 خط")
             self.rad_candle.setText("🕯️ شموع")
             self.chk_sr.setText("📐 الدعم / المقاومة")
+            self.chk_volume.setText("📊 الحجم")
+            self.btn_save_chart.setText("💾 حفظ الرسم")
         else:
             self.rad_stock.setText("📈 Per Stock")
             self.rad_sector.setText("🏢 Per Sector")
@@ -296,6 +311,8 @@ class StockSectorChartWidget(QWidget):
             self.rad_line.setText("📉 Line")
             self.rad_candle.setText("🕯️ Candles")
             self.chk_sr.setText("📐 Support / Resistance")
+            self.chk_volume.setText("📊 Volume")
+            self.btn_save_chart.setText("💾 Save Chart")
 
         if not self.rad_stock.isChecked():
             # Sector-mode dropdown items are translated display text with the
@@ -345,6 +362,11 @@ class StockSectorChartWidget(QWidget):
             
         self.cmb_selector.blockSignals(False)
         self.plot_chart()
+
+    def _save_chart(self):
+        file_path, _ = QFileDialog.getSaveFileName(self, "Save Chart" if self.lang == "EN" else "حفظ الرسم", "mb_egx_chart.png", "PNG Files (*.png)")
+        if file_path:
+            self.fig.savefig(file_path, dpi=180, bbox_inches="tight")
 
     def plot_chart(self):
         is_stock_mode = self.rad_stock.isChecked()
@@ -405,6 +427,15 @@ class StockSectorChartWidget(QWidget):
 
             if self.chk_patterns.isChecked():
                 self._plot_patterns(ax, df)
+
+            if self.chk_volume.isChecked() and "volume" in df.columns:
+                axv = ax.twinx()
+                up_mask = df["close"] >= df["open"]
+                colors = np.where(up_mask, "#22c55e", "#ef4444")
+                axv.bar(dates, df["volume"], width=0.8, color=colors, alpha=0.16, label="Volume")
+                axv.set_yticks([])
+                for spine in axv.spines.values():
+                    spine.set_visible(False)
 
             trend_color = "#22c55e" if slope_pct >= 0 else "#ef4444"
             trend_label = f"Trendline ({'+' if slope_pct >= 0 else ''}{slope_pct}%)"

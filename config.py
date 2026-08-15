@@ -194,6 +194,49 @@ SESSION_PICKS_EXPECTED_DAYS = {
     "long": (60, 180),
 }
 
+# --- Hosted/web scale configuration ---
+SUBSCRIPTION_TIERS = {
+    "free": {
+        "max_history_days": 365,
+        "include_walkforward": False,
+        "include_paper_trading": False,
+        "include_leaderboard": False,
+    },
+    "pro": {
+        "max_history_days": 365 * 5,
+        "include_walkforward": True,
+        "include_paper_trading": True,
+        "include_leaderboard": True,
+    },
+}
+
+WALK_FORWARD_BACKTEST_DEFAULTS = {
+    "min_train_bars": 250,
+    "test_bars": 60,
+    "step_bars": 60,
+    "min_folds": 4,
+}
+
+PAPER_TRADING_DEFAULTS = {
+    "starting_cash_egp": 100000.0,
+    "max_open_positions": 10,
+    "default_fee_pct": TRANSACTION_FEE_PCT,
+}
+
+CACHE_CONTROL_HEADER = "public, max-age=60, stale-while-revalidate=600"
+CDN_PURGE_URL = os.environ.get("MBEGX_CDN_PURGE_URL", "").strip()
+EMAIL_DIGEST_RECIPIENTS = os.environ.get("MBEGX_EMAIL_DIGEST_TO", "").strip()
+SESSION_PICKS_TELEGRAM_WEBHOOK = os.environ.get("MBEGX_TELEGRAM_WEBHOOK", "").strip()
+
+# Optional live-update endpoint. The web surface can subscribe to this
+# if you later add an SSE publisher, but leaving it empty keeps the app
+# fully static-host compatible.
+SSE_LIVE_FEED_URL = os.environ.get("MBEGX_SSE_LIVE_FEED_URL", "").strip()
+
+# Keep recent achieved picks bounded so the public JSON and social track-
+# record payload do not grow forever.
+MAX_ACHIEVED_HISTORY = 500
+
 # --- Portfolio concentration risk (analyze_market's portfolio_risk output) ---
 # Flags when too much of the account sits in one sector or one ticker -
 # a common blind spot that per-stock risk metrics (ATR stops, Sortino, etc.)

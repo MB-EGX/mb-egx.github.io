@@ -31,9 +31,25 @@ from __future__ import annotations
 
 from datetime import date, timedelta
 
-from config import SESSION_PICKS_QUOTA, SESSION_PICKS_EXPECTED_PCT, SESSION_PICKS_EXPECTED_DAYS
+from config import SESSION_PICKS_QUOTA, SESSION_PICKS_EXPECTED_PCT, SESSION_PICKS_EXPECTED_DAYS, MAX_ACHIEVED_HISTORY
 
 HORIZONS = ("short", "medium", "long")
+
+ALERT_CHANNELS = []
+
+
+def register_alert_channel(callback):
+    if callable(callback) and callback not in ALERT_CHANNELS:
+        ALERT_CHANNELS.append(callback)
+
+
+def _emit_alert(event_type: str, payload: dict):
+    for cb in list(ALERT_CHANNELS):
+        try:
+            cb(event_type, payload)
+        except Exception:
+            continue
+
 
 # Human-readable labels shared by the GUI tab and the social-post captions,
 # so the two never describe the same horizon differently.
@@ -150,13 +166,20 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
                 continue
             pct = (current_price / pick["ref_price"] - 1.0) * 100.0
             if pct >= threshold:
-                dbm.mark_pick_achieved(pick["id"], session_date, current_price, round(pct, 2))
-                achieved_today.append({
+                achieved_pct = round(pct, 2)
+                dbm.mark_pick_achieved(pick["id"], session_date, current_price, achieved_pct)
+                try:
+                    dbm.record_leaderboard_hit(pick["ticker"], achieved_pct, session_date)
+                except Exception:
+                    pass
+                event_payload = {
                     **pick,
                     "achieved_date": session_date,
                     "achieved_price": current_price,
-                    "achieved_pct": round(pct, 2),
-                })
+                    "achieved_pct": achieved_pct,
+                }
+                achieved_today.append(event_payload)
+                _emit_alert("pick_achieved", event_payload)
 
     # 2. Refill each bucket back up to quota. A ticker is only ever one
     #    live pick at a time, so exclude anything currently active in ANY
@@ -186,7 +209,32 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
             active_tickers.add(ticker)
             needed -= 1
 
+    try:
+        dbm.prune_achieved_picks(MAX_ACHIEVED_HISTORY)
+    except Exception:
+        pass
     state = {h: _with_expected_window(dbm.get_active_picks(h), h) for h in HORIZONS}
     state["achieved_today"] = achieved_today
     state["session_date"] = session_date
     return state
+
+
+def build_digest_payload(state: dict) -> dict:
+    short = state.get("short", [])[:3]
+    medium = state.get("medium", [])[:2]
+    long_ = state.get("long", [])[:2]
+    achieved = state.get("achieved_today", [])[:5]
+    lines = [f"Session date: {state.get('session_date')}"]
+    if short:
+        lines.append("Short-term: " + ", ".join(f"{p['ticker']} (+{p.get('expected_pct', 0)}%)" for p in short))
+    if medium:
+        lines.append("Medium-term: " + ", ".join(f"{p['ticker']} (+{p.get('expected_pct', 0)}%)" for p in medium))
+    if long_:
+        lines.append("Long-term: " + ", ".join(f"{p['ticker']} (+{p.get('expected_pct', 0)}%)" for p in long_))
+    if achieved:
+        lines.append("Achieved today: " + ", ".join(f"{p['ticker']} ({p['achieved_pct']}%)" for p in achieved))
+    return {
+        "subject": f"MB-EGX Session Picks — {state.get('session_date')}",
+        "text": "\n".join(lines),
+        "lines": lines,
+    }

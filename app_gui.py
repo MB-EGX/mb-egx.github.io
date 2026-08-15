@@ -2401,7 +2401,8 @@ class QuantDashboard(QMainWindow):
             self.setWindowIcon(QIcon(str(LOGO_PATH)))
         self.dbm = DatabaseManager()
         self.qe = QuantitativeEngine()
-        self.current_theme = "🌙 Institutional Dark"
+        self.current_theme = _SETTINGS.value("theme", "🌙 Institutional Dark")
+        self.compact_mode = _SETTINGS.value("compact_mode", True, type=bool)
         # Shares the same persisted preference as LoginDialog (QSettings key
         # "lang") so a language choice made on either screen carries over.
         self.current_lang = CURRENT_LANG
@@ -2412,6 +2413,7 @@ class QuantDashboard(QMainWindow):
         self._cloud_threads = set()
         self._init_ui()
         self.apply_theme(self.current_theme)
+        self.apply_compact_mode(self.compact_mode)
         # Widgets are created with hardcoded English text; explicitly apply
         # the persisted language now so a saved Arabic preference actually
         # shows up immediately instead of only updating the dropdown itself.
@@ -2497,6 +2499,7 @@ class QuantDashboard(QMainWindow):
     def apply_theme(self, theme_name):
         if theme_name in THEMES_MAP:
             self.current_theme = theme_name
+            _SETTINGS.setValue("theme", theme_name)
             stylesheet = THEMES_MAP[theme_name]
             self.setStyleSheet(stylesheet)
             if QApplication.instance():
@@ -2575,6 +2578,13 @@ class QuantDashboard(QMainWindow):
                 
                 self.lbl_disclosure.setStyleSheet("font-size: 10px; font-weight: bold; color: #d69e2e; background: transparent;")
                 self.lbl_status.setStyleSheet("font-size: 11px; font-weight: bold; color: #38a169; background: transparent;")
+
+    def apply_compact_mode(self, enabled: bool):
+        self.compact_mode = bool(enabled)
+        _SETTINGS.setValue("compact_mode", self.compact_mode)
+        row_h = 24 if self.compact_mode else 30
+        for table in self.findChildren(QTableView):
+            table.verticalHeader().setDefaultSectionSize(row_h)
 
     def _init_ui(self):
         main_widget = QWidget()
@@ -2682,6 +2692,11 @@ class QuantDashboard(QMainWindow):
         self.btn_settings = QPushButton("⚙️ Themes")
         self.btn_settings.clicked.connect(self.open_settings_dialog)
 
+        self.btn_density = QPushButton("↕ Compact")
+        self.btn_density.setCheckable(True)
+        self.btn_density.setChecked(self.compact_mode)
+        self.btn_density.clicked.connect(lambda checked: self.apply_compact_mode(checked))
+
         self.btn_top10 = QPushButton("🏆 Top 10")
         self.btn_top10.clicked.connect(self.show_top10_overview)
 
@@ -2691,6 +2706,7 @@ class QuantDashboard(QMainWindow):
         controls_row.addWidget(self.btn_calc)
         controls_row.addWidget(self.btn_set_cash)
         controls_row.addWidget(self.btn_settings)
+        controls_row.addWidget(self.btn_density)
         controls_row.addWidget(self.btn_top10)
 
         self.cmb_lang = QComboBox()
@@ -2997,6 +3013,7 @@ class QuantDashboard(QMainWindow):
         self.btn_calc.setText(t["risk_calc"])
         self.btn_set_cash.setText(t["set_cash"])
         self.btn_settings.setText(t["themes"])
+        self.btn_density.setText("↕ Compact" if self.current_lang == "EN" else "↕ وضع مضغوط")
         self.btn_top10.setText(t["top10_btn"])
         self.lbl_filter.setText(t["filters"])
         self.txt_search.setPlaceholderText(t["search_ph"])

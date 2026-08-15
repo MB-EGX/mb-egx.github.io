@@ -1,13 +1,29 @@
 import hashlib
+import json
 import os
 import re
 import threading
 import time
 from pathlib import Path
-from config import DB_PATH, get_logger
+from config import DB_PATH, PAPER_TRADING_DEFAULTS, MAX_ACHIEVED_HISTORY, get_logger
 import duckdb
 
 logger = get_logger("db_manager")
+
+_PRIVATE_EXPORT_ROW_KEYS = {
+    "Suggested Shares (1% Risk)",
+    "Position",
+    "buy_price",
+    "shares",
+    "target_value",
+    "target_mode",
+}
+
+
+def strip_private_export_fields(row: dict) -> dict:
+    if not isinstance(row, dict):
+        return row
+    return {k: v for k, v in row.items() if k not in _PRIVATE_EXPORT_ROW_KEYS}
 
 # =============================================================================
 # Optional display-language for the handful of user-facing portfolio messages
@@ -86,7 +102,7 @@ class DatabaseLockedError(RuntimeError):
 
 
 class _ConnectionWrapper:
-    def __init__(self, db_path: str, retries: int = 3, retry_delay_seconds: float = 1.5):
+    def __init__(self, db_path: str, retries: int = 8, retry_delay_seconds: float = 0.5):
         self._lock = threading.RLock()
         last_err = None
         for attempt in range(retries):
@@ -102,7 +118,7 @@ class _ConnectionWrapper:
                 if "another process" not in str(e) and "lock" not in str(e).lower():
                     raise
                 if attempt < retries - 1:
-                    time.sleep(retry_delay_seconds)
+                    time.sleep(retry_delay_seconds * (2 ** attempt))
         raise DatabaseLockedError(
             f"Can't open the database at '{db_path}' — it's already open in "
             f"another program (usually the MB-EGX desktop app, if it's "
@@ -257,6 +273,38 @@ class DatabaseManager:
                     target_value DOUBLE    -- meaning depends on target_mode
                 );
             """)
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS paper_trades (
+                    id INTEGER PRIMARY KEY DEFAULT nextval('seq_session_picks_id'),
+                    ticker VARCHAR,
+                    side VARCHAR,
+                    price DOUBLE,
+                    shares DOUBLE,
+                    trade_date DATE,
+                    note VARCHAR
+                );
+            """)
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS paper_account (
+                    id INTEGER PRIMARY KEY,
+                    balance DOUBLE
+                );
+            """)
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS leaderboard (
+                    ticker VARCHAR PRIMARY KEY,
+                    hits INTEGER DEFAULT 0,
+                    total_return_pct DOUBLE DEFAULT 0.0,
+                    last_achieved_date DATE
+                );
+            """)
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS ingest_overrides (
+                    file_path VARCHAR PRIMARY KEY,
+                    column_map_json VARCHAR,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            """)
             # Session Picks — see session_picks.py. A "pick" is a ticker
             # stamped with the price/date it was chosen at for a given
             # horizon; it stays 'active' until either it hits the
@@ -303,6 +351,9 @@ class DatabaseManager:
             count_cash = conn.execute("SELECT COUNT(*) FROM account_cash;").fetchone()[0]
             if count_cash == 0:
                 conn.execute("INSERT INTO account_cash VALUES (1, 0.0);")
+            count_paper_cash = conn.execute("SELECT COUNT(*) FROM paper_account;").fetchone()[0]
+            if count_paper_cash == 0:
+                conn.execute("INSERT INTO paper_account VALUES (1, ?);", (float(PAPER_TRADING_DEFAULTS["starting_cash_egp"]),))
 
     @staticmethod
     def compute_file_metadata(file_path: Path):
@@ -424,6 +475,145 @@ class DatabaseManager:
                 "ref_price": float(r[4]), "achieved_date": str(r[5]),
                 "achieved_price": float(r[6]), "achieved_pct": float(r[7]),
             }
+            for r in rows
+        ]
+
+
+    def prune_achieved_picks(self, keep_recent: int = MAX_ACHIEVED_HISTORY) -> int:
+        with self.get_connection() as conn:
+            count = conn.cursor().execute(
+                "SELECT COUNT(*) FROM session_picks WHERE status = 'achieved';"
+            ).fetchone()[0]
+            if count <= keep_recent:
+                return 0
+            ids = conn.cursor().execute(
+                "SELECT id FROM session_picks WHERE status = 'achieved' ORDER BY achieved_date DESC, id DESC LIMIT ?;",
+                (int(keep_recent),)
+            ).fetchall()
+            keep_ids = [str(r[0]) for r in ids]
+            if not keep_ids:
+                return 0
+            deleted = conn.cursor().execute(
+                f"DELETE FROM session_picks WHERE status = 'achieved' AND id NOT IN ({','.join(keep_ids)});"
+            ).rowcount
+            return int(deleted or 0)
+
+    def record_leaderboard_hit(self, ticker: str, achieved_pct: float, achieved_date: str):
+        ticker = self.normalize_symbol(ticker)
+        with self.get_connection() as conn:
+            conn.execute(
+                """
+                INSERT INTO leaderboard (ticker, hits, total_return_pct, last_achieved_date)
+                VALUES (?, 1, ?, ?)
+                ON CONFLICT(ticker) DO UPDATE SET
+                    hits = leaderboard.hits + 1,
+                    total_return_pct = leaderboard.total_return_pct + excluded.total_return_pct,
+                    last_achieved_date = excluded.last_achieved_date;
+                """,
+                (ticker, float(achieved_pct), achieved_date),
+            )
+
+    def get_leaderboard(self, limit: int = 25) -> list:
+        with self.get_connection() as conn:
+            rows = conn.cursor().execute(
+                "SELECT ticker, hits, total_return_pct, last_achieved_date FROM leaderboard ORDER BY hits DESC, total_return_pct DESC LIMIT ?;",
+                (int(limit),)
+            ).fetchall()
+        return [
+            {
+                "ticker": self.normalize_symbol(r[0]),
+                "hits": int(r[1]),
+                "avg_return_pct": round(float(r[2]) / max(int(r[1]), 1), 2),
+                "last_achieved_date": str(r[3]) if r[3] is not None else None,
+            }
+            for r in rows
+        ]
+
+    def save_ingest_override(self, file_path: str, column_map: dict):
+        with self.get_connection() as conn:
+            conn.execute(
+                """
+                INSERT INTO ingest_overrides (file_path, column_map_json)
+                VALUES (?, ?)
+                ON CONFLICT(file_path) DO UPDATE SET
+                    column_map_json = excluded.column_map_json,
+                    updated_at = CURRENT_TIMESTAMP;
+                """,
+                (str(file_path), json.dumps(column_map, ensure_ascii=False)),
+            )
+
+    def get_ingest_override(self, file_path: str) -> dict:
+        with self.get_connection() as conn:
+            row = conn.cursor().execute(
+                "SELECT column_map_json FROM ingest_overrides WHERE file_path = ?;",
+                (str(file_path),)
+            ).fetchone()
+        if not row or not row[0]:
+            return {}
+        try:
+            return json.loads(row[0])
+        except Exception:
+            return {}
+
+    def get_all_ingest_overrides(self) -> dict:
+        with self.get_connection() as conn:
+            rows = conn.cursor().execute(
+                "SELECT file_path, column_map_json FROM ingest_overrides;"
+            ).fetchall()
+        out = {}
+        for file_path, payload in rows:
+            try:
+                out[str(file_path)] = json.loads(payload) if payload else {}
+            except Exception:
+                out[str(file_path)] = {}
+        return out
+
+    def get_paper_cash_balance(self) -> float:
+        with self.get_connection() as conn:
+            row = conn.cursor().execute("SELECT balance FROM paper_account WHERE id = 1;").fetchone()
+        return float(row[0]) if row else 0.0
+
+    def set_paper_cash_balance(self, amount: float):
+        with self.get_connection() as conn:
+            conn.execute("UPDATE paper_account SET balance = ? WHERE id = 1;", (float(amount),))
+
+    def add_paper_trade(self, ticker: str, side: str, price: float, shares: float, trade_date: str, note: str = ""):
+        ticker = self.normalize_symbol(ticker)
+        side = str(side).strip().upper()
+        if side not in {"BUY", "SELL"}:
+            raise ValueError("side must be BUY or SELL")
+        with self.get_connection() as conn:
+            conn.execute(
+                "INSERT INTO paper_trades (ticker, side, price, shares, trade_date, note) VALUES (?, ?, ?, ?, ?, ?);",
+                (ticker, side, float(price), float(shares), trade_date, str(note or "")),
+            )
+
+    def get_paper_trades(self, limit: int = 200) -> list:
+        with self.get_connection() as conn:
+            rows = conn.cursor().execute(
+                "SELECT ticker, side, price, shares, trade_date, note FROM paper_trades ORDER BY trade_date DESC, id DESC LIMIT ?;",
+                (int(limit),)
+            ).fetchall()
+        return [
+            {"ticker": self.normalize_symbol(r[0]), "side": r[1], "price": float(r[2]), "shares": float(r[3]), "trade_date": str(r[4]), "note": str(r[5] or "")}
+            for r in rows
+        ]
+
+    def get_paper_open_positions(self) -> list:
+        with self.get_connection() as conn:
+            rows = conn.cursor().execute(
+                """
+                SELECT ticker,
+                       SUM(CASE WHEN side = 'BUY' THEN shares ELSE -shares END) AS net_shares,
+                       SUM(CASE WHEN side = 'BUY' THEN price * shares ELSE 0 END) /
+                       NULLIF(SUM(CASE WHEN side = 'BUY' THEN shares ELSE 0 END), 0) AS avg_buy_price
+                FROM paper_trades
+                GROUP BY ticker
+                HAVING SUM(CASE WHEN side = 'BUY' THEN shares ELSE -shares END) > 0;
+                """
+            ).fetchall()
+        return [
+            {"ticker": self.normalize_symbol(r[0]), "shares": float(r[1]), "avg_buy_price": round(float(r[2] or 0.0), 4)}
             for r in rows
         ]
 

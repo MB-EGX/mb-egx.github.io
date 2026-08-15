@@ -1,5 +1,9 @@
 name: Daily Instagram + Facebook Post
 
+concurrency:
+  group: social-poster
+  cancel-in-progress: false
+
 # Runs entirely in GitHub's cloud — your PC/desktop app does NOT need to be
 # open. It reads the already-published, privacy-scrubbed market_data.json.
 #
