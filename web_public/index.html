@@ -128,6 +128,13 @@
             z-index: 99999 !important;
             background: #0F1115;
         }
+        /* In-app-browser warning banner (see isInAppBrowser() in the auth
+           script below). It's an ordinary (non-absolute) first child inside
+           #auth-gate's flex container, so on mobile (flex-col) it simply
+           stacks above the sign-in card and pushes it down - no padding
+           hacks needed. Hidden by default; only ever shown by JS after a
+           mobile in-app-browser UA match - never on desktop. */
+        #inapp-browser-banner { width: 100%; }
         .ambient-glow { box-shadow: 0 0 24px 0 rgba(147, 204, 255, 0.15); }
         .card-edge { border: 1px solid rgba(255, 255, 255, 0.05); }
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
@@ -1320,6 +1327,11 @@
                 err_popup_closed: "The Google sign-in window closed before finishing. If you clicked the button twice, try once and wait — or check that your browser isn't blocking pop-ups / third-party cookies for this site.",
                 err_popup_blocked: "Your browser blocked the sign-in pop-up. Please allow pop-ups for this site and try again.",
                 err_google_signin_failed: "Google sign-in failed. Please try again.",
+                inapp_banner_text: "Google Sign-In doesn't work inside this app's built-in browser. Tap to open this page in your regular browser (Chrome/Safari) instead.",
+                inapp_banner_btn: "Open in Browser",
+                inapp_link_copied: "Link copied! Paste it into Chrome or Safari to sign in.",
+                inapp_link_copy_failed: "Couldn't copy automatically. Please copy this link and open it in Chrome or Safari: {url}",
+                err_google_inapp_browser: "Google Sign-In can't complete inside this app's built-in browser (this is a restriction from Google, not a bug). Tap \"Open in Browser\" above, or use Email/Password sign-in instead.",
                 loading_trading_activity: "Loading trading activity…",
                 err_analytics_load_failed: "Could not load session data (check Firestore rules / console for details).",
                 err_reconsent_save_failed: "Couldn't save your acceptance. Please check your connection and try again.",
@@ -1471,6 +1483,11 @@
                 err_popup_closed: "أُغلقت نافذة تسجيل الدخول عبر Google قبل الانتهاء. إذا ضغطت الزر مرتين، جرّب مرة واحدة وانتظر — أو تحقق من أن متصفحك لا يحظر النوافذ المنبثقة / ملفات تعريف الارتباط الخاصة بأطراف ثالثة لهذا الموقع.",
                 err_popup_blocked: "حظر متصفحك النافذة المنبثقة لتسجيل الدخول. يرجى السماح بالنوافذ المنبثقة لهذا الموقع والمحاولة مجددًا.",
                 err_google_signin_failed: "فشل تسجيل الدخول عبر Google. يرجى المحاولة مرة أخرى.",
+                inapp_banner_text: "تسجيل الدخول عبر Google لا يعمل داخل المتصفح المدمج في هذا التطبيق. اضغط لفتح هذه الصفحة في متصفحك العادي (Chrome أو Safari).",
+                inapp_banner_btn: "افتح في المتصفح",
+                inapp_link_copied: "تم نسخ الرابط! الصقه في Chrome أو Safari لتسجيل الدخول.",
+                inapp_link_copy_failed: "تعذّر النسخ تلقائيًا. يرجى نسخ هذا الرابط وفتحه في Chrome أو Safari: {url}",
+                err_google_inapp_browser: "لا يمكن إتمام تسجيل الدخول عبر Google داخل المتصفح المدمج في هذا التطبيق (هذا قيد من Google وليس خطأً برمجيًا). اضغط \"افتح في المتصفح\" أعلاه، أو استخدم تسجيل الدخول بالبريد الإلكتروني وكلمة المرور بدلاً من ذلك.",
                 loading_trading_activity: "جاري تحميل نشاط التداول…",
                 err_analytics_load_failed: "تعذّر تحميل بيانات الجلسات (تحقق من قواعد Firestore / وحدة التحكم لمزيد من التفاصيل).",
                 err_reconsent_save_failed: "تعذّر حفظ موافقتك. يرجى التحقق من اتصالك والمحاولة مجددًا.",
@@ -2843,7 +2860,24 @@
 
     <!-- ===================== NEW DUAL-COLUMN LOGIN GATE (Firebase Auth) ===================== -->
     <div id="auth-gate" style="display:flex;" class="fixed inset-x-0 bottom-0 z-[9999] bg-[#0F1115] flex flex-col lg:flex-row overflow-y-auto w-full">
-        
+
+        <!-- In-App Browser Warning Banner (WhatsApp/Instagram/Facebook/etc
+             in-app browsers silently block Google Sign-In - Google's own
+             restriction since 2021, not something fixable in code. Hidden
+             by default; shown by JS only when a mobile in-app-browser UA
+             is detected, so desktop/laptop is never affected. See
+             isInAppBrowser() near the bottom of this file's script. -->
+        <div id="inapp-browser-banner" class="hidden bg-amber-400 text-[#3a2e00] px-4 py-3 text-sm shadow-lg relative z-10">
+            <div class="max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-2 text-center">
+                <span class="material-symbols-outlined text-[18px] shrink-0">warning</span>
+                <span class="font-bold" data-i18n="inapp_banner_text">Google Sign-In doesn't work inside this app's built-in browser. Tap to open this page in your regular browser (Chrome/Safari) instead.</span>
+                <div class="flex items-center gap-2 shrink-0">
+                    <button onclick="openInRealBrowser()" class="bg-[#3a2e00] text-amber-300 px-3 py-1.5 rounded-md font-bold text-xs whitespace-nowrap" data-i18n="inapp_banner_btn">Open in Browser</button>
+                    <button onclick="dismissInAppBanner()" class="text-[#3a2e00]/70 hover:text-[#3a2e00] px-1" aria-label="Dismiss">✕</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Background Egyptian Architectural Motif Integration -->
         <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-20">
             <div class="w-full h-full bg-cover bg-fixed opacity-10" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBPg6bmzgKHgnVpZdcgH8uKJdjbU4eC57mN-ebTPzaoVA7vr3vIphW8PhwCNNgg7hPcCfkWbMEPdbVi0oVLHKbpHxweHgB50r6rVsx4rSwZX8vvOcKhXRjNExda7BAj62kXdyZQjy6Sb1whl1VJasunx9S6dctn2cYX1fOL_en4Gz30ewVqJ7FmvGwbTCra5MzBX81k6jmRuyR6UhuoiFrwPCt2V5uqfS5jfVGX16FIcee-c2Q3Ogthyg')"></div>
@@ -3183,6 +3217,58 @@
 
         let _googleSignInInProgress = false;
 
+        // ===== In-app browser detection (mobile-only, never affects
+        // desktop/laptop - see below) =====
+        // Google blocks its own Sign-In flow from completing inside in-app
+        // browsers (Facebook, Instagram, TikTok, Line, WeChat, Twitter/X,
+        // Snapchat, and some WhatsApp builds on Android) since 2021 - a
+        // restriction on Google's side, not a bug here and not something
+        // fixable in code. Detected from the WebView-injected user-agent
+        // tokens those apps add, which normal desktop/laptop browsers
+        // (Chrome, Safari, Firefox, Edge) never carry - so this check is
+        // inherently scoped to mobile in-app browsers only and cannot
+        // false-positive on a real computer.
+        function isInAppBrowser() {
+            const ua = navigator.userAgent || '';
+            return /FBAN|FBAV|FB_IAB|Instagram|Line\/|MicroMessenger|WhatsApp|TikTok|BytedanceWebview|Twitter|Snapchat/i.test(ua);
+        }
+
+        function dismissInAppBanner() {
+            const banner = document.getElementById('inapp-browser-banner');
+            if (banner) banner.classList.add('hidden');
+        }
+
+        function openInRealBrowser() {
+            const url = window.location.href;
+            if (/Android/i.test(navigator.userAgent)) {
+                // Android: hand off to Chrome directly via an intent URL.
+                // intent:// navigation doesn't reject on failure, so the
+                // timeout below is the fallback if Chrome isn't installed.
+                const stripped = url.replace(/^https?:\/\//, '');
+                window.location.href = `intent://${stripped}#Intent;scheme=https;package=com.android.chrome;end`;
+                setTimeout(() => copyLinkForManualOpen(url), 1200);
+            } else {
+                // iOS in-app browsers can't be force-redirected into Safari
+                // from JS - copy the link and tell the person to paste it.
+                copyLinkForManualOpen(url);
+            }
+        }
+
+        function copyLinkForManualOpen(url) {
+            const done = () => alert(tt('inapp_link_copied'));
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(done).catch(() => alert(tt('inapp_link_copy_failed').replace('{url}', url)));
+            } else {
+                alert(tt('inapp_link_copy_failed').replace('{url}', url));
+            }
+        }
+
+        function checkInAppBrowser() {
+            if (!isInAppBrowser()) return;
+            const banner = document.getElementById('inapp-browser-banner');
+            if (banner) banner.classList.remove('hidden');
+        }
+
         // Mobile browsers close signInWithPopup's popup window far more
         // aggressively than desktop Chrome does (focus changes, third-party
         // popup/cookie restrictions, backgrounding) - that's what produces
@@ -3228,6 +3314,18 @@
         }
 
         async function handleGoogleSignIn() {
+            // Don't even attempt it here - Google silently refuses to
+            // complete sign-in inside in-app WebViews (Facebook, Instagram,
+            // TikTok, etc - see isInAppBrowser() below), so
+            // signInWithRedirect would just bounce the person straight back
+            // to this gate with no error to catch, which is exactly the
+            // "goes back to login, nothing shown" bug. Surface the
+            // actionable fix instead of a doomed round-trip.
+            if (isInAppBrowser()) {
+                checkInAppBrowser();
+                showAuthError(tt('err_google_inapp_browser'));
+                return;
+            }
             if (!checkAuthRateLimit()) return;
             // Guard against a second click re-triggering signInWithPopup while
             // the first popup is still open — that's exactly what produces the
@@ -3663,6 +3761,15 @@
                 if (btn) btn.disabled = false;
             }
         }
+
+        // Show the in-app-browser warning banner immediately on load
+        // (before anyone even taps the Google button) if this is a
+        // known in-app WebView - see isInAppBrowser() above. Placed here
+        // (not in the earlier "Initialize" block) because #auth-gate and
+        // its #inapp-browser-banner child are declared further down in
+        // the document than that block, so the element wouldn't exist yet
+        // if called from there.
+        checkInAppBrowser();
 
         // Picks up the result of signInWithRedirect() (mobile Google
         // sign-in) once the browser navigates back to this page. Resolves
