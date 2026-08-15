@@ -331,6 +331,9 @@
             <button onclick="switchTab('tab-leaderboard')" id="btn-tab-leaderboard" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap" data-i18n="tab_leaderboard">
                 🥇 Leaderboard
             </button>
+            <button onclick="switchTab('tab-strategy')" id="btn-tab-strategy" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap">
+                🧮 Strategy Calculator
+            </button>
         </div>
 
         <!-- TAB 1: MATRIX -->
@@ -569,6 +572,87 @@
                     </thead>
                     <tbody id="tbody-leaderboard"></tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- TAB: STRATEGY CALCULATOR (N6 — "what if I'd followed this?") -->
+        <div id="tab-strategy" class="bg-panelbg rounded-b-xl border border-t-0 border-bordercol p-4 shadow-xl hidden space-y-4">
+            <div id="strategy-loading" class="text-xs text-textmuted">Loading strategy performance data…</div>
+            <div id="strategy-missing" class="hidden text-xs text-textmuted bg-darkbg border border-bordercol rounded-lg p-4">
+                No backtest summary has been published yet. Run <code class="text-sky-400">python export_backtest_summary.py</code> and re-publish to enable this calculator.
+            </div>
+            <div id="strategy-content" class="hidden space-y-4">
+                <p id="strategy-intro" class="text-xs text-textmuted">
+                    A walk-forward backtest of every qualifying BUY signal this app's Action Matrix has ever produced — same rules, same thresholds. This describes the STRATEGY's historical behavior, not any account's real results.
+                </p>
+                <div id="strategy-reliability-banner" class="hidden text-xs bg-amber-900/30 border border-amber-700/50 text-amber-300 rounded-lg p-3"></div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="bg-darkbg rounded-lg p-3 border border-bordercol">
+                        <div class="text-[10px] text-textmuted uppercase">Trades</div>
+                        <div id="strategy-stat-trades" class="text-xl font-bold font-mono text-textmain">—</div>
+                    </div>
+                    <div class="bg-darkbg rounded-lg p-3 border border-bordercol">
+                        <div class="text-[10px] text-textmuted uppercase">Win Rate</div>
+                        <div id="strategy-stat-winrate" class="text-xl font-bold font-mono text-textmain">—</div>
+                    </div>
+                    <div class="bg-darkbg rounded-lg p-3 border border-bordercol">
+                        <div class="text-[10px] text-textmuted uppercase">Avg Return / Trade</div>
+                        <div id="strategy-stat-avgret" class="text-xl font-bold font-mono text-textmain">—</div>
+                    </div>
+                    <div class="bg-darkbg rounded-lg p-3 border border-bordercol">
+                        <div class="text-[10px] text-textmuted uppercase">Profit Factor</div>
+                        <div id="strategy-stat-pf" class="text-xl font-bold font-mono text-textmain">—</div>
+                    </div>
+                    <div class="bg-darkbg rounded-lg p-3 border border-bordercol">
+                        <div class="text-[10px] text-textmuted uppercase">Sharpe</div>
+                        <div id="strategy-stat-sharpe" class="text-xl font-bold font-mono text-textmain">—</div>
+                    </div>
+                    <div class="bg-darkbg rounded-lg p-3 border border-bordercol">
+                        <div class="text-[10px] text-textmuted uppercase">Sortino</div>
+                        <div id="strategy-stat-sortino" class="text-xl font-bold font-mono text-textmain">—</div>
+                    </div>
+                    <div class="bg-darkbg rounded-lg p-3 border border-bordercol">
+                        <div class="text-[10px] text-textmuted uppercase">Max Drawdown</div>
+                        <div id="strategy-stat-dd" class="text-xl font-bold font-mono text-rose-400">—</div>
+                    </div>
+                    <div class="bg-darkbg rounded-lg p-3 border border-bordercol">
+                        <div class="text-[10px] text-textmuted uppercase">Tickers Backtested</div>
+                        <div id="strategy-stat-tickers" class="text-xl font-bold font-mono text-textmain">—</div>
+                    </div>
+                </div>
+
+                <div class="bg-darkbg rounded-lg p-4 border border-bordercol">
+                    <div class="text-xs font-semibold text-textmain mb-2">What if I had put money into every qualifying signal?</div>
+                    <div class="flex flex-wrap items-center gap-2 mb-2">
+                        <span class="text-xs text-textmuted">Hypothetical amount:</span>
+                        <input type="number" id="strategy-calc-amount" value="10000" min="1" step="100"
+                            oninput="renderStrategyCalcResult()"
+                            class="bg-panelbg border border-bordercol rounded px-3 py-1.5 text-textmain w-32 text-xs focus:outline-none focus:border-sky-500">
+                        <span class="text-xs text-textmuted">EGP, compounded across the same sequence of trades below</span>
+                    </div>
+                    <div id="strategy-calc-result" class="text-lg font-bold font-mono text-emerald-400"></div>
+                    <div class="text-[10px] text-textmuted mt-1">
+                        Illustrative only — trades from different tickers can overlap in real time, so a real account could hold more than one position at once. This treats every trade as if taken one after another in a single account. Not investment advice.
+                    </div>
+                </div>
+
+                <div class="bg-darkbg rounded-lg p-4 border border-bordercol">
+                    <div class="text-xs font-semibold text-textmain mb-2">By signal type</div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs">
+                            <thead>
+                                <tr class="border-b border-bordercol text-textmuted">
+                                    <th class="text-left p-2">Signal</th>
+                                    <th class="text-left p-2">Trades</th>
+                                    <th class="text-left p-2">Win Rate</th>
+                                    <th class="text-left p-2">Avg Return</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-strategy-by-action"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -1133,6 +1217,7 @@
     <script>
         // State
         let globalData = null;
+        let strategyPerfData = null; // N6 — set by loadStrategyPerformance(), null until first opened
         let currentLang = 'EN';
         let currentTheme = 'dark';
         let currentAlpha = 'ALL';
@@ -1882,13 +1967,14 @@
 
         // Modals & Tabs
         function switchTab(tabId) {
-            ['tab-matrix', 'tab-sectors', 'tab-exits', 'tab-breakout', 'tab-picks', 'tab-history', 'tab-fin', 'tab-top10', 'tab-charts', 'tab-leaderboard'].forEach(id => {
+            ['tab-matrix', 'tab-sectors', 'tab-exits', 'tab-breakout', 'tab-picks', 'tab-history', 'tab-fin', 'tab-top10', 'tab-charts', 'tab-leaderboard', 'tab-strategy'].forEach(id => {
                 document.getElementById(id).classList.add('hidden');
                 document.getElementById('btn-' + id).classList.remove('tab-active');
             });
             document.getElementById(tabId).classList.remove('hidden');
             document.getElementById('btn-' + tabId).classList.add('tab-active');
             if (tabId === 'tab-charts' && !chartInstance) plotChart();
+            if (tabId === 'tab-strategy' && !strategyPerfData) loadStrategyPerformance();
         }
         function openModal(id) {
             document.getElementById(id).classList.remove('hidden');
@@ -3497,6 +3583,92 @@
                 banner.classList.add('hidden');
                 banner.textContent = '';
             }
+        }
+
+        // ===================== N6: Strategy Calculator =====================
+        // Reads web_public/data/strategy_performance.json — a small, OPTIONAL
+        // shard written by export_backtest_summary.py (a separate, manually-
+        // run script, same design as run_backtest.py/backtester.py themselves
+        // — a multi-year walk-forward run is too slow for the nightly
+        // publish.py pipeline). Loaded lazily on first visit to the tab, not
+        // as part of loadMarketData()'s critical batch, since most visits
+        // never open this tab and the file may not exist yet on a fresh
+        // deployment.
+        async function loadStrategyPerformance() {
+            document.getElementById('strategy-loading').classList.remove('hidden');
+            document.getElementById('strategy-missing').classList.add('hidden');
+            document.getElementById('strategy-content').classList.add('hidden');
+            try {
+                const res = await fetch('./data/strategy_performance.json');
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                strategyPerfData = await res.json();
+                renderStrategyPerformance();
+            } catch (err) {
+                console.error('Failed to load strategy_performance.json:', err);
+                document.getElementById('strategy-loading').classList.add('hidden');
+                document.getElementById('strategy-missing').classList.remove('hidden');
+            }
+        }
+
+        function renderStrategyPerformance() {
+            const d = strategyPerfData;
+            if (!d) return;
+            document.getElementById('strategy-loading').classList.add('hidden');
+            document.getElementById('strategy-content').classList.remove('hidden');
+
+            const banner = document.getElementById('strategy-reliability-banner');
+            if (!d.is_reliable && d.reliability_note) {
+                banner.textContent = '⚠️ ' + d.reliability_note;
+                banner.classList.remove('hidden');
+            } else {
+                banner.classList.add('hidden');
+            }
+
+            document.getElementById('strategy-stat-trades').innerText = (d.trade_count ?? 0).toLocaleString();
+            document.getElementById('strategy-stat-winrate').innerText = `${d.win_rate_pct ?? 0}%`;
+            const avgRet = d.avg_return_pct ?? 0;
+            const avgRetEl = document.getElementById('strategy-stat-avgret');
+            avgRetEl.innerText = `${avgRet >= 0 ? '+' : ''}${avgRet}%`;
+            avgRetEl.className = 'text-xl font-bold font-mono ' + (avgRet >= 0 ? 'text-emerald-400' : 'text-rose-400');
+            document.getElementById('strategy-stat-pf').innerText = (d.profit_factor === null || d.profit_factor === undefined) ? '∞' : d.profit_factor;
+            document.getElementById('strategy-stat-sharpe').innerText = d.overall?.sharpe ?? '—';
+            document.getElementById('strategy-stat-sortino').innerText = d.overall?.sortino ?? '—';
+            document.getElementById('strategy-stat-dd').innerText = d.overall?.max_drawdown != null ? `${(d.overall.max_drawdown * 100).toFixed(2)}%` : '—';
+            document.getElementById('strategy-stat-tickers').innerText = d.tickers_backtested ?? '—';
+
+            const tbody = document.getElementById('tbody-strategy-by-action');
+            tbody.innerHTML = (d.by_action || []).map(row => `
+                <tr class="border-b border-bordercol/50">
+                    <td class="p-2 text-textmain">${escapeHtml(row.action)}</td>
+                    <td class="p-2 text-textmuted">${row.trade_count}</td>
+                    <td class="p-2 ${row.win_rate_pct >= 50 ? 'text-emerald-400' : 'text-rose-400'}">${row.win_rate_pct}%</td>
+                    <td class="p-2 ${row.avg_return_pct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${row.avg_return_pct >= 0 ? '+' : ''}${row.avg_return_pct}%</td>
+                </tr>
+            `).join('') || `<tr><td colspan="4" class="p-2 text-textmuted text-center">No trades in the backtest window.</td></tr>`;
+
+            renderStrategyCalcResult();
+        }
+
+        // Compounds the user's hypothetical amount through the same
+        // sequential equity_curve export_backtest_summary.py already
+        // computed (growth-of-100 curve), scaled to their input.
+        function renderStrategyCalcResult() {
+            const d = strategyPerfData;
+            const out = document.getElementById('strategy-calc-result');
+            if (!d) return;
+            const amount = parseFloat(document.getElementById('strategy-calc-amount').value) || 0;
+            const curve = d.equity_curve || [];
+            if (!curve.length || amount <= 0) {
+                out.innerText = '—';
+                return;
+            }
+            const start = curve[0].equity || 100;
+            const end = curve[curve.length - 1].equity || start;
+            const finalValue = amount * (end / start);
+            const pct = (end / start - 1) * 100;
+            const color = finalValue >= amount ? 'text-emerald-400' : 'text-rose-400';
+            out.className = `text-lg font-bold font-mono ${color}`;
+            out.innerText = `${amount.toLocaleString()} EGP → ${finalValue.toLocaleString(undefined, {maximumFractionDigits: 0})} EGP (${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%) across ${d.trade_count} sequential trades`;
         }
 
         // ===================== Sharded data loading =====================

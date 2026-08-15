@@ -116,6 +116,16 @@ jobs:
             echo "::endgroup::"
           done
 
+          # N19: refresh the small per-ticker chart tiles (web_public/social/tiles/*.png)
+          # alongside the "market" post specifically — that's the one type
+          # already tied to the day's overall price move, so this keeps the
+          # tiles' cost bounded to once/day instead of once per due-type/run.
+          if echo "$TYPES" | grep -qw "market"; then
+            echo "::group::Rendering chart tiles (N19)"
+            python social_poster.py render --post-type chart_tiles --tile-limit 30
+            echo "::endgroup::"
+          fi
+
           # Must be committed + live before we try to publish — Meta
           # fetches these via raw.githubusercontent.com.
           git add web_public/social/

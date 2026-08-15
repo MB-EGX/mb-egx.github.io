@@ -11,6 +11,16 @@ see post_state.py). Each with the evidence (score, RSI/ADX, pattern,
 sector strength) straight from the same market_data.json the web
 dashboard already reads.
 
+Also renders "chart_tiles" (N19): a batch of small, non-interactive
+per-ticker PNGs (`web_public/social/tiles/<ticker>.png`) for contexts
+that can't run the Chart.js widget — email digests, link unfurls, an
+<img> fallback on the web dashboard. Unlike the other post types this
+one is a batch of files, not a single image+caption pair, and has no
+Instagram/Facebook publish step of its own — it's meant to be committed
+alongside a "market" or "tickers" render (see daily-instagram-post.yml)
+and served straight from the repo the same way the other rendered PNGs
+already are.
+
 DESIGN — why this reads market_data.json instead of the local DuckDB:
     market_data.json is already the PUBLIC, privacy-scrubbed payload
     export_json.py produces (see that file's privacy-fix notes — no cash
@@ -328,6 +338,129 @@ def render_sectors_image(sectors: list[dict], last_data_date: str | None, out_pa
     out_path.parent.mkdir(parents=True, exist_ok=True)
     img.save(out_path, "PNG")
     return out_path
+
+
+# =============================================================================
+# 2d. CHART TILES (N19) — small pre-rendered PNG per ticker
+# =============================================================================
+# Purpose: cheap, non-interactive chart images for contexts that can't run
+# JS/Chart.js — social cards, email digests, <img> fallbacks, link
+# unfurls. These reuse market_data.json's already-computed chart_history
+# (see export_json.py/build_chart_history) so no extra data pull is
+# needed; they're just a different renderer over the same public payload
+# the "tickers" post already draws from. Square (1080x1080) so the same
+# file works as both an IG feed tile and an inline <img> on the web/email.
+CHART_TILE_SIZE = 1080
+CHART_TILE_LOOKBACK_DAYS = 90  # enough to show a real trend, not a flat blip
+
+
+def pick_chart_tile_tickers(market_data: dict, limit: int = 30) -> list[str]:
+    """Which tickers get a rendered tile this run. Ranked by |1D return|
+    among tickers that actually have enough chart_history to draw a line
+    (mirrors compute_market_overview's own filter), capped at ``limit`` so
+    a large universe doesn't turn this into a full-universe image-render
+    job on every run — call again later (or raise the cap) for the rest."""
+    stocks = market_data.get("chart_history", {}).get("stocks", {})
+    ranked = []
+    for ticker, hist in stocks.items():
+        closes = [c for c in hist.get("close", []) if c is not None]
+        if len(closes) < 2 or not closes[-2]:
+            continue
+        ret_1d = abs(closes[-1] / closes[-2] - 1)
+        ranked.append((ret_1d, ticker))
+    ranked.sort(reverse=True)
+    return [t for _, t in ranked[:limit]]
+
+
+def render_chart_tile(ticker: str, hist: dict, out_path: Path) -> Path:
+    """Draws one ticker's last CHART_TILE_LOOKBACK_DAYS closes as a plain
+    polyline sparkline (no axes/gridlines — this is a tile, not a chart
+    the user interacts with) plus a headline price/return, in the same
+    brand palette as the other social cards."""
+    closes_all = [c for c in hist.get("close", []) if c is not None]
+    closes = closes_all[-CHART_TILE_LOOKBACK_DAYS:]
+
+    size = CHART_TILE_SIZE
+    img = Image.new("RGB", (size, size), BG)
+    draw = ImageDraw.Draw(img)
+    f_brand = _font("DejaVuSans-Bold.ttf", 36)
+    f_ticker = _font("DejaVuSans-Bold.ttf", 64)
+    f_price = _font("DejaVuSans-Bold.ttf", 48)
+    f_pct = _font("DejaVuSans-Bold.ttf", 40)
+    f_small = _font("DejaVuSans.ttf", 22)
+
+    draw.text((48, 44), "MB-EGX", font=f_brand, fill=ACCENT)
+    draw.text((48, 120), ticker, font=f_ticker, fill=TEXT_MAIN)
+
+    if len(closes) < 2:
+        draw.text((48, 220), "Not enough history yet", font=f_small, fill=TEXT_MUTED)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        img.save(out_path, "PNG")
+        return out_path
+
+    last, prev = closes[-1], closes[-2]
+    ret_1d = (last / prev - 1.0) * 100.0 if prev else 0.0
+    color = GREEN if ret_1d >= 0 else RED
+
+    draw.text((48, 210), f"{last:g} EGP", font=f_price, fill=TEXT_MAIN)
+    draw.text((48, 270), f"{ret_1d:+.2f}% today", font=f_pct, fill=color)
+
+    # --- sparkline plot area ---
+    pad_x, top, bottom = 48, 360, size - 140
+    plot_w = size - 2 * pad_x
+    lo, hi = min(closes), max(closes)
+    span = (hi - lo) or 1.0
+    n = len(closes)
+    points = [
+        (
+            pad_x + (i / (n - 1)) * plot_w,
+            bottom - ((c - lo) / span) * (bottom - top),
+        )
+        for i, c in enumerate(closes)
+    ]
+    draw.line(points, fill=color, width=6, joint="curve")
+    # soft fill under the line for a bit of visual weight, drawn on an
+    # RGBA overlay then composited (plain RGB draw.polygon can't do alpha)
+    fill_poly = points + [(points[-1][0], bottom), (points[0][0], bottom)]
+    overlay = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    ImageDraw.Draw(overlay).polygon(fill_poly, fill=(*color, 35))
+    img = Image.alpha_composite(img.convert("RGBA"), overlay).convert("RGB")
+    draw = ImageDraw.Draw(img)  # re-bind after the composite above
+
+    draw.text((pad_x, bottom + 12), f"{CHART_TILE_LOOKBACK_DAYS}D range: {lo:g} – {hi:g}", font=f_small, fill=TEXT_MUTED)
+    draw.text((pad_x, size - 60), "Educational content, not investment advice.", font=f_small, fill=TEXT_MUTED)
+
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    img.save(out_path, "PNG")
+    return out_path
+
+
+def generate_chart_tiles(market_data: dict, out_dir: Path, limit: int = 30) -> list[str]:
+    """Renders tiles for up to ``limit`` tickers (see pick_chart_tile_tickers)
+    into ``out_dir``/tiles/<ticker>.png, overwriting the previous day's
+    tile each time so the same URL (e.g. .../tiles/COMI.png) always shows
+    the latest close — stable filenames are what let this double as an
+    embeddable/CDN-cached image (raw.githubusercontent.com or a jsDelivr
+    mirror of the repo) for email digests and link unfurls."""
+    stocks = market_data.get("chart_history", {}).get("stocks", {})
+    tickers = pick_chart_tile_tickers(market_data, limit=limit)
+    tiles_dir = out_dir / "tiles"
+    rendered = []
+    for ticker in tickers:
+        hist = stocks.get(ticker)
+        if not hist:
+            continue
+        try:
+            render_chart_tile(ticker, hist, tiles_dir / f"{ticker}.png")
+            rendered.append(ticker)
+        except Exception as e:
+            print(f"⚠️  Chart tile failed for {ticker}: {e}")
+    manifest = {
+        "generated_for_date": market_data.get("last_data_date"),
+        "tickers": rendered,
+    }
+    (tiles_dir / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    return rendered
 
 
 # =============================================================================
@@ -829,11 +962,14 @@ def main():
 
     p_render = sub.add_parser("render", help="Fetch data, pick highlights, write image + caption")
     p_render.add_argument(
-        "--post-type", choices=["tickers", "market", "sectors", "achievement", "track_record"], default="tickers",
-        help="Which post to render",
+        "--post-type",
+        choices=["tickers", "market", "sectors", "achievement", "track_record", "chart_tiles"],
+        default="tickers",
+        help="Which post to render ('chart_tiles' renders N19 per-ticker PNGs, no caption/social publish step)",
     )
     p_render.add_argument("--pages-base-url", default=os.environ.get("PAGES_BASE_URL"))
     p_render.add_argument("--out-dir", default=str(OUT_DIR))
+    p_render.add_argument("--tile-limit", type=int, default=30, help="Max tickers to render for --post-type chart_tiles")
 
     p_publish = sub.add_parser("publish", help="Publish an already-rendered image to Instagram")
     p_publish.add_argument("--image-url", required=True, help="Public URL of the rendered PNG")
@@ -881,7 +1017,7 @@ def main():
             render_achievement_image(achievements, last_data_date, out_dir / f"{date_str}_achievement.png")
             render_achievement_image(achievements, last_data_date, out_dir / "latest_achievement.png")
             caption = build_achievement_caption(achievements)
-        else:  # track_record
+        elif args.post_type == "track_record":
             history = pick_track_record_highlights(market_data)
             last_data_date = market_data.get("last_data_date")
             if not history:
@@ -890,6 +1026,12 @@ def main():
             render_track_record_image(history, last_data_date, out_dir / f"{date_str}_track_record.png")
             render_track_record_image(history, last_data_date, out_dir / "latest_track_record.png")
             caption = build_track_record_caption(history)
+        else:  # chart_tiles (N19) — batch of per-ticker PNGs, no single
+            # image/caption pair to publish, so skip the caption-write
+            # block below entirely and return early.
+            rendered = generate_chart_tiles(market_data, out_dir, limit=args.tile_limit)
+            print(f"✅ Rendered {len(rendered)} chart tile(s) → {out_dir / 'tiles'}/<ticker>.png")
+            return
 
         caption_path = out_dir / f"latest_{args.post_type}_caption.txt"
         caption_path.write_text(caption, encoding="utf-8")
