@@ -3183,6 +3183,35 @@
 
         let _googleSignInInProgress = false;
 
+        // Mobile browsers close signInWithPopup's popup window far more
+        // aggressively than desktop Chrome does (focus changes, third-party
+        // popup/cookie restrictions, backgrounding) - that's what produces
+        // the "sign-in window closed before finishing" error on phones even
+        // though the user never touched anything. Firebase's own guidance
+        // is to use signInWithRedirect on mobile instead of a popup.
+        function isMobileBrowser() {
+            return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 768;
+        }
+
+        // Shared by both the popup (desktop) and redirect (mobile) flows so
+        // the two paths can never drift apart on what a new user needs
+        // (consent + the initial account doc).
+        async function finishGoogleSignIn(result, consentChecked) {
+            const isNewUser = !!(result.additionalUserInfo && result.additionalUserInfo.isNewUser);
+            if (isNewUser) {
+                if (!consentChecked) {
+                    await auth.signOut();
+                    showAuthError(tt("err_must_agree_terms"));
+                    return;
+                }
+                const ip = await fetchClientIp();
+                await db.collection('users').doc(result.user.uid).set({
+                    cash: 0, portfolio: [], history: [],
+                    ...buildConsentFields(ip),
+                }, { merge: true });
+            }
+        }
+
         async function handleGoogleSignIn() {
             if (!checkAuthRateLimit()) return;
             // Guard against a second click re-triggering signInWithPopup while
@@ -3195,20 +3224,21 @@
             clearAuthError();
             const provider = new firebase.auth.GoogleAuthProvider();
             try {
-                const result = await auth.signInWithPopup(provider);
-                const isNewUser = !!(result.additionalUserInfo && result.additionalUserInfo.isNewUser);
-                if (isNewUser) {
-                    if (!document.getElementById('consent-checkbox').checked) {
-                        await auth.signOut();
-                        showAuthError(tt("err_must_agree_terms"));
-                        return;
-                    }
-                    const ip = await fetchClientIp();
-                    await db.collection('users').doc(result.user.uid).set({
-                        cash: 0, portfolio: [], history: [],
-                        ...buildConsentFields(ip),
-                    }, { merge: true });
+                if (isMobileBrowser()) {
+                    // Full-page redirect instead of a popup. The page will
+                    // navigate away now; the result is picked up by
+                    // getRedirectResult() below once the browser returns.
+                    // Stash the consent checkbox state since the page (and
+                    // its JS state) is about to be torn down and reloaded.
+                    sessionStorage.setItem(
+                        'mbegx_pending_consent',
+                        document.getElementById('consent-checkbox').checked ? '1' : '0'
+                    );
+                    await auth.signInWithRedirect(provider);
+                    return;
                 }
+                const result = await auth.signInWithPopup(provider);
+                await finishGoogleSignIn(result, document.getElementById('consent-checkbox').checked);
                 resetAuthRateLimit();
             } catch (err) {
                 // Log the real Firebase error code (auth/popup-blocked,
@@ -3602,7 +3632,26 @@
             }
         }
 
-        auth.onAuthStateChanged(function (user) {
+        // Picks up the result of signInWithRedirect() (mobile Google
+        // sign-in) once the browser navigates back to this page. Resolves
+        // to null immediately if no redirect sign-in was in progress, so
+        // this is safe to always run on load. onAuthStateChanged below
+        // waits on this promise before doing anything, so a brand-new
+        // user's consent doc write (inside finishGoogleSignIn) always
+        // finishes before the reconsent-gate logic reads that same doc.
+        const _redirectResultPromise = auth.getRedirectResult().then(async result => {
+            if (result && result.user) {
+                const consentChecked = sessionStorage.getItem('mbegx_pending_consent') === '1';
+                sessionStorage.removeItem('mbegx_pending_consent');
+                await finishGoogleSignIn(result, consentChecked);
+            }
+        }).catch(err => {
+            console.error('Redirect sign-in failed:', err && err.code, err);
+            showAuthError(tt("err_google_signin_failed"));
+        });
+
+        auth.onAuthStateChanged(async function (user) {
+            await _redirectResultPromise;
             _authResolved = true;
             revealApp();
             clearAuthError();

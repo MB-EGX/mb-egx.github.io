@@ -434,10 +434,30 @@
         document.getElementById('lang-select').value = _savedLang;
         switchLanguage(_savedLang);
 
-        // Listen for authentication state changes
+        // Picks up the result of signInWithRedirect() (mobile Google
+        // sign-in) once the browser navigates back to this page. Resolves
+        // to null immediately if no redirect sign-in was in progress, so
+        // this is safe to always run on load.
+        const _redirectResultPromise = auth.getRedirectResult().then(async result => {
+            if (result && result.user) {
+                const consentChecked = sessionStorage.getItem('mbegx_pending_consent') === '1';
+                sessionStorage.removeItem('mbegx_pending_consent');
+                await finishGoogleSignIn(result, consentChecked);
+            }
+        }).catch(err => {
+            console.error('Redirect sign-in failed:', err && err.code, err);
+            showAuthError(tt("err_google_signin_failed"));
+        });
+
+        // Listen for authentication state changes. Waits for the redirect
+        // result above to finish first, so a brand-new user's consent doc
+        // write always completes before we hand off to index.html (which
+        // reads that same doc immediately on load).
         auth.onAuthStateChanged(function (user) {
             if (user) {
-                window.location.href = "index.html";
+                _redirectResultPromise.finally(() => {
+                    window.location.href = "index.html";
+                });
             }
         });
 
@@ -589,6 +609,35 @@
 
         let _googleSignInInProgress = false;
 
+        // See index.html for the fuller rationale: mobile browsers close
+        // signInWithPopup's popup far more aggressively than desktop Chrome
+        // (focus changes, third-party popup/cookie restrictions), which is
+        // what produces "sign-in window closed before finishing" on phones.
+        // Firebase's own guidance is signInWithRedirect on mobile instead.
+        function isMobileBrowser() {
+            return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 768;
+        }
+
+        // Shared by both the popup (desktop) and redirect (mobile) flows so
+        // the two paths can never drift on what a new user needs (consent +
+        // the initial account doc).
+        async function finishGoogleSignIn(result, consentChecked) {
+            const isNewUser = !!(result.additionalUserInfo && result.additionalUserInfo.isNewUser);
+            if (isNewUser) {
+                if (!consentChecked) {
+                    await auth.signOut();
+                    triggerConsentShake();
+                    showAuthError(tt("err_must_agree_terms_new"));
+                    return;
+                }
+                const ip = await fetchClientIp();
+                await db.collection('users').doc(result.user.uid).set({
+                    cash: 0, portfolio: [], history: [],
+                    ...buildConsentFields(ip),
+                }, { merge: true });
+            }
+        }
+
         async function handleGoogleSignIn() {
             if (_googleSignInInProgress) return;
             if (!checkAuthRateLimit()) return;
@@ -598,22 +647,21 @@
             clearAuthError();
             const provider = new firebase.auth.GoogleAuthProvider();
             try {
-                const result = await auth.signInWithPopup(provider);
-                const isNewUser = !!(result.additionalUserInfo && result.additionalUserInfo.isNewUser);
-
-                if (isNewUser) {
-                    if (!document.getElementById('consent-checkbox').checked) {
-                        await auth.signOut();
-                        triggerConsentShake();
-                        showAuthError(tt("err_must_agree_terms_new"));
-                        return;
-                    }
-                    const ip = await fetchClientIp();
-                    await db.collection('users').doc(result.user.uid).set({
-                        cash: 0, portfolio: [], history: [],
-                        ...buildConsentFields(ip),
-                    }, { merge: true });
+                if (isMobileBrowser()) {
+                    // Full-page redirect instead of a popup. The page is
+                    // about to navigate away; the result is picked up by
+                    // getRedirectResult() below once the browser returns.
+                    // Stash the consent checkbox state since the page (and
+                    // its JS state) is about to be torn down and reloaded.
+                    sessionStorage.setItem(
+                        'mbegx_pending_consent',
+                        document.getElementById('consent-checkbox').checked ? '1' : '0'
+                    );
+                    await auth.signInWithRedirect(provider);
+                    return;
                 }
+                const result = await auth.signInWithPopup(provider);
+                await finishGoogleSignIn(result, document.getElementById('consent-checkbox').checked);
                 resetAuthRateLimit();
             } catch (err) {
                 console.error('Google sign-in failed:', err.code, err);
