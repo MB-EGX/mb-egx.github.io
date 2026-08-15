@@ -621,9 +621,17 @@
         // Shared by both the popup (desktop) and redirect (mobile) flows so
         // the two paths can never drift on what a new user needs (consent +
         // the initial account doc).
+        //
+        // Deliberately does NOT rely on result.additionalUserInfo.isNewUser:
+        // that flag is unreliable after a full-page signInWithRedirect
+        // reload on some mobile browsers. If it under-reports, the account
+        // doc never gets created and the user ends up authenticated but
+        // stuck - checking Firestore directly for whether the doc already
+        // exists is the reliable source of truth instead.
         async function finishGoogleSignIn(result, consentChecked) {
-            const isNewUser = !!(result.additionalUserInfo && result.additionalUserInfo.isNewUser);
-            if (isNewUser) {
+            const docRef = db.collection('users').doc(result.user.uid);
+            const existing = await docRef.get();
+            if (!existing.exists) {
                 if (!consentChecked) {
                     await auth.signOut();
                     triggerConsentShake();
@@ -631,7 +639,7 @@
                     return;
                 }
                 const ip = await fetchClientIp();
-                await db.collection('users').doc(result.user.uid).set({
+                await docRef.set({
                     cash: 0, portfolio: [], history: [],
                     ...buildConsentFields(ip),
                 }, { merge: true });

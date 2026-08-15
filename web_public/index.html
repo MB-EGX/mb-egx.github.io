@@ -3196,9 +3196,24 @@
         // Shared by both the popup (desktop) and redirect (mobile) flows so
         // the two paths can never drift apart on what a new user needs
         // (consent + the initial account doc).
+        //
+        // Deliberately does NOT rely on result.additionalUserInfo.isNewUser:
+        // that flag is unreliable after a full-page signInWithRedirect
+        // reload on some mobile browsers (Firebase doesn't always
+        // reconstruct it correctly from persisted redirect state). If it
+        // under-reports (says "not new" for an actually-new account), the
+        // account doc never gets created - the user ends up authenticated
+        // but permanently stuck behind the reconsent gate, because that
+        // gate's write only sends agreed_to_terms/terms_version/agreed_at
+        // (not cash/portfolio/history), so Firestore's `create` rule
+        // rejects it every time (see handleReconsentAccept below for the
+        // same self-healing fix on that path). Checking Firestore directly
+        // for whether the account doc already exists is the reliable
+        // source of truth instead.
         async function finishGoogleSignIn(result, consentChecked) {
-            const isNewUser = !!(result.additionalUserInfo && result.additionalUserInfo.isNewUser);
-            if (isNewUser) {
+            const docRef = db.collection('users').doc(result.user.uid);
+            const existing = await docRef.get();
+            if (!existing.exists) {
                 if (!consentChecked) {
                     await auth.signOut();
                     showAuthError(tt("err_must_agree_terms"));
@@ -3611,7 +3626,24 @@
                 // extra round-trip but rules out that class of failure.
                 await user.getIdToken(true);
                 const ip = await fetchClientIp();
-                await db.collection('users').doc(user.uid).set(buildConsentFields(ip), { merge: true });
+                // Self-healing: if this account somehow never got its
+                // account doc created (e.g. a Google redirect sign-in where
+                // isNewUser under-reported - see finishGoogleSignIn), this
+                // write would otherwise hit Firestore's `create` rule
+                // instead of `update`, which requires cash/portfolio/history
+                // to be present - and get rejected with permission-denied
+                // forever, trapping the user behind this same gate on every
+                // retry. Check first and include the missing base fields
+                // when needed so the write always lands.
+                const docRef = db.collection('users').doc(user.uid);
+                const existing = await docRef.get();
+                const payload = buildConsentFields(ip);
+                if (!existing.exists) {
+                    payload.cash = 0;
+                    payload.portfolio = [];
+                    payload.history = [];
+                }
+                await docRef.set(payload, { merge: true });
                 document.getElementById('terms-reconsent-gate').classList.add('hidden');
                 _pendingReconsentUser = null;
                 proceedAfterAuth(user);
@@ -3650,8 +3682,7 @@
             showAuthError(tt("err_google_signin_failed"));
         });
 
-        auth.onAuthStateChanged(async function (user) {
-            await _redirectResultPromise;
+        auth.onAuthStateChanged(function (user) {
             _authResolved = true;
             revealApp();
             clearAuthError();
@@ -3675,7 +3706,13 @@
                 // TERMS_VERSION constant) blocks everything below until the
                 // user re-accepts via the modal instead of silently letting
                 // them keep using the app under an outdated agreement.
-                db.collection('users').doc(user.uid).get().then(async doc => {
+                //
+                // Waits on _redirectResultPromise first so a brand-new
+                // Google-redirect user's account-doc write (finishGoogleSignIn)
+                // always finishes before this reads that same doc - otherwise
+                // the read can win the race, see nothing, and send a genuinely
+                // brand-new user straight into the reconsent gate.
+                _redirectResultPromise.then(() => db.collection('users').doc(user.uid).get()).then(async doc => {
                     const data = doc.exists ? doc.data() : {};
                     if (data.terms_version !== TERMS_VERSION) {
                         _pendingReconsentUser = user;
