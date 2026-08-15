@@ -3269,12 +3269,13 @@
             if (banner) banner.classList.remove('hidden');
         }
 
-        // Mobile browsers close signInWithPopup's popup window far more
-        // aggressively than desktop Chrome does (focus changes, third-party
-        // popup/cookie restrictions, backgrounding) - that's what produces
-        // the "sign-in window closed before finishing" error on phones even
-        // though the user never touched anything. Firebase's own guidance
-        // is to use signInWithRedirect on mobile instead of a popup.
+        // NOTE: no longer used to branch the Google sign-in flow (see
+        // handleGoogleSignIn below) - popup is now used on both mobile and
+        // desktop, since the redirect flow this used to gate could fail
+        // completely silently on mobile (see the comment in
+        // handleGoogleSignIn for the full story). Left defined in case
+        // something else ever needs a mobile check, but it has no callers
+        // right now.
         function isMobileBrowser() {
             return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 768;
         }
@@ -3337,22 +3338,39 @@
             clearAuthError();
             const provider = new firebase.auth.GoogleAuthProvider();
             try {
-                if (isMobileBrowser()) {
-                    // Full-page redirect instead of a popup. The page will
-                    // navigate away now; the result is picked up by
-                    // getRedirectResult() below once the browser returns.
-                    // Stash the consent checkbox state since the page (and
-                    // its JS state) is about to be torn down and reloaded.
-                    sessionStorage.setItem(
-                        'mbegx_pending_consent',
-                        document.getElementById('consent-checkbox').checked ? '1' : '0'
-                    );
-                    await auth.signInWithRedirect(provider);
-                    return;
+                // Popup for everyone now (desktop AND mobile), not just
+                // desktop. Mobile used to get a full-page signInWithRedirect
+                // instead - Firebase's own historical guidance, since mobile
+                // browsers close a popup more aggressively than desktop
+                // Chrome. But that redirect flow depends on the browser's
+                // storage surviving a full navigate-away-to-Google-and-back
+                // round trip, and when it doesn't (a known Chrome/Firebase
+                // interaction, more likely when authDomain -
+                // mb-egx-12d11.firebaseapp.com - is a different domain from
+                // the site itself - mb-egx.github.io), Firebase silently
+                // finds no pending redirect to resolve: no error, no user,
+                // just a bounce straight back to this same login screen with
+                // nothing to show or catch. A popup fails LOUDLY instead
+                // (a catchable error below) even when it fails, which is
+                // strictly more debuggable than a redirect that can fail
+                // silently. If the popup itself gets blocked by the browser
+                // (auth/popup-blocked), that's the one case where we fall
+                // back to the redirect flow below as a second attempt.
+                try {
+                    const result = await auth.signInWithPopup(provider);
+                    await finishGoogleSignIn(result, document.getElementById('consent-checkbox').checked);
+                    resetAuthRateLimit();
+                } catch (popupErr) {
+                    if (popupErr && popupErr.code === 'auth/popup-blocked') {
+                        sessionStorage.setItem(
+                            'mbegx_pending_consent',
+                            document.getElementById('consent-checkbox').checked ? '1' : '0'
+                        );
+                        await auth.signInWithRedirect(provider);
+                        return;
+                    }
+                    throw popupErr;
                 }
-                const result = await auth.signInWithPopup(provider);
-                await finishGoogleSignIn(result, document.getElementById('consent-checkbox').checked);
-                resetAuthRateLimit();
             } catch (err) {
                 // Log the real Firebase error code (auth/popup-blocked,
                 // auth/unauthorized-domain, etc.) so a future field report
@@ -3360,12 +3378,17 @@
                 // a generic "failed" message with no trail.
                 console.error('Google sign-in failed:', err && err.code, err);
                 recordAuthAttempt();
+                const code = (err && err.code) ? err.code : 'unknown';
                 if (err && (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request')) {
                     showAuthError(tt("err_popup_closed"));
                 } else if (err && err.code === 'auth/popup-blocked') {
                     showAuthError(tt("err_popup_blocked"));
                 } else {
-                    showAuthError(tt("err_google_signin_failed"));
+                    // Include the raw error code on-screen too (not just the
+                    // console) - a phone has no easy devtools access, so
+                    // this is what actually tells us what's wrong if this
+                    // still fails after the popup switch.
+                    showAuthError(tt("err_google_signin_failed") + ` [${code}]`);
                 }
             } finally {
                 _googleSignInInProgress = false;
