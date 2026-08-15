@@ -237,6 +237,11 @@
         </div>
         <div id="concentration-warning" style="display:none;" class="bg-[#3d2b0f] border border-amber-600 text-amber-300 text-xs font-semibold px-4 py-2 rounded-lg text-center"></div>
 
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+            <div id="paper-trading-preview" class="bg-panelbg p-4 rounded-xl border border-bordercol shadow"></div>
+            <div id="leaderboard-preview" class="bg-panelbg p-4 rounded-xl border border-bordercol shadow"></div>
+        </div>
+
         <!-- Live Filters Bar -->
         <div class="bg-panelbg p-3 rounded-xl border border-bordercol shadow flex flex-wrap items-center gap-3">
             <span id="lbl-filter" class="font-bold text-sky-400 flex items-center gap-1 whitespace-nowrap">🔍 Live Filters:</span>
@@ -2569,6 +2574,43 @@
             return { shares: nShares, avgCost: newAvgCost, cost, note };
         }
 
+        function renderPaperTradingPreview() {
+            const el = document.getElementById('paper-trading-preview');
+            if (!el) return;
+            const snap = (globalData && globalData.paper_trading) || null;
+            if (!snap) {
+                el.innerHTML = `<div class="text-sm font-bold text-sky-400 mb-2">🧪 ${currentLang === 'AR' ? 'التداول التجريبي' : 'Paper Trading'}</div><div class="text-textmuted">${currentLang === 'AR' ? 'لا توجد لقطة تداول تجريبي في هذا التصدير بعد.' : 'No paper-trading snapshot is present in this export yet.'}</div>`;
+                return;
+            }
+            const positions = snap.open_positions || [];
+            const trades = snap.recent_trades || [];
+            el.innerHTML = `
+                <div class="flex items-center justify-between gap-3 mb-3">
+                    <div class="text-sm font-bold text-sky-400">🧪 ${currentLang === 'AR' ? 'التداول التجريبي' : 'Paper Trading'}</div>
+                    <div class="text-xs text-textmuted">${currentLang === 'AR' ? 'لقطة تصدير فقط' : 'Export snapshot only'}</div>
+                </div>
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <div class="bg-darkbg rounded-lg border border-bordercol p-3"><div class="text-textmuted text-[11px]">${currentLang === 'AR' ? 'الرصيد النقدي' : 'Cash Balance'}</div><div class="text-emerald-400 font-bold text-base">${Number(snap.cash_balance || 0).toLocaleString(undefined,{maximumFractionDigits:2})} EGP</div></div>
+                    <div class="bg-darkbg rounded-lg border border-bordercol p-3"><div class="text-textmuted text-[11px]">${currentLang === 'AR' ? 'المراكز المفتوحة' : 'Open Positions'}</div><div class="text-sky-300 font-bold text-base">${positions.length}</div></div>
+                </div>
+                <div class="text-[11px] text-textmuted mb-1">${currentLang === 'AR' ? 'أحدث الصفقات' : 'Recent trades'}</div>
+                <div class="space-y-2">${trades.slice(0,5).map(t => `<div class="bg-darkbg rounded-lg border border-bordercol p-2 text-xs"><span class="font-bold text-sky-300">${escapeHtml(t.ticker || '')}</span> · <span>${escapeHtml(t.side || '')}</span> · <span>${Number(t.shares || 0).toLocaleString()}</span> @ <span>${Number(t.price || 0).toFixed(4)}</span></div>`).join('') || `<div class="text-textmuted">${currentLang === 'AR' ? 'لا توجد صفقات بعد.' : 'No paper trades yet.'}</div>`}</div>
+            `;
+        }
+
+        function renderLeaderboardPreview() {
+            const el = document.getElementById('leaderboard-preview');
+            if (!el) return;
+            const rows = (globalData && globalData.leaderboard) || [];
+            el.innerHTML = `
+                <div class="flex items-center justify-between gap-3 mb-3">
+                    <div class="text-sm font-bold text-amber-300">🥇 ${currentLang === 'AR' ? 'لوحة الصدارة' : 'Leaderboard'}</div>
+                    <div class="text-xs text-textmuted">${currentLang === 'AR' ? 'أفضل الترشيحات المحققة' : 'Top achieved picks'}</div>
+                </div>
+                ${rows.length ? `<div class="overflow-x-auto"><table class="w-full text-xs"><thead><tr><th class="text-left p-2">Ticker</th><th class="text-left p-2">Hits</th><th class="text-left p-2">Avg %</th><th class="text-left p-2">Last</th></tr></thead><tbody>${rows.slice(0,8).map(r => `<tr class="border-t border-bordercol"><td class="p-2 font-bold text-sky-300">${escapeHtml(r.ticker || '')}</td><td class="p-2">${r.hits ?? ''}</td><td class="p-2">${Number((r.avg_return_pct ?? r.avg_pct) || 0).toFixed(2)}</td><td class="p-2 text-textmuted">${escapeHtml((r.last_achieved_date || r.last_hit_date || '—').toString())}</td></tr>`).join('')}</tbody></table></div>` : `<div class="text-textmuted">${currentLang === 'AR' ? 'لا توجد بيانات لوحة صدارة بعد.' : 'No leaderboard data yet.'}</div>`}
+            `;
+        }
+
         function renderPortfolio() {
             const tbody = document.getElementById('tbody-exits');
             tbody.innerHTML = '';
@@ -2881,7 +2923,7 @@
                 globalData = raw;
                 updateStaleBanner(globalData.last_data_date);
                 document.getElementById('val-last-date').innerText = escapeHtml(globalData.last_data_date || "N/A");
-                populateSelects(); applyFilters(); renderSectors(); renderTop10(); renderBreakouts(); renderSessionPicks(); renderPortfolio(); renderHistory(); renderAccountBar();
+                populateSelects(); applyFilters(); renderSectors(); renderTop10(); renderBreakouts(); renderSessionPicks(); renderPortfolio(); renderHistory(); renderAccountBar(); renderPaperTradingPreview(); renderLeaderboardPreview();
             } catch (error) {
                 console.error("Failed to load market data:", error);
                 document.getElementById('tbody-matrix').innerHTML = `<tr><td colspan="21" class="p-8 text-center text-rose-400 font-sans">⚠️ ${tt('lbl_data_unavailable')}</td></tr>`;

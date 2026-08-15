@@ -913,3 +913,11 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+def build_shorts_caption(highlights: dict, last_data_date: str = "") -> str:
+    head = highlights.get('headline') or 'MB-EGX daily setup'
+    tickers = ', '.join(highlights.get('tickers', [])[:3])
+    date_part = f' | {last_data_date}' if last_data_date else ''
+    return f"{head}: {tickers}{date_part} #EGX #stocks #trading"

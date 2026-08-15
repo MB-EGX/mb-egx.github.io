@@ -845,6 +845,7 @@ class DecisionMatrix:
                         "Projected Range 95%": projected_band,
                         "Kelly %": kelly_pct,
                         "Signal Reason": signal_reason,
+                        "Score Breakdown": {"pattern": round(pattern_component, 2), "projected": round(projected_component, 2), "range": round(range_pos_pct * SCORE_WEIGHTS["range_position_weight"], 2), "trend_bonus": round(trend_bonus, 2), "confidence_weight": round(conf_weight, 2)},
                         "Regime": pattern_data.get("regime", "N/A") if pattern_data else "N/A",
                         "Trend Class": trend_latest,
                         "RSI-14": round(rsi, 1),
@@ -962,3 +963,23 @@ class DecisionMatrix:
             portfolio_risk,
             session_picks,
         )
+
+
+
+def filter_recommendations(rows: list[dict], action_in=None, sector_in=None, min_score=None) -> list[dict]:
+    out = []
+    action_in = set(action_in or [])
+    sector_in = set(sector_in or [])
+    for row in rows or []:
+        if action_in and row.get('Action') not in action_in:
+            continue
+        if sector_in and row.get('Sector') not in sector_in and row.get('Sector Name') not in sector_in:
+            continue
+        if min_score is not None:
+            try:
+                if float(row.get('Rank Score', 0)) < float(min_score):
+                    continue
+            except Exception:
+                continue
+        out.append(row)
+    return out

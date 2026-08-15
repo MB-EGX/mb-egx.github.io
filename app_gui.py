@@ -2392,6 +2392,133 @@ class AnalyticsDialog(QDialog):
         self.table.resizeColumnsToContents()
 
 
+class PaperTradingDialog(QDialog):
+    def __init__(self, dbm, parent=None):
+        super().__init__(parent)
+        self.dbm = dbm
+        self.setWindowTitle(tr("🧪 Paper Trading"))
+        self.resize(900, 620)
+        self._init_ui()
+        self._refresh()
+
+    def _init_ui(self):
+        layout = QVBoxLayout(self)
+        self.lbl_cash = QLabel()
+        self.lbl_cash.setStyleSheet("font-weight: bold; font-size: 14px; color: #38bdf8;")
+        layout.addWidget(self.lbl_cash)
+
+        form = QHBoxLayout()
+        self.txt_ticker = QLineEdit()
+        self.txt_ticker.setPlaceholderText(tr("Ticker"))
+        self.spn_price = QDoubleSpinBox()
+        self.spn_price.setDecimals(4)
+        self.spn_price.setRange(0.0001, 1000000.0)
+        self.spn_price.setPrefix(tr("Price: "))
+        self.spn_shares = QDoubleSpinBox()
+        self.spn_shares.setDecimals(4)
+        self.spn_shares.setRange(0.0001, 100000000.0)
+        self.spn_shares.setPrefix(tr("Shares: "))
+        self.txt_note = QLineEdit()
+        self.txt_note.setPlaceholderText(tr("Optional note"))
+        self.btn_buy = QPushButton(tr("🟢 Paper Buy"))
+        self.btn_sell = QPushButton(tr("🔴 Paper Sell"))
+        self.btn_refresh = QPushButton(tr("🔄 Refresh"))
+        self.btn_buy.clicked.connect(self._paper_buy)
+        self.btn_sell.clicked.connect(self._paper_sell)
+        self.btn_refresh.clicked.connect(self._refresh)
+        for w in [self.txt_ticker, self.spn_price, self.spn_shares, self.txt_note, self.btn_buy, self.btn_sell, self.btn_refresh]:
+            form.addWidget(w)
+        layout.addLayout(form)
+
+        self.tbl_open = QTableWidget()
+        self.tbl_open.setColumnCount(3)
+        self.tbl_open.setHorizontalHeaderLabels([tr("Ticker"), tr("Shares"), tr("Avg Buy Price")])
+        self.tbl_open.horizontalHeader().setStretchLastSection(True)
+        self.tbl_open.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        layout.addWidget(QLabel(tr("Open Paper Positions")))
+        layout.addWidget(self.tbl_open, stretch=1)
+
+        self.tbl_history = QTableWidget()
+        self.tbl_history.setColumnCount(6)
+        self.tbl_history.setHorizontalHeaderLabels([tr("Date"), tr("Ticker"), tr("Side"), tr("Price"), tr("Shares"), tr("Note")])
+        self.tbl_history.horizontalHeader().setStretchLastSection(True)
+        self.tbl_history.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        layout.addWidget(QLabel(tr("Recent Paper Trades")))
+        layout.addWidget(self.tbl_history, stretch=1)
+
+        btn_row = QHBoxLayout()
+        btn_row.addStretch()
+        btn_close = QPushButton(tr("Close"))
+        btn_close.clicked.connect(self.accept)
+        btn_row.addWidget(btn_close)
+        layout.addLayout(btn_row)
+
+    def _paper_buy(self):
+        ok, msg = self.dbm.paper_buy(self.txt_ticker.text().strip(), float(self.spn_price.value()), float(self.spn_shares.value()), self.txt_note.text().strip())
+        QMessageBox.information(self, tr("Paper Trading"), msg) if ok else QMessageBox.warning(self, tr("Paper Trading"), msg)
+        if ok: self._refresh()
+
+    def _paper_sell(self):
+        ok, msg = self.dbm.paper_sell(self.txt_ticker.text().strip(), float(self.spn_price.value()), float(self.spn_shares.value()), self.txt_note.text().strip())
+        QMessageBox.information(self, tr("Paper Trading"), msg) if ok else QMessageBox.warning(self, tr("Paper Trading"), msg)
+        if ok: self._refresh()
+
+    def _refresh(self):
+        self.lbl_cash.setText(tr("Paper Cash Balance: {v} EGP").format(v=f"{self.dbm.get_paper_cash_balance():,.2f}"))
+        open_positions = self.dbm.get_paper_open_positions()
+        self.tbl_open.setRowCount(len(open_positions))
+        for i, row in enumerate(open_positions):
+            vals = [row.get('ticker', ''), f"{row.get('shares', 0):,.4f}", f"{row.get('avg_buy_price', 0):,.4f}"]
+            for j, val in enumerate(vals):
+                self.tbl_open.setItem(i, j, QTableWidgetItem(str(val)))
+        self.tbl_open.resizeColumnsToContents()
+
+        trades = self.dbm.get_paper_trades(limit=100)
+        self.tbl_history.setRowCount(len(trades))
+        for i, row in enumerate(trades):
+            vals = [row.get('trade_date', ''), row.get('ticker', ''), row.get('side', ''), f"{row.get('price', 0):,.4f}", f"{row.get('shares', 0):,.4f}", row.get('note', '')]
+            for j, val in enumerate(vals):
+                self.tbl_history.setItem(i, j, QTableWidgetItem(str(val)))
+        self.tbl_history.resizeColumnsToContents()
+
+
+class LeaderboardDialog(QDialog):
+    def __init__(self, dbm, parent=None):
+        super().__init__(parent)
+        self.dbm = dbm
+        self.setWindowTitle(tr("🥇 Leaderboard"))
+        self.resize(680, 460)
+        layout = QVBoxLayout(self)
+        self.lbl_info = QLabel(tr("Most frequently achieved picks based on the local leaderboard table."))
+        self.lbl_info.setWordWrap(True)
+        layout.addWidget(self.lbl_info)
+        self.table = QTableWidget()
+        self.table.setColumnCount(4)
+        self.table.setHorizontalHeaderLabels([tr("Ticker"), tr("Hits"), tr("Avg Return %"), tr("Last Achieved")])
+        self.table.horizontalHeader().setStretchLastSection(True)
+        self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        layout.addWidget(self.table, stretch=1)
+        btn_row = QHBoxLayout()
+        btn_row.addStretch()
+        btn_refresh = QPushButton(tr("🔄 Refresh"))
+        btn_refresh.clicked.connect(self.refresh)
+        btn_row.addWidget(btn_refresh)
+        btn_close = QPushButton(tr("Close"))
+        btn_close.clicked.connect(self.accept)
+        btn_row.addWidget(btn_close)
+        layout.addLayout(btn_row)
+        self.refresh()
+
+    def refresh(self):
+        rows = self.dbm.get_leaderboard(limit=50)
+        self.table.setRowCount(len(rows))
+        for i, row in enumerate(rows):
+            vals = [row.get('ticker', ''), str(row.get('hits', 0)), f"{row.get('avg_return_pct', row.get('avg_pct', 0)):.2f}", row.get('last_achieved_date', row.get('last_hit_date', ''))]
+            for j, val in enumerate(vals):
+                self.table.setItem(i, j, QTableWidgetItem(str(val)))
+        self.table.resizeColumnsToContents()
+
+
 class QuantDashboard(QMainWindow):
     def __init__(self, user_info=None):
         super().__init__()
@@ -2485,6 +2612,15 @@ class QuantDashboard(QMainWindow):
 
     def open_glossary_dialog(self):
         dlg = GlossaryDialog(self)
+        dlg.exec()
+
+    def open_paper_trading_dialog(self):
+        dlg = PaperTradingDialog(self.dbm, self)
+        dlg.exec()
+        self.start_analysis()
+
+    def open_leaderboard_dialog(self):
+        dlg = LeaderboardDialog(self.dbm, self)
         dlg.exec()
 
     def closeEvent(self, event):
@@ -2683,6 +2819,12 @@ class QuantDashboard(QMainWindow):
         self.btn_manage_portfolio = QPushButton("💼 + Manage Portfolio")
         self.btn_manage_portfolio.clicked.connect(self.open_portfolio_dialog)
 
+        self.btn_paper = QPushButton("🧪 Paper Trading")
+        self.btn_paper.clicked.connect(self.open_paper_trading_dialog)
+
+        self.btn_leaderboard = QPushButton("🥇 Leaderboard")
+        self.btn_leaderboard.clicked.connect(self.open_leaderboard_dialog)
+
         self.btn_calc = QPushButton("⚖️ Risk Calculator")
         self.btn_calc.clicked.connect(self.open_calculator_dialog)
 
@@ -2703,6 +2845,8 @@ class QuantDashboard(QMainWindow):
         controls_row.addWidget(self.btn_ingest)
         controls_row.addWidget(self.btn_analyze)
         controls_row.addWidget(self.btn_manage_portfolio)
+        controls_row.addWidget(self.btn_paper)
+        controls_row.addWidget(self.btn_leaderboard)
         controls_row.addWidget(self.btn_calc)
         controls_row.addWidget(self.btn_set_cash)
         controls_row.addWidget(self.btn_settings)
@@ -3010,6 +3154,8 @@ class QuantDashboard(QMainWindow):
         self.btn_ingest.setText(t["ingest"])
         self.btn_analyze.setText(t["analyze"])
         self.btn_manage_portfolio.setText(t["portfolio"])
+        self.btn_paper.setText("🧪 Paper Trading" if self.current_lang == "EN" else "🧪 تداول تجريبي")
+        self.btn_leaderboard.setText("🥇 Leaderboard" if self.current_lang == "EN" else "🥇 لوحة الصدارة")
         self.btn_calc.setText(t["risk_calc"])
         self.btn_set_cash.setText(t["set_cash"])
         self.btn_settings.setText(t["themes"])

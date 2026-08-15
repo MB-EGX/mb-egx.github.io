@@ -621,3 +621,8 @@ def search_terms(query: str, lang: str = "en") -> list[dict]:
         if q in hay:
             out.append(entry)
     return out
+
+
+
+def search_glossary(query: str, lang: str = "en") -> list[dict]:
+    return search_terms(query, lang)
