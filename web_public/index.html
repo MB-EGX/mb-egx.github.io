@@ -32,6 +32,7 @@
          markup. A safety-net timeout below also reveals the page if
          something goes wrong, so it can never stay stuck blank. -->
     <style>html.preload body { visibility: hidden !important; }</style>
+<style>@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}</style>
     <script>
         document.documentElement.classList.add('preload');
         setTimeout(function () { document.documentElement.classList.remove('preload'); }, 4000);
@@ -2872,8 +2873,8 @@
                 const tr = document.createElement('tr');
                 tr.className = 'border-b border-bordercol/40 hover:bg-panelbg transition';
                 tr.innerHTML = `
-                    <td class="p-2.5 font-sans text-textmuted">${rowCount}</td><td class="p-2.5 font-bold text-sky-400">${escapeHtml(row.Ticker) || '-'}</td><td class="p-2 text-center font-sans ${actionStyle} rounded-full shadow-sm px-3">${trAction(row.Action) || '-'}</td>
-                    <td class="p-2.5 text-textmain font-bold">${row["Rank Score"] || 0}</td><td class="p-2.5 font-bold text-white">${row["Current Price"] || 0}</td><td class="p-2.5 text-textmain">${row["Target Entry (VWAP)"] || 0}</td>
+                    <td class="p-2.5 font-sans text-textmuted">${rowCount}</td><td class="p-2.5 font-bold text-sky-400">${escapeHtml(row.Ticker) || '-'}</td><td class="p-2 text-center font-sans ${actionStyle} rounded-full shadow-sm px-3" title="${escapeHtml(row['Signal Reason'] || '')}">${trAction(row.Action) || '-'}</td>
+                    <td class="p-2.5 text-textmain font-bold">${row["Rank Score"] || 0} <span class="text-[10px] font-normal text-textmuted" title="Kelly %: ${row["Kelly %"] ?? '-'}">K ${row["Kelly %"] ?? '-'}</span></td><td class="p-2.5 font-bold text-white">${row["Current Price"] || 0}</td><td class="p-2.5 text-textmain">${row["Target Entry (VWAP)"] || 0}</td>
                     <td class="p-2.5 text-rose-400 font-semibold">${row["Suggested Stop-Loss"] || 0}</td><td class="p-2.5 text-textmain" title="Estimated from your own cash balance">${estimateSuggestedShares(row["Target Entry (VWAP)"], row["Suggested Stop-Loss"]).toLocaleString()}</td>
                     <td class="p-2.5 text-emerald-400 font-semibold">${row["Projected Gain (%)"] || 'N/A'}</td><td class="p-2.5 text-textmain">${row["Pattern Conf (%)"] || 'N/A'}</td><td class="p-2.5 font-sans text-textmuted">${trTrend(row["Trend Class"]) || '-'}</td>
                     <td class="p-2.5 text-textmain">${row["RSI-14"] || 0}</td><td class="p-2.5 text-textmain">${row["ADX-14"] || 0}</td><td class="p-2.5 text-textmain">${row["Vol Z-Score"] || 0}</td>

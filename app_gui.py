@@ -1073,7 +1073,13 @@ class MatrixTableModel(QAbstractTableModel):
             "MACD Signal", "MACD Histogram", "Bollinger %B",
             "Avg Volume (20D)", "Data Confidence",
             "Take-Profit Target", "R1", "R2", "R3", "S1", "S2", "S3",
+            "Kelly %", "Signal Reason",
         ]
+        self._columns = self._columns + [
+            ("Kelly %", "Position-size fraction suggested by the Kelly criterion (half-Kelly capped)."),
+            ("Signal Reason", "Plain-language evidence behind the action, straight from the decision matrix."),
+        ]
+
 
     def rowCount(self, parent=QModelIndex()):
         return len(self._data)
@@ -1110,6 +1116,9 @@ class MatrixTableModel(QAbstractTableModel):
             elif (3 <= col <= 9) or (15 <= col <= 16) or (19 <= col <= 25):
                 return int(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
             return int(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+        elif role == Qt.ItemDataRole.ToolTipRole:
+            if key == "Action" and self._data[row].get("Signal Reason"):
+                return str(self._data[row]["Signal Reason"])
         elif role == Qt.ItemDataRole.BackgroundRole:
             if key == "Position" and "OWNED" in val_str:
                 return QColor("#553c9a")

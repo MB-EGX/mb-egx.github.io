@@ -577,6 +577,63 @@ class DatabaseManager:
         with self.get_connection() as conn:
             conn.execute("UPDATE paper_account SET balance = ? WHERE id = 1;", (float(amount),))
 
+    def paper_buy(self, ticker: str, price: float, shares: float, note: str = ""):
+        """Convenience wrapper for the desktop Paper Trading dialog: buys at
+        the given price, deducts cash + brokerage fee from the paper account."""
+        ticker = self.normalize_symbol(ticker)
+        if price <= 0 or shares <= 0:
+            return (False, "Price and shares must be > 0.")
+        from config import TRANSACTION_FEE_PCT, PAPER_TRADING_DEFAULTS
+        fee_pct = float(PAPER_TRADING_DEFAULTS.get("default_fee_pct", TRANSACTION_FEE_PCT))
+        cost = float(price) * float(shares)
+        fee = cost * fee_pct
+        with self.get_connection() as conn:
+            row = conn.cursor().execute("SELECT balance FROM paper_account WHERE id = 1;").fetchone()
+            if row is None or row[0] is None:
+                start = float(PAPER_TRADING_DEFAULTS.get("starting_cash_egp", 100000.0))
+                conn.execute("INSERT INTO paper_account (id, balance) VALUES (1, ?);", (start,))
+                balance = start
+            else:
+                balance = float(row[0])
+            if cost + fee > balance + 1e-6:
+                return (False, f"Insufficient paper cash: need {cost + fee:.2f} EGP, have {balance:.2f} EGP.")
+            conn.execute(
+                "INSERT INTO paper_trades (ticker, side, price, shares, trade_date, note) "
+                "VALUES (?, 'BUY', ?, ?, CURRENT_DATE, ?);",
+                (ticker, float(price), float(shares), str(note or "")),
+            )
+            conn.execute("UPDATE paper_account SET balance = ? WHERE id = 1;", (balance - cost - fee,))
+        return (True, f"Paper BUY {shares} {ticker} @ {price} (fee {fee:.2f} EGP).")
+
+    def paper_sell(self, ticker: str, price: float, shares: float, note: str = ""):
+        """Convenience wrapper mirroring paper_buy: sells open paper shares,
+        credits cash minus fee, refuses to oversell."""
+        ticker = self.normalize_symbol(ticker)
+        if price <= 0 or shares <= 0:
+            return (False, "Price and shares must be > 0.")
+        from config import TRANSACTION_FEE_PCT, PAPER_TRADING_DEFAULTS
+        fee_pct = float(PAPER_TRADING_DEFAULTS.get("default_fee_pct", TRANSACTION_FEE_PCT))
+        with self.get_connection() as conn:
+            row = conn.cursor().execute("SELECT balance FROM paper_account WHERE id = 1;").fetchone()
+            balance = float(row[0]) if (row and row[0] is not None) else 0.0
+            buys = conn.cursor().execute(
+                "SELECT COALESCE(SUM(shares),0) FROM paper_trades WHERE ticker=? AND side='BUY';", (ticker,)
+            ).fetchone()[0]
+            sells = conn.cursor().execute(
+                "SELECT COALESCE(SUM(shares),0) FROM paper_trades WHERE ticker=? AND side='SELL';", (ticker,)
+            ).fetchone()[0]
+            open_shares = float(buys) - float(sells)
+            if shares > open_shares + 1e-6:
+                return (False, f"Cannot paper-sell {shares}; only {open_shares:.4f} open.")
+            fee = float(price) * float(shares) * fee_pct
+            conn.execute(
+                "INSERT INTO paper_trades (ticker, side, price, shares, trade_date, note) "
+                "VALUES (?, 'SELL', ?, ?, CURRENT_DATE, ?);",
+                (ticker, float(price), float(shares), str(note or "")),
+            )
+            conn.execute("UPDATE paper_account SET balance = ? WHERE id = 1;", (balance + float(price)*float(shares) - fee,))
+        return (True, f"Paper SELL {shares} {ticker} @ {price} (fee {fee:.2f} EGP).")
+
     def add_paper_trade(self, ticker: str, side: str, price: float, shares: float, trade_date: str, note: str = ""):
         ticker = self.normalize_symbol(ticker)
         side = str(side).strip().upper()
