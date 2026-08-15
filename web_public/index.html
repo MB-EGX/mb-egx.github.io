@@ -3832,24 +3832,46 @@
                 gate.style.display = 'none';
                 reconsentGate.classList.add('hidden');
                 badge.style.display = 'flex';
-                // Hide until the permission probe resolves, then reveal only
-                // if Firestore actually grants the read.
                 adminBtn.style.display = 'none';
                 canAccessAdminAnalytics().then(isAdmin => {
                     adminBtn.style.display = isAdmin ? 'flex' : 'none';
                 });
 
-                // Gate the rest of the app behind an up-to-date terms acceptance.
-                // A missing or stale terms_version (bumped by editing the
-                // TERMS_VERSION constant) blocks everything below until the
-                // user re-accepts via the modal instead of silently letting
-                // them keep using the app under an outdated agreement.
-                //
-                // Waits on _redirectResultPromise first so a brand-new
-                // Google-redirect user's account-doc write (finishGoogleSignIn)
-                // always finishes before this reads that same doc - otherwise
-                // the read can win the race, see nothing, and send a genuinely
-                // brand-new user straight into the reconsent gate.
+                // ===== CRITICAL FIX: Check for fresh login token from login.html =====
+                // When login.html redirects after successful auth, it passes a token
+                // that proves the user JUST completed sign-in (and thus consent was
+                // already handled there). Skip the re-consent gate for this session.
+                const urlParams = new URLSearchParams(window.location.search);
+                const loginToken = urlParams.get('login_token');
+                const storedToken = sessionStorage.getItem('mbegx_login_token');
+                const isFreshLogin = loginToken && loginToken === storedToken;
+
+                if (isFreshLogin) {
+                    // Clean up URL and token so refresh doesn't bypass again
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    sessionStorage.removeItem('mbegx_login_token');
+                    // Still ensure terms_version is set in Firestore for future visits
+                    _redirectResultPromise.then(() => {
+                        return db.collection('users').doc(user.uid).get();
+                    }).then(doc => {
+                        const data = doc.exists ? doc.data() : {};
+                        if (data.terms_version !== TERMS_VERSION) {
+                            // Silently update terms version since they just agreed on login.html
+                            return db.collection('users').doc(user.uid).set({
+                                terms_version: TERMS_VERSION,
+                                agreed_to_terms: true,
+                                agreed_at: firebase.firestore.FieldValue.serverTimestamp()
+                            }, { merge: true });
+                        }
+                    }).catch(err => {
+                        console.warn('Silent terms update failed:', err);
+                    }).finally(() => {
+                        proceedAfterAuth(user);
+                    });
+                    return;
+                }
+
+                // Normal flow: check terms version for returning users
                 _redirectResultPromise.then(() => db.collection('users').doc(user.uid).get()).then(async doc => {
                     const data = doc.exists ? doc.data() : {};
                     if (data.terms_version !== TERMS_VERSION) {
@@ -3861,17 +3883,8 @@
                         reconsentGate.classList.remove('hidden');
                         return;
                     }
-
                     proceedAfterAuth(user);
                 }).catch(err => {
-                    // Fail safe: if we can't confirm the user's consent record,
-                    // don't silently grant access — surface the re-consent gate.
-                    // Also reset checkbox/button state here (previously only
-                    // done on the success branch above) and surface the error
-                    // code on screen - this catch fires on a failed READ,
-                    // which is a different failure point than a failed WRITE
-                    // in handleReconsentAccept, and telling the two apart from
-                    // a user's screenshot is what actually pins down the cause.
                     const code = (err && err.code) ? err.code : 'unknown-error';
                     console.error('Could not verify terms acceptance:', code, err);
                     _pendingReconsentUser = user;
@@ -3884,25 +3897,6 @@
                     reconsentGate.classList.remove('hidden');
                 });
             } else {
-                // Deliberately does NOT call clearAuthError() here (it used
-                // to, unconditionally, at the top of this whole callback).
-                // That was a race condition: after a failed
-                // signInWithRedirect, getRedirectResult()'s .catch() below
-                // calls showAuthError() with the real failure reason - but
-                // onAuthStateChanged("no user") can fire around the same
-                // time (Firebase re-confirms "still signed out" once the
-                // redirect fully resolves to failure), and its unconditional
-                // clearAuthError() was wiping that message out again before
-                // anyone could ever read it. That's the root cause of
-                // "bounces back to login, nothing shown" even in a normal
-                // Chrome tab (not just in-app browsers) - the sign-in WAS
-                // failing with a real, specific error the whole time; it was
-                // just being erased a few hundred ms after it appeared.
-                // Errors now only get cleared when the person actively
-                // retries (handleGoogleSignIn/handleEmailSignIn/
-                // handleEmailSignUp already call clearAuthError() at the
-                // start of each attempt) or when sign-in actually succeeds
-                // (the `if (user)` branch above).
                 gate.style.display = 'flex';
                 reconsentGate.classList.add('hidden');
                 badge.style.display = 'none';

@@ -4,7 +4,6 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>MB-EGX Alpha — Terminal Access</title>
-    <!-- MB-EGX logo used as the browser tab favicon -->
     <link rel="icon" type="image/png" href="assets/mb-egx-logo.png">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;900&family=Inter:wght@400;500&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet"/>
@@ -87,13 +86,43 @@
                 padding-top: 48px;
             }
         }
+        /* Loading overlay */
+        #loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: #0f1115;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        #loading-overlay.hidden {
+            display: none;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(147, 204, 255, 0.2);
+            border-top-color: #93ccff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="font-body-md antialiased min-h-screen flex flex-col relative">
 
-    <!-- In-App Browser Warning Banner (WhatsApp/Instagram/Facebook/etc in-app
-         browsers silently block Google Sign-In - see isInAppBrowser() below).
-         Hidden by default; shown by JS on load if detected. -->
+    <!-- Loading Overlay -->
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <p class="text-on-surface-variant text-sm" id="loading-text">Connecting...</p>
+    </div>
+
+    <!-- In-App Browser Warning Banner -->
     <div id="inapp-browser-banner" class="hidden fixed top-0 left-0 right-0 z-[60] bg-amber-400 text-[#3a2e00] px-4 py-3 text-sm shadow-lg">
         <div class="max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-2 text-center">
             <span class="material-symbols-outlined text-[18px] shrink-0">warning</span>
@@ -115,36 +144,21 @@
 
     <main class="flex-1 flex flex-col lg:flex-row relative">
 
-        <!-- ============================================================ -->
-        <!-- LEFT COLUMN: Branding, Vision & Mission, Stats               -->
-        <!-- ============================================================ -->
+        <!-- LEFT COLUMN: Branding -->
         <section class="flex-1 flex flex-col justify-center items-center lg:items-start px-8 md:px-16 lg:px-20 py-16 relative z-10">
-
-            <!-- Logo -->
             <div class="mb-10">
-                <img
-                    alt="MB-EGX Metallic Logo"
-                    id="interactive-logo"
-                    class="w-64 md:w-80 h-auto drop-shadow-[0_0_30px_rgba(147,204,255,0.2)]"
-                    src="mb-egx-logo.jpg"
-                />
+                <img alt="MB-EGX Metallic Logo" id="interactive-logo" class="w-64 md:w-80 h-auto drop-shadow-[0_0_30px_rgba(147,204,255,0.2)]" src="mb-egx-logo.jpg"/>
             </div>
-
-            <!-- Hero Text -->
             <h1 class="font-headline-xl text-4xl md:text-5xl lg:text-[56px] text-primary mb-6 leading-tight font-bold">
                 <span data-i18n="hero_title_1">Ancient Legacy meets</span><br/>
                 <span class="text-on-background" data-i18n="hero_title_2">Digital Future</span>
             </h1>
-
-            <!-- Vision & Mission -->
             <div class="mb-10 max-w-xl">
                 <p class="text-on-surface-variant text-[15px] leading-relaxed">
                     <strong class="text-primary" data-i18n="hero_vision_label">Vision:</strong> <span data-i18n="hero_vision_text">A transparent stock market where every investor has the insights to succeed.</span><br/><br/>
                     <strong class="text-primary" data-i18n="hero_mission_label">Mission:</strong> <span data-i18n="hero_mission_text">We build seamless analytical platforms that decode EGX data, cut through the noise, and empower you to trade smarter.</span>
                 </p>
             </div>
-
-            <!-- Stats Cards -->
             <div class="grid grid-cols-2 gap-4">
                 <div class="bg-surface-elevated p-5 rounded-xl card-edge ambient-glow">
                     <div class="text-primary font-stat-lg text-[26px] font-semibold mb-1">20ms</div>
@@ -157,61 +171,31 @@
             </div>
         </section>
 
-        <!-- ============================================================ -->
-        <!-- RIGHT COLUMN: Terminal Access Form Card                      -->
-        <!-- ============================================================ -->
+        <!-- RIGHT COLUMN: Terminal Access Form -->
         <section class="flex-1 flex justify-center items-center px-8 md:px-16 lg:px-16 py-12 relative z-10">
             <div class="w-full max-w-[460px] bg-surface-elevated p-8 rounded-xl card-edge shadow-2xl relative overflow-hidden">
-
-                <!-- Subtle internal shader effect for form depth -->
                 <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
-
                 <div class="relative z-10">
-
-                    <!-- Terminal Access Heading -->
                     <h2 class="font-headline-lg text-[28px] text-on-background font-semibold mb-1" data-i18n="auth_title">Terminal Access</h2>
                     <p class="font-body-sm text-sm text-on-surface-variant mb-7" data-i18n="auth_subtitle">Sign in to view your private dashboard</p>
 
-                    <!-- Auth Error Container -->
                     <div id="auth-error" class="hidden mb-4 text-[13px] text-rose-400 bg-rose-950/40 border border-rose-800 rounded-lg p-3"></div>
 
                     <form class="space-y-5" id="loginForm" onsubmit="event.preventDefault();">
-                        <!-- Email -->
                         <div>
                             <label class="block font-label-mono text-[11px] text-on-surface-variant uppercase mb-2 font-bold tracking-wider" data-i18n="lbl_email_address">Email Address</label>
-                            <input
-                                id="auth-email"
-                                autocomplete="email"
-                                class="w-full bg-surface-container-lowest border border-outline-variant text-on-surface rounded-lg px-4 py-3 font-body-md focus:border-primary transition-all text-base"
-                                placeholder="investor@mb-egx.ai"
-                                type="email"
-                            />
+                            <input id="auth-email" autocomplete="email" class="w-full bg-surface-container-lowest border border-outline-variant text-on-surface rounded-lg px-4 py-3 font-body-md focus:border-primary transition-all text-base" placeholder="investor@mb-egx.ai" type="email"/>
                         </div>
-
-                        <!-- Password -->
                         <div>
                             <div class="flex justify-between items-center mb-2">
                                 <label class="block font-label-mono text-[11px] text-on-surface-variant uppercase font-bold tracking-wider" data-i18n="lbl_password">Password</label>
-                                <a
-                                    class="font-label-mono text-[12px] text-primary hover:underline cursor-pointer font-bold transition-colors"
-                                    onclick="handlePasswordReset()"
-                                    data-i18n="lnk_forgot_access"
-                                >Forgot Access?</a>
+                                <a class="font-label-mono text-[12px] text-primary hover:underline cursor-pointer font-bold transition-colors" onclick="handlePasswordReset()" data-i18n="lnk_forgot_access">Forgot Access?</a>
                             </div>
-                            <input
-                                id="auth-password"
-                                autocomplete="current-password"
-                                class="w-full bg-surface-container-lowest border border-outline-variant text-on-surface rounded-lg px-4 py-3 font-body-md focus:border-primary transition-all text-base"
-                                placeholder="••••••••"
-                                type="password"
-                            />
+                            <input id="auth-password" autocomplete="current-password" class="w-full bg-surface-container-lowest border border-outline-variant text-on-surface rounded-lg px-4 py-3 font-body-md focus:border-primary transition-all text-base" placeholder="••••••••" type="password"/>
                         </div>
 
-                        <!-- Consent Box -->
                         <div class="bg-[#1a1c20] rounded-lg p-4 card-edge">
-                            <h3 class="font-label-mono text-[10px] text-on-surface-variant uppercase mb-2 border-b border-outline-variant pb-1 font-bold tracking-wider" data-i18n="lbl_consent_header">
-                                End-User Consent and Legal Disclaimer
-                            </h3>
+                            <h3 class="font-label-mono text-[10px] text-on-surface-variant uppercase mb-2 border-b border-outline-variant pb-1 font-bold tracking-wider" data-i18n="lbl_consent_header">End-User Consent and Legal Disclaimer</h3>
                             <div class="h-32 overflow-y-auto pr-2 custom-scrollbar">
                                 <p class="font-body-sm text-[11px] leading-relaxed text-on-surface-variant text-justify whitespace-pre-line" data-i18n-html="legal_disclaimer_text">By accessing, subscribing to, or using this application, you explicitly acknowledge, understand, and agree to the following terms:
 
@@ -230,53 +214,26 @@
 • <strong>Third-Party Trade Execution:</strong> You cannot execute trades independently through this app; all users must execute their actual trades through approved and licensed EGX brokers (such as Thndr, EFG Hermes, etc.).</p>
                             </div>
                             <label class="flex items-start gap-3 mt-3 cursor-pointer group select-none" id="consent-label">
-                                <input
-                                    class="mt-1 rounded bg-[#1e2024] border-outline-variant text-primary focus:ring-offset-surface-elevated accent-primary"
-                                    id="consent-checkbox"
-                                    onchange="onConsentToggle()"
-                                    type="checkbox"
-                                />
-                                <span class="font-body-sm text-[14px] text-on-surface group-hover:text-primary transition-colors leading-snug" data-i18n="lbl_consent_checkbox">
-                                    I acknowledge and agree to the End-User Consent and Legal Disclaimer.
-                                </span>
+                                <input class="mt-1 rounded bg-[#1e2024] border-outline-variant text-primary focus:ring-offset-surface-elevated accent-primary" id="consent-checkbox" onchange="onConsentToggle()" type="checkbox"/>
+                                <span class="font-body-sm text-[14px] text-on-surface group-hover:text-primary transition-colors leading-snug" data-i18n="lbl_consent_checkbox">I acknowledge and agree to the End-User Consent and Legal Disclaimer.</span>
                             </label>
                         </div>
 
-                        <!-- Sign In Button -->
-                        <button
-                            id="btn-auth-signin"
-                            onclick="handleEmailSignIn()"
-                            class="w-full bg-primary text-on-primary font-bold py-3.5 rounded-lg hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-[15px]"
-                        >
+                        <button id="btn-auth-signin" onclick="handleEmailSignIn()" class="w-full bg-primary text-on-primary font-bold py-3.5 rounded-lg hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-[15px]">
                             <span data-i18n="btn_sign_in">Sign In</span>
                             <span class="material-symbols-outlined text-[20px]">login</span>
                         </button>
 
-                        <!-- Create Account Button (enabled after consent) -->
-                        <button
-                            id="btn-auth-signup"
-                            onclick="handleEmailSignUp()"
-                            disabled
-                            class="w-full py-3 rounded-lg bg-transparent border border-outline-variant text-sm text-[#89929b] transition cursor-not-allowed opacity-50 hover:bg-[#1a1c20] font-medium"
-                            data-i18n="btn_create_account"
-                        >
-                            Create Account
-                        </button>
+                        <button id="btn-auth-signup" onclick="handleEmailSignUp()" disabled class="w-full py-3 rounded-lg bg-transparent border border-outline-variant text-sm text-[#89929b] transition cursor-not-allowed opacity-50 hover:bg-[#1a1c20] font-medium" data-i18n="btn_create_account">Create Account</button>
                     </form>
 
-                    <!-- OR Divider -->
                     <div class="flex items-center gap-4 my-5">
                         <div class="h-px flex-1 bg-outline-variant/30"></div>
                         <span class="font-label-mono text-[11px] text-on-surface-variant uppercase font-bold tracking-wider" data-i18n="lbl_or">OR</span>
                         <div class="h-px flex-1 bg-outline-variant/30"></div>
                     </div>
 
-                    <!-- Google Sign In -->
-                    <button
-                        id="btn-google-signin"
-                        onclick="handleGoogleSignIn()"
-                        class="w-full bg-[#282a2e] text-on-surface py-3 rounded-lg border border-outline-variant hover:bg-[#37393e] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
+                    <button id="btn-google-signin" onclick="handleGoogleSignIn()" class="w-full bg-[#282a2e] text-on-surface py-3 rounded-lg border border-outline-variant hover:bg-[#37393e] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed">
                         <svg class="w-5 h-5" viewBox="0 0 24 24">
                             <path d="M12 5.04c1.74 0 3.3.6 4.53 1.77l3.39-3.39C17.85 1.5 15.17 0 12 0 7.31 0 3.26 2.69 1.25 6.61l3.96 3.07c.95-2.85 3.61-4.64 6.79-4.64z" fill="#EA4335"></path>
                             <path d="M23.49 12.27c0-.82-.07-1.61-.21-2.37H12v4.51h6.44c-.28 1.48-1.13 2.74-2.39 3.58l3.71 2.88c2.17-2 3.43-4.94 3.43-8.6z" fill="#4285F4"></path>
@@ -286,25 +243,17 @@
                         <span class="font-body-md font-medium text-sm" data-i18n="btn_sign_in_google">Sign in with Google</span>
                     </button>
 
-                    <!-- Don't have an account? Create Account link -->
                     <p class="mt-5 text-center font-body-sm text-[13px] text-on-surface-variant">
                         <span data-i18n="lbl_no_account">Don't have an account?</span>
-                        <a
-                            onclick="handleEmailSignUp()"
-                            class="text-primary hover:underline font-bold cursor-pointer transition-colors"
-                            data-i18n="btn_create_account"
-                        >Create Account</a>
+                        <a onclick="handleEmailSignUp()" class="text-primary hover:underline font-bold cursor-pointer transition-colors" data-i18n="btn_create_account">Create Account</a>
                     </p>
 
-                    <p class="mt-2 text-center font-body-sm text-[11px] text-on-surface-variant/70" data-i18n="lbl_google_consent_note">
-                        Continuing with Google to create a new account also requires the agreement checkbox above to be checked.
-                    </p>
+                    <p class="mt-2 text-center font-body-sm text-[11px] text-on-surface-variant/70" data-i18n="lbl_google_consent_note">Continuing with Google to create a new account also requires the agreement checkbox above to be checked.</p>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Footer Security Message -->
     <footer class="w-full p-4 flex justify-center items-center z-10">
         <div class="bg-surface-container-lowest/50 backdrop-blur-sm px-6 py-2.5 rounded-full border border-outline-variant/30 flex items-center gap-3">
             <span class="material-symbols-outlined text-primary text-[16px]">verified_user</span>
@@ -312,7 +261,6 @@
         </div>
     </footer>
 
-    <!-- Firebase Auth & Interaction Logic -->
     <script>
         // --- Firebase Configuration ---
         const firebaseConfig = {
@@ -326,15 +274,15 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
-        // See index.html for why this is needed on mobile networks.
         db.settings({ experimentalAutoDetectLongPolling: true, merge: true });
         let analytics = null;
         try { analytics = firebase.analytics(); } catch (e) { console.warn('Firebase Analytics not available:', e); }
 
         const TERMS_VERSION = "1.0";
+        let _authCompleted = false;
+        let _pendingRedirect = false;
 
-        // ===== i18n (mirrors index.html's system; same keys reused where
-        // content overlaps, so both pages stay consistent) =====
+        // ===== i18n =====
         let currentLang = 'EN';
         const TRANSLATIONS = {
             EN: {
@@ -382,7 +330,10 @@
                 inapp_banner_btn: "Open in Browser",
                 inapp_link_copied: "Link copied! Paste it into Chrome or Safari to sign in.",
                 inapp_link_copy_failed: "Couldn't copy automatically. Please copy this link and open it in Chrome or Safari: {url}",
-                err_google_inapp_browser: "Google Sign-In can't complete inside this app's built-in browser (this is a restriction from Google, not a bug). Tap \"Open in Browser\" above, or use Email/Password sign-in instead.",
+                err_google_inapp_browser: "Google Sign-In can't complete inside this app's built-in browser (this is a restriction from Google, not a bug). Tap "Open in Browser" above, or use Email/Password sign-in instead.",
+                loading_signing_in: "Signing you in...",
+                loading_creating_account: "Creating your account...",
+                loading_redirecting: "Redirecting to dashboard...",
             },
             AR: {
                 hero_title_1: "إرث عريق يلتقي", hero_title_2: "بمستقبل رقمي",
@@ -429,7 +380,10 @@
                 inapp_banner_btn: "افتح في المتصفح",
                 inapp_link_copied: "تم نسخ الرابط! الصقه في Chrome أو Safari لتسجيل الدخول.",
                 inapp_link_copy_failed: "تعذّر النسخ تلقائيًا. يرجى نسخ هذا الرابط وفتحه في Chrome أو Safari: {url}",
-                err_google_inapp_browser: "لا يمكن إتمام تسجيل الدخول عبر Google داخل المتصفح المدمج في هذا التطبيق (هذا قيد من Google وليس خطأً برمجيًا). اضغط \"افتح في المتصفح\" أعلاه، أو استخدم تسجيل الدخول بالبريد الإلكتروني وكلمة المرور بدلاً من ذلك.",
+                err_google_inapp_browser: "لا يمكن إتمام تسجيل الدخول عبر Google داخل المتصفح المدمج في هذا التطبيق (هذا قيد من Google وليس خطأً برمجيًا). اضغط "افتح في المتصفح" أعلاه، أو استخدم تسجيل الدخول بالبريد الإلكتروني وكلمة المرور بدلاً من ذلك.",
+                loading_signing_in: "جاري تسجيل الدخول...",
+                loading_creating_account: "جاري إنشاء الحساب...",
+                loading_redirecting: "جاري التوجيه للوحة التحكم...",
             },
         };
 
@@ -460,53 +414,84 @@
             applyDataI18n();
         }
 
-        // Language persists across visits; new/first-time visitors (no
-        // stored preference yet) default to English per product decision.
         const _savedLang = localStorage.getItem('quant_lang') || 'EN';
         document.getElementById('lang-select').value = _savedLang;
         switchLanguage(_savedLang);
-
-        // Show the in-app-browser warning banner immediately on load, before
-        // anyone even taps the Google button - see isInAppBrowser() below.
         checkInAppBrowser();
 
-        // Picks up the result of signInWithRedirect() (mobile Google
-        // sign-in) once the browser navigates back to this page. Resolves
-        // to null immediately if no redirect sign-in was in progress, so
-        // this is safe to always run on load.
+        // ===== Loading Overlay Control =====
+        function showLoading(textKey) {
+            document.getElementById('loading-text').textContent = tt(textKey);
+            document.getElementById('loading-overlay').classList.remove('hidden');
+        }
+        function hideLoading() {
+            document.getElementById('loading-overlay').classList.add('hidden');
+        }
+
+        // ===== CRITICAL FIX: Process redirect result FIRST, before any auth state listener =====
+        // This ensures that if the user just came back from a Google redirect sign-in,
+        // we complete the Firestore doc creation BEFORE onAuthStateChanged fires.
         const _redirectResultPromise = auth.getRedirectResult().then(async result => {
             if (result && result.user) {
+                showLoading('loading_creating_account');
                 const consentChecked = sessionStorage.getItem('mbegx_pending_consent') === '1';
                 sessionStorage.removeItem('mbegx_pending_consent');
                 await finishGoogleSignIn(result, consentChecked);
+                // Mark auth as fully completed so onAuthStateChanged knows not to redirect again
+                _authCompleted = true;
             }
         }).catch(err => {
             console.error('Redirect sign-in failed:', err && err.code, err);
             showAuthError(tt("err_google_signin_failed"));
+            hideLoading();
         });
 
-        // Listen for authentication state changes. Waits for the redirect
-        // result above to finish first, so a brand-new user's consent doc
-        // write always completes before we hand off to index.html (which
-        // reads that same doc immediately on load).
-        auth.onAuthStateChanged(function (user) {
-            if (user) {
-                _redirectResultPromise.finally(() => {
-                    window.location.href = "index.html";
-                });
+        // ===== CRITICAL FIX: Only redirect AFTER all auth processing is complete =====
+        auth.onAuthStateChanged(async function (user) {
+            // If we already handled the redirect result above, don't redirect again
+            if (_authCompleted) {
+                _authCompleted = false; // reset for next time
+                redirectToDashboard();
+                return;
             }
+
+            // If no user, just stay on login page
+            if (!user) {
+                hideLoading();
+                return;
+            }
+
+            // User is signed in (either from popup or existing session)
+            // Wait for redirect processing to complete (no-op if no redirect happened)
+            showLoading('loading_signing_in');
+            await _redirectResultPromise;
+
+            // Give Firestore a moment to settle, then redirect
+            setTimeout(() => {
+                redirectToDashboard();
+            }, 300);
         });
+
+        function redirectToDashboard() {
+            showLoading('loading_redirecting');
+            // Pass a token that index.html can verify to know this is a legitimate fresh login
+            const token = btoa(Date.now().toString() + '_' + Math.random().toString(36).substr(2));
+            sessionStorage.setItem('mbegx_login_token', token);
+            window.location.replace('index.html?login_token=' + token);
+        }
 
         function showAuthError(msg) {
             const el = document.getElementById('auth-error');
             el.textContent = msg;
             el.classList.remove('hidden');
         }
+        function clearAuthError() {
+            document.getElementById('auth-error').classList.add('hidden');
+            const warningEl = document.getElementById('consent-warning');
+            if (warningEl) warningEl.remove();
+        }
 
-        // Same rate-limit mechanism as index.html, sharing the same localStorage
-        // key — an attempt made here counts toward the same lockout as one made
-        // on the main app's own login gate, and vice versa. See index.html for
-        // the fuller rationale comment.
+        // ===== Rate Limiting =====
         const AUTH_RATE_LIMIT_MS = 30000;
         const AUTH_MAX_ATTEMPTS = 5;
         const AUTH_RL_KEY = 'mbegx_auth_rl';
@@ -519,7 +504,7 @@
             }
         }
         function _saveAuthRateLimit(state) {
-            try { localStorage.setItem(AUTH_RL_KEY, JSON.stringify(state)); } catch (e) { /* fail open on this UX-only guard */ }
+            try { localStorage.setItem(AUTH_RL_KEY, JSON.stringify(state)); } catch (e) {}
         }
         function checkAuthRateLimit() {
             const state = _loadAuthRateLimit();
@@ -547,16 +532,9 @@
             _saveAuthRateLimit({ attempts: 0, lockedUntil: 0 });
         }
 
-        function clearAuthError() {
-            document.getElementById('auth-error').classList.add('hidden');
-            const warningEl = document.getElementById('consent-warning');
-            if (warningEl) warningEl.remove();
-        }
-
         function triggerConsentShake() {
             const label = document.getElementById('consent-label');
             label.classList.add('animate-shake');
-
             if (!document.getElementById('consent-warning')) {
                 const warning = document.createElement('div');
                 warning.id = 'consent-warning';
@@ -565,7 +543,6 @@
                 label.after(warning);
                 setTimeout(() => warning.remove(), 3000);
             }
-
             setTimeout(() => label.classList.remove('animate-shake'), 400);
         }
 
@@ -573,7 +550,6 @@
             const checked = document.getElementById('consent-checkbox').checked;
             const btn = document.getElementById('btn-auth-signup');
             btn.disabled = !checked;
-
             if (checked) {
                 btn.classList.remove('opacity-50', 'cursor-not-allowed', 'text-[#89929b]', 'bg-transparent');
                 btn.classList.add('bg-[#333539]', 'text-white', 'hover:bg-[#37393e]');
@@ -609,10 +585,15 @@
             const email = document.getElementById('auth-email').value.trim();
             const password = document.getElementById('auth-password').value;
             if (!email || !password) { showAuthError(tt("err_enter_both")); recordAuthAttempt(); return; }
-
+            showLoading('loading_signing_in');
             auth.signInWithEmailAndPassword(email, password)
                 .then(() => resetAuthRateLimit())
-                .catch(err => { console.error('Sign-in failed:', err.code, err); recordAuthAttempt(); showAuthError(tt("err_sign_in_failed")); });
+                .catch(err => { 
+                    console.error('Sign-in failed:', err.code, err); 
+                    hideLoading();
+                    recordAuthAttempt(); 
+                    showAuthError(tt("err_sign_in_failed")); 
+                });
         }
 
         async function handleEmailSignUp() {
@@ -620,14 +601,13 @@
             clearAuthError();
             const email = document.getElementById('auth-email').value.trim();
             const password = document.getElementById('auth-password').value;
-
             if (!email || !password) { showAuthError(tt("err_enter_both")); recordAuthAttempt(); return; }
             if (password.length < 8) { showAuthError(tt("err_password_min")); return; }
             if (!document.getElementById('consent-checkbox').checked) {
                 triggerConsentShake();
                 return;
             }
-
+            showLoading('loading_creating_account');
             try {
                 const cred = await auth.createUserWithEmailAndPassword(email, password);
                 const ip = await fetchClientIp();
@@ -638,50 +618,31 @@
                 resetAuthRateLimit();
             } catch (err) {
                 console.error('Account creation failed:', err.code, err);
+                hideLoading();
                 recordAuthAttempt();
                 showAuthError(tt("err_account_creation_failed"));
             }
         }
 
-        // ===== In-app browser detection =====
-        // Google blocks its own Sign-In flow from completing inside
-        // in-app browsers (Facebook, Instagram, TikTok, Line, WeChat,
-        // Twitter/X, Snapchat, and some WhatsApp builds on Android) since
-        // 2021 - it's a restriction on Google's side, not something we can
-        // work around in code. Detected here from the WebView-injected
-        // user-agent tokens those apps add. This intentionally does NOT
-        // try to be clever about which in-app browsers are "actually fine"
-        // (e.g. some are plain SFSafariViewController under the hood) -
-        // false positives just mean an unnecessary banner, false negatives
-        // mean the exact silent-failure bug this fix exists for.
         function isInAppBrowser() {
             const ua = navigator.userAgent || '';
             return /FBAN|FBAV|FB_IAB|Instagram|Line\/|MicroMessenger|WhatsApp|TikTok|BytedanceWebview|Twitter|Snapchat/i.test(ua);
         }
-
         function dismissInAppBanner() {
             const banner = document.getElementById('inapp-browser-banner');
             if (banner) banner.classList.add('hidden');
             document.body.classList.remove('has-inapp-banner');
         }
-
         function openInRealBrowser() {
             const url = window.location.href;
             if (/Android/i.test(navigator.userAgent)) {
-                // Android: hand off to Chrome directly via an intent URL.
-                // If Chrome isn't installed / the intent fails, the catch
-                // below (via a short timeout, since intent:// navigation
-                // doesn't reject) falls back to copying the link.
                 const stripped = url.replace(/^https?:\/\//, '');
                 window.location.href = `intent://${stripped}#Intent;scheme=https;package=com.android.chrome;end`;
                 setTimeout(() => copyLinkForManualOpen(url), 1200);
             } else {
-                // iOS in-app browsers can't be force-redirected into Safari
-                // from JS - copy the link and tell the person to paste it.
                 copyLinkForManualOpen(url);
             }
         }
-
         function copyLinkForManualOpen(url) {
             const done = () => alert(tt('inapp_link_copied'));
             if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -690,7 +651,6 @@
                 alert(tt('inapp_link_copy_failed').replace('{url}', url));
             }
         }
-
         function checkInAppBrowser() {
             if (!isInAppBrowser()) return;
             const banner = document.getElementById('inapp-browser-banner');
@@ -701,26 +661,10 @@
         }
 
         let _googleSignInInProgress = false;
-
-        // See index.html for the fuller rationale: mobile browsers close
-        // signInWithPopup's popup far more aggressively than desktop Chrome
-        // (focus changes, third-party popup/cookie restrictions), which is
-        // what produces "sign-in window closed before finishing" on phones.
-        // Firebase's own guidance is signInWithRedirect on mobile instead.
         function isMobileBrowser() {
             return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 768;
         }
 
-        // Shared by both the popup (desktop) and redirect (mobile) flows so
-        // the two paths can never drift on what a new user needs (consent +
-        // the initial account doc).
-        //
-        // Deliberately does NOT rely on result.additionalUserInfo.isNewUser:
-        // that flag is unreliable after a full-page signInWithRedirect
-        // reload on some mobile browsers. If it under-reports, the account
-        // doc never gets created and the user ends up authenticated but
-        // stuck - checking Firestore directly for whether the doc already
-        // exists is the reliable source of truth instead.
         async function finishGoogleSignIn(result, consentChecked) {
             const docRef = db.collection('users').doc(result.user.uid);
             const existing = await docRef.get();
@@ -741,11 +685,6 @@
 
         async function handleGoogleSignIn() {
             if (_googleSignInInProgress) return;
-            // Don't even attempt it here - Google silently refuses to
-            // complete sign-in inside these WebViews (see isInAppBrowser
-            // above), so signInWithRedirect would just bounce the person
-            // straight back to this page with no error to catch. Surface
-            // the actionable fix instead of a doomed network round-trip.
             if (isInAppBrowser()) {
                 checkInAppBrowser();
                 showAuthError(tt('err_google_inapp_browser'));
@@ -759,23 +698,17 @@
             const provider = new firebase.auth.GoogleAuthProvider();
             try {
                 if (isMobileBrowser()) {
-                    // Full-page redirect instead of a popup. The page is
-                    // about to navigate away; the result is picked up by
-                    // getRedirectResult() below once the browser returns.
-                    // Stash the consent checkbox state since the page (and
-                    // its JS state) is about to be torn down and reloaded.
-                    sessionStorage.setItem(
-                        'mbegx_pending_consent',
-                        document.getElementById('consent-checkbox').checked ? '1' : '0'
-                    );
+                    sessionStorage.setItem('mbegx_pending_consent', document.getElementById('consent-checkbox').checked ? '1' : '0');
                     await auth.signInWithRedirect(provider);
                     return;
                 }
+                showLoading('loading_signing_in');
                 const result = await auth.signInWithPopup(provider);
                 await finishGoogleSignIn(result, document.getElementById('consent-checkbox').checked);
                 resetAuthRateLimit();
             } catch (err) {
                 console.error('Google sign-in failed:', err.code, err);
+                hideLoading();
                 recordAuthAttempt();
                 if (err && (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request')) {
                     showAuthError(tt("err_popup_closed"));
@@ -793,12 +726,7 @@
         async function handlePasswordReset() {
             clearAuthError();
             const email = document.getElementById('auth-email').value.trim();
-
-            if (!email) {
-                showAuthError(tt("err_enter_email_first"));
-                return;
-            }
-
+            if (!email) { showAuthError(tt("err_enter_email_first")); return; }
             try {
                 await auth.sendPasswordResetEmail(email);
                 alert(tt("alert_password_reset_sent").replace('{email}', email));
