@@ -1,0 +1,61 @@
+name: Daily Subscriber Email Digest
+
+# N21 (email leg): pulls every confirmed subscriber (Firestore
+# users/{uid}.subscription.subscribed_active == true — see login.html's
+# account-creation writes and index.html's subscribe-gate) via
+# export_subscribers.py, then sends them today's Session Picks digest via
+# send_email_digest.py. Same "runs entirely in GitHub's cloud, no server"
+# posture as daily-instagram-post.yml / telegram-bot.yml.
+#
+# Two triggers, same reasoning as daily-instagram-post.yml:
+#   1. push  — fires once publish.py pushes fresh market_data.json, so a
+#      same-day feed usually emails within minutes.
+#   2. schedule — a once-daily safety net at a fixed Cairo-evening UTC
+#      slot, in case the push trigger was missed or data arrived late.
+# subscriber_emails.txt is regenerated fresh every run (not committed) —
+# it only needs to be accurate for the run that uses it.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'web_public/data/market_data.json'
+  schedule:
+    # ~19:45 Cairo (matches the last social post's due time, 19:30) in
+    # both DST offsets: 16:45 UTC covers summer (UTC+3), 17:45 covers
+    # winter (UTC+2) — run both slots; a slot with nothing new to send
+    # just exits quietly (no recipients / stale data).
+    - cron: "45 16 * * 0-4"
+    - cron: "45 17 * * 0-4"
+  workflow_dispatch: {}
+
+concurrency:
+  group: daily-email-digest
+  cancel-in-progress: false
+
+jobs:
+  send-digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests firebase-admin
+
+      - name: Export confirmed subscriber emails from Firestore
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+        run: python export_subscribers.py
+
+      - name: Send today's digest to confirmed subscribers
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          SMTP_FROM: ${{ secrets.SMTP_FROM }}
+          MBEGX_EMAIL_DIGEST_TO: ${{ vars.MBEGX_EMAIL_DIGEST_TO }}
+        run: python send_email_digest.py

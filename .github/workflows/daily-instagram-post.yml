@@ -143,6 +143,8 @@ jobs:
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          MBEGX_TELEGRAM_CHANNEL_ID: ${{ secrets.MBEGX_TELEGRAM_CHANNEL_ID }}
           PAGES_BASE_URL: ${{ vars.PAGES_BASE_URL }}
         run: |
           # Deliberately NOT set -e here: one platform failing for one
@@ -194,6 +196,23 @@ jobs:
                 python post_state.py mark-posted --type "$TYPE" --platform fb
               else
                 echo "::warning::Facebook publish failed for $TYPE — will retry next run."
+                ANY_FAILED=1
+              fi
+              echo "::endgroup::"
+            fi
+
+            # N21: same card, broadcast to the Telegram channel every
+            # confirmed subscriber joined at signup. A no-op (skipped, not
+            # failed) if MBEGX_TELEGRAM_CHANNEL_ID isn't configured yet.
+            if [ -n "$MBEGX_TELEGRAM_CHANNEL_ID" ] && python post_state.py needs --type "$TYPE" --platform tg; then
+              echo "::group::Publishing $TYPE to Telegram channel"
+              python social_poster.py publish-telegram \
+                --image-url "$IMAGE_URL" \
+                --caption-file "web_public/social/latest_${TYPE}_caption.txt"
+              if [ $? -eq 0 ]; then
+                python post_state.py mark-posted --type "$TYPE" --platform tg
+              else
+                echo "::warning::Telegram publish failed for $TYPE — will retry next run."
                 ANY_FAILED=1
               fi
               echo "::endgroup::"

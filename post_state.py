@@ -37,7 +37,7 @@ State shape:
     {
       "date": "2026-08-09",
       "posted": {
-        "market":        {"ig": true,  "fb": false},
+        "market":        {"ig": true,  "fb": false, "tg": false},
         "sectors":       {"ig": false, "fb": false},
         "tickers":       {"ig": false, "fb": false},
         "achievement":   {"ig": false, "fb": false},
@@ -60,7 +60,7 @@ from zoneinfo import ZoneInfo
 CAIRO = ZoneInfo("Africa/Cairo")
 STATE_PATH = "web_public/social/post_state.json"
 DATA_PATH = "web_public/data/market_data.json"
-PLATFORMS = ("ig", "fb")
+PLATFORMS = ("ig", "fb", "tg")
 JITTER_MINUTES = 5
 
 # Cairo LOCAL due times. Using the system tz database (via zoneinfo) means
@@ -92,7 +92,7 @@ def _today_str():
 
 
 def _empty_posted():
-    return {t: {"ig": False, "fb": False} for t in ALL_TYPES}
+    return {t: {p: False for p in PLATFORMS} for t in ALL_TYPES}
 
 
 def _load_state():
@@ -120,7 +120,7 @@ def _current_state():
     if state.get("date") != _today_str() or not isinstance(posted, dict):
         state = {"date": _today_str(), "posted": _empty_posted()}
     for t in ALL_TYPES:
-        state["posted"].setdefault(t, {"ig": False, "fb": False})
+        state["posted"].setdefault(t, {p: False for p in PLATFORMS})
     return state
 
 
@@ -183,7 +183,7 @@ def cmd_due(args):
         for post_type, (hh, mm) in DUE_TIMES.items():
             due_time = now.replace(hour=hh, minute=max(0, mm - JITTER_MINUTES), second=0, microsecond=0)
             status = state["posted"][post_type]
-            still_needed = not status["ig"] or not status["fb"]
+            still_needed = any(not status[p] for p in PLATFORMS)
             if now >= due_time and still_needed:
                 due_types.append(post_type)
 
@@ -191,7 +191,7 @@ def cmd_due(args):
         # fresh data shows at least one newly-achieved Session Pick and it
         # hasn't gone out yet. See module docstring.
         status = state["posted"]["achievement"]
-        still_needed = not status["ig"] or not status["fb"]
+        still_needed = any(not status[p] for p in PLATFORMS)
         achievements = _achieved_today(today_str)
         if achievements and still_needed:
             due_types.append("achievement")
@@ -202,7 +202,7 @@ def cmd_due(args):
         hh, mm = TRACK_RECORD_DUE_TIME
         due_time = now.replace(hour=hh, minute=max(0, mm - JITTER_MINUTES), second=0, microsecond=0)
         status = state["posted"]["track_record"]
-        still_needed = not status["ig"] or not status["fb"]
+        still_needed = any(not status[p] for p in PLATFORMS)
         history_present = bool(_achieved_history())
         if now >= due_time and still_needed and history_present:
             due_types.append("track_record")

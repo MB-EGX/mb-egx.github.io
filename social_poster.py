@@ -928,6 +928,27 @@ def publish_to_facebook(page_id: str, page_access_token: str, image_url: str, ca
     return resp.json()["post_id"]
 
 
+def publish_to_telegram(chat_id: str, bot_token: str, image_url: str, caption: str) -> str:
+    """Posts one photo+caption to a Telegram CHANNEL via sendPhoto - reaches
+    every member who joined the channel in a single call, no per-subscriber
+    loop needed (contrast with the email digest, which genuinely does need
+    a per-recipient list - see export_subscribers.py / send_email_digest.py).
+    Telegram captions are capped at 1024 chars for sendPhoto; longer text
+    is truncated with a pointer to the full post rather than failing.
+    """
+    if len(caption) > 1024:
+        caption = caption[:1000].rsplit("\n", 1)[0] + "\n… (see the dashboard for the full post)"
+    resp = requests.post(
+        f"https://api.telegram.org/bot{bot_token}/sendPhoto",
+        data={"chat_id": chat_id, "photo": image_url, "caption": caption, "parse_mode": "HTML"},
+        timeout=30,
+    )
+    if not resp.ok:
+        print(f"❌ Telegram API error {resp.status_code}: {resp.text}", file=sys.stderr)
+    resp.raise_for_status()
+    return str(resp.json()["result"]["message_id"])
+
+
 def refresh_reminder(access_token: str) -> str | None:
     try:
         resp = requests.get(
@@ -982,6 +1003,12 @@ def main():
     p_publish_fb.add_argument("--caption-file", required=True)
     p_publish_fb.add_argument("--fb-page-id", default=os.environ.get("FB_PAGE_ID"))
     p_publish_fb.add_argument("--fb-access-token", default=os.environ.get("FB_PAGE_ACCESS_TOKEN"))
+
+    p_publish_tg = sub.add_parser("publish-telegram", help="Publish an already-rendered image to the Telegram broadcast channel")
+    p_publish_tg.add_argument("--image-url", required=True, help="Public URL of the rendered PNG")
+    p_publish_tg.add_argument("--caption-file", required=True)
+    p_publish_tg.add_argument("--chat-id", default=os.environ.get("MBEGX_TELEGRAM_CHANNEL_ID"))
+    p_publish_tg.add_argument("--bot-token", default=os.environ.get("TELEGRAM_BOT_TOKEN"))
 
     args = parser.parse_args()
 
@@ -1051,6 +1078,13 @@ def main():
         caption = Path(args.caption_file).read_text(encoding="utf-8")
         post_id = publish_to_facebook(args.fb_page_id, args.fb_access_token, args.image_url, caption)
         print(f"✅ Published to Facebook — post ID {post_id}")
+
+    elif args.cmd == "publish-telegram":
+        if not args.chat_id or not args.bot_token:
+            sys.exit("MBEGX_TELEGRAM_CHANNEL_ID and TELEGRAM_BOT_TOKEN are required (env vars or --chat-id/--bot-token)")
+        caption = Path(args.caption_file).read_text(encoding="utf-8")
+        message_id = publish_to_telegram(args.chat_id, args.bot_token, args.image_url, caption)
+        print(f"✅ Published to Telegram channel — message ID {message_id}")
 
 
 if __name__ == "__main__":

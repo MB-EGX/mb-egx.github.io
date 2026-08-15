@@ -236,6 +236,28 @@ CDN_PURGE_URL = os.environ.get("MBEGX_CDN_PURGE_URL", "").strip()
 EMAIL_DIGEST_RECIPIENTS = os.environ.get("MBEGX_EMAIL_DIGEST_TO", "").strip()
 SESSION_PICKS_TELEGRAM_WEBHOOK = os.environ.get("MBEGX_TELEGRAM_WEBHOOK", "").strip()
 
+# Separate from the webhook above on purpose. SESSION_PICKS_TELEGRAM_WEBHOOK
+# (alerts.py) is a one-way PUSH: a plain POST to a fixed
+# ".../sendMessage?chat_id=<CHAT_ID>" URL, so it never needs the raw bot
+# token in this app at all. TELEGRAM_BOT_TOKEN (telegram_bot.py) is for
+# the INTERACTIVE bot instead - replying to whoever messages it (/strongbuy,
+# /ticker COMI, ...) means calling getUpdates/sendMessage against arbitrary
+# chat_ids, which genuinely needs the raw token, not a single baked-in URL.
+# If you already made a bot for the webhook above, this is the same bot -
+# the token is the "<TOKEN>" segment of that webhook URL - just also add it
+# here under its own secret so the interactive side can use it too.
+TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+
+# Broadcast channel for the daily social posts (N21 - "everyone who joined
+# the Telegram channel gets the same daily market/sectors/tickers/
+# achievement/track_record cards Instagram and Facebook already get").
+# Distinct from SESSION_PICKS_TELEGRAM_WEBHOOK above on purpose: that one is
+# a single fixed personal chat for real-time achievement pings; this is the
+# numeric chat_id of a public/private CHANNEL (e.g. -1003976650817) that
+# TELEGRAM_BOT_TOKEN's bot has been added to as an admin with post rights.
+# One sendPhoto call here reaches every channel member - no per-user loop.
+TELEGRAM_CHANNEL_CHAT_ID = os.environ.get("MBEGX_TELEGRAM_CHANNEL_ID", "").strip()
+
 # Optional live-update endpoint. The web surface can subscribe to this
 # if you later add an SSE publisher, but leaving it empty keeps the app
 # fully static-host compatible.

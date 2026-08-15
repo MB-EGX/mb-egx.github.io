@@ -56,8 +56,20 @@ from session_picks import build_digest_payload
 logger = get_logger("send_email_digest")
 
 
-def _recipients() -> list[str]:
-    return [r.strip() for r in EMAIL_DIGEST_RECIPIENTS.split(",") if r.strip()]
+def _recipients(subscribers_file: str | None) -> list[str]:
+    """Combines two sources: EMAIL_DIGEST_RECIPIENTS (a small static
+    allowlist - useful for a personal copy or a team inbox) and the
+    per-user emails export_subscribers.py just pulled from Firestore for
+    every account that completed the Follow/Join gate (see that script's
+    docstring). Either source alone is fine — a fresh app with no
+    subscribers yet still works off the static list, and the static list
+    is entirely optional once real subscribers exist.
+    """
+    recipients = {r.strip() for r in EMAIL_DIGEST_RECIPIENTS.split(",") if r.strip()}
+    if subscribers_file and os.path.exists(subscribers_file):
+        with open(subscribers_file, "r", encoding="utf-8") as f:
+            recipients.update(line.strip() for line in f if line.strip())
+    return sorted(recipients)
 
 
 def load_market_data(path: str) -> dict:
@@ -96,11 +108,17 @@ def main():
         default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "web_public", "data", "market_data.json"),
         help="Path to the published market_data.json (default: web_public/data/market_data.json)",
     )
+    parser.add_argument(
+        "--subscribers-file",
+        default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "web_public", "social", "subscriber_emails.txt"),
+        help="Path written by export_subscribers.py (default: web_public/social/subscriber_emails.txt). "
+             "Missing/absent file is fine — just means no Firestore subscribers yet.",
+    )
     args = parser.parse_args()
 
-    recipients = _recipients()
+    recipients = _recipients(args.subscribers_file)
     if not recipients:
-        print("ℹ️  MBEGX_EMAIL_DIGEST_TO is not set — nothing to send. Skipping.")
+        print("ℹ️  No recipients — MBEGX_EMAIL_DIGEST_TO is unset and no confirmed subscribers found. Skipping.")
         return
 
     market_data = load_market_data(args.market_data)

@@ -1,0 +1,69 @@
+name: Telegram Bot Poll
+
+# N2 (query side) — replies to /strongbuy, /ticker COMI, /picks, etc.
+# Achievement PUSH alerts are a separate, already-wired path: alerts.py
+# fires those synchronously from inside analyze_market() (desktop app's
+# "Execute Matrix" and publish.py's nightly run both trigger it) - nothing
+# in this workflow duplicates that.
+#
+# HOW THIS WORKS (same free, no-server "catch-up" model as
+# daily-instagram-post.yml): Telegram queues messages sent to the bot
+# server-side until something calls getUpdates and acknowledges them by
+# offset. This workflow just runs telegram_bot.py poll on a tight
+# schedule - whatever's queued since the last run gets replied to, then
+# the process exits. A command sent between two runs isn't lost, just
+# answered a few minutes late.
+#
+# Runs entirely in GitHub's cloud — your PC/desktop app does NOT need to
+# be open, and this needs no paid host: Telegram's Bot API is free, and
+# GitHub Actions' scheduled runs are the only "server" this requires.
+
+on:
+  schedule:
+    # Every 5 minutes, all week — GitHub Actions doesn't reliably run
+    # tighter than this even if you ask for it, so 5 min is effectively
+    # the responsiveness floor for a free, schedule-only bot anyway.
+    - cron: "*/5 * * * *"
+  workflow_dispatch: {}
+
+concurrency:
+  # Prevents two overlapping polls from both reading the same offset and
+  # double-replying to the same message - same reasoning as
+  # daily-instagram-post.yml's concurrency group.
+  group: telegram-bot-poll
+  cancel-in-progress: false
+
+permissions:
+  contents: write   # needed to commit the updated update_offset back to the repo
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Poll for new Telegram commands and reply
+        id: poll
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: python telegram_bot.py poll
+
+      - name: Commit updated offset (if changed)
+        run: |
+          git config user.name "mb-egx-bot"
+          git config user.email "actions@github.com"
+          git add web_public/social/telegram_state.json
+          if ! git diff --staged --quiet; then
+            git commit -m "Telegram bot: advance update offset"
+            git pull --rebase --autostash
+            git push
+          else
+            echo "No new messages — nothing to commit."
+          fi

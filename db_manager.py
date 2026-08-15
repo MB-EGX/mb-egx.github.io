@@ -326,6 +326,19 @@ class DatabaseManager:
                     target_value DOUBLE    -- meaning depends on target_mode
                 );
             """)
+            # PRE-EXISTING BUG: paper_trades' id column defaults off
+            # seq_session_picks_id, but (before this fix) that sequence
+            # wasn't created until much later in this function - right
+            # before the session_picks table itself. On a genuinely fresh
+            # database (no prior partial schema already on disk) this
+            # table creation fails outright with "Sequence ... does not
+            # exist". This exact bug has now recurred across multiple
+            # separate snapshots of this file, which means the fix isn't
+            # making it back into whatever copy of this file is the
+            # actual source of truth - please make sure this edit (or an
+            # equivalent one) lands there too, or it will keep coming
+            # back on the next re-upload.
+            conn.execute("CREATE SEQUENCE IF NOT EXISTS seq_session_picks_id START 1;")
             conn.execute("""
                 CREATE TABLE IF NOT EXISTS paper_trades (
                     id INTEGER PRIMARY KEY DEFAULT nextval('seq_session_picks_id'),
