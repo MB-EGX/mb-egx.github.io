@@ -3786,18 +3786,26 @@
             }
         }).catch(err => {
             console.error('Redirect sign-in failed:', err && err.code, err);
-            showAuthError(tt("err_google_signin_failed"));
+            // Include the actual Firebase error code in the on-screen
+            // message (not just the console) so the real reason is visible
+            // without needing devtools/remote debugging on a phone - this
+            // is what tells us definitively whether it's e.g.
+            // auth/unauthorized-domain (mb-egx.github.io not added to
+            // Firebase's Authorized Domains list), a storage/network
+            // failure, or something else entirely.
+            const code = (err && err.code) ? err.code : 'unknown';
+            showAuthError(tt("err_google_signin_failed") + ` [${code}]`);
         });
 
         auth.onAuthStateChanged(function (user) {
             _authResolved = true;
             revealApp();
-            clearAuthError();
             const gate = document.getElementById('auth-gate');
             const badge = document.getElementById('user-badge');
             const adminBtn = document.getElementById('btn-admin-analytics');
             const reconsentGate = document.getElementById('terms-reconsent-gate');
             if (user) {
+                clearAuthError();
                 gate.style.display = 'none';
                 reconsentGate.classList.add('hidden');
                 badge.style.display = 'flex';
@@ -3853,6 +3861,25 @@
                     reconsentGate.classList.remove('hidden');
                 });
             } else {
+                // Deliberately does NOT call clearAuthError() here (it used
+                // to, unconditionally, at the top of this whole callback).
+                // That was a race condition: after a failed
+                // signInWithRedirect, getRedirectResult()'s .catch() below
+                // calls showAuthError() with the real failure reason - but
+                // onAuthStateChanged("no user") can fire around the same
+                // time (Firebase re-confirms "still signed out" once the
+                // redirect fully resolves to failure), and its unconditional
+                // clearAuthError() was wiping that message out again before
+                // anyone could ever read it. That's the root cause of
+                // "bounces back to login, nothing shown" even in a normal
+                // Chrome tab (not just in-app browsers) - the sign-in WAS
+                // failing with a real, specific error the whole time; it was
+                // just being erased a few hundred ms after it appeared.
+                // Errors now only get cleared when the person actively
+                // retries (handleGoogleSignIn/handleEmailSignIn/
+                // handleEmailSignUp already call clearAuthError() at the
+                // start of each attempt) or when sign-in actually succeeds
+                // (the `if (user)` branch above).
                 gate.style.display = 'flex';
                 reconsentGate.classList.add('hidden');
                 badge.style.display = 'none';
