@@ -34,6 +34,12 @@ CHANGELOG vs the original:
     achieved_today), so a daily "track record" post/tab has real history
     to show even on a day when nothing newly achieved. Same trust
     boundary as achieved_today (ticker + achievement stats only).
+  * BUGFIX: added a "breakout.json" shard. breakout_watchlist was already
+    in the monolithic market_data.json but had no shard of its own, so a
+    frontend reading only the sharded files (the whole point of sharding -
+    see index.html's loadMarketData()) could never populate the Breakouts
+    tab from shards alone. cache_manifest.json picks it up automatically
+    since it's generated from _write_shards()'s own shard dict.
 """
 from __future__ import annotations
 
@@ -70,6 +76,13 @@ def _write_shards(output_dir: str, payload: dict):
         "matrix.json": {"last_data_date": payload["last_data_date"], "market_matrix": payload["market_matrix"]},
         "sectors.json": {"last_data_date": payload["last_data_date"], "sectors": payload["sectors"]},
         "top_10.json": {"last_data_date": payload["last_data_date"], "top_10": payload["top_10"]},
+        # BUGFIX: breakout_watchlist was present in the monolithic market_data.json
+        # (see the payload dict in export_market_matrix()) but had no shard of its
+        # own here, so a frontend reading only the shards - the whole point of
+        # sharding - could never populate the Breakouts tab. Added as its own
+        # shard, same shape/key as the monolith so no caller-side format changes
+        # are needed.
+        "breakout.json": {"last_data_date": payload["last_data_date"], "breakout_watchlist": payload["breakout_watchlist"]},
         "session_picks.json": {"last_data_date": payload["last_data_date"], "session_picks": payload["session_picks"]},
         "chart_history.json": {"last_data_date": payload["last_data_date"], "chart_history": payload["chart_history"]},
         "ticker_sectors.json": {"ticker_sectors": payload["ticker_sectors"]},

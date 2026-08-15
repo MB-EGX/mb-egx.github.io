@@ -2,6 +2,7 @@ import hashlib
 import json
 import os
 import re
+import sys
 import threading
 import time
 from pathlib import Path
@@ -102,12 +103,35 @@ class DatabaseLockedError(RuntimeError):
 
 
 class _ConnectionWrapper:
-    def __init__(self, db_path: str, retries: int = 8, retry_delay_seconds: float = 0.5):
+    def __init__(self, db_path: str, retries: int = 8, retry_delay_seconds: float = 0.5,
+                 on_retry=None):
+        """
+        on_retry: optional callback invoked as
+            on_retry(attempt, retries, delay_seconds, error)
+        right before each retry sleep (i.e. NOT on the first attempt, which
+        hasn't failed yet, and NOT on the final exhausted attempt, which
+        raises instead). Lets a caller (e.g. app_gui.py's connect dialog)
+        surface visible retry progress to a human instead of the process
+        just appearing to hang for up to ~64s (0.5 * 2**0..6) while the
+        lock clears on its own.
+
+        Previously these retries were completely silent - nothing was
+        logged or printed on any attempt but the last, so a person staring
+        at a frozen app during a transient lock (e.g. the other process's
+        own DuckDB CHECKPOINT still finishing) had no way to tell "still
+        retrying" apart from "hung". Every attempt now also logs + prints
+        to stderr, independent of on_retry, so headless callers (publish.py,
+        any future CLI) get the same visibility for free.
+        """
         self._lock = threading.RLock()
         last_err = None
         for attempt in range(retries):
             try:
                 self._conn = duckdb.connect(db_path)
+                if attempt > 0:
+                    msg = f"Connected to '{db_path}' after {attempt} retr{'y' if attempt == 1 else 'ies'}."
+                    logger.info(msg)
+                    print(f"[db_manager] {msg}", file=sys.stderr)
                 return
             except duckdb.IOException as e:
                 last_err = e
@@ -118,7 +142,27 @@ class _ConnectionWrapper:
                 if "another process" not in str(e) and "lock" not in str(e).lower():
                     raise
                 if attempt < retries - 1:
-                    time.sleep(retry_delay_seconds * (2 ** attempt))
+                    delay = retry_delay_seconds * (2 ** attempt)
+                    msg = (
+                        f"Database locked (attempt {attempt + 1}/{retries}) - "
+                        f"retrying in {delay:.1f}s... ({e})"
+                    )
+                    logger.warning(msg)
+                    print(f"[db_manager] {msg}", file=sys.stderr)
+                    if on_retry is not None:
+                        try:
+                            on_retry(attempt + 1, retries, delay, e)
+                        except Exception:
+                            # A misbehaving UI callback must never break the
+                            # actual retry/connect logic.
+                            logger.warning("on_retry callback raised - ignoring.", exc_info=True)
+                    time.sleep(delay)
+        final_msg = (
+            f"Gave up connecting to '{db_path}' after {retries} attempts - "
+            f"still locked by another process."
+        )
+        logger.error(final_msg)
+        print(f"[db_manager] {final_msg}", file=sys.stderr)
         raise DatabaseLockedError(
             f"Can't open the database at '{db_path}' — it's already open in "
             f"another program (usually the MB-EGX desktop app, if it's "
@@ -164,11 +208,20 @@ class DatabaseManager:
     _shared_connection = None
     _init_lock = threading.Lock()
 
-    def __init__(self, db_path=DB_PATH):
+    def __init__(self, db_path=DB_PATH, on_retry=None):
+        """
+        on_retry: optional callback, see _ConnectionWrapper.__init__ - only
+        actually consulted on the FIRST DatabaseManager() call in this
+        process (the one that creates the shared connection). Later
+        DatabaseManager() calls reuse the already-open shared connection
+        and never hit the retry path at all, so passing on_retry there is
+        harmless but a no-op - this is a class-level singleton, not a
+        per-instance connection.
+        """
         self.db_path = str(db_path)
         with DatabaseManager._init_lock:
             if DatabaseManager._shared_connection is None:
-                DatabaseManager._shared_connection = _ConnectionWrapper(self.db_path)
+                DatabaseManager._shared_connection = _ConnectionWrapper(self.db_path, on_retry=on_retry)
             if not DatabaseManager._schema_initialized:
                 self._init_db()
                 DatabaseManager._schema_initialized = True

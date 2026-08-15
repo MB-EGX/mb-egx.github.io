@@ -215,6 +215,14 @@ WALK_FORWARD_BACKTEST_DEFAULTS = {
     "test_bars": 60,
     "step_bars": 60,
     "min_folds": 4,
+    # Force-close any trade still open after this many bars inside its
+    # fold's test window, even if neither the stop-loss nor the take-
+    # profit target has been hit yet. Without a cap, one illiquid/range-
+    # bound ticker could hold a position "open" for the entire test
+    # window and understate turnover; this keeps every trade's horizon
+    # roughly comparable to how the live app actually manages exits
+    # (ATR trailing stop / take-profit, not "hold forever").
+    "max_hold_bars": 60,
 }
 
 PAPER_TRADING_DEFAULTS = {

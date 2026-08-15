@@ -355,6 +355,7 @@
                     </tbody>
                 </table>
             </div>
+            <div id="matrix-pagination"></div>
         </div>
 
         <!-- TAB 2: SECTORS -->
@@ -1386,6 +1387,10 @@
                 lbl_no_breakout_qualifiers: "No stocks currently qualify for the breakout watchlist.",
                 lbl_no_filter_matches: "No stocks match your active filter criteria.",
                 lbl_data_unavailable: "Data temporarily unavailable. Please try refreshing in a moment.",
+                lbl_pagination_summary: "Showing {from}–{to} of {total}",
+                lbl_rows_per_page: "Rows per page:",
+                lbl_page: "Page {page} of {total}",
+                btn_prev: "Prev", btn_next: "Next",
                 toast_welcome_back: "👋 Welcome back, {name}!"
             },
             AR: {
@@ -1542,6 +1547,10 @@
                 lbl_no_breakout_qualifiers: "لا توجد أسهم مؤهلة حاليًا لقائمة الاختراقات.",
                 lbl_no_filter_matches: "لا توجد أسهم مطابقة لمعايير التصفية الحالية.",
                 lbl_data_unavailable: "البيانات غير متاحة مؤقتًا. يرجى محاولة التحديث بعد قليل.",
+                lbl_pagination_summary: "عرض {from}–{to} من {total}",
+                lbl_rows_per_page: "صفوف لكل صفحة:",
+                lbl_page: "صفحة {page} من {total}",
+                btn_prev: "السابق", btn_next: "التالي",
                 toast_welcome_back: "👋 مرحبًا بعودتك، {name}!"
             }
         };
@@ -1915,6 +1924,18 @@
             if (!select || !select.value || !globalData) return;
             const selected = select.value;
             const mode = document.querySelector('input[name="chart_mode"]:checked').value;
+
+            // chart_history.json is fetched separately from the rest of the
+            // dashboard (see loadMarketData()/ensureChartHistoryLoaded()) since
+            // it's the largest shard by far. If it hasn't landed yet, render
+            // with today's single latest-price point (the existing fallback
+            // branches below already do this whenever chart_history is absent)
+            // and re-render automatically the moment it's ready. The promise
+            // cache means this never fires a duplicate fetch alongside the
+            // background prefetch already in flight.
+            if (!globalData.chart_history) {
+                ensureChartHistoryLoaded().then(() => plotChart()).catch(() => { /* stays on the single-point fallback; re-opening this tab retries */ });
+            }
 
             let prices = [];
             let vwaps = [];
@@ -3014,24 +3035,54 @@
             `).join('') : `<tr><td colspan="7" class="p-4 text-center text-textmuted font-sans">${tt('lbl_no_track_record')}</td></tr>`;
         }
 
+        // Full filtered result set for the current filter criteria (unpaginated).
+        // applyFilters() recomputes this and resets to page 1; renderMatrixPage()
+        // slices out just the current page and paints the DOM, so switching pages
+        // never re-runs the filter predicates over the whole dataset.
+        let matrixFilteredRows = [];
+        let matrixCurrentPage = 1;
+        let matrixPageSize = parseInt(localStorage.getItem('quant_matrix_page_size') || '50', 10) || 50;
+
         function applyFilters() {
-            const tbody = document.getElementById('tbody-matrix');
-            tbody.innerHTML = '';
-            if (!globalData || !globalData.market_matrix) return;
+            if (!globalData || !globalData.market_matrix) {
+                document.getElementById('tbody-matrix').innerHTML = '';
+                matrixFilteredRows = [];
+                renderMatrixPaginationControls();
+                return;
+            }
             const search = document.getElementById('filter-search').value.trim().toUpperCase();
             const actionFilter = document.getElementById('filter-action').value;
             const trendFilter = document.getElementById('filter-trend').value;
             const confFilter = document.getElementById('filter-confidence').value;
             const hideIlliquid = document.getElementById('filter-illiquid').checked;
-            let rowCount = 0;
-            globalData.market_matrix.forEach((row) => {
+            matrixFilteredRows = globalData.market_matrix.filter((row) => {
                 const ticker = (row.Ticker || "").toUpperCase(), action = row.Action || "", trend = row["Trend Class"] || "", conf = row["Data Confidence"] || "";
-                if (search && !ticker.includes(search)) return;
-                if (actionFilter !== "All" && !action.includes(actionFilter)) return;
-                if (trendFilter !== "All" && trend !== trendFilter) return;
-                if (confFilter !== "All" && !conf.includes(confFilter)) return;
-                if (hideIlliquid && (action.includes("ILLIQUID") || action.includes("Unconfirmed"))) return;
-                rowCount++;
+                if (search && !ticker.includes(search)) return false;
+                if (actionFilter !== "All" && !action.includes(actionFilter)) return false;
+                if (trendFilter !== "All" && trend !== trendFilter) return false;
+                if (confFilter !== "All" && !conf.includes(confFilter)) return false;
+                if (hideIlliquid && (action.includes("ILLIQUID") || action.includes("Unconfirmed"))) return false;
+                return true;
+            });
+            // Any change to filters/search starts back at page 1 - otherwise a
+            // narrower result set could leave the user stranded on a page past
+            // the new last page (renderMatrixPage() also clamps defensively).
+            matrixCurrentPage = 1;
+            renderMatrixPage();
+        }
+
+        function renderMatrixPage() {
+            const tbody = document.getElementById('tbody-matrix');
+            tbody.innerHTML = '';
+            const total = matrixFilteredRows.length;
+            const totalPages = Math.max(1, Math.ceil(total / matrixPageSize));
+            if (matrixCurrentPage > totalPages) matrixCurrentPage = totalPages;
+            if (matrixCurrentPage < 1) matrixCurrentPage = 1;
+            const startIdx = (matrixCurrentPage - 1) * matrixPageSize;
+            const pageRows = matrixFilteredRows.slice(startIdx, startIdx + matrixPageSize);
+            pageRows.forEach((row, i) => {
+                const rowCount = startIdx + i + 1; // absolute rank across the full filtered set, not just this page
+                const action = row.Action || "", conf = row["Data Confidence"] || "";
                 let actionStyle = 'bg-slate-800 text-slate-300';
                 if (action.includes('STRONG BUY') || action.includes('BREAKOUT BUY')) actionStyle = 'bg-[#276749] text-white font-bold';
                 else if (action.includes('ACCUMULATE') || action.includes('BUY ON DIP')) actionStyle = 'bg-[#2b6cb0] text-white';
@@ -3058,8 +3109,53 @@
                 `;
                 tbody.appendChild(tr);
             });
-            if (rowCount === 0) tbody.innerHTML = `<tr><td colspan="21" class="p-8 text-center text-textmuted font-sans">${tt('lbl_no_filter_matches')}</td></tr>`;
+            if (total === 0) tbody.innerHTML = `<tr><td colspan="21" class="p-8 text-center text-textmuted font-sans">${tt('lbl_no_filter_matches')}</td></tr>`;
             applyColumnVisibility();
+            renderMatrixPaginationControls();
+        }
+
+        function renderMatrixPaginationControls() {
+            const el = document.getElementById('matrix-pagination');
+            if (!el) return;
+            const total = matrixFilteredRows.length;
+            if (total === 0) { el.innerHTML = ''; return; }
+            const totalPages = Math.max(1, Math.ceil(total / matrixPageSize));
+            const startIdx = (matrixCurrentPage - 1) * matrixPageSize + 1;
+            const endIdx = Math.min(matrixCurrentPage * matrixPageSize, total);
+            const summary = tt('lbl_pagination_summary').replace('{from}', startIdx).replace('{to}', endIdx).replace('{total}', total);
+            const pageLabel = tt('lbl_page').replace('{page}', matrixCurrentPage).replace('{total}', totalPages);
+            const atFirst = matrixCurrentPage <= 1, atLast = matrixCurrentPage >= totalPages;
+            const navBtn = (label, page, disabled) => `<button onclick="goToMatrixPage(${page})" ${disabled ? 'disabled' : ''} class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-slate-700 transition">${label}</button>`;
+            el.innerHTML = `
+                <div class="flex items-center justify-between flex-wrap gap-3 px-1 pt-3 font-sans text-xs text-textmuted">
+                    <div>${summary}</div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <label class="flex items-center gap-1.5">
+                            <span>${tt('lbl_rows_per_page')}</span>
+                            <select id="matrix-page-size" onchange="setMatrixPageSize(this.value)" class="bg-darkbg border border-bordercol rounded px-1.5 py-1 text-textmain">
+                                ${[25, 50, 100, 200].map(n => `<option value="${n}" ${n === matrixPageSize ? 'selected' : ''}>${n}</option>`).join('')}
+                            </select>
+                        </label>
+                        ${navBtn('«', 1, atFirst)}
+                        ${navBtn(tt('btn_prev'), matrixCurrentPage - 1, atFirst)}
+                        <span class="text-textmain px-1">${pageLabel}</span>
+                        ${navBtn(tt('btn_next'), matrixCurrentPage + 1, atLast)}
+                        ${navBtn('»', totalPages, atLast)}
+                    </div>
+                </div>`;
+        }
+
+        function goToMatrixPage(page) {
+            const totalPages = Math.max(1, Math.ceil(matrixFilteredRows.length / matrixPageSize));
+            matrixCurrentPage = Math.min(Math.max(1, page), totalPages);
+            renderMatrixPage();
+        }
+
+        function setMatrixPageSize(value) {
+            matrixPageSize = parseInt(value, 10) || 50;
+            localStorage.setItem('quant_matrix_page_size', String(matrixPageSize));
+            matrixCurrentPage = 1;
+            renderMatrixPage();
         }
 
         function resetFilters() {
@@ -3085,21 +3181,114 @@
             }
         }
 
+        // ===================== Sharded data loading =====================
+        // export_json.py writes both a monolithic market_data.json AND a set
+        // of per-tab shards (matrix.json, sectors.json, top_10.json,
+        // breakout.json, session_picks.json, ticker_sectors.json,
+        // leaderboard.json - see its _write_shards()). This dashboard now
+        // fetches the shards in parallel instead of the ~1.5-2MB monolith,
+        // so first paint only waits on the combined ~150-450KB of shards
+        // actually needed to render the initial view.
+        //
+        // chart_history.json is deliberately excluded from this critical
+        // batch: it's by far the largest shard (1Y OHLC+VWAP per ticker,
+        // often bigger than every other shard combined) and isn't needed
+        // for first paint of any tab except Charts. It's fetched separately
+        // in the background right after the rest of the dashboard renders -
+        // see prefetchChartHistoryInBackground().
+        //
+        // A single shard failing to load degrades that one section to an
+        // empty/graceful state (every render* function below already
+        // null-guards its own globalData.<field>) rather than blocking the
+        // whole dashboard - matrix.json is the one exception, since without
+        // it there's no ticker list to populate any tab's selectors from.
+        async function fetchShard(file) {
+            try {
+                const res = await fetch(`./data/${file}`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return await res.json();
+            } catch (err) {
+                console.error(`Failed to load ${file}:`, err);
+                return null;
+            }
+        }
+
         async function loadMarketData() {
             try {
-                const response = await fetch('./data/market_data.json');
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const raw = await response.json();
-                // Validate expected top-level structure (defense-in-depth)
-                if (typeof raw !== 'object' || raw === null) throw new Error('Invalid data format');
-                globalData = raw;
+                const [matrix, sectors, top10, breakout, sessionPicks, tickerSectors, leaderboard] = await Promise.all([
+                    fetchShard('matrix.json'),
+                    fetchShard('sectors.json'),
+                    fetchShard('top_10.json'),
+                    fetchShard('breakout.json'),
+                    fetchShard('session_picks.json'),
+                    fetchShard('ticker_sectors.json'),
+                    fetchShard('leaderboard.json'),
+                ]);
+
+                if (!matrix || typeof matrix !== 'object' || !Array.isArray(matrix.market_matrix)) {
+                    throw new Error('matrix.json missing or invalid - cannot render dashboard without it');
+                }
+
+                globalData = {
+                    last_data_date: matrix.last_data_date,
+                    market_matrix: matrix.market_matrix,
+                    sectors: (sectors && sectors.sectors) || [],
+                    top_10: (top10 && top10.top_10) || {},
+                    breakout_watchlist: (breakout && breakout.breakout_watchlist) || [],
+                    session_picks: (sessionPicks && sessionPicks.session_picks) || {},
+                    ticker_sectors: (tickerSectors && tickerSectors.ticker_sectors) || {},
+                    leaderboard: (leaderboard && leaderboard.leaderboard) || [],
+                    // Loaded lazily/in the background - see ensureChartHistoryLoaded().
+                    chart_history: null,
+                };
+
                 updateStaleBanner(globalData.last_data_date);
                 document.getElementById('val-last-date').innerText = escapeHtml(globalData.last_data_date || "N/A");
                 populateSelects(); applyFilters(); renderSectors(); renderTop10(); renderBreakouts(); renderSessionPicks(); renderPortfolio(); renderHistory(); renderAccountBar(); renderPaperTradingPreview(); renderLeaderboardPreview();
+
+                prefetchChartHistoryInBackground();
             } catch (error) {
                 console.error("Failed to load market data:", error);
                 document.getElementById('tbody-matrix').innerHTML = `<tr><td colspan="21" class="p-8 text-center text-rose-400 font-sans">⚠️ ${tt('lbl_data_unavailable')}</td></tr>`;
             }
+        }
+
+        // chart_history.json fetch is cached in this promise so concurrent
+        // callers (the background prefetch AND a user who jumps straight to
+        // the Charts tab before it lands) share one in-flight request instead
+        // of firing duplicate 1.2MB fetches.
+        let chartHistoryPromise = null;
+        function ensureChartHistoryLoaded() {
+            if (globalData && globalData.chart_history) return Promise.resolve(globalData.chart_history);
+            if (chartHistoryPromise) return chartHistoryPromise;
+            chartHistoryPromise = fetch('./data/chart_history.json')
+                .then(res => { if (!res.ok) throw new Error(`HTTP ${res.status}`); return res.json(); })
+                .then(data => {
+                    const history = (data && data.chart_history) || { stocks: {}, sectors: {} };
+                    if (globalData) globalData.chart_history = history;
+                    return history;
+                })
+                .catch(err => {
+                    console.error('Failed to load chart_history.json:', err);
+                    // Don't cache the failure - let a later call (e.g. the user
+                    // re-opening the Charts tab) retry instead of being stuck
+                    // on the single-point fallback for the rest of the session.
+                    chartHistoryPromise = null;
+                    throw err;
+                });
+            return chartHistoryPromise;
+        }
+
+        function prefetchChartHistoryInBackground() {
+            ensureChartHistoryLoaded().then(() => {
+                // Both call sites below already render a graceful "no history
+                // yet" fallback (a single latest-price point on the chart, a
+                // "no history" ETA note on Exits) - this just upgrades them
+                // to the real data once it lands, if the user is already
+                // looking at that tab.
+                if (!document.getElementById('tab-charts').classList.contains('hidden')) plotChart();
+                if (!document.getElementById('tab-exits').classList.contains('hidden')) renderPortfolio();
+            }).catch(() => { /* already logged in ensureChartHistoryLoaded() */ });
         }
 
         // Initialize
@@ -3708,10 +3897,21 @@
                 localStorage.setItem('quant_paper_portfolio', JSON.stringify(paperPortfolio));
                 localStorage.setItem('quant_paper_history', JSON.stringify(paperHistory));
             } else {
+                // Self-healing create, same reasoning as handleReconsentAccept's
+                // "existing.exists" branch below: a signed-in user with no
+                // Firestore doc yet must still satisfy the `create` rule's
+                // unconditional agreed_to_terms/terms_version/agreed_at
+                // requirement, or this write is rejected with
+                // permission-denied and the user is stuck. This path should
+                // be rare in practice (login.html/handleReconsentAccept
+                // normally create the doc first), but must never silently
+                // fail if it's ever hit.
                 paperCash = PAPER_TRADING_STARTING_CASH_EGP;
+                const ip = await fetchClientIp();
                 await docRef.set({
                     cash: userCash, portfolio: userPortfolio, history: userHistory,
                     paper_cash: paperCash, paper_portfolio: paperPortfolio, paper_history: paperHistory,
+                    ...buildConsentFields(ip),
                 });
             }
             if (typeof renderAccountBar === 'function') renderAccountBar();

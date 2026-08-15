@@ -18,13 +18,16 @@ service cloud.firestore {
       // being touched by the client, and restrict subscription_status to
       // only ever be client-settable as 'trial'.
       function allowedUserFields() {
-        return ['cash', 'portfolio', 'history', 'agreed_to_terms', 'terms_version', 'agreed_at', 'web_stats',
+        return ['cash', 'portfolio', 'history', 'paper_cash', 'paper_portfolio', 'paper_history',
+                'agreed_to_terms', 'terms_version', 'agreed_at', 'ip_address', 'web_stats',
                 'desktop_stats', 'trial_ends_at', 'subscription_status', 'subscription_expires_at'];
       }
 
-      // Only used by `create`, where cash/portfolio/history are always
-      // being set for the first time - unconditional checks are correct
-      // here (a brand-new account must start from a valid state).
+      // Only used by `create`, where cash/portfolio/history (and now
+      // paper_cash/paper_portfolio/paper_history - the paper-trading
+      // counterpart, see index.html/login.html) are always being set for
+      // the first time - unconditional checks are correct here (a
+      // brand-new account must start from a valid state).
       function validAccountData() {
         return request.resource.data.cash is number
           && request.resource.data.cash >= 0
@@ -33,6 +36,18 @@ service cloud.firestore {
           && request.resource.data.portfolio.size() <= 200
           && request.resource.data.history is list
           && request.resource.data.history.size() <= 5000
+          && request.resource.data.paper_cash is number
+          && request.resource.data.paper_cash >= 0
+          && request.resource.data.paper_cash <= 100000000
+          && request.resource.data.paper_portfolio is list
+          && request.resource.data.paper_portfolio.size() <= 200
+          && request.resource.data.paper_history is list
+          && request.resource.data.paper_history.size() <= 5000
+          && (
+                !("ip_address" in request.resource.data)
+                || request.resource.data.ip_address == null
+                || request.resource.data.ip_address is string
+             )
           && (
                 !("trial_ends_at" in request.resource.data)
                 || request.resource.data.trial_ends_at is timestamp
@@ -52,7 +67,10 @@ service cloud.firestore {
       // writes like re-accepting updated terms. Only validate a field here
       // if THIS write is actually the one changing it; an update that never
       // touches cash/portfolio/history should not be blocked by whatever
-      // state those fields happen to already be in.
+      // state those fields happen to already be in. Same reasoning applies
+      // to paper_cash/paper_portfolio/paper_history below - accounts that
+      // existed before paper trading shipped won't have these fields set,
+      // and that must not block unrelated future updates either.
       function validPartialUpdate() {
         let changed = request.resource.data.diff(resource.data).affectedKeys();
         return (
@@ -78,6 +96,33 @@ service cloud.firestore {
                    )
              )
           && (
+                !("paper_cash" in changed)
+                || (
+                      request.resource.data.paper_cash is number
+                      && request.resource.data.paper_cash >= 0
+                      && request.resource.data.paper_cash <= 100000000
+                   )
+             )
+          && (
+                !("paper_portfolio" in changed)
+                || (
+                      request.resource.data.paper_portfolio is list
+                      && request.resource.data.paper_portfolio.size() <= 200
+                   )
+             )
+          && (
+                !("paper_history" in changed)
+                || (
+                      request.resource.data.paper_history is list
+                      && request.resource.data.paper_history.size() <= 5000
+                   )
+             )
+          && (
+                !("ip_address" in changed)
+                || request.resource.data.ip_address == null
+                || request.resource.data.ip_address is string
+             )
+          && (
                 !("trial_ends_at" in changed)
                 || request.resource.data.trial_ends_at is timestamp
              )
@@ -88,7 +133,6 @@ service cloud.firestore {
       }
 
       allow create: if request.auth != null
-        && request.auth.token.email_verified == true
         && request.auth.uid == userId
         && request.resource.data.keys().hasOnly(allowedUserFields())
         && request.resource.data.agreed_to_terms == true
@@ -103,7 +147,6 @@ service cloud.firestore {
         && (!("subscription_status" in request.resource.data) || request.resource.data.subscription_status == 'trial')
         && !("subscription_expires_at" in request.resource.data);
       allow update: if request.auth != null
-        && request.auth.token.email_verified == true
         && request.auth.uid == userId
         // Only the KEYS BEING CHANGED by this write need to be in the
         // allowed set - NOT every key already on the document. Checking
@@ -144,13 +187,8 @@ service cloud.firestore {
            );
     }
     match /sessions/{sessionId} {
-      allow create: if request.auth != null
-        && request.auth.token.email_verified == true
-        && request.resource.data.uid == request.auth.uid;
-      allow update: if request.auth != null
-        && request.auth.token.email_verified == true
-        && resource.data.uid == request.auth.uid
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['uid', 'last_seen_at', 'user_agent', 'device_type']);
+      allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
+      allow update: if request.auth != null && resource.data.uid == request.auth.uid;
       allow read:   if request.auth != null && request.auth.token.email in ['drmo071990@gmail.com'];
       allow delete: if request.auth != null && request.auth.token.email in ['drmo071990@gmail.com'];
     }

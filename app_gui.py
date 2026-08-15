@@ -11,7 +11,7 @@ except ImportError:
     requests = None
 
 from config import WATCH_DIR, TRANSACTION_FEE_PCT, get_logger
-from db_manager import DatabaseManager, set_language as _set_db_language
+from db_manager import DatabaseManager, DatabaseLockedError, set_language as _set_db_language
 from decision_matrix import DecisionMatrix, set_language as _set_dm_language
 from analytics import QuantitativeEngine
 from chart_widget import StockSectorChartWidget
@@ -1707,6 +1707,126 @@ class AnalysisWorker(QThread):
             progress_callback=lambda pct, msg: self.progress_signal.emit(pct, msg)
         )
         self.results_signal.emit(buys, exits, top10, closed, fin_stmt, sectors, breakout_watchlist, portfolio_risk, session_picks)
+
+
+# =============================================================================
+# W1 — VISIBLE DB-LOCK RETRY (startup connect dialog)
+#
+# DatabaseManager() previously either connected instantly or, if
+# quant_master.duckdb was already held open by another running instance of
+# this same app (a known real scenario - see launch_and_publish.bat's own
+# "already running" check), retried completely silently for up to ~64s
+# (0.5 * 2**0..6 across 8 attempts) before either succeeding or raising
+# DatabaseLockedError. From the user's side that silent window looked
+# exactly like a frozen/hung app, with no way to tell "still retrying"
+# apart from "crashed" - and a plain unhandled DatabaseLockedError would
+# have shown up as a generic fatal-error traceback box instead of the
+# actionable "close the other window" message it actually deserves.
+#
+# DBConnectWorker runs the (retrying) DatabaseManager() connection off the
+# UI thread; DBConnectDialog shows live retry progress via the on_retry
+# hook threaded through db_manager in this same change, and turns a final
+# DatabaseLockedError into a friendly, specific dialog instead of falling
+# through to the generic fatal-error handler in __main__ below.
+# =============================================================================
+class DBConnectWorker(QThread):
+    retrying = pyqtSignal(int, int, float, str)   # attempt, retries, delay_seconds, error_text
+    connected = pyqtSignal()
+    failed = pyqtSignal(str)                      # friendly error message
+
+    def _on_retry(self, attempt, retries, delay, error):
+        # Called from db_manager on the worker thread; re-emit as a Qt
+        # signal so the dialog only ever touches its widgets on the UI
+        # thread via the normal signal/slot queued-connection mechanism.
+        self.retrying.emit(attempt, retries, delay, str(error))
+
+    def run(self):
+        try:
+            DatabaseManager(on_retry=self._on_retry)
+            self.connected.emit()
+        except DatabaseLockedError as e:
+            self.failed.emit(str(e))
+        except Exception as e:
+            # Anything else (corrupt file, missing directory, ...) isn't a
+            # lock issue - surface it plainly rather than pretending it's
+            # the same "close the other app" situation.
+            logger.error(f"Unexpected error connecting to database:\n{traceback.format_exc()}")
+            self.failed.emit(f"Unexpected database error: {e}")
+
+
+class DBConnectDialog(QDialog):
+    """Shown while DBConnectWorker connects. Starts out looking like a
+    plain, quick splash ('Connecting to database...') and only grows
+    visible retry detail once a lock is actually encountered, so the
+    common case (instant connect) never flashes retry UI at all."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(tr("MB-EGX — Starting"))
+        self.setModal(True)
+        self.setFixedSize(420, 150)
+        self.setWindowFlag(Qt.WindowType.WindowContextHelpButtonHint, False)
+
+        self.result_ok = False
+        self.error_message = None
+
+        layout = QVBoxLayout(self)
+        self.status_label = QLabel(tr("Connecting to database..."))
+        self.status_label.setWordWrap(True)
+        layout.addWidget(self.status_label)
+
+        self.progress = QProgressBar()
+        self.progress.setRange(0, 0)  # indeterminate until a retry tells us otherwise
+        layout.addWidget(self.progress)
+
+        self.detail_label = QLabel("")
+        self.detail_label.setWordWrap(True)
+        self.detail_label.setStyleSheet("color: #94a3b8; font-size: 11px;")
+        layout.addWidget(self.detail_label)
+
+        btn_row = QHBoxLayout()
+        btn_row.addStretch()
+        self.cancel_btn = QPushButton(tr("Cancel"))
+        self.cancel_btn.clicked.connect(self._on_cancel)
+        btn_row.addWidget(self.cancel_btn)
+        layout.addLayout(btn_row)
+
+        self.worker = DBConnectWorker()
+        self.worker.retrying.connect(self._on_retrying)
+        self.worker.connected.connect(self._on_connected)
+        self.worker.failed.connect(self._on_failed)
+        self.worker.start()
+
+    def _on_retrying(self, attempt, retries, delay, error_text):
+        self.progress.setRange(0, retries)
+        self.progress.setValue(attempt)
+        self.status_label.setText(
+            tr("Database is busy — retrying ({0}/{1})...").format(attempt, retries)
+        )
+        self.detail_label.setText(
+            tr("Another program (usually MB-EGX itself) has the database open. "
+               "Waiting {0:.1f}s before the next attempt...").format(delay)
+        )
+
+    def _on_connected(self):
+        self.result_ok = True
+        self.accept()
+
+    def _on_failed(self, message):
+        self.result_ok = False
+        self.error_message = message
+        self.reject()
+
+    def _on_cancel(self):
+        # The worker thread is mid-connect (or mid-sleep) and can't be
+        # force-killed safely mid-DuckDB-call, so we just stop waiting for
+        # it here and let __main__ exit; any in-flight attempt finishes
+        # and is discarded harmlessly since nothing reads its signals once
+        # this dialog is gone.
+        self.result_ok = False
+        self.error_message = None
+        self.reject()
+
 
 # =============================================================================
 # REDESIGNED FULL-SCREEN LOGIN DIALOG
@@ -3906,11 +4026,39 @@ if __name__ == "__main__":
         if login.exec() != QDialog.DialogCode.Accepted or not login.user_info:
             sys.exit(0)
 
+        # Establish the shared DuckDB connection (and run its one-time
+        # schema init) BEFORE building QuantDashboard, via a small dialog
+        # that shows visible retry progress if quant_master.duckdb is
+        # already open in another running instance of this app - instead
+        # of QuantDashboard.__init__'s own `DatabaseManager()` call
+        # silently blocking the main window from ever appearing. See the
+        # DBConnectWorker/DBConnectDialog docstring above.
+        connect_dialog = DBConnectDialog()
+        connect_dialog.exec()
+        if not connect_dialog.result_ok:
+            if connect_dialog.error_message:
+                QMessageBox.critical(
+                    None,
+                    "MB-EGX — Can't Connect to Database",
+                    connect_dialog.error_message,
+                )
+            sys.exit(1)
+
         window = QuantDashboard(user_info=login.user_info)
         window.show()
         sys.exit(app.exec())
     except SystemExit:
         raise
+    except DatabaseLockedError as e:
+        # Belt-and-suspenders: covers the (normally unreachable, since the
+        # connect dialog above already handles the startup path) case of
+        # a lock surfacing later, e.g. from a dialog that opens its own
+        # DatabaseManager() such as PortfolioDialog. Same friendly,
+        # specific message as the startup dialog rather than falling
+        # through to the generic fatal-error traceback box below.
+        logger.error(f"Database locked: {e}")
+        _show_fatal_error("MB-EGX — Database Locked", str(e))
+        sys.exit(1)
     except Exception:
         tb_text = traceback.format_exc()
         logger.error(f"Fatal startup error:\n{tb_text}")

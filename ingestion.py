@@ -145,22 +145,63 @@ def _clean_volume(val):
 
 
 _HTML_METACHARS = str.maketrans({
-    '<': '', '>': '', '"': "'", '&': 'and', '`': ''
+    '<': '', '>': '', '"': "'", "'": '\u2019', '&': 'and', '`': ''
 })
 _BIDI_DANGEROUS = ''.join(chr(c) for c in (0x202A, 0x202B, 0x202D, 0x202E, 0x2066, 0x2067, 0x2068, 0x2069))
+
+# CSV/Excel "formula injection" (CWE-1236): a cell value that STARTS with
+# one of these characters is interpreted as a formula by Excel/Sheets/
+# LibreOffice the moment this data is ever re-opened as a spreadsheet or
+# CSV (e.g. someone exports ingested data for review, or a future feature
+# adds a "download as CSV" button) - letting a malicious market-data feed
+# smuggle a formula like =HYPERLINK(...) or =cmd|'/c calc'!A1 into a
+# ticker/name/sector cell that then executes in whoever opens that file.
+# This is a distinct injection class from the HTML/script handling above
+# (a plain-text sink, not an HTML one) and wasn't covered by it at all.
+_FORMULA_INJECTION_PREFIXES = ('=', '+', '-', '@', '\t', '\r')
 
 
 def _sanitize_text_field(val: str, max_len: int = 200) -> str:
     """Strip HTML/script-ish and invisible-directional characters from
-    ingested text before it can reach desktop/web surfaces."""
+    ingested text before it can reach desktop/web surfaces, and defuse
+    CSV/Excel formula injection (see _FORMULA_INJECTION_PREFIXES) before
+    it can reach any spreadsheet surface.
+
+    BUGFIX (W4): the HTML-metachar translation used to map " -> ' but
+    left pre-existing ' characters completely untouched - so on top of
+    not neutralizing an attacker's own single quotes, every double quote
+    it "sanitized" was converted INTO a fresh, still-unescaped single
+    quote, net *increasing* the number of raw quote characters in the
+    output. ' now maps to the typographic right-single-quote (’) instead,
+    matching the existing " -> ' spirit (still reads naturally in real
+    names like "O'Reilly") while actually removing the raw delimiter.
+    """
     if val is None:
         return ""
-    s = str(val).translate(_HTML_METACHARS)
-    s = re.sub(r'(?i)javascript\s*:', '', s)
-    s = re.sub(r'(?i)<\s*/?\s*script[^>]*>', '', s)
+    s = str(val)
+    # Strip control chars FIRST: doing this after the regex checks below
+    # (as a previous version of this function did) let an attacker split
+    # a blocked keyword with an embedded control character - e.g.
+    # "java\tscript:" - and slip through, since \s* in the regex only
+    # matches BETWEEN "javascript" and ":", not a tab hidden inside the
+    # word itself. Stripping control chars up front closes that bypass
+    # class entirely rather than trying to special-case it in the regex.
     s = re.sub(r'[\x00-\x1f\x7f]', '', s)
     s = ''.join(ch for ch in s if ch not in _BIDI_DANGEROUS)
-    return s.strip()[:max_len]
+    s = s.translate(_HTML_METACHARS)
+    s = re.sub(r'(?i)javascript\s*:', '', s)
+    s = re.sub(r'(?i)<\s*/?\s*script[^>]*>', '', s)
+    s = s.strip()
+
+    # Defuse formula injection: a leading apostrophe forces Excel/Sheets/
+    # LibreOffice to treat the cell as literal text instead of a formula,
+    # without altering how the value displays or sorts anywhere else
+    # (web/desktop just see one extra leading char, which is harmless
+    # there - only spreadsheet programs treat a leading ' specially).
+    if s and s[0] in _FORMULA_INJECTION_PREFIXES:
+        s = "'" + s
+
+    return s[:max_len]
 
 
 def _parse_excel_date(val):
