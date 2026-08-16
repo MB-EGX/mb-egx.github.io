@@ -24,6 +24,16 @@ the next run picks it up. This is the same "catch-up model" already used
 throughout this codebase (daily-instagram-post.yml's schedule trigger,
 post_state.py's due-check) - nothing here needs a paid host.
 
+NOTE ON REPLY LATENCY: this script only runs when the GitHub Actions
+schedule trigger fires (every 5 minutes as of telegram-bot.yml - GitHub
+Actions doesn't reliably run tighter than that anyway). That cadence is
+the practical floor for a free, schedule-only bot regardless of language.
+For sub-second replies you'd need Telegram's webhook mode (Telegram pushes
+to a URL of yours the instant a message arrives) behind a small always-on
+endpoint (Cloudflare Worker / Vercel function / etc.) instead of this
+poll-and-exit script - GitHub Actions itself can't receive inbound
+webhooks.
+
 WHAT IT READS
 -------------
 Only web_public/data/market_data.json - the exact same public,
@@ -50,8 +60,8 @@ SETUP
 3. Add the companion workflow (telegram-bot.yml) to .github/workflows/.
 4. Message your bot /start on Telegram to try it.
 
-COMMANDS
---------
+COMMANDS (English)
+-------------------
 /start, /help    - what this bot can do
 /strongbuy        - today's 🔥 STRONG BUY tickers
 /breakout          - today's ⚡ BREAKOUT BUY tickers
@@ -61,12 +71,36 @@ COMMANDS
 /picks             - active Session Picks (all horizons)
 /leaderboard        - top 10 leaderboard
 /ticker SYMBOL     - full signal detail for one ticker
+
+ARABIC SUPPORT
+---------------
+Any incoming message containing Arabic script is answered fully in
+Arabic - no need to know the slash-command names. Slash commands still
+work exactly as before too (e.g. an Arabic speaker can still type
+/sectors and get an Arabic-labelled reply, since the reply language is
+decided per-message, not per-command).
+
+Natural-language Arabic triggers (see ARABIC_KEYWORDS below):
+    قوي / شراء قوي        -> /strongbuy
+    اختراق                -> /breakout
+    تجميع / تراكم          -> /accumulate
+    انخفاض / هبوط          -> /dip
+    قطاع / قطاعات          -> /sectors
+    توصيات / فرص           -> /picks
+    متصدر / الأفضل         -> /leaderboard
+    مساعدة / مرحبا / أهلا   -> /help
+    سهم SYMBOL / سعر SYMBOL -> /ticker SYMBOL   (e.g. "سعر COMI")
+
+Anything Arabic that doesn't match a known trigger gets a friendly
+Arabic "didn't understand, here's what I can do" reply instead of the
+generic English fallback.
 """
 from __future__ import annotations
 
 import argparse
 import json
 import os
+import re
 import sys
 from html import escape as _esc
 
@@ -82,11 +116,331 @@ TELEGRAM_API_BASE = "https://api.telegram.org/bot{token}"
 MAX_UPDATES_PER_POLL = 50  # a few minutes' worth of commands, never unbounded
 MAX_ROWS_PER_REPLY = 15    # keep replies readable on a phone screen; matrix can be 200+ rows
 
+# ---------------------------------------------------------------------------
+# Arabic detection + natural-language command matching
+# ---------------------------------------------------------------------------
 
-def _api_url(method: str) -> str:
-    if not TELEGRAM_BOT_TOKEN:
-        raise SystemExit("TELEGRAM_BOT_TOKEN is not set - see this module's SETUP docstring.")
-    return f"{TELEGRAM_API_BASE.format(token=TELEGRAM_BOT_TOKEN)}/{method}"
+# Arabic (+ Arabic Supplement / Presentation Forms) unicode block - any hit
+# anywhere in the message is enough to switch the reply language to Arabic.
+_ARABIC_RE = re.compile(r'[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]')
+
+# "سهم COMI" / "سعر comi" -> ticker lookup. Ticker symbols on EGX are Latin
+# letters, so this still works fine inside an otherwise-Arabic sentence.
+_ARABIC_TICKER_RE = re.compile(r'(?:سهم|سعر|تيكر)\s+([A-Za-z]{2,10})')
+
+# Keyword -> command. Checked as a plain substring match against the raw
+# message (Arabic has no case-folding concern here), first keyword that
+# hits wins its command. Order matters only when a message could plausibly
+# contain two of these - kept deliberately short/specific to avoid that.
+ARABIC_KEYWORDS = {
+    "/strongbuy":   ["شراء قوي", "توصية قوية", "قوي"],
+    "/breakout":    ["اختراق"],
+    "/accumulate":  ["تجميع", "تراكم"],
+    "/dip":         ["انخفاض", "هبوط"],
+    "/sectors":     ["قطاعات", "قطاع"],
+    "/picks":       ["توصيات", "الفرص", "فرص اليوم"],
+    "/leaderboard": ["المتصدرين", "متصدر", "الأفضل"],
+    "/help":        ["مساعدة", "مرحبا", "أهلا", "السلام عليكم"],
+}
+
+
+def _is_arabic(text: str) -> bool:
+    return bool(_ARABIC_RE.search(text or ""))
+
+
+def _match_arabic_intent(text: str) -> str | None:
+    for cmd, keywords in ARABIC_KEYWORDS.items():
+        if any(kw in text for kw in keywords):
+            return cmd
+    return None
+
+
+# ---------------------------------------------------------------------------
+# Localized strings/labels - one dict per language, same keys throughout so
+# every formatter just does LABELS[lang]["some_key"] instead of branching.
+# ---------------------------------------------------------------------------
+
+LABELS = {
+    "en": {
+        "score": "Score", "proj": "Proj.",
+        "strong_buy_title": "🔥 Strong Buy",
+        "strong_buy_empty": "No STRONG BUY signals right now.",
+        "breakout_title": "⚡ Breakout Buy",
+        "breakout_empty": "No BREAKOUT BUY signals right now.",
+        "accumulate_title": "📈 Accumulate",
+        "accumulate_empty": "No ACCUMULATE signals right now.",
+        "dip_title": "⏳ Buy On Dip",
+        "dip_empty": "No BUY ON DIP signals right now.",
+        "sectors_title": "🏢 Sector Heatmap",
+        "sectors_empty": "No sector data available.",
+        "picks_title": "Session Picks",
+        "picks_empty": "No active picks right now.",
+        "horizon_short": "🚀 Next Session",
+        "horizon_medium": "📈 Medium-Term",
+        "horizon_long": "🏛️ Long-Term",
+        "picked": "picked",
+        "target": "target",
+        "leaderboard_title": "🥇 Leaderboard",
+        "leaderboard_empty": "No leaderboard data yet.",
+        "hits": "hit(s)",
+        "total": "total",
+        "ticker_not_found": "No signal found for <b>{sym}</b>. Check the symbol and try again (e.g. /ticker COMI).",
+        "ticker_price": "Price", "ticker_score_lbl": "Score",
+        "ticker_entry": "Entry (VWAP)", "ticker_stop": "Stop-Loss",
+        "ticker_tp": "Take-Profit", "ticker_proj": "Proj. Gain",
+        "ticker_rsi": "RSI-14", "ticker_adx": "ADX-14", "ticker_trend": "Trend",
+        "ticker_confidence": "Data Confidence",
+        "more_rows": "… and {n} more. See the full dashboard for the rest.",
+        "unknown": "Unknown command. Send /help to see what I can do.",
+        "no_text_hint": "Send /help to see what I can do.",
+        "no_data": "Market data isn't available right now - try again in a moment.",
+        "ticker_usage": "Usage: /ticker SYMBOL (e.g. /ticker COMI)",
+        "help": (
+            "<b>MB-EGX Signal Bot</b>\n\n"
+            "/strongbuy — today's 🔥 STRONG BUY tickers\n"
+            "/breakout — today's ⚡ BREAKOUT BUY tickers\n"
+            "/accumulate — today's 📈 ACCUMULATE tickers\n"
+            "/dip — today's ⏳ BUY ON DIP tickers\n"
+            "/sectors — sector heatmap summary\n"
+            "/picks — active Session Picks\n"
+            "/leaderboard — top 10 leaderboard\n"
+            "/ticker SYMBOL — full detail for one ticker (e.g. /ticker COMI)\n\n"
+            "Data is the same public feed as the web dashboard, refreshed on the same schedule. "
+            "Achievement alerts (a pick hitting its target) are pushed automatically - no command needed.\n\n"
+            "بتتكلم عربي؟ اكتب رسالتك بالعربي وهرد عليك عربي (مثال: \"قطاعات\"، \"توصيات\"، \"سعر COMI\")."
+        ),
+    },
+    "ar": {
+        "score": "التقييم", "proj": "العائد المتوقع",
+        "strong_buy_title": "🔥 شراء قوي",
+        "strong_buy_empty": "لا توجد إشارات شراء قوية حالياً.",
+        "breakout_title": "⚡ اختراق للشراء",
+        "breakout_empty": "لا توجد إشارات اختراق حالياً.",
+        "accumulate_title": "📈 تجميع",
+        "accumulate_empty": "لا توجد إشارات تجميع حالياً.",
+        "dip_title": "⏳ شراء عند الانخفاض",
+        "dip_empty": "لا توجد إشارات شراء عند الانخفاض حالياً.",
+        "sectors_title": "🏢 خريطة القطاعات",
+        "sectors_empty": "لا توجد بيانات قطاعات متاحة.",
+        "picks_title": "الفرص المختارة (Session Picks)",
+        "picks_empty": "لا توجد فرص نشطة حالياً.",
+        "horizon_short": "🚀 الجلسة القادمة",
+        "horizon_medium": "📈 متوسط المدى",
+        "horizon_long": "🏛️ طويل المدى",
+        "picked": "تاريخ الاختيار",
+        "target": "الهدف",
+        "leaderboard_title": "🥇 المتصدرين",
+        "leaderboard_empty": "لا توجد بيانات متصدرين بعد.",
+        "hits": "إصابة/إصابات",
+        "total": "الإجمالي",
+        "ticker_not_found": "لا توجد إشارة للسهم <b>{sym}</b>. تأكد من الرمز وحاول مرة أخرى (مثال: سعر COMI).",
+        "ticker_price": "السعر", "ticker_score_lbl": "التقييم",
+        "ticker_entry": "سعر الدخول (VWAP)", "ticker_stop": "وقف الخسارة",
+        "ticker_tp": "هدف جني الأرباح", "ticker_proj": "العائد المتوقع",
+        "ticker_rsi": "مؤشر RSI-14", "ticker_adx": "مؤشر ADX-14", "ticker_trend": "الاتجاه",
+        "ticker_confidence": "مستوى الثقة في البيانات",
+        "more_rows": "… و{n} سهم إضافي. راجع لوحة البيانات الكاملة لباقي النتائج.",
+        "unknown": "لم أفهم طلبك. اكتب \"مساعدة\" لمعرفة الأوامر المتاحة.",
+        "no_text_hint": "اكتب \"مساعدة\" لمعرفة ما يمكنني فعله.",
+        "no_data": "بيانات السوق غير متاحة حالياً - حاول مرة أخرى بعد قليل.",
+        "ticker_usage": "الاستخدام: سعر SYMBOL (مثال: سعر COMI)",
+        "help": (
+            "<b>بوت إشارات MB-EGX</b>\n\n"
+            "شراء قوي — أسهم 🔥 الشراء القوي اليوم\n"
+            "اختراق — أسهم ⚡ الاختراق اليوم\n"
+            "تجميع — أسهم 📈 التجميع اليوم\n"
+            "انخفاض — أسهم ⏳ الشراء عند الانخفاض اليوم\n"
+            "قطاعات — ملخص خريطة القطاعات\n"
+            "توصيات — الفرص المختارة النشطة\n"
+            "متصدرين — قائمة أفضل 10 أسهم\n"
+            "سعر SYMBOL — تفاصيل كاملة لسهم معين (مثال: سعر COMI)\n\n"
+            "البيانات هي نفس البيانات العامة المعروضة على الموقع، ويتم تحديثها بنفس الجدول الزمني. "
+            "تنبيهات تحقيق الأهداف تُرسل تلقائياً بدون الحاجة لأي أمر."
+        ),
+    },
+}
+
+
+# ---------------------------------------------------------------------------
+# Formatting - every formatter takes the already-loaded market_data.json
+# dict (+ the arg it needs, + lang) and returns an HTML-formatted string.
+# Kept small/composable so a new command is just one more formatter + one
+# more dispatch entry, and localization is just LABELS[lang][...] lookups
+# rather than a second parallel set of functions.
+# ---------------------------------------------------------------------------
+
+def _rows_for_action(data: dict, needle: str) -> list:
+    return [r for r in data.get("market_matrix", []) if needle in (r.get("Action") or "")]
+
+
+def _format_row_line(row: dict, lang: str) -> str:
+    L = LABELS[lang]
+    ticker = _esc(str(row.get("Ticker", "?")))
+    price = row.get("Current Price", "-")
+    score = row.get("Rank Score", "-")
+    gain = row.get("Projected Gain (%)", "N/A")
+    return f"• <b>{ticker}</b>  {price}  ({L['score']} {score}, {L['proj']} {gain}%)"
+
+
+def _format_action_list(data: dict, needle: str, title_key: str, empty_key: str, lang: str) -> str:
+    L = LABELS[lang]
+    rows = sorted(_rows_for_action(data, needle), key=lambda r: r.get("Rank Score", 0), reverse=True)
+    header = f"<b>{L[title_key]}</b> — {_esc(str(data.get('last_data_date', 'N/A')))}\n\n"
+    if not rows:
+        return header + L[empty_key]
+    lines = [_format_row_line(r, lang) for r in rows[:MAX_ROWS_PER_REPLY]]
+    body = "\n".join(lines)
+    if len(rows) > MAX_ROWS_PER_REPLY:
+        body += "\n" + L["more_rows"].format(n=len(rows) - MAX_ROWS_PER_REPLY)
+    return header + body
+
+
+def format_strong_buy(data: dict, arg: str, lang: str) -> str:
+    return _format_action_list(data, "STRONG BUY", "strong_buy_title", "strong_buy_empty", lang)
+
+
+def format_breakout(data: dict, arg: str, lang: str) -> str:
+    return _format_action_list(data, "BREAKOUT BUY", "breakout_title", "breakout_empty", lang)
+
+
+def format_accumulate(data: dict, arg: str, lang: str) -> str:
+    return _format_action_list(data, "ACCUMULATE", "accumulate_title", "accumulate_empty", lang)
+
+
+def format_dip(data: dict, arg: str, lang: str) -> str:
+    return _format_action_list(data, "BUY ON DIP", "dip_title", "dip_empty", lang)
+
+
+def format_sectors(data: dict, arg: str, lang: str) -> str:
+    L = LABELS[lang]
+    sectors = data.get("sectors", [])
+    if not sectors:
+        return L["sectors_empty"]
+    sectors = sorted(sectors, key=lambda s: s.get("1D Return (%)", s.get("Bullish Breadth (%)", 0)), reverse=True)
+    lines = [f"<b>{L['sectors_title']}</b>\n"]
+    for s in sectors[:MAX_ROWS_PER_REPLY]:
+        name = _esc(str(s.get("Sector", "?")))
+        status = _esc(str(s.get("Sector Status", "")))
+        chg = s.get("1D Return (%)", "-")
+        lines.append(f"• <b>{name}</b>  {chg}%  {status}")
+    return "\n".join(lines)
+
+
+def format_picks(data: dict, arg: str, lang: str) -> str:
+    L = LABELS[lang]
+    sp = data.get("session_picks", {})
+    horizon_titles = {
+        "short": L["horizon_short"],
+        "medium": L["horizon_medium"],
+        "long": L["horizon_long"],
+    }
+    lines = [f"<b>{L['picks_title']}</b> — {_esc(str(sp.get('session_date', 'N/A')))}\n"]
+    any_picks = False
+    for horizon, title in horizon_titles.items():
+        picks = sp.get(horizon, [])
+        if not picks:
+            continue
+        any_picks = True
+        lines.append(f"\n<b>{title}</b>")
+        for p in picks:
+            lines.append(
+                f"• {_esc(str(p.get('ticker', '?')))} — {L['target']} +{p.get('expected_pct', '?')}% "
+                f"({L['picked']} {_esc(str(p.get('pick_date', '')))})"
+            )
+    if not any_picks:
+        lines.append(L["picks_empty"])
+    return "\n".join(lines)
+
+
+def format_leaderboard(data: dict, arg: str, lang: str) -> str:
+    L = LABELS[lang]
+    board = data.get("leaderboard", [])
+    if not board:
+        return L["leaderboard_empty"]
+    lines = [f"<b>{L['leaderboard_title']}</b>\n"]
+    for i, r in enumerate(board[:10], start=1):
+        ticker = _esc(str(r.get("ticker", "?")))
+        hits = r.get("hits", 0)
+        total = r.get("total_return_pct", 0)
+        lines.append(f"{i}. <b>{ticker}</b> — {hits} {L['hits']}, {total}% {L['total']}")
+    return "\n".join(lines)
+
+
+def format_ticker(data: dict, arg: str, lang: str) -> str:
+    L = LABELS[lang]
+    symbol = (arg or "").strip().upper()
+    if not symbol:
+        return L["ticker_usage"]
+    row = next((r for r in data.get("market_matrix", []) if (r.get("Ticker") or "").upper() == symbol), None)
+    if not row:
+        return L["ticker_not_found"].format(sym=_esc(symbol))
+    lines = [
+        f"<b>{_esc(str(row.get('Ticker')))}</b> — {_esc(str(row.get('Action', '-')))}",
+        f"{L['ticker_price']}: {row.get('Current Price', '-')}   {L['ticker_score_lbl']}: {row.get('Rank Score', '-')}",
+        f"{L['ticker_entry']}: {row.get('Target Entry (VWAP)', '-')}   {L['ticker_stop']}: {row.get('Suggested Stop-Loss', '-')}",
+        f"{L['ticker_tp']}: {row.get('Take-Profit Target', '-')}   {L['ticker_proj']}: {row.get('Projected Gain (%)', 'N/A')}%",
+        f"{L['ticker_rsi']}: {row.get('RSI-14', '-')}   {L['ticker_adx']}: {row.get('ADX-14', '-')}   {L['ticker_trend']}: {_esc(str(row.get('Trend Class', '-')))}",
+        f"{L['ticker_confidence']}: {_esc(str(row.get('Data Confidence', '-')))}",
+    ]
+    return "\n".join(lines)
+
+
+def format_help(arg: str, lang: str) -> str:
+    return LABELS[lang]["help"]
+
+
+COMMAND_HANDLERS = {
+    "/start": lambda data, arg, lang: format_help(arg, lang),
+    "/help": lambda data, arg, lang: format_help(arg, lang),
+    "/strongbuy": format_strong_buy,
+    "/breakout": format_breakout,
+    "/accumulate": format_accumulate,
+    "/dip": format_dip,
+    "/sectors": format_sectors,
+    "/picks": format_picks,
+    "/leaderboard": format_leaderboard,
+    "/ticker": format_ticker,
+}
+
+
+def handle_command(text: str, data: dict | None) -> str:
+    """Resolves any incoming message - an English /slash command, a plain
+    Arabic phrase, or an Arabic "سهم/سعر SYMBOL" ticker lookup - to a
+    handler + arg + reply language, then dispatches.
+
+    Reply language is decided per-message (Arabic script anywhere in the
+    text => Arabic reply), independent of whether the command itself was
+    typed as a slash command or matched via ARABIC_KEYWORDS - so an Arabic
+    speaker who types "/sectors" still gets an Arabic-labelled reply, and
+    "سعر COMI" resolves to the exact same handler as "/ticker COMI" does.
+    """
+    text = (text or "").strip()
+    lang = "ar" if _is_arabic(text) else "en"
+
+    cmd, arg = None, ""
+
+    if text.startswith("/"):
+        parts = text.split(maxsplit=1)
+        cmd = parts[0].split("@")[0].lower()  # strip @BotName suffix (group chats append it)
+        arg = parts[1] if len(parts) > 1 else ""
+    else:
+        ticker_match = _ARABIC_TICKER_RE.search(text)
+        if ticker_match:
+            cmd, arg = "/ticker", ticker_match.group(1)
+        elif lang == "ar":
+            cmd = _match_arabic_intent(text)
+        # lang == "en" and no leading "/" and no ticker match: cmd stays None,
+        # falls through to the English no-text-hint below.
+
+    if cmd is None:
+        return LABELS[lang]["no_text_hint"]
+
+    handler = COMMAND_HANDLERS.get(cmd)
+    if not handler:
+        return LABELS[lang]["unknown"]
+    if data is None and cmd not in ("/start", "/help"):
+        return LABELS[lang]["no_data"]
+    return handler(data, arg, lang)
 
 
 def _load_market_data() -> dict | None:
@@ -115,6 +469,12 @@ def _save_state(state: dict) -> None:
         json.dump(state, f, indent=2)
 
 
+def _api_url(method: str) -> str:
+    if not TELEGRAM_BOT_TOKEN:
+        raise SystemExit("TELEGRAM_BOT_TOKEN is not set - see this module's SETUP docstring.")
+    return f"{TELEGRAM_API_BASE.format(token=TELEGRAM_BOT_TOKEN)}/{method}"
+
+
 def send_message(chat_id, text: str) -> bool:
     try:
         resp = requests.post(
@@ -128,161 +488,6 @@ def send_message(chat_id, text: str) -> bool:
     except requests.RequestException as e:
         logger.warning(f"Telegram sendMessage error: {e}")
         return False
-
-
-# ---------------------------------------------------------------------------
-# Formatting - every formatter takes the already-loaded market_data.json
-# dict and returns an HTML-formatted string. Kept small/composable so a
-# new command is just one more formatter + one more dispatch entry.
-# ---------------------------------------------------------------------------
-
-def _rows_for_action(data: dict, needle: str) -> list:
-    return [r for r in data.get("market_matrix", []) if needle in (r.get("Action") or "")]
-
-
-def _format_row_line(row: dict) -> str:
-    ticker = _esc(str(row.get("Ticker", "?")))
-    price = row.get("Current Price", "-")
-    score = row.get("Rank Score", "-")
-    gain = row.get("Projected Gain (%)", "N/A")
-    return f"• <b>{ticker}</b>  {price}  (Score {score}, Proj. {gain}%)"
-
-
-def _format_action_list(data: dict, needle: str, title: str, empty_msg: str) -> str:
-    rows = sorted(_rows_for_action(data, needle), key=lambda r: r.get("Rank Score", 0), reverse=True)
-    header = f"<b>{title}</b> — {_esc(str(data.get('last_data_date', 'N/A')))}\n\n"
-    if not rows:
-        return header + empty_msg
-    lines = [_format_row_line(r) for r in rows[:MAX_ROWS_PER_REPLY]]
-    body = "\n".join(lines)
-    if len(rows) > MAX_ROWS_PER_REPLY:
-        body += f"\n… and {len(rows) - MAX_ROWS_PER_REPLY} more. See the full dashboard for the rest."
-    return header + body
-
-
-def format_strong_buy(data: dict) -> str:
-    return _format_action_list(data, "STRONG BUY", "🔥 Strong Buy", "No STRONG BUY signals right now.")
-
-
-def format_breakout(data: dict) -> str:
-    return _format_action_list(data, "BREAKOUT BUY", "⚡ Breakout Buy", "No BREAKOUT BUY signals right now.")
-
-
-def format_accumulate(data: dict) -> str:
-    return _format_action_list(data, "ACCUMULATE", "📈 Accumulate", "No ACCUMULATE signals right now.")
-
-
-def format_dip(data: dict) -> str:
-    return _format_action_list(data, "BUY ON DIP", "⏳ Buy On Dip", "No BUY ON DIP signals right now.")
-
-
-def format_sectors(data: dict) -> str:
-    sectors = data.get("sectors", [])
-    if not sectors:
-        return "No sector data available."
-    sectors = sorted(sectors, key=lambda s: s.get("1D Return (%)", s.get("Bullish Breadth (%)", 0)), reverse=True)
-    lines = ["<b>🏢 Sector Heatmap</b>\n"]
-    for s in sectors[:MAX_ROWS_PER_REPLY]:
-        name = _esc(str(s.get("Sector", "?")))
-        status = _esc(str(s.get("Sector Status", "")))
-        chg = s.get("1D Return (%)", "-")
-        lines.append(f"• <b>{name}</b>  {chg}%  {status}")
-    return "\n".join(lines)
-
-
-def format_picks(data: dict) -> str:
-    sp = data.get("session_picks", {})
-    horizon_titles = {"short": "🚀 Next Session", "medium": "📈 Medium-Term", "long": "🏛️ Long-Term"}
-    lines = [f"<b>Session Picks</b> — {_esc(str(sp.get('session_date', 'N/A')))}\n"]
-    any_picks = False
-    for horizon, title in horizon_titles.items():
-        picks = sp.get(horizon, [])
-        if not picks:
-            continue
-        any_picks = True
-        lines.append(f"\n<b>{title}</b>")
-        for p in picks:
-            lines.append(
-                f"• {_esc(str(p.get('ticker', '?')))} — target +{p.get('expected_pct', '?')}% "
-                f"(picked {_esc(str(p.get('pick_date', '')))})"
-            )
-    if not any_picks:
-        lines.append("No active picks right now.")
-    return "\n".join(lines)
-
-
-def format_leaderboard(data: dict) -> str:
-    board = data.get("leaderboard", [])
-    if not board:
-        return "No leaderboard data yet."
-    lines = ["<b>🥇 Leaderboard</b>\n"]
-    for i, r in enumerate(board[:10], start=1):
-        ticker = _esc(str(r.get("ticker", "?")))
-        hits = r.get("hits", 0)
-        total = r.get("total_return_pct", 0)
-        lines.append(f"{i}. <b>{ticker}</b> — {hits} hit(s), {total}% total")
-    return "\n".join(lines)
-
-
-def format_ticker(data: dict, symbol: str) -> str:
-    symbol = symbol.strip().upper()
-    row = next((r for r in data.get("market_matrix", []) if (r.get("Ticker") or "").upper() == symbol), None)
-    if not row:
-        return f"No signal found for <b>{_esc(symbol)}</b>. Check the symbol and try again (e.g. /ticker COMI)."
-    lines = [
-        f"<b>{_esc(str(row.get('Ticker')))}</b> — {_esc(str(row.get('Action', '-')))}",
-        f"Price: {row.get('Current Price', '-')}   Score: {row.get('Rank Score', '-')}",
-        f"Entry (VWAP): {row.get('Target Entry (VWAP)', '-')}   Stop-Loss: {row.get('Suggested Stop-Loss', '-')}",
-        f"Take-Profit: {row.get('Take-Profit Target', '-')}   Proj. Gain: {row.get('Projected Gain (%)', 'N/A')}%",
-        f"RSI-14: {row.get('RSI-14', '-')}   ADX-14: {row.get('ADX-14', '-')}   Trend: {_esc(str(row.get('Trend Class', '-')))}",
-        f"Data Confidence: {_esc(str(row.get('Data Confidence', '-')))}",
-    ]
-    return "\n".join(lines)
-
-
-def format_help() -> str:
-    return (
-        "<b>MB-EGX Signal Bot</b>\n\n"
-        "/strongbuy — today's 🔥 STRONG BUY tickers\n"
-        "/breakout — today's ⚡ BREAKOUT BUY tickers\n"
-        "/accumulate — today's 📈 ACCUMULATE tickers\n"
-        "/dip — today's ⏳ BUY ON DIP tickers\n"
-        "/sectors — sector heatmap summary\n"
-        "/picks — active Session Picks\n"
-        "/leaderboard — top 10 leaderboard\n"
-        "/ticker SYMBOL — full detail for one ticker (e.g. /ticker COMI)\n\n"
-        "Data is the same public feed as the web dashboard, refreshed on the same schedule. "
-        "Achievement alerts (a pick hitting its target) are pushed automatically - no command needed."
-    )
-
-
-COMMAND_HANDLERS = {
-    "/start": lambda data, arg: format_help(),
-    "/help": lambda data, arg: format_help(),
-    "/strongbuy": lambda data, arg: format_strong_buy(data),
-    "/breakout": lambda data, arg: format_breakout(data),
-    "/accumulate": lambda data, arg: format_accumulate(data),
-    "/dip": lambda data, arg: format_dip(data),
-    "/sectors": lambda data, arg: format_sectors(data),
-    "/picks": lambda data, arg: format_picks(data),
-    "/leaderboard": lambda data, arg: format_leaderboard(data),
-    "/ticker": lambda data, arg: format_ticker(data, arg) if arg else "Usage: /ticker SYMBOL (e.g. /ticker COMI)",
-}
-
-
-def handle_command(text: str, data: dict | None) -> str:
-    text = (text or "").strip()
-    if not text.startswith("/"):
-        return "Send /help to see what I can do."
-    parts = text.split(maxsplit=1)
-    cmd = parts[0].split("@")[0].lower()  # strip @BotName suffix (group chats append it)
-    arg = parts[1] if len(parts) > 1 else ""
-    handler = COMMAND_HANDLERS.get(cmd)
-    if not handler:
-        return "Unknown command. Send /help to see what I can do."
-    if data is None and cmd not in ("/start", "/help"):
-        return "Market data isn't available right now - try again in a moment."
-    return handler(data, arg)
 
 
 def poll_once() -> int:
