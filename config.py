@@ -293,6 +293,22 @@ PORTFOLIO_RISK_THRESHOLDS = {
     "min_positions_for_warning": 2,          # don't warn a 1-stock starter portfolio for being "concentrated"
 }
 
+# --- Cash-drag (dry powder) note (Exits tab / Financials tab / portfolio_risk) ---
+# Below this % of total equity sitting in cash, the app surfaces a small
+# "low dry powder" note - it doesn't block anything, it's purely informational
+# context for why new BUY/ACCUMULATE signals may not be actionable right now.
+CASH_DRAG_LOW_PCT = 5.0
+
+# --- Concentration-breach Telegram alert dedup (alerts.py / session_picks.py) ---
+# A sector/position concentration warning re-evaluates on EVERY analyze_market()
+# run (nightly publish AND every desktop "Execute Matrix" click). Without a
+# dedup window, an already-known, still-unresolved breach would re-fire a
+# Telegram push every single time - this caps it to once per calendar day
+# per distinct warning subject (a sector name or a ticker), same cadence as
+# the nightly pipeline, so re-opening the desktop app repeatedly in one day
+# doesn't spam the channel while the breach is still live.
+CONCENTRATION_ALERT_DEDUP_DAYS = 1
+
 
 def get_logger(name: str) -> logging.Logger:
     """Return a process-wide logger writing UTF-8 to ``quant_app.log``."""

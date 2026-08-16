@@ -464,6 +464,7 @@
 
         <!-- TAB 3: OWNED PORTFOLIO -->
         <div id="tab-exits" class="bg-panelbg rounded-b-xl border border-t-0 border-bordercol p-4 shadow-xl hidden space-y-4">
+            <div id="portfolio-risk-banner" class="hidden text-amber-400 text-xs font-bold text-center font-sans"></div>
             <div class="flex justify-between items-center">
                 <span class="text-textmuted text-xs" data-i18n="lbl_positions_local">Positions stored securely in browser local storage.</span>
                 <div class="flex gap-2">
@@ -481,10 +482,16 @@
                             <th class="p-2.5 border border-darkbg" data-i18n="hdr_current_price">Current Price</th>
                             <th class="p-2.5 border border-darkbg" data-i18n="hdr_pnl_egp">P&L (EGP)</th>
                             <th class="p-2.5 border border-darkbg" data-i18n="hdr_pnl_pct">P&L (%)</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_net_pnl_egp" title="P&L after both round-trip trading fees (buy fee already paid + sell fee to close today)">Net P&L (EGP)</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_net_pnl_pct" title="Fee-adjusted P&L, as a % of your original cost basis">Net P&L (%)</th>
                             <th class="p-2.5 border border-darkbg text-center font-sans" data-i18n="hdr_action_command">Action Command</th>
                             <th class="p-2.5 border border-darkbg" data-i18n="hdr_take_profit">Take-Profit</th>
                             <th class="p-2.5 border border-darkbg" data-i18n="hdr_trailing_stop">Trailing Stop</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_dist_to_stop" title="How close the current price already is to crossing the trailing stop-loss line">Dist. to Stop %</th>
                             <th class="p-2.5 border border-darkbg font-sans" data-i18n="hdr_trend">Trend</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_annualized" title="Unrealized P&L (%) compounded to a yearly rate based on days held">Annualized %</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_drawdown_peak" title="How far the current price has pulled back from its highest close since this position was opened">Drawdown from Peak %</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_risk_vs_plan" title="This position's size as a multiple of your normal 1%-risk position size">Risk vs Plan</th>
                             <th class="p-2.5 border border-darkbg" data-i18n="hdr_target_price" title="The exit price that reaches your chosen profit target">My Target Price</th>
                             <th class="p-2.5 border border-darkbg" data-i18n="hdr_target_pct" title="Your chosen profit target as a % gain from your buy price">My Target %</th>
                             <th class="p-2.5 border border-darkbg" data-i18n="hdr_target_egp" title="Your chosen profit target in EGP">My Target (EGP)</th>
@@ -1358,6 +1365,11 @@
         // and breakeven-shares calculators below so their math matches the
         // desktop app's decision_matrix.py exactly.
         const ROUND_TRIP_FEE_PCT = TRANSACTION_FEE_PCT * 2;
+        // Mirrors config.py's CASH_DRAG_LOW_PCT - keeps the web Exits tab's
+        // cash-drag note using the same threshold as the desktop app.
+        // (POSITION_CONCENTRATION_WARN_PCT is declared once, further down,
+        // alongside SECTOR_CONCENTRATION_WARN_PCT - reused here too.)
+        const CASH_DRAG_LOW_PCT = 5.0;
         // Mirrors config.py's PAPER_TRADING_DEFAULTS.starting_cash_egp - the
         // balance a brand-new visitor's paper account starts with.
         const PAPER_TRADING_STARTING_CASH_EGP = 100000.0;
@@ -1538,6 +1550,12 @@
                 hdr_target_price: "My Target Price", hdr_target_pct: "My Target %", hdr_target_egp: "My Target (EGP)",
                 hdr_target_eta: "Est. Time to Target", hdr_breakeven_shares: "Breakeven Shares",
                 hdr_breakeven_avg: "Breakeven Avg Cost", hdr_breakeven_cost: "Breakeven Cost (EGP)",
+                hdr_net_pnl_egp: "Net P&L (EGP)", hdr_net_pnl_pct: "Net P&L (%)",
+                hdr_dist_to_stop: "Dist. to Stop %", hdr_annualized: "Annualized %",
+                hdr_drawdown_peak: "Drawdown from Peak %", hdr_risk_vs_plan: "Risk vs Plan",
+                lbl_low_cash_drag: "💵 {pct}% cash — fully invested, no dry powder for new signals.",
+                lbl_rotation_flag: "🔄 You're holding {held} ({hs}) but the matrix now prefers {cand} ({cs}) in the same {cat} pool.",
+                this_position_pct_equity: "This position is {p}% of your account equity — over the single-position concentration threshold.",
                 btn_set_target: "🎯 Target", modal_target_title: "Set Profit Target",
                 lbl_target_mode: "Target Type:", opt_target_pct: "% Gain from Buy Price", opt_target_amount: "Money Amount (EGP)",
                 lbl_target_value: "Target Value:", btn_clear_target: "Clear Target", btn_save_target: "Save Target",
@@ -1757,6 +1775,12 @@
                 hdr_target_price: "سعر هدفي", hdr_target_pct: "نسبة هدفي %", hdr_target_egp: "هدفي (جنيه)",
                 hdr_target_eta: "الوقت المقدر للهدف", hdr_breakeven_shares: "أسهم نقطة التعادل",
                 hdr_breakeven_avg: "متوسط التكلفة بعد التعادل", hdr_breakeven_cost: "تكلفة التعادل (جنيه)",
+                hdr_net_pnl_egp: "صافي الربح/الخسارة (جنيه)", hdr_net_pnl_pct: "صافي الربح/الخسارة (%)",
+                hdr_dist_to_stop: "المسافة لوقف الخسارة %", hdr_annualized: "العائد السنوي %",
+                hdr_drawdown_peak: "التراجع من القمة %", hdr_risk_vs_plan: "الحجم مقابل خطة المخاطرة",
+                lbl_low_cash_drag: "💵 {pct}% نقدًا فقط — رأس المال مستثمر بالكامل، لا توجد سيولة لصفقات جديدة.",
+                lbl_rotation_flag: "🔄 أنت تمتلك {held} ({hs}) لكن المصفوفة تفضّل الآن {cand} ({cs}) ضمن نفس فئة {cat}.",
+                this_position_pct_equity: "تمثل هذه الصفقة {p}% من رأس مالك — أعلى من حد التركز المسموح به لصفقة واحدة.",
                 btn_set_target: "🎯 الهدف", modal_target_title: "تحديد هدف الربح",
                 lbl_target_mode: "نوع الهدف:", opt_target_pct: "% ربح من سعر الشراء", opt_target_amount: "مبلغ مالي (جنيه)",
                 lbl_target_value: "قيمة الهدف:", btn_clear_target: "مسح الهدف", btn_save_target: "حفظ الهدف",
@@ -3150,6 +3174,53 @@
             return { shares: nShares, avgCost: newAvgCost, cost, note };
         }
 
+        // Mirrors decision_matrix.py's _compute_exit_analytics_fields():
+        // Days Held / Annualized Return, Distance to Stop, Drawdown from
+        // Peak, and fee-adjusted Net P&L - same formulas, computed
+        // client-side from this visitor's own position + the public
+        // chart_history close series (no server round-trip needed).
+        function computeExitAnalyticsFields(pos, currPrice, trailingStop) {
+            const buyPrice = pos.buyPrice, shares = pos.shares;
+            const investedVal = buyPrice * shares, currVal = currPrice * shares;
+            const pnlEgp = currVal - investedVal;
+            const pnlPct = buyPrice > 0 ? ((currPrice - buyPrice) / buyPrice) * 100 : 0;
+
+            let daysHeld = null;
+            const p = pos.date ? new Date(pos.date + 'T00:00:00') : null;
+            if (p && !isNaN(p.getTime())) {
+                daysHeld = Math.round((new Date().setHours(0, 0, 0, 0) - p.getTime()) / 86400000);
+            }
+            let annualizedPct = null;
+            if (daysHeld && daysHeld > 0) {
+                const growth = 1 + (pnlPct / 100);
+                if (growth > 0) annualizedPct = (Math.pow(growth, 365 / daysHeld) - 1) * 100;
+            }
+
+            let distToStopPct = null;
+            if (currPrice > 0 && trailingStop != null) distToStopPct = ((currPrice - trailingStop) / currPrice) * 100;
+
+            let peakPrice = null;
+            const closes = (globalData && globalData.chart_history && globalData.chart_history.stocks &&
+                globalData.chart_history.stocks[pos.ticker]) ? globalData.chart_history.stocks[pos.ticker] : null;
+            if (closes && closes.dates && closes.close && pos.date) {
+                for (let i = 0; i < closes.dates.length; i++) {
+                    if (closes.dates[i] >= pos.date) {
+                        const c = closes.close[i];
+                        if (peakPrice === null || c > peakPrice) peakPrice = c;
+                    }
+                }
+            }
+            if (!peakPrice || peakPrice <= 0) peakPrice = Math.max(buyPrice || 0, currPrice || 0) || null;
+            const drawdownPct = (peakPrice && peakPrice > 0 && currPrice != null) ? ((currPrice / peakPrice) - 1) * 100 : null;
+
+            const buyFee = investedVal * TRANSACTION_FEE_PCT;
+            const sellFee = currVal * TRANSACTION_FEE_PCT;
+            const netPnlEgp = pnlEgp - buyFee - sellFee;
+            const netPnlPct = investedVal > 0 ? (netPnlEgp / investedVal) * 100 : 0;
+
+            return { daysHeld, annualizedPct, distToStopPct, drawdownPct, netPnlEgp, netPnlPct };
+        }
+
         // Fully interactive: backed by the VISITOR'S OWN paperCash/
         // paperPortfolio/paperHistory (client-side + their own Firestore
         // doc), not the desktop app's server-exported snapshot - every
@@ -3416,7 +3487,8 @@
         function renderPortfolio() {
             const tbody = document.getElementById('tbody-exits');
             tbody.innerHTML = '';
-            if (userPortfolio.length === 0) { tbody.innerHTML = `<tr><td colspan="18" class="p-6 text-center text-textmuted font-sans">${tt('lbl_no_positions')}</td></tr>`; return; }
+            if (userPortfolio.length === 0) { tbody.innerHTML = `<tr><td colspan="24" class="p-6 text-center text-textmuted font-sans">${tt('lbl_no_positions')}</td></tr>`; return; }
+            const totalEquity = computeTotalEquityForRisk();
             userPortfolio.forEach(pos => {
                 let cp = pos.buyPrice, rsi = 50.0, adx = 0.0, trend = "Consolidation", action = "🛡️ HOLD / TRAIL STOP";
                 if (globalData && globalData.market_matrix) {
@@ -3432,14 +3504,32 @@
 
                 const tgt = computeTargetFields(pos, cp);
                 const be = computeBreakevenFields(pos, cp, userCash);
+                const ea = computeExitAnalyticsFields(pos, cp, stop);
+
+                const posValue = cp * pos.shares;
+                const riskUnitPct = RISK_PER_TRADE_PCT * 100;
+                const pctOfEquity = totalEquity > 0 ? (posValue / totalEquity) * 100 : null;
+                const riskMultiple = pctOfEquity != null && riskUnitPct > 0 ? pctOfEquity / riskUnitPct : null;
+                const oversized = pctOfEquity != null && pctOfEquity >= POSITION_CONCENTRATION_WARN_PCT;
+
+                const netPnlCls = ea.netPnlEgp >= 0 ? 'text-emerald-400' : 'text-rose-400';
+                const annCls = ea.annualizedPct == null ? 'text-textmuted' : (ea.annualizedPct >= 0 ? 'text-emerald-400' : 'text-rose-400');
+                const ddCls = (ea.drawdownPct != null && ea.drawdownPct <= -10) ? 'text-rose-400 font-bold' : 'text-textmuted';
+                const distCls = (ea.distToStopPct != null && ea.distToStopPct <= 3) ? 'text-rose-400 font-bold' : 'text-textmuted';
+                const riskCls = oversized ? 'text-rose-400 font-bold' : 'text-textmuted';
 
                 const tr = document.createElement('tr');
                 tr.className = 'border-b border-bordercol hover:bg-panelbg transition';
                 tr.innerHTML = `
                     <td class="p-2.5 font-bold text-sky-400">${escapeHtml(pos.ticker)}</td><td class="p-2.5">${pos.shares.toLocaleString()}</td><td class="p-2.5">${pos.buyPrice.toFixed(4)}</td><td class="p-2.5 font-bold text-white">${cp.toFixed(4)}</td>
                     <td class="p-2.5 font-bold ${pnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${pnl.toLocaleString(undefined, {minimumFractionDigits: 2})}</td><td class="p-2.5 font-bold ${pnlPct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${pnlPct.toFixed(2)}%</td>
+                    <td class="p-2.5 font-bold ${netPnlCls}">${ea.netPnlEgp.toLocaleString(undefined, {minimumFractionDigits: 2})}</td><td class="p-2.5 font-bold ${netPnlCls}">${ea.netPnlPct.toFixed(2)}%</td>
                     <td class="p-2.5 text-center font-sans"><span class="px-3 py-1 rounded-full text-[11px] ${actionBg}">${trAction(action)}</span></td><td class="p-2.5 text-emerald-400">${tp.toFixed(4)}</td><td class="p-2.5 text-rose-400">${stop.toFixed(4)}</td>
+                    <td class="p-2.5 ${distCls}">${ea.distToStopPct != null ? ea.distToStopPct.toFixed(2) + '%' : '—'}</td>
                     <td class="p-2.5 font-sans text-textmuted">${trTrend(trend)}</td>
+                    <td class="p-2.5 ${annCls}">${ea.annualizedPct != null ? ea.annualizedPct.toFixed(2) + '%' : '—'}</td>
+                    <td class="p-2.5 ${ddCls}">${ea.drawdownPct != null ? ea.drawdownPct.toFixed(2) + '%' : '—'}</td>
+                    <td class="p-2.5 ${riskCls}" title="${pctOfEquity != null ? escapeHtml(tt('this_position_pct_equity').replace('{p}', pctOfEquity.toFixed(1))) : ''}">${riskMultiple != null ? riskMultiple.toFixed(1) + 'x' : '—'}</td>
                     <td class="p-2.5 text-sky-300">${tgt.price !== null ? tgt.price.toFixed(4) : '—'}</td>
                     <td class="p-2.5 text-sky-300">${tgt.pct !== null ? tgt.pct.toFixed(2) + '%' : '—'}</td>
                     <td class="p-2.5 text-sky-300">${tgt.egp !== null ? tgt.egp.toLocaleString(undefined, {minimumFractionDigits: 2}) : '—'}</td>
@@ -3451,7 +3541,70 @@
                 `;
                 tbody.appendChild(tr);
             });
+            renderPortfolioBanner(totalEquity);
         }
+
+        // Mirrors decision_matrix.py's cash-drag note and rotation_flags:
+        // computed purely from this visitor's own local portfolio + the
+        // public market_matrix (no personal data leaves the browser).
+        function computeTotalEquityForRisk() {
+            const stockVal = userPortfolio.reduce((sum, pos) => {
+                let cp = pos.buyPrice;
+                if (globalData && globalData.market_matrix) {
+                    const m = globalData.market_matrix.find(x => x.Ticker === pos.ticker);
+                    if (m) cp = m["Current Price"];
+                }
+                return sum + cp * pos.shares;
+            }, 0);
+            return stockVal + (userCash || 0);
+        }
+
+        function renderPortfolioBanner(totalEquity) {
+            const el = document.getElementById('portfolio-risk-banner');
+            if (!el) return;
+            const msgs = [];
+            if (totalEquity > 0) {
+                const cashDragPct = ((userCash || 0) / totalEquity) * 100;
+                if (cashDragPct < CASH_DRAG_LOW_PCT) {
+                    msgs.push(tt('lbl_low_cash_drag').replace('{pct}', cashDragPct.toFixed(1)));
+                }
+            }
+            const flags = computeRotationFlags();
+            flags.slice(0, 3).forEach(f => {
+                msgs.push(tt('lbl_rotation_flag')
+                    .replace('{held}', f.held).replace('{hs}', f.heldScore)
+                    .replace('{cand}', f.cand).replace('{cs}', f.candScore).replace('{cat}', trAction(f.category)));
+            });
+            if (msgs.length) { el.textContent = msgs.join(' | '); el.classList.remove('hidden'); }
+            else { el.textContent = ''; el.classList.add('hidden'); }
+        }
+
+        // Mirrors decision_matrix.py's _compute_rotation_flags(): for each
+        // held ticker, is an unheld ticker in the SAME signal category
+        // (STRONG BUY / BREAKOUT BUY / ACCUMULATE / BUY ON DIP) currently
+        // scoring higher?
+        function computeRotationFlags() {
+            if (!globalData || !globalData.top_10) return [];
+            const categories = ["🔥 STRONG BUY", "⚡ BREAKOUT BUY", "📈 ACCUMULATE", "⏳ BUY ON DIP"];
+            const heldTickers = new Set(userPortfolio.map(p => p.ticker));
+            const flags = [];
+            userPortfolio.forEach(pos => {
+                const held = (globalData.market_matrix || []).find(x => x.Ticker === pos.ticker);
+                if (!held) return;
+                const heldCat = categories.find(c => (held.Action || '').includes(c));
+                if (!heldCat) return;
+                const pool = (globalData.top_10[heldCat] || []).filter(r => !heldTickers.has(r.Ticker));
+                if (pool.length === 0) return;
+                const top = pool[0];
+                if (top["Rank Score"] > held["Rank Score"]) {
+                    flags.push({ held: pos.ticker, heldScore: held["Rank Score"], cand: top.Ticker, candScore: top["Rank Score"], category: heldCat });
+                }
+            });
+            flags.sort((a, b) => (b.candScore - b.heldScore) - (a.candScore - a.heldScore));
+            return flags;
+        }
+
+
 
         function renderHistory() {
             const tbody = document.getElementById('tbody-history');

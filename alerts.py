@@ -84,6 +84,24 @@ def send_telegram_pick_achieved(event_type: str, payload: dict) -> None:
     _post_telegram_message(text)
 
 
+def send_telegram_concentration_breach(event_type: str, payload: dict) -> None:
+    """session_picks.py ALERT_CHANNELS callback signature: (event_type,
+    payload). Handles 'concentration_breach' - fired from
+    decision_matrix.py the moment a position or sector crosses
+    config.PORTFOLIO_RISK_THRESHOLDS (see session_picks.emit_alert's
+    dedup, which keeps this from re-firing every run while the breach
+    stays unresolved). Ignores any other event type for the same
+    forward-compatibility reason as send_telegram_pick_achieved above.
+    """
+    if event_type != "concentration_breach":
+        return
+    message = payload.get("message", "")
+    if not message:
+        return
+    text = f"⚠️ <b>Portfolio concentration alert</b>\n{message}"
+    _post_telegram_message(text)
+
+
 def register_default_channels() -> None:
     """Idempotent — safe to call from multiple import sites."""
     if not SESSION_PICKS_TELEGRAM_WEBHOOK:
@@ -92,6 +110,7 @@ def register_default_channels() -> None:
     # dependency from session_picks.py -> alerts.py -> session_picks.py;
     # session_picks.py imports THIS module for its side effect instead.
     session_picks.register_alert_channel(send_telegram_pick_achieved)
+    session_picks.register_alert_channel(send_telegram_concentration_breach)
 
 
 register_default_channels()

@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import math
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from datetime import date
 
 # MUST be imported before pandas and before `analytics` (below) - config.py
 # sets OPENBLAS/MKL/OMP/NUMEXPR thread caps as a module-level side effect,
@@ -41,6 +42,7 @@ from config import (
     MAX_WORKERS,
     MATRIX_LOOKBACK_DAYS,
     PORTFOLIO_RISK_THRESHOLDS,
+    CASH_DRAG_LOW_PCT,
     get_logger,
 )
 
@@ -48,7 +50,7 @@ import pandas as pd
 
 from analytics import QuantitativeEngine
 from db_manager import DatabaseManager
-from session_picks import refresh_session_picks
+from session_picks import refresh_session_picks, emit_alert
 
 logger = get_logger("decision_matrix")
 
@@ -190,6 +192,83 @@ def _compute_breakeven_fields(buy_price, shares, curr_price, cash_balance):
     }
 
 
+def _compute_exit_analytics_fields(df_ind, p_date, buy_price, curr_price, trailing_stop,
+                                    pnl_egp, pnl_pct, invested_val, curr_val):
+    """Extra per-position analytics for the Exits tab, layered on top of
+    the existing P&L / trailing-stop / take-profit fields:
+
+      - Days Held / Annualized Return (%) — separates a slow multi-week
+        grind from a fast one-week pop that would otherwise show the same
+        raw P&L (%).
+      - Distance to Stop (%) — how close the CURRENT price already is to
+        crossing the trailing-stop line: a leading indicator, unlike the
+        Action column's CUT LOSS flag which only fires once it's already
+        crossed.
+      - Peak Price Since Purchase / Drawdown from Peak (%) — P&L (%) is
+        only ever measured against the buy price, so a position that ran
+        hard and has since given most of it back reads identically to one
+        that climbed steadily to the same level.
+      - Net P&L (EGP) / Net P&L (%) — P&L (EGP)/(%) above ignore trading
+        fees entirely. This is what's actually left after the buy-side fee
+        already paid AND the sell-side fee that would be paid to close the
+        position today (config.TRANSACTION_FEE_PCT each way).
+
+    Every field degrades to None (rendered as "-" by both UIs) rather than
+    raising when the inputs needed for it are missing — this must never be
+    the reason an Exits row fails to render.
+    """
+    today = date.today()
+    days_held = None
+    try:
+        p_d = date.fromisoformat(str(p_date)[:10])
+        days_held = (today - p_d).days
+    except (ValueError, TypeError):
+        p_d = None
+
+    annualized_return_pct = None
+    if days_held and days_held > 0:
+        growth = 1 + (pnl_pct / 100.0)
+        if growth > 0:
+            annualized_return_pct = round(((growth ** (365.0 / days_held)) - 1) * 100.0, 2)
+
+    distance_to_stop_pct = None
+    if curr_price and curr_price > 0 and trailing_stop is not None:
+        distance_to_stop_pct = round(((curr_price - trailing_stop) / curr_price) * 100.0, 2)
+
+    peak_price = None
+    try:
+        if p_d is not None and df_ind is not None and not df_ind.empty and "close" in df_ind.columns:
+            since_purchase = df_ind.loc[df_ind.index >= pd.Timestamp(p_d), "close"]
+            if not since_purchase.empty:
+                peak_price = float(since_purchase.max())
+    except (ValueError, TypeError, KeyError):
+        peak_price = None
+    if not peak_price or peak_price <= 0:
+        # No price history since purchase (very new position / low data) -
+        # fall back to the higher of buy price and current price so the
+        # drawdown figure still degrades sensibly instead of disappearing.
+        peak_price = max(buy_price or 0.0, curr_price or 0.0) or None
+
+    drawdown_from_peak_pct = None
+    if peak_price and peak_price > 0 and curr_price is not None:
+        drawdown_from_peak_pct = round(((curr_price / peak_price) - 1) * 100.0, 2)
+
+    buy_fee = invested_val * TRANSACTION_FEE_PCT
+    sell_fee = curr_val * TRANSACTION_FEE_PCT
+    net_pnl_egp = round(pnl_egp - buy_fee - sell_fee, 2)
+    net_pnl_pct = round((net_pnl_egp / invested_val) * 100.0, 2) if invested_val > 0 else 0.0
+
+    return {
+        "Days Held": days_held,
+        "Annualized Return (%)": annualized_return_pct,
+        "Distance to Stop (%)": distance_to_stop_pct,
+        "Peak Price Since Purchase": round(peak_price, 4) if peak_price else None,
+        "Drawdown from Peak (%)": drawdown_from_peak_pct,
+        "Net P&L (EGP)": net_pnl_egp,
+        "Net P&L (%)": net_pnl_pct,
+    }
+
+
 def _confidence_weight(n_bars: int) -> float:
     if n_bars <= MIN_BARS_FOR_PATTERN_TRUST:
         return CONFIDENCE_FLOOR_WEIGHT
@@ -243,19 +322,35 @@ class DecisionMatrix:
         self.qe = QuantitativeEngine()
 
     @staticmethod
-    def _compute_portfolio_risk(total_equity, sector_market_value, position_market_value):
+    def _compute_portfolio_risk(total_equity, sector_market_value, position_market_value, cash_balance=0.0):
         """Flag concentration risk: too much of the account in one sector or
         one ticker. Per-stock metrics (ATR stops, Sortino-weighted patterns,
         etc.) all look fine in isolation even when the account as a whole is
         one bad sector day away from a large loss - this is the check that
         catches that blind spot.
+
+        Also carries two related, cheaper-to-compute portfolio-level notes
+        that belong next to it rather than as their own separate return
+        values (keeps analyze_market()'s return signature unchanged):
+          - cash_drag_pct / low_cash_drag — % of total equity sitting in
+            cash right now, and whether it's below config.CASH_DRAG_LOW_PCT
+            ("fully invested" / no dry powder for new signals).
+          - each position_allocations entry's "risk_multiple" — that
+            position's % of equity divided by config.RISK_PER_TRADE_PCT (as
+            a %), i.e. "how many multiples of a normal 1%-risk position
+            size this position actually is". This is what the Exits tab's
+            per-row risk flag (see analyze_market) reads from.
         """
         n_positions = len(position_market_value)
+        cash_drag_pct = round((cash_balance / total_equity) * 100, 1) if total_equity > 0 else 0.0
         result = {
             "total_equity": round(total_equity, 2),
             "sector_allocations": [],
             "position_allocations": [],
             "warnings": [],
+            "cash_drag_pct": cash_drag_pct,
+            "low_cash_drag": cash_drag_pct < CASH_DRAG_LOW_PCT,
+            "warning_subjects": [],  # dedup keys parallel to "warnings", e.g. "sector:Banks"
         }
         if total_equity <= 0 or n_positions == 0:
             return result
@@ -272,12 +367,14 @@ class DecisionMatrix:
             key=lambda r: r["pct_of_equity"],
             reverse=True,
         )
+        risk_unit_pct = RISK_PER_TRADE_PCT * 100  # e.g. 1.0 for a 1%-risk normal position
         position_alloc = sorted(
             (
                 {
                     "ticker": tkr,
                     "value": round(val, 2),
                     "pct_of_equity": round((val / total_equity) * 100, 1),
+                    "risk_multiple": round((val / total_equity) * 100 / risk_unit_pct, 1) if risk_unit_pct > 0 else None,
                 }
                 for tkr, val in position_market_value.items()
             ),
@@ -297,14 +394,59 @@ class DecisionMatrix:
                     f"{top['sector']} alone — a sector-wide move would hit "
                     f"most of your portfolio at once."
                 )
+                result["warning_subjects"].append(f"sector:{top['sector']}")
             if position_alloc and position_alloc[0]["pct_of_equity"] >= pos_warn_pct:
                 top = position_alloc[0]
                 result["warnings"].append(
                     f"⚠️ {top['pct_of_equity']}% of your account equity is in "
-                    f"{top['ticker']} alone — a single-stock stop-out would "
-                    f"hurt more than your normal 1%-per-trade risk sizing implies."
+                    f"{top['ticker']} alone ({top['risk_multiple']}x your normal "
+                    f"1%-risk sizing) — a single-stock stop-out would hurt more "
+                    f"than your normal 1%-per-trade risk sizing implies."
                 )
+                result["warning_subjects"].append(f"position:{top['ticker']}")
         return result
+
+    @staticmethod
+    def _compute_rotation_flags(buy_recommendations, processed_owned_tickers, top_n_candidates=1, max_flags=10):
+        """"You're holding X but the matrix now prefers Y more": for each
+        currently-held ticker, checks whether an UNHELD ticker in the SAME
+        signal category (STRONG BUY / BREAKOUT BUY / ACCUMULATE / BUY ON
+        DIP) currently scores higher. Compares apples to apples - a held
+        HOLD-ON-DIP position is only ever measured against other dip
+        candidates, never against an unrelated STRONG BUY - since the two
+        categories represent different setups, not a strict ranking of one
+        universe. Held tickers with no recognized category (e.g. already in
+        a SELL/AVOID state) are skipped rather than guessed at.
+        """
+        categories = ["🔥 STRONG BUY", "⚡ BREAKOUT BUY", "📈 ACCUMULATE", "⏳ BUY ON DIP"]
+        by_ticker = {r["Ticker"]: r for r in buy_recommendations}
+        unheld_by_category = {
+            cat: sorted(
+                (r for r in buy_recommendations if cat in r["Action"] and "ILLIQUID" not in r["Action"] and r["Position"] == "New Candidate"),
+                key=lambda r: r["Rank Score"], reverse=True,
+            )
+            for cat in categories
+        }
+        flags = []
+        for ticker in processed_owned_tickers:
+            held = by_ticker.get(ticker)
+            if not held:
+                continue
+            held_cat = next((c for c in categories if c in held["Action"]), None)
+            if not held_cat:
+                continue
+            candidates = [c for c in unheld_by_category[held_cat] if c["Ticker"] != ticker][:top_n_candidates]
+            for cand in candidates:
+                if cand["Rank Score"] > held["Rank Score"]:
+                    flags.append({
+                        "held_ticker": ticker,
+                        "held_score": held["Rank Score"],
+                        "candidate_ticker": cand["Ticker"],
+                        "candidate_score": cand["Rank Score"],
+                        "category": held_cat,
+                    })
+        flags.sort(key=lambda f: f["candidate_score"] - f["held_score"], reverse=True)
+        return flags[:max_flags]
 
     def analyze_market(self, progress_callback=None):
         # Was an unbounded pull of EVERY bar ever ingested, for every ticker,
@@ -494,6 +636,7 @@ class DecisionMatrix:
                     else:
                         data_conf_tier = "Very Low (New/Short History)"
                         rsi, adx = 50.0, 0.0
+                        atr = None
                         trend_latest = "Insufficient Data"
                         trailing_stop = curr_price * 0.95
                         default_tp = ACTION_THRESHOLDS["default_take_profit_pct"] / 100.0
@@ -505,6 +648,10 @@ class DecisionMatrix:
                     )
                     breakeven_fields = _compute_breakeven_fields(
                         buy_price, shares, curr_price, cash_balance
+                    )
+                    exit_analytics_fields = _compute_exit_analytics_fields(
+                        df_ind, p_date, buy_price, curr_price, trailing_stop,
+                        pnl_egp, pnl_pct, invested_val, curr_val,
                     )
                     exit_strategies.append(
                         {
@@ -520,10 +667,13 @@ class DecisionMatrix:
                             "Trend Class": trend_latest,
                             "RSI-14": round(rsi, 1),
                             "ADX-14": round(adx, 1),
+                            "ATR-14": round(atr, 4) if atr is not None else None,
                             "Data Confidence": data_conf_tier,
                             "Purchase Date": p_date,
+                            "Sector": sec,
                             **target_fields,
                             **breakeven_fields,
+                            **exit_analytics_fields,
                         }
                     )
                     # The exit-strategy row above always gets computed for an
@@ -894,6 +1044,7 @@ class DecisionMatrix:
                         "ADX-14": 0.0,
                         "Data Confidence": "None",
                         "Purchase Date": pos["purchase_date"],
+                        "Sector": sector_map.get(ticker, "General / Diversified"),
                         **target_fields,
                         **breakeven_fields,
                     }
@@ -923,8 +1074,24 @@ class DecisionMatrix:
         total_equity = cash_balance + total_market_value
 
         portfolio_risk = self._compute_portfolio_risk(
-            total_equity, sector_market_value, position_market_value
+            total_equity, sector_market_value, position_market_value, cash_balance
         )
+
+        # Push each position's risk_multiple (see _compute_portfolio_risk)
+        # back onto its own Exits-tab row, so the flag sits directly on the
+        # row instead of only in the top-of-window banner.
+        _risk_multiple_by_ticker = {
+            p["ticker"]: p["risk_multiple"] for p in portfolio_risk["position_allocations"]
+        }
+        pos_warn_pct = PORTFOLIO_RISK_THRESHOLDS["position_concentration_warn_pct"]
+        _pct_by_ticker = {
+            p["ticker"]: p["pct_of_equity"] for p in portfolio_risk["position_allocations"]
+        }
+        for row in exit_strategies:
+            tkr = row["Ticker"]
+            row["Risk Multiple"] = _risk_multiple_by_ticker.get(tkr)
+            row["Position % of Equity"] = _pct_by_ticker.get(tkr)
+            row["Oversized Position"] = bool(_pct_by_ticker.get(tkr) and _pct_by_ticker[tkr] >= pos_warn_pct)
 
         financial_statement = {
             "Cash Balance (EGP)": round(cash_balance, 2),
@@ -934,6 +1101,7 @@ class DecisionMatrix:
             "Unrealized Stock P&L (%)": round(unrealized_pct, 2),
             "Realized P&L from Closed Trades (EGP)": round(realized_pnl_total, 2),
             "Total Account Equity / Net Worth (EGP)": round(total_equity, 2),
+            "Cash Drag (%)": portfolio_risk["cash_drag_pct"],
         }
 
         sector_summary = self.qe.compute_sector_analytics(processed_tickers_dict, sector_map)
@@ -941,13 +1109,35 @@ class DecisionMatrix:
         breakout_watchlist.sort(key=lambda x: x["Breakout Score"], reverse=True)
         breakout_watchlist = breakout_watchlist[: ACTION_THRESHOLDS["breakout_watch_max_results"]]
 
+        session_date = self.dbm.get_latest_market_date()
+
+        # Rotation flags: for each held position, does the matrix currently
+        # rate an UNHELD candidate higher within the same signal category
+        # (STRONG BUY / BREAKOUT BUY / ACCUMULATE / BUY ON DIP)? Surfaces
+        # "you're holding X but the matrix now prefers Y more" instead of
+        # requiring a manual side-by-side read of Exits vs Top 10.
+        portfolio_risk["rotation_flags"] = self._compute_rotation_flags(
+            buy_recommendations, processed_owned_tickers
+        )
+
+        # Concentration-breach push alert - reuses session_picks.py's
+        # existing ALERT_CHANNELS fan-out (Telegram today; any future
+        # channel registered there gets this for free). Deduped to once
+        # per config.CONCENTRATION_ALERT_DEDUP_DAYS per distinct sector/
+        # ticker so a still-unresolved breach doesn't re-push every run.
+        for w, subject in zip(portfolio_risk["warnings"], portfolio_risk["warning_subjects"]):
+            emit_alert(
+                "concentration_breach", {"message": w},
+                dbm=self.dbm, dedup_key=f"concentration:{subject}", session_date=session_date,
+            )
+
         # Session Picks: check active picks for achievement + refill each
         # bucket back up to quota. Runs here (not in export_json.py / the
         # GUI separately) so "Execute Matrix" in the desktop app and the
         # unattended nightly export always agree on picks/achievements.
         session_picks = refresh_session_picks(
             self.dbm, buy_recommendations, top_10_by_category, sector_summary,
-            self.dbm.get_latest_market_date(),
+            session_date,
         )
 
         if progress_callback:

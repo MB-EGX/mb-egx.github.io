@@ -61,6 +61,28 @@ def _emit_alert(event_type: str, payload: dict):
             continue
 
 
+def emit_alert(event_type: str, payload: dict, dbm=None, dedup_key: str | None = None, session_date: str | None = None):
+    """Public entry point for OTHER modules (decision_matrix.py's
+    concentration-breach check, etc.) to reuse the exact same
+    ALERT_CHANNELS fan-out that refresh_session_picks() uses for
+    'pick_achieved', instead of every caller re-implementing its own
+    dispatch. If ``dbm``/``dedup_key``/``session_date`` are all provided,
+    gates the push through DatabaseManager.should_fire_alert() first (see
+    config.CONCENTRATION_ALERT_DEDUP_DAYS) so a still-unresolved condition
+    doesn't re-push on every single analyze_market() run. Without those
+    three, fires unconditionally - matches the existing 'pick_achieved'
+    behavior, which is inherently a one-time event and needs no dedup.
+    """
+    if dbm is not None and dedup_key and session_date:
+        try:
+            from config import CONCENTRATION_ALERT_DEDUP_DAYS
+            if not dbm.should_fire_alert(dedup_key, session_date, CONCENTRATION_ALERT_DEDUP_DAYS):
+                return
+        except Exception:
+            pass
+    _emit_alert(event_type, payload)
+
+
 # Human-readable labels shared by the GUI tab and the social-post captions,
 # so the two never describe the same horizon differently.
 HORIZON_LABELS = {

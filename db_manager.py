@@ -5,6 +5,7 @@ import re
 import sys
 import threading
 import time
+from datetime import date
 from pathlib import Path
 from config import DB_PATH, PAPER_TRADING_DEFAULTS, MAX_ACHIEVED_HISTORY, get_logger
 import duckdb
@@ -413,6 +414,19 @@ class DatabaseManager:
                     PRIMARY KEY (ticker, horizon, excluded_date)
                 );
             """)
+            # Generic once-per-day dedup for push-alert channels (see
+            # alerts.py / session_picks.emit_alert). alert_key is any
+            # caller-chosen string identifying the specific thing being
+            # alerted on (e.g. "concentration_sector:Banks" or
+            # "concentration_position:COMI") - NOT the event_type, since
+            # the same event_type fires for many different subjects and
+            # each subject needs its own once-a-day gate.
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS alert_dedup (
+                    alert_key VARCHAR PRIMARY KEY,
+                    last_fired_date DATE
+                );
+            """)
 
             count_cash = conn.execute("SELECT COUNT(*) FROM account_cash;").fetchone()[0]
             if count_cash == 0:
@@ -523,6 +537,41 @@ class DatabaseManager:
                 (horizon, str(session_date)),
             ).fetchall()
         return {r[0] for r in rows}
+
+    def should_fire_alert(self, alert_key: str, session_date: str, dedup_days: int = 1) -> bool:
+        """Once-per-``dedup_days`` gate for push-alert channels (see
+        db_manager's alert_dedup table / alerts.py). Returns True (and
+        stamps ``alert_key`` as fired for ``session_date``) the first time
+        this key is seen within the window; returns False on any repeat
+        within that window so a still-unresolved condition (e.g. a
+        concentration breach that hasn't cleared) doesn't re-push every
+        single analyze_market() run. Safe to call even if session_date is
+        malformed - falls back to "always allow" rather than silently
+        eating an alert.
+        """
+        try:
+            today = date.fromisoformat(str(session_date)[:10])
+        except (ValueError, TypeError):
+            return True
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT last_fired_date FROM alert_dedup WHERE alert_key = ?;", (alert_key,)
+            ).fetchone()
+            if row and row[0] is not None:
+                try:
+                    last = row[0] if isinstance(row[0], date) else date.fromisoformat(str(row[0])[:10])
+                    if (today - last).days < dedup_days:
+                        return False
+                except (ValueError, TypeError):
+                    pass
+            conn.execute(
+                """
+                INSERT INTO alert_dedup (alert_key, last_fired_date) VALUES (?, ?)
+                ON CONFLICT (alert_key) DO UPDATE SET last_fired_date = excluded.last_fired_date;
+                """,
+                (alert_key, today),
+            )
+        return True
 
     def get_achievements_for_date(self, achieved_date: str) -> list:
         """Picks that were marked achieved on a specific session date —

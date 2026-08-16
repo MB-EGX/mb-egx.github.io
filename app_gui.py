@@ -3,7 +3,7 @@ import sys
 import time
 import traceback
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date
 from pathlib import Path
 
 try:
@@ -11,7 +11,7 @@ try:
 except ImportError:
     requests = None
 
-from config import WATCH_DIR, TRANSACTION_FEE_PCT, get_logger
+from config import WATCH_DIR, TRANSACTION_FEE_PCT, PORTFOLIO_RISK_THRESHOLDS, get_logger
 from db_manager import DatabaseManager, DatabaseLockedError, set_language as _set_db_language
 from decision_matrix import DecisionMatrix, set_language as _set_dm_language
 from analytics import QuantitativeEngine
@@ -372,6 +372,17 @@ AR_TRANSLATIONS = {
     "P&L (%)": "(%) الربح/الخسارة",
     "Trail Stop": "وقف متحرك",
     "Purchase Date": "تاريخ الشراء",
+    # --- Exits tab: new analytics columns ---
+    "Net P&L (EGP)": "صافي الربح/الخسارة (جنيه)",
+    "Net P&L (%)": "(%) صافي الربح/الخسارة",
+    "Dist. to Stop %": "(%) المسافة لوقف الخسارة",
+    "Annualized %": "(%) العائد السنوي",
+    "Drawdown from Peak %": "(%) التراجع من القمة",
+    "Risk vs Plan": "الحجم مقابل خطة المخاطرة",
+    "This position is {p}% of your account equity — over the single-position concentration threshold.": "تمثل هذه الصفقة {p}% من رأس مالك — أعلى من حد التركز المسموح به لصفقة واحدة.",
+    "Cash Drag (%)": "(%) النقد غير المستثمر",
+    "💵 {pct}% cash — fully invested, no dry powder for new signals.": "💵 {pct}% نقدًا فقط — رأس المال مستثمر بالكامل، لا توجد سيولة لصفقات جديدة.",
+    "🔄 You're holding {held} ({hs}) but the matrix now prefers {cand} ({cs}) in the same {cat} pool.": "🔄 أنت تمتلك {held} ({hs}) لكن المصفوفة تفضّل الآن {cand} ({cs}) ضمن نفس فئة {cat}.",
 
     # --- History (closed trades) tab: column headers ---
     "Shares Sold": "الأسهم المباعة",
@@ -3497,16 +3508,25 @@ class QuantDashboard(QMainWindow):
             ("Shares", "Shares currently held"),
             ("Buy Price", "Your average cost basis"),
             ("Price", "Current close price"),
+            ("Purchased Value (EGP)", "Total amount you paid for this position (Shares × Buy Price)"),
+            ("Current Value (EGP)", "What this position is worth right now (Shares × Current Price)"),
             ("P&L (EGP)", "Unrealized profit/loss in EGP"),
             ("P&L (%)", "Unrealized profit/loss percentage"),
+            ("Net P&L (EGP)", "P&L after both round-trip trading fees: the buy-side fee already paid plus the sell-side fee you'd pay to close this position today"),
+            ("Net P&L (%)", "Fee-adjusted P&L, as a % of your original cost basis"),
             ("Action", "Suggested action: hold/trail, take-profit zone, or cut-loss review"),
             ("Take-Profit", "Take-profit target"),
             ("Trail Stop", "Trailing stop-loss (2x ATR below current price)"),
+            ("Dist. to Stop %", "How close the current price already is to crossing the trailing stop-loss line — a leading indicator, unlike the Action column which only flags once it's already crossed"),
             ("Trend", "Trend classification"),
             ("RSI-14", "14-period Relative Strength Index"),
             ("ADX-14", "14-period trend-strength index"),
             ("Data Conf.", "How much real history backs these numbers"),
             ("Purchase Date", "Date this position was opened"),
+            ("Days Held", "Calendar days since this position was opened"),
+            ("Annualized %", "Unrealized P&L (%) compounded to a yearly rate based on Days Held — separates a slow multi-week grind from a fast one-week pop that show the same raw P&L (%)"),
+            ("Drawdown from Peak %", "How far the current price has pulled back from its highest close since this position was opened — a stock that ran +20% and is now at +3% reads very differently from one that climbed steadily to +3%"),
+            ("Risk vs Plan", "This position's size as a multiple of your normal 1%-risk position size (config.RISK_PER_TRADE_PCT). Flagged when the position alone exceeds the single-position concentration threshold"),
             ("My Target Price", "The exit price that reaches your chosen profit target for this position"),
             ("My Target %", "Your chosen profit target, as a % gain from your buy price"),
             ("My Target (EGP)", "Your chosen profit target, in EGP profit on this position"),
@@ -4078,6 +4098,217 @@ class QuantDashboard(QMainWindow):
         self.progress_bar.setValue(pct)
         self.lbl_status.setText(msg)
 
+    @staticmethod
+    def _safe_float(val, default=0.0):
+        """Best-effort float coercion for table cells that may be None,
+        '-', or already numeric — used when summing/aggregating raw
+        row_data straight out of the matrix, which is display-formatted,
+        not guaranteed numeric."""
+        if val is None:
+            return default
+        try:
+            return float(val)
+        except (TypeError, ValueError):
+            return default
+
+    def _set_exit_summary_item(self, row_idx, col_idx, text, bg, fg=Qt.GlobalColor.white, tooltip=None, bold=True):
+        """Shared cell builder for every appended Exits-tab summary row
+        (sector subtotals, grand total, combined account total) — keeps
+        their read-only/non-selectable/centered/font styling identical so
+        only the color and text vary row to row."""
+        item = QTableWidgetItem(text)
+        item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable & ~Qt.ItemFlag.ItemIsSelectable)
+        item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+        item.setFont(QFont("Inter", 10, QFont.Weight.Bold if bold else QFont.Weight.Normal))
+        item.setBackground(bg)
+        item.setForeground(fg)
+        if tooltip:
+            item.setToolTip(tooltip)
+        self.tbl_exits.setItem(row_idx, col_idx, item)
+
+    def _fill_exits_sector_rows(self, row_idx_start, keys, by_sector, total_current):
+        """One subtotal row per sector represented among open positions —
+        lets a concentration warning like 'PHGC.CA is 26% of equity' be
+        checked against whether that risk is isolated to one stock or
+        spread across a correlated sector. Sorted by current value so the
+        biggest sector exposure is always the first row. A sector whose
+        share of total portfolio value crosses the same
+        sector_concentration_warn_pct the account-level risk warning
+        already uses is flagged amber, for one consistent threshold
+        instead of a second one invented just for this table."""
+        warn_pct = PORTFOLIO_RISK_THRESHOLDS.get("sector_concentration_warn_pct", 35.0)
+        ordered = sorted(by_sector.items(), key=lambda kv: kv[1]["current"], reverse=True)
+        row_idx = row_idx_start
+        for sector, agg in ordered:
+            weight_pct = (agg["current"] / total_current * 100.0) if total_current else 0.0
+            sector_pl_pct = (agg["pl_egp"] / agg["purchased"] * 100.0) if agg["purchased"] else 0.0
+            avg_days = (agg["days_sum"] / agg["days_n"]) if agg["days_n"] else None
+            is_concentrated = weight_pct >= warn_pct
+
+            label = f"🏢 {sector} — {agg['count']} ticker{'s' if agg['count'] != 1 else ''} • {weight_pct:.1f}% of equity"
+            if is_concentrated:
+                label += " ⚠️"
+            bg = QColor("#7c4a03") if is_concentrated else QColor("#2d3748")
+            tip = (
+                f"{sector}: {weight_pct:.1f}% of total open-position value"
+                + (f" — above the {warn_pct:.0f}% concentration warning threshold" if is_concentrated else "")
+            )
+
+            values_by_key = {
+                "Ticker": label,
+                "Purchased Value (EGP)": f"{agg['purchased']:,.2f}",
+                "Current Value (EGP)": f"{agg['current']:,.2f}",
+                "P&L (EGP)": f"{agg['pl_egp']:,.2f}",
+                "P&L (%)": f"{sector_pl_pct:,.2f}",
+                "Days Held": f"{avg_days:.0f}d avg" if avg_days is not None else "-",
+            }
+            for col_idx, key in enumerate(keys):
+                text = values_by_key.get(key, "-")
+                fg = Qt.GlobalColor.white
+                if key in ("P&L (EGP)", "P&L (%)"):
+                    if agg["pl_egp"] > 0:
+                        fg = QColor("#68d391")
+                    elif agg["pl_egp"] < 0:
+                        fg = QColor("#fc8181")
+                self._set_exit_summary_item(row_idx, col_idx, text, bg, fg, tip if key == "Ticker" else None, bold=False)
+            row_idx += 1
+        return row_idx
+
+    def _fill_exits_totals_row(self, row_idx, keys, total_shares, total_purchased,
+                                total_current, total_pl_egp, win_count, loss_count,
+                                flat_count, best_pct, worst_pct, best_egp, worst_egp,
+                                gross_gains_egp, gross_losses_egp, action_counts,
+                                avg_days_held):
+        """Appends a bold, visually distinct grand-total row under the open
+        positions (and any sector subtotal rows above it): total shares
+        held, total amount invested at cost, total current market value,
+        and the resulting overall P&L in both EGP and % — the weighted
+        portfolio-level return, not an average of each row's own %, so a
+        large position's move counts proportionally more than a small
+        one's (matches how the real account P&L works). The whole row is
+        tinted green/red by the sign of that total, the same visual
+        language as the per-row Action column.
+
+        The label itself carries the two numbers most likely to change
+        what someone does next: the win/loss breadth, and — if one ticker
+        is responsible for the majority of total losses or gains — which
+        one and how much, so a warning like 'one stock is 26% of your
+        equity' upstream becomes 'and yes, it's also 91% of your losses'
+        right here instead of requiring a scan down the P&L column."""
+        total_pl_pct = (total_pl_egp / total_purchased * 100.0) if total_purchased else 0.0
+        n_positions = win_count + loss_count + flat_count
+
+        breadth = f"{win_count} up / {loss_count} down"
+        if flat_count:
+            breadth += f" / {flat_count} flat"
+
+        concentration_flag = ""
+        concentration_tip = ""
+        if worst_egp and gross_losses_egp > 0:
+            worst_loss_share = abs(worst_egp[1]) / gross_losses_egp * 100.0
+            if worst_loss_share >= 50.0:
+                concentration_flag = f" ⚠️ {worst_egp[0]} drives {worst_loss_share:.0f}% of losses"
+                concentration_tip = (
+                    f"{worst_egp[0]} alone accounts for {worst_loss_share:.0f}% of your total "
+                    f"unrealized losses ({worst_egp[1]:,.2f} EGP of -{gross_losses_egp:,.2f} EGP)."
+                )
+        if best_egp and gross_gains_egp > 0 and not concentration_flag:
+            best_gain_share = best_egp[1] / gross_gains_egp * 100.0
+            if best_gain_share >= 50.0:
+                concentration_flag = f" • {best_egp[0]} drives {best_gain_share:.0f}% of gains"
+                concentration_tip = (
+                    f"{best_egp[0]} alone accounts for {best_gain_share:.0f}% of your total "
+                    f"unrealized gains (+{best_egp[1]:,.2f} EGP of +{gross_gains_egp:,.2f} EGP)."
+                )
+
+        best_pct_str = f"{best_pct[0]} ({best_pct[1]:+.2f}%)" if best_pct else "-"
+        worst_pct_str = f"{worst_pct[0]} ({worst_pct[1]:+.2f}%)" if worst_pct else "-"
+        best_egp_str = f"{best_egp[0]} ({best_egp[1]:+,.2f} EGP)" if best_egp else "-"
+        worst_egp_str = f"{worst_egp[0]} ({worst_egp[1]:+,.2f} EGP)" if worst_egp else "-"
+        record_tip = (
+            f"{breadth}\n"
+            f"Best by %: {best_pct_str}   •   Worst by %: {worst_pct_str}\n"
+            f"Best by EGP impact: {best_egp_str}   •   Worst by EGP impact: {worst_egp_str}"
+            + (f"\n\n{concentration_tip}" if concentration_tip else "")
+        )
+        action_tip = (
+            f"Hold/Trail: {action_counts.get('HOLD', 0)}  •  "
+            f"Take-Profit zone: {action_counts.get('TAKE PROFIT', 0)}  •  "
+            f"Cut-Loss review: {action_counts.get('CUT LOSS', 0)}"
+        )
+
+        totals_by_key = {
+            "Ticker": f"📊 OPEN POSITIONS TOTAL — {n_positions} position{'s' if n_positions != 1 else ''} ({breadth}){concentration_flag}",
+            "Shares": f"{total_shares:,.2f}".rstrip("0").rstrip("."),
+            "Purchased Value (EGP)": f"{total_purchased:,.2f}",
+            "Current Value (EGP)": f"{total_current:,.2f}",
+            "P&L (EGP)": f"{total_pl_egp:,.2f}",
+            "P&L (%)": f"{total_pl_pct:,.2f}",
+            "Days Held": f"{avg_days_held:.0f}d avg" if avg_days_held is not None else "-",
+        }
+        tooltips_by_key = {
+            "Ticker": record_tip,
+            "P&L (EGP)": record_tip,
+            "P&L (%)": record_tip,
+            "Action Command": action_tip,
+        }
+
+        if total_pl_egp > 0:
+            totals_bg = QColor("#22543d")
+        elif total_pl_egp < 0:
+            totals_bg = QColor("#9b2c2c")
+        else:
+            totals_bg = QColor("#1a2942")
+
+        for col_idx, key in enumerate(keys):
+            text = totals_by_key.get(key, "-")
+            fg = Qt.GlobalColor.white
+            if key in ("P&L (EGP)", "P&L (%)"):
+                if total_pl_egp > 0:
+                    fg = QColor("#9ae6b4")
+                elif total_pl_egp < 0:
+                    fg = QColor("#feb2b2")
+            self._set_exit_summary_item(row_idx, col_idx, text, totals_bg, fg, tooltips_by_key.get(key))
+        return row_idx + 1
+
+    def _fill_exits_combined_row(self, row_idx, keys, unrealized_pl_egp, unrealized_cost, closed_trades):
+        """Appends the 'am I up overall' row: unrealized P&L on today's
+        open positions blended with realized P&L already banked from
+        closed_trades (the same list the History tab totals), so someone
+        doesn't have to flip tabs and add two numbers themselves to
+        answer that question."""
+        realized_pl_egp = sum(self._safe_float(t.get("Realized P&L (EGP)")) for t in closed_trades)
+        realized_cost = sum(
+            self._safe_float(t.get("Shares Sold")) * self._safe_float(t.get("Buy Price"))
+            for t in closed_trades
+        )
+        combined_pl_egp = unrealized_pl_egp + realized_pl_egp
+        combined_cost = unrealized_cost + realized_cost
+        combined_pl_pct = (combined_pl_egp / combined_cost * 100.0) if combined_cost else 0.0
+
+        tip = (
+            f"Unrealized (open positions): {unrealized_pl_egp:+,.2f} EGP\n"
+            f"Realized (closed trades, {len(closed_trades)} total): {realized_pl_egp:+,.2f} EGP\n"
+            f"Combined: {combined_pl_egp:+,.2f} EGP on {combined_cost:,.2f} EGP total cost basis"
+        )
+
+        values_by_key = {
+            "Ticker": "🧮 ACCOUNT TOTAL — Realized + Unrealized",
+            "Purchased Value (EGP)": f"{combined_cost:,.2f}",
+            "P&L (EGP)": f"{combined_pl_egp:,.2f}",
+            "P&L (%)": f"{combined_pl_pct:,.2f}",
+        }
+        bg = QColor("#2c5282")
+        for col_idx, key in enumerate(keys):
+            text = values_by_key.get(key, "-")
+            fg = Qt.GlobalColor.white
+            if key in ("P&L (EGP)", "P&L (%)"):
+                if combined_pl_egp > 0:
+                    fg = QColor("#9ae6b4")
+                elif combined_pl_egp < 0:
+                    fg = QColor("#feb2b2")
+            self._set_exit_summary_item(row_idx, col_idx, text, bg, fg, tip)
+
     def populate_tables(self, buys, exits, top10, closed_trades, fin_stmt, sector_summary, breakout_watchlist=None, portfolio_risk=None, session_picks=None, _push_cloud_stats=True):
         breakout_watchlist = breakout_watchlist or []
         session_picks = session_picks or {}
@@ -4097,9 +4328,23 @@ class QuantDashboard(QMainWindow):
             session_picks=session_picks,
         )
 
-        warnings = (portfolio_risk or {}).get("warnings", [])
-        if warnings:
-            self.lbl_concentration_warning.setText(" | ".join(warnings))
+        pr = portfolio_risk or {}
+        banner_msgs = list(pr.get("warnings", []))
+        if pr.get("low_cash_drag"):
+            banner_msgs.append(
+                tr("💵 {pct}% cash — fully invested, no dry powder for new signals.").format(
+                    pct=pr.get("cash_drag_pct", 0)
+                )
+            )
+        for rf in pr.get("rotation_flags", [])[:3]:
+            banner_msgs.append(
+                tr("🔄 You're holding {held} ({hs}) but the matrix now prefers {cand} ({cs}) in the same {cat} pool.").format(
+                    held=rf["held_ticker"], hs=rf["held_score"],
+                    cand=rf["candidate_ticker"], cs=rf["candidate_score"], cat=tr(rf["category"]),
+                )
+            )
+        if banner_msgs:
+            self.lbl_concentration_warning.setText(" | ".join(banner_msgs))
             self.lbl_concentration_warning.show()
         else:
             self.lbl_concentration_warning.clear()
@@ -4162,33 +4407,171 @@ class QuantDashboard(QMainWindow):
 
                     self.tbl_sectors.setItem(row_idx, col_idx, item)
 
-            self.tbl_exits.setRowCount(len(exits))
+            _exit_keys = [
+                "Ticker", "Shares", "Buy Price", "Current Price",
+                "Purchased Value (EGP)", "Current Value (EGP)", "P&L (EGP)", "P&L (%)",
+                "Net P&L (EGP)", "Net P&L (%)",
+                "Action Command", "Take-Profit Target", "Trailing Stop-Loss", "Distance to Stop (%)",
+                "Trend Class", "RSI-14", "ADX-14", "Data Confidence", "Purchase Date", "Days Held",
+                "Annualized Return (%)", "Drawdown from Peak (%)", "Risk Multiple",
+                "Target Price", "Target Profit %", "Target Profit (EGP)", "Est. Days to Target",
+                "Breakeven Shares Needed", "Breakeven New Avg Cost", "Breakeven Cost (EGP)",
+            ]
+            _n_sectors_preview = len({row_data.get("Sector") or "General / Diversified" for row_data in exits})
+            _show_combined_row = bool(exits) and bool(closed_trades)
+            _extra_rows = (_n_sectors_preview if exits else 0) + (1 if exits else 0) + (1 if _show_combined_row else 0)
+            self.tbl_exits.setRowCount(len(exits) + _extra_rows)
+
+            # Portfolio-wide accumulators for the summary rows appended after
+            # the last position — computed alongside the normal per-row fill
+            # so they're always one pass, never a second one that could
+            # drift from what's actually on screen.
+            _tot_shares = 0.0
+            _tot_purchased = 0.0
+            _tot_current = 0.0
+            _tot_pl_egp = 0.0
+            _win_count = 0
+            _loss_count = 0
+            _flat_count = 0
+            _best_pct = None   # (ticker, pct) — biggest % gainer
+            _worst_pct = None  # (ticker, pct) — biggest % loser
+            _best_egp = None   # (ticker, egp) — biggest EGP contributor to gains
+            _worst_egp = None  # (ticker, egp) — biggest EGP contributor to losses
+            _gross_gains_egp = 0.0
+            _gross_losses_egp = 0.0
+            _action_counts = {"HOLD": 0, "TAKE PROFIT": 0, "CUT LOSS": 0, "OTHER": 0}
+            _days_held_sum = 0
+            _days_held_n = 0
+            _by_sector = {}  # sector -> dict of running totals
+
+            today = date.today()
+
             for row_idx, row_data in enumerate(exits):
-                for col_idx, key in enumerate([
-                    "Ticker", "Shares", "Buy Price", "Current Price", "P&L (EGP)", "P&L (%)",
-                    "Action Command", "Take-Profit Target", "Trailing Stop-Loss", "Trend Class",
-                    "RSI-14", "ADX-14", "Data Confidence", "Purchase Date",
-                    "Target Price", "Target Profit %", "Target Profit (EGP)", "Est. Days to Target",
-                    "Breakeven Shares Needed", "Breakeven New Avg Cost", "Breakeven Cost (EGP)",
-                ]):
-                    raw_val = row_data.get(key, "")
-                    val_str = "-" if raw_val is None else str(raw_val)
+                shares = self._safe_float(row_data.get("Shares"))
+                buy_price = self._safe_float(row_data.get("Buy Price"))
+                cur_price = self._safe_float(row_data.get("Current Price"))
+                purchased_val = shares * buy_price
+                current_val = shares * cur_price
+                pl_egp = self._safe_float(row_data.get("P&L (EGP)"), default=current_val - purchased_val)
+                pl_pct = self._safe_float(row_data.get("P&L (%)"))
+                ticker = str(row_data.get("Ticker", "?"))
+                sector = row_data.get("Sector") or "General / Diversified"
+
+                days_held = None
+                try:
+                    purchase_d = date.fromisoformat(str(row_data.get("Purchase Date"))[:10])
+                    days_held = (today - purchase_d).days
+                except (ValueError, TypeError):
+                    pass
+
+                _tot_shares += shares
+                _tot_purchased += purchased_val
+                _tot_current += current_val
+                _tot_pl_egp += pl_egp
+                if pl_egp > 0:
+                    _win_count += 1
+                    _gross_gains_egp += pl_egp
+                    if _best_egp is None or pl_egp > _best_egp[1]:
+                        _best_egp = (ticker, pl_egp)
+                elif pl_egp < 0:
+                    _loss_count += 1
+                    _gross_losses_egp += abs(pl_egp)
+                    if _worst_egp is None or pl_egp < _worst_egp[1]:
+                        _worst_egp = (ticker, pl_egp)
+                else:
+                    _flat_count += 1
+                if _best_pct is None or pl_pct > _best_pct[1]:
+                    _best_pct = (ticker, pl_pct)
+                if _worst_pct is None or pl_pct < _worst_pct[1]:
+                    _worst_pct = (ticker, pl_pct)
+                if days_held is not None:
+                    _days_held_sum += days_held
+                    _days_held_n += 1
+
+                sec = _by_sector.setdefault(sector, {
+                    "count": 0, "purchased": 0.0, "current": 0.0, "pl_egp": 0.0,
+                    "days_sum": 0, "days_n": 0,
+                })
+                sec["count"] += 1
+                sec["purchased"] += purchased_val
+                sec["current"] += current_val
+                sec["pl_egp"] += pl_egp
+                if days_held is not None:
+                    sec["days_sum"] += days_held
+                    sec["days_n"] += 1
+
+                action_val = str(row_data.get("Action Command", ""))
+                if "URGENT SELL" in action_val or "CUT LOSS" in action_val:
+                    _action_counts["CUT LOSS"] += 1
+                elif "TAKE PROFIT" in action_val:
+                    _action_counts["TAKE PROFIT"] += 1
+                elif "HOLD" in action_val:
+                    _action_counts["HOLD"] += 1
+                else:
+                    _action_counts["OTHER"] += 1
+
+                for col_idx, key in enumerate(_exit_keys):
+                    if key == "Purchased Value (EGP)":
+                        val_str = f"{purchased_val:,.2f}"
+                    elif key == "Current Value (EGP)":
+                        val_str = f"{current_val:,.2f}"
+                    elif key == "Days Held":
+                        val_str = f"{days_held}d" if days_held is not None else "-"
+                    elif key in ("Net P&L (EGP)",):
+                        raw_val = row_data.get(key)
+                        val_str = "-" if raw_val is None else f"{float(raw_val):,.2f}"
+                    elif key in ("Net P&L (%)", "Distance to Stop (%)", "Annualized Return (%)", "Drawdown from Peak (%)"):
+                        raw_val = row_data.get(key)
+                        val_str = "-" if raw_val is None else f"{float(raw_val):,.2f}%"
+                    elif key == "Risk Multiple":
+                        raw_val = row_data.get(key)
+                        val_str = "-" if raw_val is None else f"{float(raw_val):,.1f}x"
+                    else:
+                        raw_val = row_data.get(key, "")
+                        val_str = "-" if raw_val is None else str(raw_val)
                     display_str = tr(val_str) if key in _exit_translatable else val_str
                     item = QTableWidgetItem(display_str)
                     item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
                     item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
 
-                    if key in ["P&L (EGP)", "P&L (%)"]:
+                    if key in ["P&L (EGP)", "P&L (%)", "Net P&L (EGP)", "Net P&L (%)", "Annualized Return (%)"]:
                         try:
-                            val_num = float(row_data.get(key, 0))
+                            val_num = float(row_data.get(key))
                             if val_num > 0:
                                 item.setForeground(QColor("#38a169"))
                                 item.setFont(QFont("Inter", 10, QFont.Weight.Bold))
                             elif val_num < 0:
                                 item.setForeground(QColor("#e53e3e"))
                                 item.setFont(QFont("Inter", 10, QFont.Weight.Bold))
-                        except ValueError:
+                        except (TypeError, ValueError):
                             pass
+
+                    if key == "Drawdown from Peak (%)":
+                        try:
+                            val_num = float(row_data.get(key))
+                            if val_num <= -10.0:
+                                item.setForeground(QColor("#e53e3e"))
+                                item.setFont(QFont("Inter", 10, QFont.Weight.Bold))
+                        except (TypeError, ValueError):
+                            pass
+
+                    if key == "Distance to Stop (%)":
+                        try:
+                            val_num = float(row_data.get(key))
+                            if val_num <= 3.0:
+                                item.setForeground(QColor("#e53e3e"))
+                                item.setFont(QFont("Inter", 10, QFont.Weight.Bold))
+                        except (TypeError, ValueError):
+                            pass
+
+                    if key == "Risk Multiple" and row_data.get("Oversized Position"):
+                        item.setForeground(QColor("#e53e3e"))
+                        item.setFont(QFont("Inter", 10, QFont.Weight.Bold))
+                        pct = row_data.get("Position % of Equity")
+                        item.setToolTip(
+                            tr("This position is {p}% of your account equity — over the single-position concentration threshold.").format(p=pct)
+                            if pct is not None else ""
+                        )
 
                     if key == "Breakeven Shares Needed":
                         note = row_data.get("Breakeven Note")
@@ -4215,6 +4598,37 @@ class QuantDashboard(QMainWindow):
                             item.setForeground(Qt.GlobalColor.white)
 
                     self.tbl_exits.setItem(row_idx, col_idx, item)
+
+            if exits:
+                next_row = self._fill_exits_sector_rows(
+                    row_idx_start=len(exits), keys=_exit_keys,
+                    by_sector=_by_sector, total_current=_tot_current,
+                )
+                next_row = self._fill_exits_totals_row(
+                    row_idx=next_row,
+                    keys=_exit_keys,
+                    total_shares=_tot_shares,
+                    total_purchased=_tot_purchased,
+                    total_current=_tot_current,
+                    total_pl_egp=_tot_pl_egp,
+                    win_count=_win_count,
+                    loss_count=_loss_count,
+                    flat_count=_flat_count,
+                    best_pct=_best_pct,
+                    worst_pct=_worst_pct,
+                    best_egp=_best_egp,
+                    worst_egp=_worst_egp,
+                    gross_gains_egp=_gross_gains_egp,
+                    gross_losses_egp=_gross_losses_egp,
+                    action_counts=_action_counts,
+                    avg_days_held=(_days_held_sum / _days_held_n) if _days_held_n else None,
+                )
+                if _show_combined_row:
+                    self._fill_exits_combined_row(
+                        row_idx=next_row, keys=_exit_keys,
+                        unrealized_pl_egp=_tot_pl_egp, unrealized_cost=_tot_purchased,
+                        closed_trades=closed_trades,
+                    )
 
             self.tbl_closed.setRowCount(len(closed_trades))
             for row_idx, row_data in enumerate(closed_trades):
