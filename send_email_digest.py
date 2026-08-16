@@ -77,7 +77,7 @@ def load_market_data(path: str) -> dict:
         return json.load(f)
 
 
-def send_digest_email(payload: dict, recipients: list[str]) -> None:
+def send_digest_email(payload: dict, recipients: list[str]) -> list[str]:
     host = os.environ.get("SMTP_HOST", "").strip()
     port = int(os.environ.get("SMTP_PORT", "587"))
     user = os.environ.get("SMTP_USER", "").strip()
@@ -107,7 +107,17 @@ def send_digest_email(payload: dict, recipients: list[str]) -> None:
     with smtplib.SMTP(host, port, timeout=20) as server:
         server.starttls()
         server.login(user, password)
-        server.sendmail(from_addr, recipients, msg.as_string())
+        # sendmail() does NOT raise just because some recipients were
+        # rejected — it only raises if EVERY recipient was refused. Any
+        # partial failures come back as a dict {email: (code, message)}
+        # instead, which the old version of this function threw away
+        # entirely, making a mailbox getting silently rejected (e.g. a
+        # fake/mistyped/unverified address — Firebase's default email/
+        # password sign-up never confirms the address is real) look
+        # identical to a successful send. Returning this to the caller
+        # so it can be logged is what actually surfaces that difference.
+        refused = server.sendmail(from_addr, recipients, msg.as_string())
+    return list(refused.keys())
 
 
 def main():
@@ -137,8 +147,31 @@ def main():
         return
 
     payload = build_digest_payload(state)
-    send_digest_email(payload, recipients)
-    print(f"✅ Digest sent to {len(recipients)} recipient(s): {payload['subject']}")
+    refused = send_digest_email(payload, recipients)
+    delivered = len(recipients) - len(refused)
+    print(f"✅ Digest accepted for {delivered}/{len(recipients)} recipient(s): {payload['subject']}")
+    if refused:
+        print(f"⚠️  {len(refused)} recipient(s) were REJECTED by the mail server (likely fake/mistyped/")
+        print("    unverified addresses — Firebase's default sign-up never confirms an email is real):")
+        for addr in refused:
+            print(f"    - {_mask_email(addr)}")
+        print("    These accounts should be excluded from future sends, or prompted to re-verify their email.")
+    print("    Note: this only catches recipients rejected immediately (e.g. 'mailbox does not exist').")
+    print("    A mailbox that exists but silently spam-filters the message won't show up here — check")
+    print(f"    {os.environ.get('SMTP_USER', '').strip() or '(SMTP_USER)'}'s own inbox for any")
+    print("    'Mail Delivery Subsystem' bounce-back messages too.")
+
+
+def _mask_email(addr: str) -> str:
+    """user@domain.com -> us***@domain.com — enough for the account's
+    owner to recognize which address failed without printing full
+    addresses to a CI log that may be publicly readable (GitHub Actions
+    logs are public on public repos)."""
+    local, _, domain = addr.partition("@")
+    if not domain:
+        return addr
+    visible = local[:2]
+    return f"{visible}{'*' * max(len(local) - len(visible), 3)}@{domain}"
 
 
 if __name__ == "__main__":
