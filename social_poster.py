@@ -928,16 +928,43 @@ def publish_to_facebook(page_id: str, page_access_token: str, image_url: str, ca
     return resp.json()["post_id"]
 
 
+def _telegram_units(text: str) -> int:
+    """Telegram measures caption/message length in UTF-16 code units, not
+    Python characters. len("🔥") == 1 in Python, but 🔥 (U+1F525) sits
+    outside the Basic Multilingual Plane, so Telegram counts it as 2 units
+    (a surrogate pair) — same for most emoji used in these captions
+    (📈🏛️📊🎯 etc). A caption that measures <=1024 via plain len() can
+    still be rejected by the API as too long once it's emoji-heavy, which
+    is exactly what happened to the bilingual "tickers" caption. Counting
+    via UTF-16 encoding matches what Telegram actually checks server-side.
+    """
+    return len(text.encode("utf-16-le")) // 2
+
+
+TELEGRAM_CAPTION_LIMIT = 1024
+_TELEGRAM_TRUNCATION_SUFFIX = "\n… (see the dashboard for the full post)"
+
+
 def publish_to_telegram(chat_id: str, bot_token: str, image_url: str, caption: str) -> str:
     """Posts one photo+caption to a Telegram CHANNEL via sendPhoto - reaches
     every member who joined the channel in a single call, no per-subscriber
     loop needed (contrast with the email digest, which genuinely does need
     a per-recipient list - see export_subscribers.py / send_email_digest.py).
-    Telegram captions are capped at 1024 chars for sendPhoto; longer text
-    is truncated with a pointer to the full post rather than failing.
+    Telegram captions are capped at 1024 UTF-16 code units for sendPhoto;
+    longer text is truncated (measuring the same way Telegram does, so the
+    truncated result is actually guaranteed to fit) with a pointer to the
+    full post rather than failing.
     """
-    if len(caption) > 1024:
-        caption = caption[:1000].rsplit("\n", 1)[0] + "\n… (see the dashboard for the full post)"
+    if _telegram_units(caption) > TELEGRAM_CAPTION_LIMIT:
+        limit_for_body = TELEGRAM_CAPTION_LIMIT - _telegram_units(_TELEGRAM_TRUNCATION_SUFFIX)
+        body = caption
+        # Trim from the end until the body itself (in Telegram's own
+        # counting units) fits, then back up to the last full line so we
+        # don't cut mid-word/mid-tag.
+        while body and _telegram_units(body) > limit_for_body:
+            body = body[:-1]
+        body = body.rsplit("\n", 1)[0]
+        caption = body + _TELEGRAM_TRUNCATION_SUFFIX
     resp = requests.post(
         f"https://api.telegram.org/bot{bot_token}/sendPhoto",
         data={"chat_id": chat_id, "photo": image_url, "caption": caption, "parse_mode": "HTML"},
