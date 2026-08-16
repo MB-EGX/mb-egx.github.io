@@ -35,8 +35,23 @@ WATCH_DIR = BASE_DIR / "market_data_feeds"
 LOG_PATH = BASE_DIR / "quant_app.log"
 
 # Cap maximum workers to prevent RAM/Paging file exhaustion on Windows.
-# If your physical RAM is strictly limited (e.g. 8GB), lower this to 2.
-MAX_WORKERS = min(os.cpu_count() or 2, 4)
+# Each worker process independently reloads the full scipy/numpy/BLAS
+# stack on startup (unavoidable with ProcessPoolExecutor's 'spawn' start
+# method on Windows) — that's a real, sizeable chunk of virtual memory
+# per worker, separate from the OPENBLAS/MKL/OMP thread caps above (those
+# limit threads WITHIN a process, not how many processes pile up loading
+# DLLs at the same time). Default lowered from 4 to 2: 4 concurrent
+# scipy imports is enough to exhaust a default-sized Windows page file
+# even on otherwise-capable machines ("DLL load failed while importing
+# _fblas: The paging file is too small for this operation to complete").
+# Override with the MBEGX_MAX_WORKERS env var if your machine has more
+# headroom (more RAM/larger page file) and you want the extra
+# parallelism back, without editing this file again.
+_env_max_workers = os.environ.get("MBEGX_MAX_WORKERS", "").strip()
+if _env_max_workers.isdigit() and int(_env_max_workers) > 0:
+    MAX_WORKERS = int(_env_max_workers)
+else:
+    MAX_WORKERS = min(os.cpu_count() or 2, 2)
 CHUNK_SIZE = 1000  # Rows per flush when writing to DuckDB.
 
 # --- Risk & signal-quality controls ---
