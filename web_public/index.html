@@ -155,8 +155,34 @@
         h1, h2, h3, .font-headline { font-family: 'Hanken Grotesk', sans-serif; letter-spacing: -0.01em; }
         .text-sky-400 { color: var(--accent-text) !important; }
 
-        /* Sticky, glassy header */
-        header#main-header { position: sticky; top: 0; z-index: 30; background-color: color-mix(in srgb, var(--bg-panel) 92%, transparent); backdrop-filter: blur(10px); }
+        /* Sticky, glassy header — DESKTOP ONLY. On mobile the header
+           switches to a stacked column (logo row + every control button
+           full-width beneath it — see flex-col lg:flex-row on
+           #main-header), so keeping it "sticky" there pins that whole
+           tall stack to the top of the viewport and eats roughly half
+           the screen permanently. Below the lg breakpoint it just
+           scrolls away with the rest of the page like normal content. */
+        @media (min-width: 1024px) {
+            header#main-header { position: sticky; top: 0; z-index: 30; background-color: color-mix(in srgb, var(--bg-panel) 92%, transparent); backdrop-filter: blur(10px); }
+        }
+
+        /* ===== Mobile header controls: collapsed by default =====
+           On mobile the full control row (Refresh, Portfolio, Risk Calc,
+           Set Cash, Themes, Compact, Print, Notifications, Guide, Tour,
+           language picker, user badge...) is long enough on its own to
+           fill most of a phone screen. Hide it behind a small toggle
+           button (#btn-mobile-menu, injected via JS) and only show it
+           once the user asks for it. Desktop is completely unaffected —
+           this only applies below the lg breakpoint, matching the same
+           flex-col/flex-row switch the header already uses. */
+        @media (max-width: 1023px) {
+            #header-controls { display: none; }
+            #header-controls.mobile-menu-open { display: flex; }
+            #btn-mobile-menu { display: inline-flex; }
+        }
+        @media (min-width: 1024px) {
+            #btn-mobile-menu { display: none; }
+        }
 
         /* Card panels: subtle depth + hairline glow */
         .bg-panelbg { box-shadow: 0 1px 0 0 rgba(255,255,255,0.04) inset, 0 10px 24px -12px rgba(0,0,0,0.5); }
@@ -207,16 +233,22 @@
         
         <!-- Header Bar -->
         <header id="main-header" class="bg-panelbg p-4 rounded-xl border border-bordercol shadow-xl flex flex-col lg:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-3 w-full lg:w-auto">
-                <img src="assets/mb-egx-logo.png" alt="MB-EGX Logo" class="w-12 h-12 object-contain drop-shadow-[0_0_10px_rgba(147,204,255,0.35)]">
-                <div>
-                    <h1 id="lbl-title" class="text-sm md:text-base font-headline font-bold text-sky-400 tracking-tight">MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard</h1>
-                    <p class="text-[11px] text-textmuted mt-0.5">📅 <span id="lbl-last-date">Last Data Date:</span> <strong id="val-last-date" class="text-sky-400">—</strong></p>
+            <div class="flex items-center gap-3 w-full lg:w-auto justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="assets/mb-egx-logo.png" alt="MB-EGX Logo" class="w-12 h-12 object-contain drop-shadow-[0_0_10px_rgba(147,204,255,0.35)]">
+                    <div>
+                        <h1 id="lbl-title" class="text-sm md:text-base font-headline font-bold text-sky-400 tracking-tight">MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard</h1>
+                        <p class="text-[11px] text-textmuted mt-0.5">📅 <span id="lbl-last-date">Last Data Date:</span> <strong id="val-last-date" class="text-sky-400">—</strong></p>
+                    </div>
                 </div>
+                <!-- Mobile-only toggle for the control buttons below (hidden on desktop — see @media rules in <style>) -->
+                <button id="btn-mobile-menu" onclick="toggleMobileHeaderMenu()" class="hidden bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg font-bold shadow items-center gap-1.5 transition shrink-0">
+                    <span id="btn-mobile-menu-icon">☰</span> <span id="btn-mobile-menu-text">Menu</span>
+                </button>
             </div>
 
             <!-- Controls -->
-            <div class="flex flex-wrap items-center justify-center lg:justify-end gap-2 w-full lg:w-auto">
+            <div id="header-controls" class="flex flex-wrap items-center justify-center lg:justify-end gap-2 w-full lg:w-auto">
                 <button onclick="loadMarketData()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
                     <span>⚡</span> <span id="btn-refresh-text">Refresh Data</span>
                 </button>
@@ -1977,6 +2009,21 @@
         function toggleCompactMode() {
             compactMode = !compactMode;
             applyCompactMode();
+        }
+        // Mobile-only: shows/hides the full header control row (Refresh,
+        // Portfolio, Risk Calc, Themes, etc.) behind a small toggle button
+        // so the header doesn't dominate the screen on a phone. No-op on
+        // desktop — #header-controls is always visible there via CSS.
+        function toggleMobileHeaderMenu() {
+            const controls = document.getElementById('header-controls');
+            const icon = document.getElementById('btn-mobile-menu-icon');
+            const text = document.getElementById('btn-mobile-menu-text');
+            if (!controls) return;
+            const isOpen = controls.classList.toggle('mobile-menu-open');
+            if (icon) icon.innerText = isOpen ? '✕' : '☰';
+            if (text) text.innerText = isOpen
+                ? (currentLang === 'AR' ? 'إغلاق' : 'Close')
+                : (currentLang === 'AR' ? 'القائمة' : 'Menu');
         }
         function applyTheme(themeName) {
             currentTheme = themeName;
