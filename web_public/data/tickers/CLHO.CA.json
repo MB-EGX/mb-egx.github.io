@@ -1,15 +1,15 @@
 {
   "ticker": "CLHO.CA",
-  "last_data_date": "2026-08-13",
+  "last_data_date": "2026-08-16",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "CLHO.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 8.6,
-    "Current Price": 17.14,
-    "Target Entry (VWAP)": 17.14,
-    "Suggested Stop-Loss": 15.6071,
-    "Take-Profit Target": 19.1761,
+    "Action": "📈 ACCUMULATE [💥 SQUEEZE]",
+    "Rank Score": 13.9,
+    "Current Price": 17.27,
+    "Target Entry (VWAP)": 17.27,
+    "Suggested Stop-Loss": 15.7829,
+    "Take-Profit Target": 19.2498,
     "Resistance (52W High)": 19.72,
     "Support (52W Low)": 15.9,
     "Pivot Point": 18.3667,
@@ -22,24 +22,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.8,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | confirmed | vol x1.68",
+    "Kelly %": 1.84,
+    "Signal Reason": "📈 ACCUMULATE [💥 SQUEEZE] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 1.62,
-      "trend_bonus": 15.0,
+      "range": 1.79,
+      "trend_bonus": 25.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 49.2,
-    "ADX-14": 45.7,
-    "Vol Z-Score": 1.0,
-    "MACD Signal": "🔴 Bearish Cross",
-    "MACD Histogram": -0.0104,
-    "Bollinger %B": 0.447,
-    "Avg Volume (20D)": 3262224,
+    "RSI-14": 51.1,
+    "ADX-14": 44.1,
+    "Vol Z-Score": -1.09,
+    "MACD Signal": "Bearish",
+    "MACD Histogram": -0.0346,
+    "Bollinger %B": 0.494,
+    "Avg Volume (20D)": 2942341,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -76,7 +76,8 @@
       "2026-08-10 00:00:00",
       "2026-08-11 00:00:00",
       "2026-08-12 00:00:00",
-      "2026-08-13 00:00:00"
+      "2026-08-13 00:00:00",
+      "2026-08-16 00:00:00"
     ],
     "close": [
       16.8,
@@ -111,7 +112,8 @@
       17.91,
       17.65,
       17.49,
-      17.14
+      17.14,
+      17.27
     ],
     "open": [
       17.06,
@@ -146,7 +148,8 @@
       18.03,
       17.91,
       17.65,
-      17.49
+      17.49,
+      17.14
     ],
     "high": [
       17.24,
@@ -181,7 +184,8 @@
       18.73,
       18.1,
       17.9,
-      17.58
+      17.58,
+      17.35
     ],
     "low": [
       16.45,
@@ -216,7 +220,8 @@
       17.85,
       17.5,
       17.25,
-      16.95
+      16.95,
+      17.14
     ],
     "vwap": [
       16.83,
@@ -251,7 +256,8 @@
       17.2896,
       17.353,
       17.4174,
-      17.4342
+      17.4342,
+      17.5015
     ],
     "resistance": 19.72,
     "support": 15.9,

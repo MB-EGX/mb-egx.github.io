@@ -1,23 +1,23 @@
 {
-  "last_data_date": "2026-08-13",
+  "last_data_date": "2026-08-16",
   "session_picks": {
     "short": [
+      {
+        "id": 16,
+        "ticker": "AIFI.CA",
+        "horizon": "short",
+        "pick_date": "2026-08-16",
+        "ref_price": 2.4,
+        "expected_from": "2026-08-17",
+        "expected_by": "2026-08-19",
+        "expected_pct": 3.0
+      },
       {
         "id": 14,
         "ticker": "ABUK.CA",
         "horizon": "short",
         "pick_date": "2026-08-13",
         "ref_price": 77.9,
-        "expected_from": "2026-08-14",
-        "expected_by": "2026-08-16",
-        "expected_pct": 3.0
-      },
-      {
-        "id": 5,
-        "ticker": "ETRS.CA",
-        "horizon": "short",
-        "pick_date": "2026-08-13",
-        "ref_price": 10.91,
         "expected_from": "2026-08-14",
         "expected_by": "2026-08-16",
         "expected_pct": 3.0
@@ -117,8 +117,30 @@
         "expected_pct": 15.0
       }
     ],
-    "achieved_today": [],
-    "session_date": "2026-08-13",
-    "achieved_history": []
+    "achieved_today": [
+      {
+        "id": 5,
+        "ticker": "ETRS.CA",
+        "horizon": "short",
+        "pick_date": "2026-08-13",
+        "ref_price": 10.91,
+        "achieved_date": "2026-08-16",
+        "achieved_price": 11.25,
+        "achieved_pct": 3.12
+      }
+    ],
+    "session_date": "2026-08-16",
+    "achieved_history": [
+      {
+        "id": 5,
+        "ticker": "ETRS.CA",
+        "horizon": "short",
+        "pick_date": "2026-08-13",
+        "ref_price": 10.91,
+        "achieved_date": "2026-08-16",
+        "achieved_price": 11.25,
+        "achieved_pct": 3.12
+      }
+    ]
   }
 }

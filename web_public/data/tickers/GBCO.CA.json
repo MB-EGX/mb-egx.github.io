@@ -1,15 +1,15 @@
 {
   "ticker": "GBCO.CA",
-  "last_data_date": "2026-08-13",
+  "last_data_date": "2026-08-16",
   "sector": "Industrial Goods, Services & Automobiles",
   "matrix": {
     "Ticker": "GBCO.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 8.9,
-    "Current Price": 31.5,
-    "Target Entry (VWAP)": 31.5,
-    "Suggested Stop-Loss": 29.2629,
-    "Take-Profit Target": 34.5169,
+    "Action": "📈 ACCUMULATE [💥 SQUEEZE]",
+    "Rank Score": 13.7,
+    "Current Price": 30.7,
+    "Target Entry (VWAP)": 30.7,
+    "Suggested Stop-Loss": 28.3329,
+    "Take-Profit Target": 33.8738,
     "Resistance (52W High)": 34.2,
     "Support (52W Low)": 29.5,
     "Pivot Point": 31.63,
@@ -22,24 +22,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.11,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Kelly %": 1.99,
+    "Signal Reason": "📈 ACCUMULATE [💥 SQUEEZE] | trend=Weak Bullish | confirmed | volatility squeeze | vol x2.10",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.13,
-      "trend_bonus": 15.0,
+      "range": 1.28,
+      "trend_bonus": 25.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
-    "Trend Class": "Strong Bullish",
-    "RSI-14": 50.6,
-    "ADX-14": 26.2,
-    "Vol Z-Score": -1.22,
+    "Trend Class": "Weak Bullish",
+    "RSI-14": 45.0,
+    "ADX-14": 25.3,
+    "Vol Z-Score": 2.06,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.1101,
-    "Bollinger %B": 0.541,
-    "Avg Volume (20D)": 1689028,
+    "MACD Histogram": 0.0322,
+    "Bollinger %B": 0.33,
+    "Avg Volume (20D)": 1790063,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -76,7 +76,8 @@
       "2026-08-10 00:00:00",
       "2026-08-11 00:00:00",
       "2026-08-12 00:00:00",
-      "2026-08-13 00:00:00"
+      "2026-08-13 00:00:00",
+      "2026-08-16 00:00:00"
     ],
     "close": [
       31.5,
@@ -111,7 +112,8 @@
       31.81,
       32.0,
       32.2,
-      31.5
+      31.5,
+      30.7
     ],
     "open": [
       31.5,
@@ -146,7 +148,8 @@
       31.69,
       31.81,
       32.01,
-      32.2
+      32.2,
+      31.5
     ],
     "high": [
       31.5,
@@ -181,7 +184,8 @@
       32.14,
       32.45,
       32.42,
-      32.45
+      32.45,
+      31.79
     ],
     "low": [
       30.7,
@@ -216,7 +220,8 @@
       31.5,
       31.6,
       31.77,
-      31.5
+      31.5,
+      30.0
     ],
     "vwap": [
       31.2333,
@@ -251,7 +256,8 @@
       31.8121,
       31.8206,
       31.8324,
-      31.6045
+      31.6045,
+      31.4631
     ],
     "resistance": 34.2,
     "support": 29.5,
