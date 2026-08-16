@@ -2789,8 +2789,20 @@ class PaperTradingDialog(QDialog):
         layout.addWidget(self.lbl_cash)
 
         form = QHBoxLayout()
-        self.txt_ticker = QLineEdit()
-        self.txt_ticker.setPlaceholderText(tr("Ticker"))
+        # Editable QComboBox, not a plain QLineEdit: matches the Risk
+        # Calculator dialog's own ticker field (see cmb_ticker above) and
+        # the web app's <input list="portfolio-ticker-list"> - a typeable
+        # box with pick-from-list autocomplete, not a free-text field the
+        # user has to get exactly right from memory.
+        self.cmb_ticker = QComboBox()
+        self.cmb_ticker.setEditable(True)
+        self.cmb_ticker.addItems([""] + self.dbm.get_unique_tickers())
+        self.cmb_ticker.setPlaceholderText(tr("Ticker"))
+        self.cmb_ticker.setInsertPolicy(QComboBox.InsertPolicy.NoInsert)
+        completer = self.cmb_ticker.completer()
+        completer.setCompletionMode(QCompleter.CompletionMode.PopupCompletion)
+        completer.setFilterMode(Qt.MatchFlag.MatchContains)
+        completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
         self.spn_price = QDoubleSpinBox()
         self.spn_price.setDecimals(4)
         self.spn_price.setRange(0.0001, 1000000.0)
@@ -2807,7 +2819,7 @@ class PaperTradingDialog(QDialog):
         self.btn_buy.clicked.connect(self._paper_buy)
         self.btn_sell.clicked.connect(self._paper_sell)
         self.btn_refresh.clicked.connect(self._refresh)
-        for w in [self.txt_ticker, self.spn_price, self.spn_shares, self.txt_note, self.btn_buy, self.btn_sell, self.btn_refresh]:
+        for w in [self.cmb_ticker, self.spn_price, self.spn_shares, self.txt_note, self.btn_buy, self.btn_sell, self.btn_refresh]:
             form.addWidget(w)
         layout.addLayout(form)
 
@@ -2835,12 +2847,12 @@ class PaperTradingDialog(QDialog):
         layout.addLayout(btn_row)
 
     def _paper_buy(self):
-        ok, msg = self.dbm.paper_buy(self.txt_ticker.text().strip(), float(self.spn_price.value()), float(self.spn_shares.value()), self.txt_note.text().strip())
+        ok, msg = self.dbm.paper_buy(self.cmb_ticker.currentText().strip().upper(), float(self.spn_price.value()), float(self.spn_shares.value()), self.txt_note.text().strip())
         QMessageBox.information(self, tr("Paper Trading"), msg) if ok else QMessageBox.warning(self, tr("Paper Trading"), msg)
         if ok: self._refresh()
 
     def _paper_sell(self):
-        ok, msg = self.dbm.paper_sell(self.txt_ticker.text().strip(), float(self.spn_price.value()), float(self.spn_shares.value()), self.txt_note.text().strip())
+        ok, msg = self.dbm.paper_sell(self.cmb_ticker.currentText().strip().upper(), float(self.spn_price.value()), float(self.spn_shares.value()), self.txt_note.text().strip())
         QMessageBox.information(self, tr("Paper Trading"), msg) if ok else QMessageBox.warning(self, tr("Paper Trading"), msg)
         if ok: self._refresh()
 
