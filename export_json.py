@@ -91,10 +91,69 @@ def _write_shards(output_dir: str, payload: dict):
     }
     for filename, shard_payload in shards.items():
         _write_json(os.path.join(output_dir, filename), shard_payload)
+
+    manifest_names = list(shards.keys())
+    manifest_names.extend(_write_ticker_shards(output_dir, payload))
+
     _write_json(
         os.path.join(output_dir, "cache_manifest.json"),
-        {name: {"cache_control": CACHE_CONTROL_HEADER} for name in shards},
+        {name: {"cache_control": CACHE_CONTROL_HEADER} for name in manifest_names},
     )
+
+
+def _write_ticker_shards(output_dir: str, payload: dict) -> list[str]:
+    """One small self-contained JSON per ticker (``tickers/<TICKER>.json``),
+    so a script/tool only interested in a single stock can fetch e.g.
+    ``tickers/COMI.json`` instead of downloading all of chart_history.json
+    (every ticker's full OHLC/VWAP history) just to read one entry out of
+    it. Each file bundles that ticker's chart history (price series,
+    resistance/support, pivots, patterns) together with its current
+    Action Matrix row (score, action label, trend, etc.) if it has one
+    this run, so a caller gets a complete picture from one small fetch.
+
+    Public/non-sensitive - same trust boundary as chart_history.json and
+    matrix.json, both of which this is just a re-slice of.
+
+    Returns the list of "tickers/<TICKER>.json"-style relative names
+    written, so the caller can fold them into cache_manifest.json
+    alongside the other shards.
+    """
+    tickers_dir = os.path.join(output_dir, "tickers")
+    os.makedirs(tickers_dir, exist_ok=True)
+
+    matrix_by_ticker = {row.get("Ticker"): row for row in payload.get("market_matrix", []) if row.get("Ticker")}
+    stocks = payload.get("chart_history", {}).get("stocks", {})
+
+    written_names = []
+    for ticker, history in stocks.items():
+        per_ticker_payload = {
+            "ticker": ticker,
+            "last_data_date": payload.get("last_data_date"),
+            "sector": payload.get("ticker_sectors", {}).get(ticker),
+            "matrix": matrix_by_ticker.get(ticker),
+            "chart_history": history,
+        }
+        # Ticker symbols here are already normalized (alnum only - see
+        # DatabaseManager.normalize_symbol), so building the filename
+        # directly from the ticker is safe with no extra sanitization.
+        filename = f"tickers/{ticker}.json"
+        _write_json(os.path.join(output_dir, filename), per_ticker_payload)
+        written_names.append(filename)
+
+    # Prune any ticker file left over from a previous run whose ticker no
+    # longer appears in today's chart_history (delisted / dropped from
+    # the universe / renamed) - otherwise a stale per-ticker shard would
+    # sit there indefinitely still claiming to be "last_data_date": today
+    # from whenever it was last actually written.
+    current_filenames = {os.path.basename(name) for name in written_names}
+    for existing in os.listdir(tickers_dir):
+        if existing.endswith(".json") and existing not in current_filenames:
+            try:
+                os.remove(os.path.join(tickers_dir, existing))
+            except OSError:
+                pass
+
+    return written_names
 
 
 def sanitize_for_json(obj):

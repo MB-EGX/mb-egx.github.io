@@ -44,6 +44,17 @@ FIREBASE_PROJECT_ID = "mb-egx-12d11"
 FIRESTORE_BASE = f"https://firestore.googleapis.com/v1/projects/{FIREBASE_PROJECT_ID}/databases/(default)/documents"
 ADMIN_EMAILS = ["drmo071990@gmail.com"]
 
+
+def _safe_float(value, default: float = 0.0) -> float:
+    """Coerce a matrix-row value (may be None/NaN/missing) to float for
+    the Screener Preset predicates below, mirroring the `Number(x || 0)`
+    / `Number(x ?? 100)` coercions the web dashboard's own predicates use."""
+    try:
+        f = float(value)
+        return default if f != f else f  # f != f is the NaN check
+    except (TypeError, ValueError):
+        return default
+
 TERMS_VERSION = "1.0"
 
 DISCLAIMER_TEXT = (
@@ -3250,7 +3261,27 @@ class QuantDashboard(QMainWindow):
         controls_row.addWidget(self.btn_glossary)
 
         controls_row.addStretch()
-        header_layout.addLayout(controls_row)
+
+        # BUGFIX: the toolbar previously sat directly in header_layout as a
+        # plain QHBoxLayout with no wrap and no scroll area. On any window
+        # narrower than the toolbar's natural width (e.g. not maximized, or
+        # a smaller laptop screen), the right-most buttons - Analytics and
+        # Glossary - were pushed past the visible edge with no way to reach
+        # them short of manually widening the window. Wrapping the row in a
+        # horizontal-only QScrollArea guarantees every button stays
+        # reachable (via scroll/trackpad/shift+wheel) at any window size,
+        # without forcing a minimum window width that would fight users on
+        # smaller screens.
+        controls_container = QWidget()
+        controls_container.setLayout(controls_row)
+        controls_scroll = QScrollArea()
+        controls_scroll.setWidget(controls_container)
+        controls_scroll.setWidgetResizable(True)
+        controls_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        controls_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        controls_scroll.setFrameShape(QFrame.Shape.NoFrame)
+        controls_scroll.setFixedHeight(controls_container.sizeHint().height() + 10)
+        header_layout.addWidget(controls_scroll)
 
         # 3. Scan Folder Row
         dir_layout = QHBoxLayout()
@@ -3347,6 +3378,64 @@ class QuantDashboard(QMainWindow):
         filter_layout.addWidget(self.btn_reset_filters)
         
         layout.addWidget(filter_wrap)
+
+        # --- Screener Presets (parity port of the web dashboard's
+        # SCREENER_PRESETS/applyScreenerPreset - see index.html). Same five
+        # one-click screens, same predicates, evaluated against the exact
+        # same row dicts (self._raw_buys_data) apply_filters() already
+        # filters over, so the two apps can never disagree about what a
+        # preset matches. ---
+        self.SCREENER_PRESETS = [
+            {
+                "id": "strong_momentum", "icon": "🔥", "label": "Strong Momentum",
+                "predicate": lambda r: (("STRONG BUY" in str(r.get("Action", "")) or "BREAKOUT BUY" in str(r.get("Action", "")))
+                                         and _safe_float(r.get("ADX-14")) >= 20),
+            },
+            {
+                "id": "low_vol_accumulate", "icon": "📈", "label": "Low-Vol Accumulation",
+                "predicate": lambda r: ("ACCUMULATE" in str(r.get("Action", ""))
+                                         and _safe_float(r.get("ADX-14")) < 20
+                                         and -1 < _safe_float(r.get("Vol Z-Score")) < 1),
+            },
+            {
+                "id": "oversold_dip", "icon": "⏳", "label": "Oversold Dip",
+                "predicate": lambda r: ("BUY ON DIP" in str(r.get("Action", ""))
+                                         and _safe_float(r.get("RSI-14"), default=100) <= 38),
+            },
+            {
+                "id": "high_confidence", "icon": "💎", "label": "High Confidence",
+                "predicate": lambda r: ("High" in str(r.get("Data Confidence", ""))
+                                         and any(a in str(r.get("Action", "")) for a in ("STRONG BUY", "BREAKOUT BUY", "ACCUMULATE", "BUY ON DIP"))),
+            },
+            {
+                "id": "pattern_confirmed", "icon": "🎯", "label": "Pattern Confirmed",
+                "predicate": lambda r: isinstance(r.get("Pattern Conf (%)"), (int, float)) and r.get("Pattern Conf (%)") >= 60,
+            },
+        ]
+        self.active_screener_preset = None
+        self._preset_buttons = {}
+
+        preset_wrap = QWidget()
+        preset_wrap.setObjectName("webPanel")
+        preset_layout = QHBoxLayout(preset_wrap)
+        preset_layout.setContentsMargins(10, 6, 10, 6)
+        preset_layout.setSpacing(6)
+        lbl_presets = QLabel(tr("🧪 Screener Presets:"))
+        lbl_presets.setStyleSheet("font-weight: bold; font-size: 12px; color: #93ccff;")
+        preset_layout.addWidget(lbl_presets)
+        for preset in self.SCREENER_PRESETS:
+            btn = QPushButton(f"{preset['icon']} {tr(preset['label'])}")
+            btn.setCheckable(True)
+            btn.setStyleSheet(
+                "QPushButton { background-color: #1e293b; color: #cbd5e0; padding: 5px 12px; "
+                "font-size: 11px; border-radius: 12px; border: 1px solid #334155; }"
+                "QPushButton:checked { background-color: #0284c7; color: white; border: 1px solid #38bdf8; }"
+            )
+            btn.clicked.connect(lambda checked, pid=preset["id"]: self.apply_screener_preset(pid))
+            preset_layout.addWidget(btn)
+            self._preset_buttons[preset["id"]] = btn
+        preset_layout.addStretch()
+        layout.addWidget(preset_wrap)
 
         self.tabs = QTabWidget()
         # Force reliable scroll arrows for the tab bar regardless of what the
@@ -3926,6 +4015,11 @@ class QuantDashboard(QMainWindow):
         self.cmb_trend.setCurrentIndex(0)
         self.cmb_confidence.setCurrentIndex(0)
         self.chk_hide_illiquid.setChecked(True)
+        self.active_screener_preset = None
+        for btn in getattr(self, "_preset_buttons", {}).values():
+            btn.blockSignals(True)
+            btn.setChecked(False)
+            btn.blockSignals(False)
         self.apply_filters()
 
     def _set_ui_controls_enabled(self, enabled: bool):
@@ -4211,6 +4305,16 @@ class QuantDashboard(QMainWindow):
         if hasattr(model, "update_data"):
             model.update_data(data_list)
 
+    def apply_screener_preset(self, preset_id: str):
+        # Single-select, toggle-off-on-repeat-click - identical behavior to
+        # the web dashboard's applyScreenerPreset().
+        self.active_screener_preset = None if self.active_screener_preset == preset_id else preset_id
+        for pid, btn in self._preset_buttons.items():
+            btn.blockSignals(True)
+            btn.setChecked(pid == self.active_screener_preset)
+            btn.blockSignals(False)
+        self.apply_filters()
+
     def apply_filters(self):
         search_text = self.txt_search.text().strip().upper()
         # Match against the underlying English value (by index), not the
@@ -4235,8 +4339,16 @@ class QuantDashboard(QMainWindow):
                 match_trend = ((trend_text == trend_filter) if trend_filter != "All Trends" else True)
                 match_confidence = ((confidence_text == confidence_filter) if confidence_filter != "All Data Confidence" else True)
                 match_liquidity = (("ILLIQUID" not in action_text and "Unconfirmed" not in action_text) if hide_illiquid else True)
+                match_preset = True
+                if self.active_screener_preset:
+                    preset = next((p for p in self.SCREENER_PRESETS if p["id"] == self.active_screener_preset), None)
+                    if preset:
+                        try:
+                            match_preset = bool(preset["predicate"](row))
+                        except Exception:
+                            match_preset = False
 
-                if match_search and match_action and match_trend and match_confidence and match_liquidity:
+                if match_search and match_action and match_trend and match_confidence and match_liquidity and match_preset:
                     filtered_list.append(row)
             
             self._fill_matrix_table(self.tbl_buys, filtered_list)

@@ -24,6 +24,13 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://www.gstatic.com https://apis.google.com https://www.googletagmanager.com https://www.google.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.firebaseapp.com https://*.firebaseio.com https://api.ipify.org https://identitytoolkit.googleapis.com https://firestore.googleapis.com https://securetoken.googleapis.com https://firebaseinstallations.googleapis.com https://firebase.googleapis.com https://www.googleapis.com https://apis.google.com https://www.googletagmanager.com https://www.google.com https://*.google-analytics.com https://*.analytics.google.com https://content-firebaseappcheck.googleapis.com https://mb-egx-payments.drmo071990.workers.dev; frame-src https://mb-egx-12d11.firebaseapp.com https://accounts.google.com https://www.google.com; form-action 'self';">
     <!-- MB-EGX logo used as the browser tab favicon -->
     <link rel="icon" type="image/png" href="assets/mb-egx-logo.png">
+    <!-- PWA: installable app + offline access to the last-fetched data.
+         manifest.json / sw.js are static files that live next to this
+         index.html (see their own headers for what each does) - no new
+         backend, no cost, works on any static host including GitHub
+         Pages. -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
     <!-- Anti-flash guard: keep the page invisible until the very end of body
          has been parsed (see the reveal script just before </body>). This is
          what actually prevents the dashboard from ever painting before the
@@ -171,6 +178,27 @@
             background-color: color-mix(in srgb, var(--accent-text) 8%, transparent) !important;
         }
 
+        /* ===================== Print stylesheet =====================
+           Free, no data cost - lets a user print (or "Save as PDF") just
+           today's currently-open tab: header controls, filter/preset bars,
+           the tab nav strip itself, and every OTHER tab's content are
+           hidden; the active tab's table is expanded to full width with
+           light backgrounds so it doesn't waste ink/toner on the dark
+           theme. Tab content already toggles a "hidden" class via
+           switchTab() (see JS below), so this only needs to hide the
+           chrome around it - the browser's own print dialog handles
+           page breaks. */
+        @media print {
+            body { background: #fff !important; color: #000 !important; padding-bottom: 0 !important; }
+            header#main-header, #live-filters-bar, #screener-presets-bar, #nav-tabs-bar,
+            #welcome-toast, #concentration-warning, #stale-banner, #tour-overlay,
+            #paper-trading-preview, #leaderboard-preview, .no-print { display: none !important; }
+            .bg-panelbg, .bg-darkbg { background: #fff !important; border-color: #ccc !important; box-shadow: none !important; color: #000 !important; }
+            table thead { background: #eee !important; color: #000 !important; }
+            table, th, td { color: #000 !important; }
+            .max-w-\[1650px\] { max-width: 100% !important; padding: 0 !important; }
+            a[href]::after { content: none !important; }
+        }
     </style>
 </head>
 <body class="bg-darkbg text-textmain font-sans min-h-screen text-xs md:text-sm transition-colors duration-200 pb-16 overflow-x-hidden">
@@ -206,6 +234,12 @@
                 </button>
                 <button onclick="toggleCompactMode()" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
                     <span>↕️</span> <span id="btn-compact-text">Compact</span>
+                </button>
+                <button onclick="window.print()" title="Print or save the current tab as PDF (Ctrl+P)" data-i18n-title="tt_print" class="no-print bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
+                    <span>🖨️</span> <span id="btn-print-text" data-i18n="btn_print">Print</span>
+                </button>
+                <button onclick="requestNotificationPermission()" title="Get a browser notification when a Session Pick hits its target while this tab is open" data-i18n-title="tt_notify" class="no-print bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
+                    <span id="btn-notify-text">🔕 Enable Notifications</span>
                 </button>
                 <button onclick="openModal('modal-guide')" id="btn-guide" class="bg-teal-600 hover:bg-teal-500 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
                     <span>❓</span> <span id="btn-guide-text">Guide</span>
@@ -724,6 +758,23 @@
 
     <!-- MODALS -->
     <!-- Column Chooser Modal -->
+    <!-- Keyboard Shortcuts Cheat-Sheet Modal (press "?" anywhere to open) -->
+    <div id="modal-shortcuts" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-panelbg border border-bordercol rounded-xl max-w-sm w-full p-5 space-y-3 shadow-2xl">
+            <h3 class="text-base font-bold text-sky-400">⌨️ <span data-i18n="modal_shortcuts_title">Keyboard Shortcuts</span></h3>
+            <div class="text-xs space-y-2 text-textmuted">
+                <div class="flex justify-between"><span data-i18n="sc_search">Focus the ticker search</span><kbd class="bg-darkbg border border-bordercol rounded px-2 py-0.5 font-mono text-textmain">/</kbd></div>
+                <div class="flex justify-between"><span data-i18n="sc_tabs">Jump to tab 1–9 (in tab order)</span><kbd class="bg-darkbg border border-bordercol rounded px-2 py-0.5 font-mono text-textmain">1–9</kbd></div>
+                <div class="flex justify-between"><span data-i18n="sc_close">Close any open modal</span><kbd class="bg-darkbg border border-bordercol rounded px-2 py-0.5 font-mono text-textmain">Esc</kbd></div>
+                <div class="flex justify-between"><span data-i18n="sc_print">Print the current tab</span><kbd class="bg-darkbg border border-bordercol rounded px-2 py-0.5 font-mono text-textmain">Ctrl+P</kbd></div>
+                <div class="flex justify-between"><span data-i18n="sc_help">Open this cheat-sheet</span><kbd class="bg-darkbg border border-bordercol rounded px-2 py-0.5 font-mono text-textmain">?</kbd></div>
+            </div>
+            <div class="flex justify-end">
+                <button onclick="closeModal('modal-shortcuts')" class="bg-emerald-600 text-white px-4 py-2 rounded font-bold text-xs">✅ <span data-i18n="btn_ok">OK</span></button>
+            </div>
+        </div>
+    </div>
+
     <div id="modal-columns" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
         <div class="bg-panelbg border border-bordercol rounded-xl max-w-sm w-full p-5 space-y-4 shadow-2xl max-h-[80vh] flex flex-col">
             <h3 class="text-base font-bold text-sky-400">👁️ <span data-i18n="modal_columns_title">Select Columns to Display</span></h3>
@@ -1418,6 +1469,11 @@
                 tour_done_title: "🎉 You're set!",
                 tour_done_text: "Explore freely. Replay this tour anytime from the Tour button, and toggle Compact mode or Themes to match your setup.",
                 btn_tour_next: "Next", btn_tour_prev: "Back", btn_tour_skip: "Skip", btn_tour_done: "Done",
+                btn_print: "Print", tt_print: "Print or save the current tab as PDF",
+                tt_notify: "Get a browser notification when a Session Pick hits its target while this tab is open",
+                modal_shortcuts_title: "Keyboard Shortcuts",
+                sc_search: "Focus the ticker search", sc_tabs: "Jump to tab 1–9 (in tab order)",
+                sc_close: "Close any open modal", sc_print: "Print the current tab", sc_help: "Open this cheat-sheet",
                 rad_stock: "📈 Per Stock", rad_sector: "🏢 Per Sector", select_item: "Select Item:", alpha_quick: "🔤 Quick Filter:",
                 time_zoom: "⏱️ Time Horizon:", guide: "Guide",
                 style_line: "📉 Line", style_candle: "🕯️ Candles", toggle_sr: "📐 Support / Resistance",
@@ -1632,6 +1688,11 @@
                 tour_done_title: "🎉 كل شيء جاهز!",
                 tour_done_text: "استكشف بحرية. أعد هذه الجولة في أي وقت من زر الجولة، وبدّل وضع الإحكام أو المظاهر ليناسب إعدادك.",
                 btn_tour_next: "التالي", btn_tour_prev: "السابق", btn_tour_skip: "تخطي", btn_tour_done: "تم",
+                btn_print: "طباعة", tt_print: "طباعة أو حفظ التبويب الحالي كـ PDF",
+                tt_notify: "احصل على إشعار من المتصفح عند بلوغ ترشيح جلسة هدفه أثناء فتح هذا التبويب",
+                modal_shortcuts_title: "اختصارات لوحة المفاتيح",
+                sc_search: "التركيز على بحث الرمز", sc_tabs: "الانتقال إلى التبويب 1–9 (بترتيب التبويبات)",
+                sc_close: "إغلاق أي نافذة مفتوحة", sc_print: "طباعة التبويب الحالي", sc_help: "فتح ورقة الاختصارات هذه",
                 rad_stock: "📈 تحليل الأسهم", rad_sector: "🏢 تحليل القطاعات", select_item: "اختر العنصر:", alpha_quick: "🔤 تصفية بالحرف:",
                 time_zoom: "⏱️ الفترة الزمنية:", guide: "الدليل",
                 style_line: "📉 خط", style_candle: "🕯️ شموع", toggle_sr: "📐 الدعم / المقاومة",
@@ -2040,6 +2101,96 @@
             if (id === 'modal-guide') setGuideLang(currentLang === 'AR' ? 'ar' : 'en');
         }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        // ===================== Keyboard shortcuts =====================
+        // Free, client-side only. Ignored while typing in any input/
+        // textarea/select or while an onboarding-tour overlay is up, so
+        // shortcuts never fight normal typing (e.g. "1".."9" while
+        // filling in the portfolio form). "?" opens a small cheat-sheet
+        // (#modal-shortcuts) listing all of these, reachable at any time
+        // via that key or the Guide modal.
+        const TAB_SHORTCUT_ORDER = ['tab-matrix', 'tab-sectors', 'tab-exits', 'tab-breakout', 'tab-picks', 'tab-history', 'tab-fin', 'tab-top10', 'tab-charts', 'tab-leaderboard', 'tab-strategy'];
+        document.addEventListener('keydown', (e) => {
+            const tag = (e.target.tagName || '').toLowerCase();
+            if (tag === 'input' || tag === 'textarea' || tag === 'select' || e.target.isContentEditable) return;
+            if (document.getElementById('tour-overlay')) return;
+
+            if (e.key === '/') {
+                e.preventDefault();
+                document.getElementById('filter-search').focus();
+                return;
+            }
+            if (e.key >= '1' && e.key <= '9') {
+                const idx = parseInt(e.key, 10) - 1;
+                if (idx < TAB_SHORTCUT_ORDER.length) switchTab(TAB_SHORTCUT_ORDER[idx]);
+                return;
+            }
+            if (e.key === '?' ) {
+                e.preventDefault();
+                openModal('modal-shortcuts');
+                return;
+            }
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.fixed.inset-0:not(.hidden)').forEach(m => m.classList.add('hidden'));
+            }
+        });
+
+        // ===================== Browser notifications =====================
+        // Free, client-side only - no push server, no new backend. Uses the
+        // standard Notification API: while this tab is open (or backgrounded)
+        // and the user has granted permission, a freshly-achieved Session
+        // Pick (session_picks.achieved_today - same data the Telegram/email
+        // channels already use, see alerts.py / send_email_digest.py) pops a
+        // native OS notification. This is NOT true push (nothing fires while
+        // the tab/browser is fully closed) - it complements the existing
+        // Telegram/email channels for people with the site open, it doesn't
+        // replace them for true background delivery.
+        function notificationsEnabled() {
+            return localStorage.getItem('quant_notify_enabled') === '1';
+        }
+        function requestNotificationPermission() {
+            if (!('Notification' in window)) {
+                alert(currentLang === 'AR' ? 'المتصفح لا يدعم الإشعارات.' : 'This browser does not support notifications.');
+                return;
+            }
+            Notification.requestPermission().then(perm => {
+                localStorage.setItem('quant_notify_enabled', perm === 'granted' ? '1' : '0');
+                updateNotifyButtonState();
+            });
+        }
+        function updateNotifyButtonState() {
+            const btn = document.getElementById('btn-notify-text');
+            if (!btn) return;
+            const on = ('Notification' in window) && Notification.permission === 'granted' && notificationsEnabled();
+            btn.textContent = on
+                ? (currentLang === 'AR' ? '🔔 الإشعارات مفعّلة' : '🔔 Notifications On')
+                : (currentLang === 'AR' ? '🔕 تفعيل الإشعارات' : '🔕 Enable Notifications');
+        }
+        // De-dupes across page reloads (localStorage), not just within one
+        // session, so refreshing the tab doesn't re-notify the same pick.
+        function notifyAchievedPicks(achieved, sessionDate) {
+            if (!('Notification' in window) || Notification.permission !== 'granted' || !notificationsEnabled()) return;
+            if (!Array.isArray(achieved) || !achieved.length) return;
+            const seenKey = 'quant_notified_picks_' + (sessionDate || 'unknown');
+            const seen = new Set(JSON.parse(localStorage.getItem(seenKey) || '[]'));
+            let changed = false;
+            achieved.forEach(a => {
+                const key = `${a.ticker}:${a.horizon}:${a.achieved_date}`;
+                if (seen.has(key)) return;
+                seen.add(key);
+                changed = true;
+                try {
+                    new Notification(`🚀 ${a.ticker} hit its ${a.horizon}-term target`, {
+                        body: `${a.ref_price} → ${a.achieved_price} EGP (+${Number(a.achieved_pct).toFixed(2)}%)`,
+                        icon: 'assets/mb-egx-logo.png',
+                        tag: key,
+                    });
+                } catch (err) {
+                    console.warn('Notification failed:', err);
+                }
+            });
+            if (changed) localStorage.setItem(seenKey, JSON.stringify([...seen]));
+        }
 
         function setGuideLang(lang) {
             const modal = document.getElementById('modal-guide');
@@ -3428,6 +3579,8 @@
                 </tr>
             `).join('') : `<tr><td colspan="7" class="p-4 text-center text-textmuted font-sans">${tt('lbl_no_achievements')}</td></tr>`;
 
+            notifyAchievedPicks(achieved, sp.session_date);
+
             // Track record — full recent history of picks that hit their
             // target (session_picks.achieved_history), not just today's.
             // Same "if present" posture as the daily social post: an
@@ -3804,7 +3957,7 @@
 
                 updateStaleBanner(globalData.last_data_date);
                 document.getElementById('val-last-date').innerText = escapeHtml(globalData.last_data_date || "N/A");
-                populateSelects(); applyFilters(); renderSectors(); renderTop10(); renderBreakouts(); renderSessionPicks(); renderPortfolio(); renderHistory(); renderAccountBar(); renderPaperTradingPreview(); renderLeaderboardPreview(); renderLeaderboardTab(); renderScreenerPresetChips();
+                populateSelects(); applyFilters(); renderSectors(); renderTop10(); renderBreakouts(); renderSessionPicks(); renderPortfolio(); renderHistory(); renderAccountBar(); renderPaperTradingPreview(); renderLeaderboardPreview(); renderLeaderboardTab(); renderScreenerPresetChips(); updateNotifyButtonState();
 
                 prefetchChartHistoryInBackground();
             } catch (error) {
@@ -4975,6 +5128,21 @@
                 endSessionTracking();
             }
         });
+
+        // ===================== PWA: service worker registration =====================
+        // Registers sw.js (same directory) so returning visitors get the
+        // dashboard shell + the last successfully fetched data shards from
+        // cache when offline or on a flaky connection. Wrapped in a
+        // capability check and try/catch so browsers without SW support,
+        // or a host that blocks it, just silently skip this - never blocks
+        // the rest of the app from loading.
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(err => {
+                    console.warn('Service worker registration failed (offline support unavailable):', err);
+                });
+            });
+        }
     </script>
 </body>
 </html>
