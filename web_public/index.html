@@ -4046,65 +4046,23 @@
         </div>
     </div>
 
-    <!-- Connect & Subscribe Gate — required before first dashboard access AND
-         re-shown any time subscribed_active is false (e.g. an admin resets it).
-         Mirrors terms-reconsent-gate's structure/z-index above it (10001). -->
-    <div id="subscribe-gate" class="hidden fixed inset-0 bg-black/90 z-[10001] flex items-center justify-center p-4">
-        <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 max-w-md w-full card-edge">
-            <h2 class="font-label-mono text-sm text-primary uppercase font-bold mb-1">
-                <span data-lang="en">One Last Step — Get Daily Signals</span>
-                <span data-lang="ar" style="display:none">خطوة أخيرة — احصل على الإشارات اليومية</span>
-            </h2>
-            <p class="font-body-sm text-[12px] text-on-surface-variant mb-4">
-                <span data-lang="en">Follow us on Instagram &amp; Facebook and join our Telegram channel so we can send you daily picks, sector updates, and achievement alerts straight to your feed and inbox.</span>
-                <span data-lang="ar" style="display:none">تابعنا على إنستغرام وفيسبوك وانضم لقناة تيليجرام حتى نرسل لك يوميًا أفضل الفرص وتحديثات القطاعات وتنبيهات تحقيق الأهداف مباشرة.</span>
-            </p>
-
-            <div class="space-y-3">
-                <label class="flex items-center justify-between gap-3 bg-[#1a1c20] rounded-lg p-3 card-edge cursor-pointer group select-none">
-                    <span class="flex items-center gap-2 text-sm text-on-surface">
-                        <span class="material-symbols-outlined text-[18px] text-pink-400">photo_camera</span>
-                        <a href="https://www.instagram.com/mb_egx/" target="_blank" rel="noopener" class="hover:underline" onclick="event.stopPropagation()">
-                            <span data-lang="en">Follow on Instagram</span><span data-lang="ar" style="display:none">تابعنا على إنستغرام</span>
-                        </a>
-                    </span>
-                    <input type="checkbox" id="sub-ig-checkbox" onchange="updateSubscribeButtonState()" class="w-5 h-5 rounded bg-[#1e2024] border-outline-variant text-primary accent-primary">
-                </label>
-                <label class="flex items-center justify-between gap-3 bg-[#1a1c20] rounded-lg p-3 card-edge cursor-pointer group select-none">
-                    <span class="flex items-center gap-2 text-sm text-on-surface">
-                        <span class="material-symbols-outlined text-[18px] text-blue-400">thumb_up</span>
-                        <a href="https://www.facebook.com/profile.php?id=61593012092507" target="_blank" rel="noopener" class="hover:underline" onclick="event.stopPropagation()">
-                            <span data-lang="en">Follow the Facebook Page</span><span data-lang="ar" style="display:none">تابع صفحتنا على فيسبوك</span>
-                        </a>
-                    </span>
-                    <input type="checkbox" id="sub-fb-checkbox" onchange="updateSubscribeButtonState()" class="w-5 h-5 rounded bg-[#1e2024] border-outline-variant text-primary accent-primary">
-                </label>
-                <label class="flex items-center justify-between gap-3 bg-[#1a1c20] rounded-lg p-3 card-edge cursor-pointer group select-none">
-                    <span class="flex items-center gap-2 text-sm text-on-surface">
-                        <span class="material-symbols-outlined text-[18px] text-sky-400">send</span>
-                        <a href="https://t.me/MBEGX" target="_blank" rel="noopener" id="tg-invite-link" class="hover:underline" onclick="event.stopPropagation()">
-                            <span data-lang="en">Join our Telegram Channel</span><span data-lang="ar" style="display:none">انضم لقناتنا على تيليجرام</span>
-                        </a>
-                    </span>
-                    <input type="checkbox" id="sub-tg-checkbox" onchange="updateSubscribeButtonState()" class="w-5 h-5 rounded bg-[#1e2024] border-outline-variant text-primary accent-primary">
-                </label>
-            </div>
-
-            <div id="subscribe-error" class="hidden mt-3 text-[#ffb4ab] font-body-sm text-[11px]"></div>
-            <p class="mt-3 font-body-sm text-[10px] text-on-surface-variant/70">
-                <span data-lang="en">We can't automatically verify Instagram/Facebook follows, so this is on the honor system — but daily emails and Telegram alerts only go out to accounts that confirm all three.</span>
-                <span data-lang="ar" style="display:none">لا يمكننا التحقق تلقائيًا من المتابعة على إنستغرام/فيسبوك، لذا هذا يعتمد على الثقة — لكن الرسائل اليومية عبر البريد وتيليجرام تُرسل فقط للحسابات التي تؤكد الثلاثة.</span>
-            </p>
-
-            <div class="flex gap-3 mt-4">
-                <button id="btn-subscribe-accept" disabled onclick="handleSubscribeAccept()" class="flex-1 bg-primary text-on-primary font-bold py-2.5 rounded-lg hover:opacity-90 active:scale-[0.98] transition-all opacity-50">
-                    <span data-lang="en">Confirm &amp; Continue</span><span data-lang="ar" style="display:none">تأكيد ومتابعة</span>
-                </button>
-                <button onclick="handleSignOut()" class="px-4 py-2.5 rounded-lg border border-outline-variant text-on-surface-variant text-sm hover:bg-[#1a1c20] transition">
-                    <span data-lang="en">Sign Out</span><span data-lang="ar" style="display:none">تسجيل الخروج</span>
-                </button>
-            </div>
-        </div>
+    <!-- Floating "follow us" links — replaces the old Connect & Subscribe
+         gate popup. Instagram/Facebook follows can't be verified via their
+         public APIs (Meta removed that capability in 2018), so rather than
+         keep an unenforceable honor-system checkbox blocking first access,
+         these are just plain, always-visible, non-blocking links. Every
+         account is now auto-subscribed to the daily email digest at
+         creation time (see login.html) - no confirmation step required. -->
+    <div id="social-follow-bar" class="fixed bottom-4 left-4 z-40 flex gap-2">
+        <a href="https://www.instagram.com/mb_egx/" target="_blank" rel="noopener" title="Follow on Instagram" class="w-10 h-10 rounded-full bg-surface-container-lowest border border-outline-variant flex items-center justify-center text-pink-400 hover:opacity-80 hover:scale-105 transition-all card-edge">
+            <span class="material-symbols-outlined text-[20px]">photo_camera</span>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=61593012092507" target="_blank" rel="noopener" title="Follow on Facebook" class="w-10 h-10 rounded-full bg-surface-container-lowest border border-outline-variant flex items-center justify-center text-blue-400 hover:opacity-80 hover:scale-105 transition-all card-edge">
+            <span class="material-symbols-outlined text-[20px]">thumb_up</span>
+        </a>
+        <a href="https://t.me/MBEGX" target="_blank" rel="noopener" title="Join our Telegram Channel" class="w-10 h-10 rounded-full bg-surface-container-lowest border border-outline-variant flex items-center justify-center text-sky-400 hover:opacity-80 hover:scale-105 transition-all card-edge">
+            <span class="material-symbols-outlined text-[20px]">send</span>
+        </a>
     </div>
 
     <script>
@@ -4837,87 +4795,11 @@
             try { loadUserDataFromCloud(user.uid); } catch (err) { console.error('Loading cloud data failed:', err); }
         }
 
-        // ===== Connect & Subscribe gate (Follow IG/FB + Join Telegram) =====
-        // Runs AFTER the terms/reconsent gate passes, so a user only ever sees
-        // this once their legal consent is already settled. See index.html's
-        // subscribe-gate markup above and login.html's account-creation writes
-        // for the default { ig_confirmed, fb_confirmed, telegram_confirmed,
-        // subscribed_active } shape this reads/writes.
-        let _pendingSubscribeUser = null;
-
-        function checkSubscriptionGate(user, data) {
-            const sub = (data && data.subscription) || {};
-            if (sub.subscribed_active) {
-                document.getElementById('subscribe-gate').classList.add('hidden');
-                proceedAfterAuth(user);
-                return;
-            }
-            _pendingSubscribeUser = user;
-            document.getElementById('sub-ig-checkbox').checked = !!sub.ig_confirmed;
-            document.getElementById('sub-fb-checkbox').checked = !!sub.fb_confirmed;
-            document.getElementById('sub-tg-checkbox').checked = !!sub.telegram_confirmed;
-            document.getElementById('subscribe-error').classList.add('hidden');
-            updateSubscribeButtonState();
-            document.getElementById('subscribe-gate').classList.remove('hidden');
-        }
-
-        // Re-fetches the user doc fresh (rather than threading `data` through
-        // every caller) so every place that used to call proceedAfterAuth(user)
-        // directly can instead call this one function. Fails OPEN on a read
-        // error (proceeds to the dashboard) — this gate is an engagement/growth
-        // mechanism, not a security boundary, so a Firestore hiccup should
-        // never lock a legitimate user out of their own account.
-        function proceedAfterAuthWithGateCheck(user) {
-            db.collection('users').doc(user.uid).get().then(doc => {
-                const data = doc.exists ? doc.data() : {};
-                checkSubscriptionGate(user, data);
-            }).catch(err => {
-                console.warn('Subscription gate check failed, proceeding without it:', err);
-                proceedAfterAuth(user);
-            });
-        }
-
-        function updateSubscribeButtonState() {
-            const allChecked = document.getElementById('sub-ig-checkbox').checked
-                && document.getElementById('sub-fb-checkbox').checked
-                && document.getElementById('sub-tg-checkbox').checked;
-            const btn = document.getElementById('btn-subscribe-accept');
-            btn.disabled = !allChecked;
-            btn.classList.toggle('opacity-50', !allChecked);
-        }
-
-        async function handleSubscribeAccept() {
-            const user = _pendingSubscribeUser;
-            const igOk = document.getElementById('sub-ig-checkbox').checked;
-            const fbOk = document.getElementById('sub-fb-checkbox').checked;
-            const tgOk = document.getElementById('sub-tg-checkbox').checked;
-            if (!user || !igOk || !fbOk || !tgOk) return;
-            const errEl = document.getElementById('subscribe-error');
-            errEl.classList.add('hidden');
-            const btn = document.getElementById('btn-subscribe-accept');
-            btn.disabled = true;
-            try {
-                await user.getIdToken(true);
-                await db.collection('users').doc(user.uid).set({
-                    subscription: {
-                        ig_confirmed: true,
-                        fb_confirmed: true,
-                        telegram_confirmed: true,
-                        subscribed_active: true,
-                        confirmed_at: firebase.firestore.FieldValue.serverTimestamp(),
-                    },
-                }, { merge: true });
-                document.getElementById('subscribe-gate').classList.add('hidden');
-                _pendingSubscribeUser = null;
-                proceedAfterAuth(user);
-            } catch (err) {
-                const code = (err && err.code) ? err.code : 'unknown-error';
-                console.error('Saving subscription confirmation failed:', code, err);
-                errEl.textContent = (currentLang === 'AR' ? 'تعذر حفظ التأكيد. حاول مرة أخرى. ' : 'Could not save confirmation. Please try again. ') + `[${code}]`;
-                errEl.classList.remove('hidden');
-                btn.disabled = false;
-            }
-        }
+        // Connect & Subscribe gate removed — Instagram/Facebook follows
+        // can't be verified via their public APIs, so that honor-system
+        // popup was replaced with plain always-visible social links (see
+        // #social-follow-bar above) and every account is now auto-
+        // subscribed to the daily email digest at creation (login.html).
 
         async function handleReconsentAccept() {
             const user = _pendingReconsentUser;
@@ -4953,7 +4835,7 @@
                 await docRef.set(payload, { merge: true });
                 document.getElementById('terms-reconsent-gate').classList.add('hidden');
                 _pendingReconsentUser = null;
-                proceedAfterAuthWithGateCheck(user);
+                proceedAfterAuth(user);
             } catch (err) {
                 // Log the real Firestore error code (permission-denied,
                 // unavailable, deadline-exceeded, etc.) so a future report
@@ -5053,7 +4935,7 @@
                     }).catch(err => {
                         console.warn('Silent terms update failed:', err);
                     }).finally(() => {
-                        checkSubscriptionGate(user, _freshLoginData);
+                        proceedAfterAuth(user);
                     });
                     return;
                 }
@@ -5070,7 +4952,7 @@
                         reconsentGate.classList.remove('hidden');
                         return;
                     }
-                    checkSubscriptionGate(user, data);
+                    proceedAfterAuth(user);
                 }).catch(err => {
                     const code = (err && err.code) ? err.code : 'unknown-error';
                     console.error('Could not verify terms acceptance:', code, err);
@@ -5086,8 +4968,6 @@
             } else {
                 gate.style.display = 'flex';
                 reconsentGate.classList.add('hidden');
-                document.getElementById('subscribe-gate').classList.add('hidden');
-                _pendingSubscribeUser = null;
                 badge.style.display = 'none';
                 adminBtn.style.display = 'none';
                 _welcomedThisSession = false;

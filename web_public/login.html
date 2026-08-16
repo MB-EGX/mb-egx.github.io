@@ -652,14 +652,13 @@
                     cash: 0, portfolio: [], history: [],
                     paper_cash: PAPER_TRADING_STARTING_CASH_EGP, paper_portfolio: [], paper_history: [],
                     email: cred.user.email || email,
-                    // Follow/Join gate state (see index.html's subscribe-gate) - starts
-                    // fully unconfirmed; the nightly subscriber export only ever reads
-                    // accounts where subscribed_active is true.
+                    // Every account is auto-subscribed to the daily email
+                    // digest - no Follow/Join gate anymore (Instagram/
+                    // Facebook follows can't be verified via their APIs,
+                    // so that honor-system popup was removed; social links
+                    // are now just plain icons outside the dashboard).
                     subscription: {
-                        ig_confirmed: false,
-                        fb_confirmed: false,
-                        telegram_confirmed: false,
-                        subscribed_active: false,
+                        subscribed_active: true,
                     },
                     ...buildConsentFields(ip),
                 }, { merge: true });
@@ -733,14 +732,13 @@
                     cash: 0, portfolio: [], history: [],
                     paper_cash: PAPER_TRADING_STARTING_CASH_EGP, paper_portfolio: [], paper_history: [],
                     email: result.user.email || null,
-                    // Follow/Join gate state (see index.html's subscribe-gate) - starts
-                    // fully unconfirmed; the nightly subscriber export only ever reads
-                    // accounts where subscribed_active is true.
+                    // Every account is auto-subscribed to the daily email
+                    // digest - no Follow/Join gate anymore (Instagram/
+                    // Facebook follows can't be verified via their APIs,
+                    // so that honor-system popup was removed; social links
+                    // are now just plain icons outside the dashboard).
                     subscription: {
-                        ig_confirmed: false,
-                        fb_confirmed: false,
-                        telegram_confirmed: false,
-                        subscribed_active: false,
+                        subscribed_active: true,
                     },
                     ...buildConsentFields(ip),
                 }, { merge: true });

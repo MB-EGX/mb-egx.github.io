@@ -1,11 +1,17 @@
 """
 export_subscribers.py
 ======================
-N21: pulls every Firestore `users/{uid}` doc where
-`subscription.subscribed_active == true` (see login.html's account-creation
-writes and index.html's subscribe-gate — a user only reaches that state
-after confirming Follow Instagram + Follow Facebook + Join Telegram) and
-writes their emails to a plain text file, one per line.
+N21: pulls every Firestore `users/{uid}` doc that has a non-empty `email`
+field and writes those emails to a plain text file, one per line.
+
+Every account is auto-subscribed at creation (see login.html's
+account-creation writes) — there is no separate Follow/Join confirmation
+step anymore (Instagram/Facebook follows can't be verified via their
+public APIs, so that honor-system gate was removed in favor of plain,
+always-visible social links). This also means any account created before
+that change — which may still have `subscription.subscribed_active ==
+false` from the old gate — is included here too, with no migration
+needed.
 
 WHY A SEPARATE STEP, NOT INSIDE send_email_digest.py DIRECTLY:
     send_email_digest.py deliberately has zero dependency on Firebase / the
@@ -72,13 +78,14 @@ def _init_firebase_admin():
 
 
 def get_confirmed_subscriber_emails(db) -> list[str]:
-    """Every user doc with subscription.subscribed_active == true AND a
-    non-empty email. A user who signed up but hasn't completed the
-    Follow/Join gate simply isn't in this list yet - the whole point of
-    the gate (see index.html's subscribe-gate)."""
-    query = db.collection("users").where("subscription.subscribed_active", "==", True)
+    """Every user doc with a non-empty email — every signed-up account is
+    a subscriber now, no separate confirmation flag to filter on (see
+    module docstring). Kept as its own function/name (rather than being
+    inlined into export_subscribers()) since send_email_digest.py and any
+    future caller only care about "get me the list", not how it's
+    derived."""
     emails = []
-    for doc in query.stream():
+    for doc in db.collection("users").stream():
         data = doc.to_dict() or {}
         email = (data.get("email") or "").strip()
         if email:
