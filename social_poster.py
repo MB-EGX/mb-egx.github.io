@@ -562,9 +562,20 @@ def render_achievement_image(achievements: list[dict], last_data_date: str | Non
     own target % gain this run (config.SESSION_PICKS_EXPECTED_PCT — see
     session_picks.py)."""
     ROW_H, HEADER_H, FOOTER_H = 74, 200, 70
-    height = HEADER_H + ROW_H * max(len(achievements), 1) + FOOTER_H + 30
+    IMG_WIDTH = 1080
+    # Instagram's Graph API rejects any image outside a 4:5 (portrait) to
+    # 1.91:1 (landscape) aspect ratio — width / height must not exceed
+    # 1.91. With a fixed 1080 width that means height can never go below
+    # 1080 / 1.91 ≈ 566px, no matter how few achievement rows there are.
+    # A 1-row card (height≈374 without this floor) is ~2.89:1 — well
+    # outside that range — which is exactly what made the "achievement"
+    # post's Instagram publish fail with a 400 while Facebook/Telegram
+    # (no such restriction) succeeded.
+    MIN_HEIGHT_FOR_IG = int(IMG_WIDTH / 1.91) + 1
+    content_height = HEADER_H + ROW_H * max(len(achievements), 1) + FOOTER_H + 30
+    height = max(content_height, MIN_HEIGHT_FOR_IG)
 
-    img = Image.new("RGB", (1080, height), BG)
+    img = Image.new("RGB", (IMG_WIDTH, height), BG)
     draw = ImageDraw.Draw(img)
 
     f_brand = _font("DejaVuSans-Bold.ttf", 44)
@@ -610,9 +621,14 @@ def render_track_record_image(history: list[dict], last_data_date: str | None, o
     "picked X, hit target Y%", but this one is a rolling history rather
     than a single run's fresh crossings."""
     ROW_H, HEADER_H, FOOTER_H = 74, 200, 70
-    height = HEADER_H + ROW_H * max(len(history), 1) + FOOTER_H + 30
+    IMG_WIDTH = 1080
+    # Same Instagram aspect-ratio floor as render_achievement_image — see
+    # that function's comment for why this is necessary.
+    MIN_HEIGHT_FOR_IG = int(IMG_WIDTH / 1.91) + 1
+    content_height = HEADER_H + ROW_H * max(len(history), 1) + FOOTER_H + 30
+    height = max(content_height, MIN_HEIGHT_FOR_IG)
 
-    img = Image.new("RGB", (1080, height), BG)
+    img = Image.new("RGB", (IMG_WIDTH, height), BG)
     draw = ImageDraw.Draw(img)
 
     f_brand = _font("DejaVuSans-Bold.ttf", 44)
@@ -917,6 +933,14 @@ def publish_to_instagram(ig_user_id: str, access_token: str, image_url: str, cap
         data={"image_url": image_url, "caption": caption, "access_token": access_token},
         timeout=30,
     )
+    if not create_resp.ok:
+        # Was previously silent here — a failed media-creation call (bad
+        # aspect ratio, unreachable image_url, caption issue, etc.) just
+        # raised a bare "400 Client Error" with no indication of WHY.
+        # Printing the body matches publish_to_facebook/publish_to_telegram,
+        # which already surface Instagram/Facebook/Telegram's actual error
+        # description in the Action log.
+        print(f"❌ Instagram API error {create_resp.status_code}: {create_resp.text}", file=sys.stderr)
     create_resp.raise_for_status()
     creation_id = create_resp.json()["id"]
 
@@ -936,6 +960,8 @@ def publish_to_instagram(ig_user_id: str, access_token: str, image_url: str, cap
         data={"creation_id": creation_id, "access_token": access_token},
         timeout=30,
     )
+    if not publish_resp.ok:
+        print(f"❌ Instagram API error {publish_resp.status_code}: {publish_resp.text}", file=sys.stderr)
     publish_resp.raise_for_status()
     return publish_resp.json()["id"]
 
