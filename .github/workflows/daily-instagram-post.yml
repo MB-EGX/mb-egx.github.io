@@ -1,5 +1,9 @@
 name: Daily Instagram + Facebook Post
 
+concurrency:
+  group: social-poster
+  cancel-in-progress: false
+
 # Runs entirely in GitHub's cloud — your PC/desktop app does NOT need to be
 # open. It reads the already-published, privacy-scrubbed market_data.json.
 #
@@ -171,9 +175,13 @@ jobs:
 
             if python post_state.py needs --type "$TYPE" --platform ig; then
               echo "::group::Publishing $TYPE to Instagram"
+              # Instagram-specific caption: link-in-bio nudge instead of
+              # raw URLs, since Instagram never makes caption links
+              # clickable (unlike Facebook/Telegram, which keep the full
+              # URLs via the shared caption file below).
               python social_poster.py publish \
                 --image-url "$IMAGE_URL" \
-                --caption-file "web_public/social/latest_${TYPE}_caption.txt"
+                --caption-file "web_public/social/latest_${TYPE}_caption_ig.txt"
               if [ $? -eq 0 ]; then
                 python post_state.py mark-posted --type "$TYPE" --platform ig
               else

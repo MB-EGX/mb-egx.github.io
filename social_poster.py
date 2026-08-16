@@ -658,14 +658,38 @@ def _maybe_override_caption(kind: str, text_block: str) -> str:
     return override if override else text_block
 
 
+_PROMO_FOOTER = (
+    "\n\n"
+    "Follow Facebook Page: https://www.facebook.com/profile.php?id=61593012092507\n"
+    "Follow Instagram: https://www.instagram.com/mb_egx/\n"
+    "Join Telegram Channel: https://t.me/MBEGX\n"
+    "Login App: https://mb-egx.github.io/"
+)
+
+# Instagram never renders URLs in a caption as clickable links — unlike
+# Facebook, which auto-links any URL it finds in post text. Only a
+# single link in the account's bio is ever clickable on Instagram. So
+# the raw-URL footer above is fine for Facebook/Telegram, but on
+# Instagram it just reads as dead text. This is the Instagram-only
+# replacement: a short nudge toward the bio link instead of three plain-
+# text URLs nobody can tap.
+_PROMO_FOOTER_IG = "\n\n🔗 Link in bio for the live dashboard — mb-egx.github.io"
+
+
 def append_promotional_footer(text_block: str) -> str:
-    footer = (
-        "\n\n"
-        "Follow Facebook Page: https://www.facebook.com/profile.php?id=61593012092507\n"
-        "Follow Instagram: https://www.instagram.com/mb_egx/\n"
-        "Login App: https://mb-egx.github.io/"
-    )
-    return text_block + footer
+    return text_block + _PROMO_FOOTER
+
+
+def instagram_caption_variant(full_caption: str) -> str:
+    """Given a caption already built with the standard (Facebook/Telegram)
+    footer, return the Instagram-bound version with that footer swapped
+    for the link-in-bio nudge. Falls back to just appending the IG footer
+    if the standard footer text isn't found verbatim (e.g. a caption
+    override changed things) so Instagram never ends up with zero
+    call-to-action."""
+    if _PROMO_FOOTER in full_caption:
+        return full_caption.replace(_PROMO_FOOTER, _PROMO_FOOTER_IG)
+    return full_caption + _PROMO_FOOTER_IG
 
 
 def _pick_lines_en(rows: list[dict]) -> list[str]:
@@ -1089,7 +1113,14 @@ def main():
 
         caption_path = out_dir / f"latest_{args.post_type}_caption.txt"
         caption_path.write_text(caption, encoding="utf-8")
-        print(f"✅ Rendered {args.post_type} post → {out_dir / f'latest_{args.post_type}.png'} and {caption_path}")
+
+        # Instagram-only variant: same caption, link-in-bio footer instead
+        # of raw URLs (see instagram_caption_variant() — Instagram never
+        # makes caption URLs clickable, unlike Facebook/Telegram).
+        ig_caption_path = out_dir / f"latest_{args.post_type}_caption_ig.txt"
+        ig_caption_path.write_text(instagram_caption_variant(caption), encoding="utf-8")
+
+        print(f"✅ Rendered {args.post_type} post → {out_dir / f'latest_{args.post_type}.png'}, {caption_path}, and {ig_caption_path}")
 
     elif args.cmd == "publish":
         if not args.ig_user_id or not args.access_token:

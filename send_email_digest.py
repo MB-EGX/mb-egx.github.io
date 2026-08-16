@@ -55,6 +55,19 @@ from session_picks import build_digest_payload
 
 logger = get_logger("send_email_digest")
 
+# Same three links appended to social posts (see social_poster.py's
+# _PROMO_FOOTER), plus the Telegram invite — kept here as plain text
+# since Facebook/Telegram render URLs verbatim and this is a plain-text
+# email (no HTML, so no clickable-vs-not concern like Instagram's).
+_SOCIAL_LINKS_FOOTER = (
+    "\n\n————\n"
+    "Follow us:\n"
+    "Instagram: https://www.instagram.com/mb_egx/\n"
+    "Facebook Page: https://www.facebook.com/profile.php?id=61593012092507\n"
+    "Telegram Channel: https://t.me/MBEGX\n"
+    "Dashboard: https://mb-egx.github.io/\n"
+)
+
 
 def _recipients(subscribers_file: str | None) -> list[str]:
     """Combines two sources: EMAIL_DIGEST_RECIPIENTS (a small static
@@ -90,7 +103,8 @@ def send_digest_email(payload: dict, recipients: list[str]) -> list[str]:
             "See this file's module docstring for the full list."
         )
 
-    msg = MIMEText(payload["text"], "plain", "utf-8")
+    body_text = payload["text"] + _SOCIAL_LINKS_FOOTER
+    msg = MIMEText(body_text, "plain", "utf-8")
     msg["Subject"] = payload["subject"]
     msg["From"] = from_addr
     # BCC, not To: putting every subscriber's address in the To: header
