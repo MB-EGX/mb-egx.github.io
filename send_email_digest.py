@@ -93,7 +93,16 @@ def send_digest_email(payload: dict, recipients: list[str]) -> None:
     msg = MIMEText(payload["text"], "plain", "utf-8")
     msg["Subject"] = payload["subject"]
     msg["From"] = from_addr
-    msg["To"] = ", ".join(recipients)
+    # BCC, not To: putting every subscriber's address in the To: header
+    # (a) leaks every recipient's email to every other recipient, and
+    # (b) is a strong spam-filter signal — a message with dozens of
+    # addresses in To: looks like a bulk blast, not a real email, and
+    # gets silently dropped/spam-foldered by most providers for anyone
+    # who isn't the sender themself. The actual delivery list still goes
+    # to every recipient — it's passed to smtplib's sendmail() as the
+    # envelope recipient list below — it just never appears in the
+    # message headers, which is what BCC means.
+    msg["To"] = from_addr
 
     with smtplib.SMTP(host, port, timeout=20) as server:
         server.starttls()
