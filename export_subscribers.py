@@ -1,24 +1,35 @@
 """
 export_subscribers.py
 ======================
-N21: pulls every Firestore `users/{uid}` doc that has a non-empty `email`
-field and writes those emails to a plain text file, one per line.
+N21: pulls every registered Firebase Authentication user's email and
+writes them to a plain text file, one per line.
 
-Every account is auto-subscribed at creation (see login.html's
-account-creation writes) — there is no separate Follow/Join confirmation
-step anymore (Instagram/Facebook follows can't be verified via their
-public APIs, so that honor-system gate was removed in favor of plain,
-always-visible social links). This also means any account created before
-that change — which may still have `subscription.subscribed_active ==
-false` from the old gate — is included here too, with no migration
-needed.
+WHY FIREBASE AUTH, NOT FIRESTORE `users/{uid}` DOCS:
+    This used to query the Firestore `users` collection for a `subscription.
+    subscribed_active` flag (the old Follow/Join gate), then later for a
+    plain `email` field once that gate was removed. Both approaches broke
+    the same way: not every account's Firestore document actually has
+    these fields. A document only gets a field the moment its own
+    account-creation code path writes it — an account created before a
+    given field existed in login.html's code simply never has it, and
+    Firestore never backfills old documents on its own. That silently
+    excluded real, active, legitimate users (confirmed via Firebase
+    Console: accounts with real cash/portfolio/trade history but no
+    `email` field on the doc at all).
+    Firebase AUTHENTICATION, by contrast, is the actual source of truth
+    for every account's email — it's what they signed in with, and every
+    single registered user has one there regardless of which version of
+    the app's Firestore-writing code was live when they signed up. Pulling
+    from Auth instead means no account is ever missed due to a Firestore
+    schema gap.
 
 WHY A SEPARATE STEP, NOT INSIDE send_email_digest.py DIRECTLY:
     send_email_digest.py deliberately has zero dependency on Firebase / the
     local DuckDB (see its own docstring) so it can run from anywhere with
     nothing but the public market_data.json and SMTP creds. Keeping the
-    Firestore query here, as its own small step, means send_email_digest.py
-    stays that simple - it just reads whatever file this script wrote.
+    Firebase Auth listing here, as its own small step, means
+    send_email_digest.py stays that simple - it just reads whatever file
+    this script wrote.
 
 AUTH: uses the Firebase Admin SDK with a service-account key, NOT the
 public Firebase Web SDK config already in login.html/index.html (that
@@ -46,7 +57,7 @@ import os
 import sys
 
 import firebase_admin
-from firebase_admin import credentials, firestore
+from firebase_admin import auth, credentials
 
 DEFAULT_OUT_PATH = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "web_public", "social", "subscriber_emails.txt"
@@ -56,7 +67,9 @@ DEFAULT_OUT_PATH = os.path.join(
 def _init_firebase_admin():
     """Accepts the service-account JSON either as a raw JSON string or
     base64-encoded (base64 is friendlier for pasting into a GitHub Actions
-    secret box, which can be finicky about multi-line values / quoting)."""
+    secret box, which can be finicky about multi-line values / quoting).
+    Returns the initialized app (not a Firestore client - this script no
+    longer touches Firestore at all, see module docstring)."""
     raw = os.environ.get("FIREBASE_SERVICE_ACCOUNT_JSON", "").strip()
     if not raw:
         sys.exit(
@@ -73,29 +86,32 @@ def _init_firebase_admin():
             sys.exit(f"FIREBASE_SERVICE_ACCOUNT_JSON is neither valid JSON nor valid base64-encoded JSON: {e}")
     cred = credentials.Certificate(parsed)
     if not firebase_admin._apps:
-        firebase_admin.initialize_app(cred)
-    return firestore.client()
+        return firebase_admin.initialize_app(cred)
+    return firebase_admin.get_app()
 
 
-def get_confirmed_subscriber_emails(db) -> list[str]:
-    """Every user doc with a non-empty email — every signed-up account is
-    a subscriber now, no separate confirmation flag to filter on (see
-    module docstring). Kept as its own function/name (rather than being
-    inlined into export_subscribers()) since send_email_digest.py and any
-    future caller only care about "get me the list", not how it's
-    derived."""
+def get_confirmed_subscriber_emails(app) -> list[str]:
+    """Every registered Firebase Auth user's email — every signed-up
+    account is a subscriber now, no separate confirmation flag to filter
+    on (see module docstring). Paginates via list_users() since a project
+    can have more accounts than fit in a single page. Kept as its own
+    function/name (rather than being inlined into export_subscribers())
+    since send_email_digest.py and any future caller only care about
+    "get me the list", not how it's derived."""
     emails = []
-    for doc in db.collection("users").stream():
-        data = doc.to_dict() or {}
-        email = (data.get("email") or "").strip()
-        if email:
-            emails.append(email)
+    page = auth.list_users(app=app)
+    while page:
+        for user in page.users:
+            email = (user.email or "").strip()
+            if email:
+                emails.append(email)
+        page = page.get_next_page()
     return sorted(set(emails))
 
 
 def export_subscribers(out_path: str) -> int:
-    db = _init_firebase_admin()
-    emails = get_confirmed_subscriber_emails(db)
+    app = _init_firebase_admin()
+    emails = get_confirmed_subscriber_emails(app)
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
         f.write("\n".join(emails))
@@ -106,7 +122,7 @@ def export_subscribers(out_path: str) -> int:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Export confirmed (Follow+Join) subscriber emails from Firestore.")
+    parser = argparse.ArgumentParser(description="Export every registered user's email from Firebase Authentication.")
     parser.add_argument("--out", default=DEFAULT_OUT_PATH, help=f"Output path (default: {DEFAULT_OUT_PATH})")
     args = parser.parse_args()
     export_subscribers(args.out)
