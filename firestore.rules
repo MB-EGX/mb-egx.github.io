@@ -1,9 +1,21 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Single source of truth for "is this request from the admin
+    // account" - was previously repeated as a literal email list in four
+    // separate places (users/read, sessions/read, sessions/delete), which
+    // is easy to update in three spots and forget the fourth. Still just
+    // an email allowlist under the hood (Firestore rules can't reach out
+    // to an env var or secret store), but now there's exactly one place
+    // to change it.
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email in ['drmo071990@gmail.com'];
+    }
+
     match /users/{userId} {
       allow read: if request.auth != null && request.auth.uid == userId;
-      allow read: if request.auth != null && request.auth.token.email in ['drmo071990@gmail.com'];
+      allow read: if isAdmin();
 
       // NOTE: subscription_expires_at and subscription_status must both be
       // listed here even though the client can't actually set them to
@@ -21,6 +33,28 @@ service cloud.firestore {
         return ['cash', 'portfolio', 'history', 'paper_cash', 'paper_portfolio', 'paper_history',
                 'agreed_to_terms', 'terms_version', 'agreed_at', 'ip_address', 'web_stats',
                 'desktop_stats', 'trial_ends_at', 'subscription_status', 'subscription_expires_at'];
+      }
+
+      // web_stats (written by index.html's _writeCloudSyncNow(), via
+      // computeWebDealingStats()) and desktop_stats (written by
+      // app_gui.py's push_dealing_stats()) are the same shape from two
+      // different writers - one shared validator for both instead of
+      // duplicating the same four checks twice. Previously these two
+      // fields were in allowedUserFields() (so the KEY was gated) but
+      // had no validation on what's actually INSIDE the map at all -
+      // a client could write any nested structure/size here.
+      function validStatsMap(m) {
+        return m.keys().hasOnly(['trade_count', 'total_trade_value_egp', 'portfolio_value_egp', 'updated'])
+          && m.trade_count is int
+          && m.trade_count >= 0
+          && m.trade_count <= 1000000
+          && m.total_trade_value_egp is number
+          && m.total_trade_value_egp >= 0
+          && m.total_trade_value_egp <= 1000000000000
+          && m.portfolio_value_egp is number
+          && m.portfolio_value_egp >= 0
+          && m.portfolio_value_egp <= 1000000000000
+          && m.updated is timestamp;
       }
 
       // Only used by `create`, where cash/portfolio/history (and now
@@ -55,6 +89,14 @@ service cloud.firestore {
           && (
                 !("subscription_status" in request.resource.data)
                 || request.resource.data.subscription_status is string
+             )
+          && (
+                !("web_stats" in request.resource.data)
+                || (request.resource.data.web_stats is map && validStatsMap(request.resource.data.web_stats))
+             )
+          && (
+                !("desktop_stats" in request.resource.data)
+                || (request.resource.data.desktop_stats is map && validStatsMap(request.resource.data.desktop_stats))
              );
       }
 
@@ -129,6 +171,14 @@ service cloud.firestore {
           && (
                 !("subscription_status" in changed)
                 || request.resource.data.subscription_status is string
+             )
+          && (
+                !("web_stats" in changed)
+                || (request.resource.data.web_stats is map && validStatsMap(request.resource.data.web_stats))
+             )
+          && (
+                !("desktop_stats" in changed)
+                || (request.resource.data.desktop_stats is map && validStatsMap(request.resource.data.desktop_stats))
              );
       }
 
@@ -187,10 +237,52 @@ service cloud.firestore {
            );
     }
     match /sessions/{sessionId} {
-      allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
-      allow update: if request.auth != null && resource.data.uid == request.auth.uid;
-      allow read:   if request.auth != null && request.auth.token.email in ['drmo071990@gmail.com'];
-      allow delete: if request.auth != null && request.auth.token.email in ['drmo071990@gmail.com'];
+      // SECURITY: previously had no schema validation at all beyond "the
+      // uid field matches the caller" - an authenticated client could
+      // write a session doc with arbitrary extra fields and no size
+      // limit (own doc, so unbounded storage growth / cost is the
+      // realistic risk here, not privilege escalation, since these
+      // fields are never used to grant access). Mirrors the users/
+      // collection's own create/update split: create validates the
+      // WHOLE new doc, update only validates whatever this write
+      // actually changes - see that match block's own comments for why.
+      //
+      // Schema matches exactly what index.html's startSessionTracking()
+      // and app_gui.py's create_session_doc() actually write: uid,
+      // email (nullable), name, source ('web' | 'desktop'), start,
+      // lastSeen.
+      function validSessionCreate() {
+        return request.resource.data.keys().hasOnly(['uid', 'email', 'name', 'source', 'start', 'lastSeen'])
+          && request.resource.data.uid is string
+          && (
+                !('email' in request.resource.data)
+                || request.resource.data.email == null
+                || request.resource.data.email is string
+             )
+          && request.resource.data.name is string
+          && request.resource.data.name.size() <= 200
+          && request.resource.data.source is string
+          && request.resource.data.source in ['web', 'desktop']
+          && request.resource.data.start is timestamp
+          && request.resource.data.lastSeen is timestamp;
+      }
+
+      allow create: if request.auth != null
+        && request.resource.data.uid == request.auth.uid
+        && validSessionCreate();
+
+      // Every observed update site (the web tab's heartbeat, the desktop
+      // app's touch_session_doc()) only ever touches lastSeen - lock the
+      // rule down to exactly that instead of allowing any field on an
+      // "update", which previously let the owner rewrite uid/email/name/
+      // source on their own session doc after creation.
+      allow update: if request.auth != null
+        && resource.data.uid == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastSeen'])
+        && request.resource.data.lastSeen is timestamp;
+
+      allow read:   if isAdmin();
+      allow delete: if isAdmin();
     }
   }
 }

@@ -556,11 +556,20 @@ class DatabaseManager:
                 "SELECT id FROM session_picks WHERE status = 'achieved' ORDER BY achieved_date DESC, id DESC LIMIT ?;",
                 (int(keep_recent),)
             ).fetchall()
-            keep_ids = [str(r[0]) for r in ids]
+            keep_ids = [int(r[0]) for r in ids]
             if not keep_ids:
                 return 0
+            # SECURITY: previously built this query with an f-string
+            # (','.join(keep_ids) spliced straight into the SQL text). The
+            # ids here always come from our own SELECT above so it wasn't
+            # exploitable today, but it's the one non-parameterized query
+            # in this file — fully parameterize it instead of relying on
+            # "the values happen to be trusted right now" staying true
+            # forever. `?` placeholders, one per id, bound as a tuple.
+            placeholders = ",".join("?" * len(keep_ids))
             deleted = conn.cursor().execute(
-                f"DELETE FROM session_picks WHERE status = 'achieved' AND id NOT IN ({','.join(keep_ids)});"
+                f"DELETE FROM session_picks WHERE status = 'achieved' AND id NOT IN ({placeholders});",
+                tuple(keep_ids),
             ).rowcount
             return int(deleted or 0)
 

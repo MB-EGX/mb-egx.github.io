@@ -42,7 +42,16 @@ if not LOGO_PATH.exists():
 FIREBASE_API_KEY = "AIzaSyDlLv9qJFZ87mIztvbJZ0tBbwczYbnutwk"
 FIREBASE_PROJECT_ID = "mb-egx-12d11"
 FIRESTORE_BASE = f"https://firestore.googleapis.com/v1/projects/{FIREBASE_PROJECT_ID}/databases/(default)/documents"
-ADMIN_EMAILS = ["drmo071990@gmail.com"]
+# Configurable via MBEGX_ADMIN_EMAILS (comma-separated) so the admin
+# account isn't only ever a hardcoded literal shipped inside the compiled
+# desktop app - falls back to the existing default if unset, so this is
+# a no-op change for anyone who hasn't set the env var. Note this list is
+# a UI-only gate (whether the "Usage Analytics" button is shown) - the
+# actual permission boundary is enforced server-side by firestore.rules'
+# own isAdmin() check, which independently gates every real data access.
+ADMIN_EMAILS = [
+    e.strip() for e in os.environ.get("MBEGX_ADMIN_EMAILS", "drmo071990@gmail.com").split(",") if e.strip()
+]
 
 
 def _safe_float(value, default: float = 0.0) -> float:
