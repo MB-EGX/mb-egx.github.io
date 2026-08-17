@@ -225,6 +225,13 @@
             .max-w-\[1650px\] { max-width: 100% !important; padding: 0 !important; }
             a[href]::after { content: none !important; }
         }
+        /* Exits tab: secondary columns (raw indicator values, target/
+           breakeven planning numbers) are hidden by default so a first
+           look at the tab is scannable - "what do I do about this
+           position" - instead of a 24-column wall of numbers. Toggled by
+           #btn-exits-detail / toggleExitsDetail(). Full detail is one
+           click away, never removed. */
+        #tbl-exits.exits-compact .excol-sec { display: none; }
     </style>
 </head>
 <body class="bg-darkbg text-textmain font-sans min-h-screen text-xs md:text-sm transition-colors duration-200 pb-16 overflow-x-hidden">
@@ -464,41 +471,42 @@
 
         <!-- TAB 3: OWNED PORTFOLIO -->
         <div id="tab-exits" class="bg-panelbg rounded-b-xl border border-t-0 border-bordercol p-4 shadow-xl hidden space-y-4">
-            <div id="portfolio-risk-banner" class="hidden text-amber-400 text-xs font-bold text-center font-sans"></div>
+            <div id="portfolio-risk-banner" class="hidden text-amber-400 text-xs font-bold text-center font-sans truncate cursor-help" style="max-height: 1.25rem;"></div>
             <div class="flex justify-between items-center">
                 <span class="text-textmuted text-xs" data-i18n="lbl_positions_local">Positions stored securely in browser local storage.</span>
                 <div class="flex gap-2">
+                    <button onclick="toggleExitsDetail()" id="btn-exits-detail" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded font-bold text-xs" data-i18n="btn_show_all_columns">👁️ Show All Columns</button>
                     <button onclick="clearDemoData()" class="bg-rose-800 hover:bg-rose-700 text-white px-3 py-1.5 rounded font-bold text-xs">🧹 <span data-i18n="btn_clear_demo">Clear Demo Data</span></button>
                     <button onclick="openModal('modal-portfolio')" class="bg-purple-600 hover:bg-purple-500 text-white px-3 py-1.5 rounded font-bold text-xs" data-i18n="btn_add_position">+ Add Position</button>
                 </div>
             </div>
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse whitespace-nowrap font-mono">
+                <table id="tbl-exits" class="exits-compact w-full text-left border-collapse whitespace-nowrap font-mono">
                     <thead class="bg-[#2d3748] text-white font-sans text-xs">
                         <tr>
                             <th class="p-2.5 border border-darkbg" data-i18n="hdr_ticker">Ticker</th>
-                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_shares">Shares</th>
-                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_buy_price">Buy Price</th>
+                            <th class="p-2.5 border border-darkbg excol-sec" data-i18n="hdr_shares">Shares</th>
+                            <th class="p-2.5 border border-darkbg excol-sec" data-i18n="hdr_buy_price">Buy Price</th>
                             <th class="p-2.5 border border-darkbg" data-i18n="hdr_current_price">Current Price</th>
-                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_pnl_egp">P&L (EGP)</th>
+                            <th class="p-2.5 border border-darkbg excol-sec" data-i18n="hdr_pnl_egp">P&L (EGP)</th>
                             <th class="p-2.5 border border-darkbg" data-i18n="hdr_pnl_pct">P&L (%)</th>
-                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_net_pnl_egp" title="P&L after both round-trip trading fees (buy fee already paid + sell fee to close today)">Net P&L (EGP)</th>
+                            <th class="p-2.5 border border-darkbg excol-sec" data-i18n="hdr_net_pnl_egp" title="P&L after both round-trip trading fees (buy fee already paid + sell fee to close today)">Net P&L (EGP)</th>
                             <th class="p-2.5 border border-darkbg" data-i18n="hdr_net_pnl_pct" title="Fee-adjusted P&L, as a % of your original cost basis">Net P&L (%)</th>
                             <th class="p-2.5 border border-darkbg text-center font-sans" data-i18n="hdr_action_command">Action Command</th>
-                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_take_profit">Take-Profit</th>
-                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_trailing_stop">Trailing Stop</th>
+                            <th class="p-2.5 border border-darkbg excol-sec" data-i18n="hdr_take_profit">Take-Profit</th>
+                            <th class="p-2.5 border border-darkbg excol-sec" data-i18n="hdr_trailing_stop">Trailing Stop</th>
                             <th class="p-2.5 border border-darkbg" data-i18n="hdr_dist_to_stop" title="How close the current price already is to crossing the trailing stop-loss line">Dist. to Stop %</th>
                             <th class="p-2.5 border border-darkbg font-sans" data-i18n="hdr_trend">Trend</th>
                             <th class="p-2.5 border border-darkbg" data-i18n="hdr_annualized" title="Unrealized P&L (%) compounded to a yearly rate based on days held">Annualized %</th>
                             <th class="p-2.5 border border-darkbg" data-i18n="hdr_drawdown_peak" title="How far the current price has pulled back from its highest close since this position was opened">Drawdown from Peak %</th>
                             <th class="p-2.5 border border-darkbg" data-i18n="hdr_risk_vs_plan" title="This position's size as a multiple of your normal 1%-risk position size">Risk vs Plan</th>
-                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_target_price" title="The exit price that reaches your chosen profit target">My Target Price</th>
-                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_target_pct" title="Your chosen profit target as a % gain from your buy price">My Target %</th>
-                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_target_egp" title="Your chosen profit target in EGP">My Target (EGP)</th>
-                            <th class="p-2.5 border border-darkbg font-sans" data-i18n="hdr_target_eta" title="Rough estimate based on this stock's own recent pace - not a guarantee">Est. Time to Target</th>
-                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_breakeven_shares" title="Extra shares to buy now at the current price to blend your average cost down to breakeven">Breakeven Shares</th>
-                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_breakeven_avg" title="Your new average cost per share after buying the breakeven shares above">Breakeven Avg Cost</th>
-                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_breakeven_cost" title="Total EGP needed to buy the breakeven shares at the current price">Breakeven Cost (EGP)</th>
+                            <th class="p-2.5 border border-darkbg excol-sec" data-i18n="hdr_target_price" title="The exit price that reaches your chosen profit target">My Target Price</th>
+                            <th class="p-2.5 border border-darkbg excol-sec" data-i18n="hdr_target_pct" title="Your chosen profit target as a % gain from your buy price">My Target %</th>
+                            <th class="p-2.5 border border-darkbg excol-sec" data-i18n="hdr_target_egp" title="Your chosen profit target in EGP">My Target (EGP)</th>
+                            <th class="p-2.5 border border-darkbg font-sans excol-sec" data-i18n="hdr_target_eta" title="Rough estimate based on this stock's own recent pace - not a guarantee">Est. Time to Target</th>
+                            <th class="p-2.5 border border-darkbg excol-sec" data-i18n="hdr_breakeven_shares" title="Extra shares to buy now at the current price to blend your average cost down to breakeven">Breakeven Shares</th>
+                            <th class="p-2.5 border border-darkbg excol-sec" data-i18n="hdr_breakeven_avg" title="Your new average cost per share after buying the breakeven shares above">Breakeven Avg Cost</th>
+                            <th class="p-2.5 border border-darkbg excol-sec" data-i18n="hdr_breakeven_cost" title="Total EGP needed to buy the breakeven shares at the current price">Breakeven Cost (EGP)</th>
                             <th class="p-2.5 border border-darkbg font-sans text-center" data-i18n="hdr_manage">Manage</th>
                         </tr>
                     </thead>
@@ -1561,8 +1569,12 @@
                 hdr_net_pnl_egp: "Net P&L (EGP)", hdr_net_pnl_pct: "Net P&L (%)",
                 hdr_dist_to_stop: "Dist. to Stop %", hdr_annualized: "Annualized %",
                 hdr_drawdown_peak: "Drawdown from Peak %", hdr_risk_vs_plan: "Risk vs Plan",
+                hdr_cash_drag: "Cash Drag (%)",
+                btn_show_all_columns: "👁️ Show All Columns", btn_show_essential_columns: "👁️ Show Essential Columns",
                 lbl_low_cash_drag: "💵 {pct}% cash — fully invested, no dry powder for new signals.",
                 lbl_rotation_flag: "🔄 You're holding {held} ({hs}) but the matrix now prefers {cand} ({cs}) in the same {cat} pool.",
+                lbl_rotation_flag_grouped: "🔄 {held} outranked by {cand} in the same {cat} pool.",
+                lbl_more_risk_notes: "{first}  •  +{n} more risk note(s) — hover for details",
                 this_position_pct_equity: "This position is {p}% of your account equity — over the single-position concentration threshold.",
                 btn_set_target: "🎯 Target", modal_target_title: "Set Profit Target",
                 lbl_target_mode: "Target Type:", opt_target_pct: "% Gain from Buy Price", opt_target_amount: "Money Amount (EGP)",
@@ -1786,8 +1798,12 @@
                 hdr_net_pnl_egp: "صافي الربح/الخسارة (جنيه)", hdr_net_pnl_pct: "صافي الربح/الخسارة (%)",
                 hdr_dist_to_stop: "المسافة لوقف الخسارة %", hdr_annualized: "العائد السنوي %",
                 hdr_drawdown_peak: "التراجع من القمة %", hdr_risk_vs_plan: "الحجم مقابل خطة المخاطرة",
+                hdr_cash_drag: "النقد غير المستثمر (%)",
+                btn_show_all_columns: "👁️ عرض كل الأعمدة", btn_show_essential_columns: "👁️ عرض الأعمدة الأساسية",
                 lbl_low_cash_drag: "💵 {pct}% نقدًا فقط — رأس المال مستثمر بالكامل، لا توجد سيولة لصفقات جديدة.",
                 lbl_rotation_flag: "🔄 أنت تمتلك {held} ({hs}) لكن المصفوفة تفضّل الآن {cand} ({cs}) ضمن نفس فئة {cat}.",
+                lbl_rotation_flag_grouped: "🔄 المصفوفة تفضّل {cand} على {held} ضمن نفس فئة {cat}.",
+                lbl_more_risk_notes: "{first}  •  +{n} ملاحظة أخرى — مرر الفأرة لعرض التفاصيل",
                 this_position_pct_equity: "تمثل هذه الصفقة {p}% من رأس مالك — أعلى من حد التركز المسموح به لصفقة واحدة.",
                 btn_set_target: "🎯 الهدف", modal_target_title: "تحديد هدف الربح",
                 lbl_target_mode: "نوع الهدف:", opt_target_pct: "% ربح من سعر الشراء", opt_target_amount: "مبلغ مالي (جنيه)",
@@ -3045,6 +3061,7 @@
                 <div class="flex justify-between py-2 border-b border-bordercol"><span>${tt('fin_market_value')}:</span> <strong>${stockVal.toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></div>
                 <div class="flex justify-between py-2 border-b border-bordercol"><span>${tt('fin_unrealized_pnl')}:</span> <strong class="${unrealizedPnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${unrealizedPnl.toLocaleString(undefined, {minimumFractionDigits: 2})} (${unrealizedPct.toFixed(2)}%)</strong></div>
                 <div class="flex justify-between py-2 border-b border-bordercol"><span>${tt('fin_realized_pnl')}:</span> <strong class="${realizedPnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${realizedPnl.toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></div>
+                <div class="flex justify-between py-2 border-b border-bordercol"><span>${tt('hdr_cash_drag')}:</span> <strong class="${totalEquity > 0 && (userCash / totalEquity) * 100 < CASH_DRAG_LOW_PCT ? 'text-amber-400' : ''}">${totalEquity > 0 ? ((userCash / totalEquity) * 100).toFixed(1) : '0.0'}%</strong></div>
                 <div class="flex justify-between py-2 bg-panelbg px-3 rounded text-base"><span>${tt('fin_total_equity')}:</span> <strong class="text-amber-400">${totalEquity.toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></div>
             `;
             renderConcentrationRisk(stockVal, totalEquity);
@@ -3540,6 +3557,19 @@
             window.addEventListener('scroll', tourReposition, true);
         }
 
+        // Exits tab compact/detail toggle - see the #tbl-exits.exits-compact
+        // CSS rule. Purely a display toggle (no data changes), so it
+        // doesn't need to survive reload; defaults back to compact each
+        // visit, matching the desktop app's default column set.
+        function toggleExitsDetail() {
+            const tbl = document.getElementById('tbl-exits');
+            const btn = document.getElementById('btn-exits-detail');
+            if (!tbl || !btn) return;
+            tbl.classList.toggle('exits-compact');
+            const isCompact = tbl.classList.contains('exits-compact');
+            btn.textContent = isCompact ? tt('btn_show_all_columns') : tt('btn_show_essential_columns');
+        }
+
         function renderPortfolio() {
             const tbody = document.getElementById('tbody-exits');
             tbody.innerHTML = '';
@@ -3577,22 +3607,22 @@
                 const tr = document.createElement('tr');
                 tr.className = 'border-b border-bordercol hover:bg-panelbg transition';
                 tr.innerHTML = `
-                    <td class="p-2.5 font-bold text-sky-400">${escapeHtml(pos.ticker)}</td><td class="p-2.5">${pos.shares.toLocaleString()}</td><td class="p-2.5">${pos.buyPrice.toFixed(4)}</td><td class="p-2.5 font-bold text-white">${cp.toFixed(4)}</td>
-                    <td class="p-2.5 font-bold ${pnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${pnl.toLocaleString(undefined, {minimumFractionDigits: 2})}</td><td class="p-2.5 font-bold ${pnlPct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${pnlPct.toFixed(2)}%</td>
-                    <td class="p-2.5 font-bold ${netPnlCls}">${ea.netPnlEgp.toLocaleString(undefined, {minimumFractionDigits: 2})}</td><td class="p-2.5 font-bold ${netPnlCls}">${ea.netPnlPct.toFixed(2)}%</td>
-                    <td class="p-2.5 text-center font-sans"><span class="px-3 py-1 rounded-full text-[11px] ${actionBg}">${trAction(action)}</span></td><td class="p-2.5 text-emerald-400">${tp.toFixed(4)}</td><td class="p-2.5 text-rose-400">${stop.toFixed(4)}</td>
+                    <td class="p-2.5 font-bold text-sky-400">${escapeHtml(pos.ticker)}</td><td class="p-2.5 excol-sec">${pos.shares.toLocaleString()}</td><td class="p-2.5 excol-sec">${pos.buyPrice.toFixed(4)}</td><td class="p-2.5 font-bold text-white">${cp.toFixed(4)}</td>
+                    <td class="p-2.5 font-bold excol-sec ${pnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${pnl.toLocaleString(undefined, {minimumFractionDigits: 2})}</td><td class="p-2.5 font-bold ${pnlPct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${pnlPct.toFixed(2)}%</td>
+                    <td class="p-2.5 font-bold excol-sec ${netPnlCls}">${ea.netPnlEgp.toLocaleString(undefined, {minimumFractionDigits: 2})}</td><td class="p-2.5 font-bold ${netPnlCls}">${ea.netPnlPct.toFixed(2)}%</td>
+                    <td class="p-2.5 text-center font-sans"><span class="px-3 py-1 rounded-full text-[11px] ${actionBg}">${trAction(action)}</span></td><td class="p-2.5 text-emerald-400 excol-sec">${tp.toFixed(4)}</td><td class="p-2.5 text-rose-400 excol-sec">${stop.toFixed(4)}</td>
                     <td class="p-2.5 ${distCls}">${ea.distToStopPct != null ? ea.distToStopPct.toFixed(2) + '%' : '—'}</td>
                     <td class="p-2.5 font-sans text-textmuted">${trTrend(trend)}</td>
                     <td class="p-2.5 ${annCls}">${ea.annualizedPct != null ? ea.annualizedPct.toFixed(2) + '%' : '—'}</td>
                     <td class="p-2.5 ${ddCls}">${ea.drawdownPct != null ? ea.drawdownPct.toFixed(2) + '%' : '—'}</td>
                     <td class="p-2.5 ${riskCls}" title="${pctOfEquity != null ? escapeHtml(tt('this_position_pct_equity').replace('{p}', pctOfEquity.toFixed(1))) : ''}">${riskMultiple != null ? riskMultiple.toFixed(1) + 'x' : '—'}</td>
-                    <td class="p-2.5 text-sky-300">${tgt.price !== null ? tgt.price.toFixed(4) : '—'}</td>
-                    <td class="p-2.5 text-sky-300">${tgt.pct !== null ? tgt.pct.toFixed(2) + '%' : '—'}</td>
-                    <td class="p-2.5 text-sky-300">${tgt.egp !== null ? tgt.egp.toLocaleString(undefined, {minimumFractionDigits: 2}) : '—'}</td>
-                    <td class="p-2.5 font-sans text-textmuted">${tgt.etaText}</td>
-                    <td class="p-2.5 ${be.shares > 0 ? 'text-amber-400 font-bold' : 'text-textmuted'}" title="${escapeHtml(be.note)}">${be.shares !== null ? be.shares.toLocaleString() : '—'}</td>
-                    <td class="p-2.5 text-textmuted" title="${escapeHtml(be.note)}">${be.avgCost !== null ? be.avgCost.toFixed(4) : '—'}</td>
-                    <td class="p-2.5 text-textmuted" title="${escapeHtml(be.note)}">${be.cost !== null ? be.cost.toLocaleString(undefined, {minimumFractionDigits: 2}) : '—'}</td>
+                    <td class="p-2.5 text-sky-300 excol-sec">${tgt.price !== null ? tgt.price.toFixed(4) : '—'}</td>
+                    <td class="p-2.5 text-sky-300 excol-sec">${tgt.pct !== null ? tgt.pct.toFixed(2) + '%' : '—'}</td>
+                    <td class="p-2.5 text-sky-300 excol-sec">${tgt.egp !== null ? tgt.egp.toLocaleString(undefined, {minimumFractionDigits: 2}) : '—'}</td>
+                    <td class="p-2.5 font-sans text-textmuted excol-sec">${tgt.etaText}</td>
+                    <td class="p-2.5 excol-sec ${be.shares > 0 ? 'text-amber-400 font-bold' : 'text-textmuted'}" title="${escapeHtml(be.note)}">${be.shares !== null ? be.shares.toLocaleString() : '—'}</td>
+                    <td class="p-2.5 text-textmuted excol-sec" title="${escapeHtml(be.note)}">${be.avgCost !== null ? be.avgCost.toFixed(4) : '—'}</td>
+                    <td class="p-2.5 text-textmuted excol-sec" title="${escapeHtml(be.note)}">${be.cost !== null ? be.cost.toLocaleString(undefined, {minimumFractionDigits: 2}) : '—'}</td>
                     <td class="p-2.5 text-center font-sans whitespace-nowrap"><button onclick="openTargetModal('${sanitizeTicker(pos.ticker)}')" class="bg-sky-700 text-white px-2.5 py-1 rounded text-[11px] font-bold mr-1">${tt('btn_set_target')}</button><button onclick="sellPosition('${sanitizeTicker(pos.ticker)}')" class="bg-rose-700 text-white px-2.5 py-1 rounded text-[11px] font-bold">🤝 Record Sale</button></td>
                 `;
                 tbody.appendChild(tr);
@@ -3615,24 +3645,36 @@
             return stockVal + (userCash || 0);
         }
 
+        // Fixed-height, single-line risk summary (see app_gui.py's
+        // _render_risk_banner for the matching desktop behavior). Cash-drag
+        // moved to its own Financials-tab row instead of living here - it's
+        // informational, not urgent, and repeating it up top was clutter.
+        // Rotation flags are consolidated by CANDIDATE: several held
+        // positions losing to the same one candidate used to print as one
+        // line each ("...prefers CCRS.CA" x3) - now it's a single line
+        // naming all of them. Full detail is always in the title tooltip.
         function renderPortfolioBanner(totalEquity) {
             const el = document.getElementById('portfolio-risk-banner');
             if (!el) return;
-            const msgs = [];
-            if (totalEquity > 0) {
-                const cashDragPct = ((userCash || 0) / totalEquity) * 100;
-                if (cashDragPct < CASH_DRAG_LOW_PCT) {
-                    msgs.push(tt('lbl_low_cash_drag').replace('{pct}', cashDragPct.toFixed(1)));
-                }
-            }
             const flags = computeRotationFlags();
-            flags.slice(0, 3).forEach(f => {
-                msgs.push(tt('lbl_rotation_flag')
-                    .replace('{held}', f.held).replace('{hs}', f.heldScore)
-                    .replace('{cand}', f.cand).replace('{cs}', f.candScore).replace('{cat}', trAction(f.category)));
+            const byCandidate = {};
+            flags.forEach(f => {
+                const key = f.cand + '|' + f.category;
+                (byCandidate[key] = byCandidate[key] || { cand: f.cand, category: f.category, held: [] }).held.push(f.held);
             });
-            if (msgs.length) { el.textContent = msgs.join(' | '); el.classList.remove('hidden'); }
-            else { el.textContent = ''; el.classList.add('hidden'); }
+            const lines = Object.values(byCandidate).map(g => {
+                const heldStr = g.held.slice(0, 4).join(', ') + (g.held.length > 4 ? '…' : '');
+                return tt('lbl_rotation_flag_grouped')
+                    .replace('{held}', heldStr).replace('{cand}', g.cand).replace('{cat}', trAction(g.category));
+            });
+            if (!lines.length) { el.textContent = ''; el.title = ''; el.classList.add('hidden'); return; }
+            let summary = lines.length === 1
+                ? lines[0]
+                : tt('lbl_more_risk_notes').replace('{first}', lines[0]).replace('{n}', lines.length - 1);
+            if (summary.length > 160) summary = summary.slice(0, 157).trimEnd() + '…';
+            el.textContent = summary;
+            el.title = lines.join('\n');
+            el.classList.remove('hidden');
         }
 
         // Mirrors decision_matrix.py's _compute_rotation_flags(): for each

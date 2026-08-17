@@ -383,6 +383,8 @@ AR_TRANSLATIONS = {
     "Cash Drag (%)": "(%) النقد غير المستثمر",
     "💵 {pct}% cash — fully invested, no dry powder for new signals.": "💵 {pct}% نقدًا فقط — رأس المال مستثمر بالكامل، لا توجد سيولة لصفقات جديدة.",
     "🔄 You're holding {held} ({hs}) but the matrix now prefers {cand} ({cs}) in the same {cat} pool.": "🔄 أنت تمتلك {held} ({hs}) لكن المصفوفة تفضّل الآن {cand} ({cs}) ضمن نفس فئة {cat}.",
+    "🔄 {held} outranked by {cand} in the same {cat} pool.": "🔄 المصفوفة تفضّل {cand} على {held} ضمن نفس فئة {cat}.",
+    "{first}  •  +{n} more risk note(s) — hover for details": "{first}  •  +{n} ملاحظة أخرى — مرر الفأرة لعرض التفاصيل",
 
     # --- History (closed trades) tab: column headers ---
     "Shares Sold": "الأسهم المباعة",
@@ -3192,7 +3194,16 @@ class QuantDashboard(QMainWindow):
         self.lbl_concentration_warning = QLabel("")
         self.lbl_concentration_warning.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.lbl_concentration_warning.setStyleSheet("color: #f6ad55; font-weight: bold; font-size: 11px;")
-        self.lbl_concentration_warning.setWordWrap(True)
+        # Deliberately NOT word-wrapped: this bar used to grow to however many
+        # lines its combined text needed (concentration warnings + cash-drag
+        # note + one rotation-flag line per held ticker), which could push
+        # the toolbar/scan-folder row down several inches and eat the actual
+        # workspace below. It's now a fixed-height, single-line summary with
+        # the full detail in the tooltip (hover) instead - see
+        # _build_risk_banner_text() for how the summary line is built.
+        self.lbl_concentration_warning.setWordWrap(False)
+        self.lbl_concentration_warning.setFixedHeight(18)
+        self.lbl_concentration_warning.setTextInteractionFlags(Qt.TextInteractionFlag.NoTextInteraction)
         self.lbl_concentration_warning.hide()
 
         self.progress_bar = QProgressBar()
@@ -3404,6 +3415,19 @@ class QuantDashboard(QMainWindow):
         self.btn_columns.clicked.connect(self.open_column_chooser)
         filter_layout.addWidget(self.btn_columns)
 
+        # Exits-tab-only toggle: the per-sector subtotal rows (one row per
+        # sector represented among open positions) are useful context but
+        # were previously always inserted, mixing "here's a position" rows
+        # with "here's a sector rollup" rows in one table by default - off
+        # by default now, one click to bring back when actually wanted.
+        self.chk_sector_subtotals = QPushButton("🏢 Sector Subtotals")
+        self.chk_sector_subtotals.setCheckable(True)
+        self.chk_sector_subtotals.setChecked(False)
+        self.chk_sector_subtotals.setStyleSheet("background-color: #4a5568; color: white; padding: 6px 12px; font-size: 11px; border-radius: 6px;")
+        self.chk_sector_subtotals.setToolTip("Show one subtotal row per sector represented among your open positions, in the Exits tab.")
+        self.chk_sector_subtotals.clicked.connect(self._on_sector_subtotals_toggled)
+        filter_layout.addWidget(self.chk_sector_subtotals)
+
         self.btn_reset_filters = QPushButton("Reset Filters")
         self.btn_reset_filters.setStyleSheet("background-color: #4a5568; color: white; padding: 6px 12px; font-size: 11px; border-radius: 6px;")
         self.btn_reset_filters.clicked.connect(self.reset_filters)
@@ -3543,6 +3567,21 @@ class QuantDashboard(QMainWindow):
         self.tbl_exits.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
         self.tbl_exits.horizontalHeader().setMinimumSectionSize(70)
 
+        # Default to a curated, "what do I actually do about this position"
+        # column set instead of dumping all 24 on screen at once - the rest
+        # (raw indicator values, target/breakeven planning numbers) are one
+        # click away via the existing 👁️ Columns button, not gone. Keeps a
+        # first look at the Exits tab scannable instead of a wall of numbers.
+        _exit_secondary_columns = {
+            "Shares", "Buy Price", "Purchased Value (EGP)", "Current Value (EGP)",
+            "P&L (EGP)", "Net P&L (EGP)", "Take-Profit", "Trail Stop",
+            "RSI-14", "ADX-14", "Data Conf.", "Purchase Date",
+            "Drawdown from Peak %", "My Target Price", "My Target %", "My Target (EGP)",
+            "Est. Time to Target", "Breakeven Shares", "Breakeven Avg Cost", "Breakeven Cost (EGP)",
+        }
+        for idx, (header, _tooltip) in enumerate(self._exit_columns):
+            self.tbl_exits.setColumnHidden(idx, header in _exit_secondary_columns)
+
         self.tbl_breakout_watch = QTableWidget()
         self._breakout_watch_columns = [
             ("Ticker", "Stock ticker symbol"),
@@ -3615,6 +3654,10 @@ class QuantDashboard(QMainWindow):
         self.update_last_data_date_display()
         self.refresh_account_header()
 
+    def _on_sector_subtotals_toggled(self):
+        if getattr(self, "_last_populate_args", None):
+            self.populate_tables(**self._last_populate_args, _push_cloud_stats=False)
+
     def open_column_chooser(self):
         current_idx = self.tabs.currentIndex()
         view = None
@@ -3672,6 +3715,7 @@ class QuantDashboard(QMainWindow):
         self.lbl_filter.setText(t["filters"])
         self.txt_search.setPlaceholderText(t["search_ph"])
         self.chk_hide_illiquid.setText(t["hide_illiquid"])
+        self.chk_sector_subtotals.setText("🏢 Sector Subtotals" if self.current_lang == "EN" else "🏢 إجماليات القطاعات")
         self.btn_columns.setText(t["btn_columns"])
         self.btn_reset_filters.setText(t["reset_filters"])
 
@@ -4145,12 +4189,13 @@ class QuantDashboard(QMainWindow):
             avg_days = (agg["days_sum"] / agg["days_n"]) if agg["days_n"] else None
             is_concentrated = weight_pct >= warn_pct
 
-            label = f"🏢 {sector} — {agg['count']} ticker{'s' if agg['count'] != 1 else ''} • {weight_pct:.1f}% of equity"
+            label = f"🏢 {sector} • {weight_pct:.1f}%"
             if is_concentrated:
                 label += " ⚠️"
             bg = QColor("#7c4a03") if is_concentrated else QColor("#2d3748")
             tip = (
-                f"{sector}: {weight_pct:.1f}% of total open-position value"
+                f"{sector}: {agg['count']} ticker{'s' if agg['count'] != 1 else ''}, "
+                f"{weight_pct:.1f}% of total open-position value"
                 + (f" — above the {warn_pct:.0f}% concentration warning threshold" if is_concentrated else "")
             )
 
@@ -4309,6 +4354,57 @@ class QuantDashboard(QMainWindow):
                     fg = QColor("#feb2b2")
             self._set_exit_summary_item(row_idx, col_idx, text, bg, fg, tip)
 
+    def _render_risk_banner(self, pr):
+        """Fixed-height, single-line risk summary bar. Cash-drag is
+        deliberately left out here - it's informational, not urgent, and
+        already has its own row on the Financials tab, so repeating it here
+        was pure clutter. Rotation flags are consolidated by CANDIDATE
+        (one line covering every held ticker that candidate outranks)
+        instead of one line per held ticker, since several held positions
+        often lose to the same single candidate - three lines all ending
+        '...prefers CCRS.CA' said nothing that one line couldn't.
+        Everything (warnings + rotation detail) is still fully available
+        via the bar's tooltip on hover - nothing is actually lost, it's
+        just not force-displayed across five lines eating the workspace.
+        """
+        warnings = pr.get("warnings", [])
+        rotation_flags = pr.get("rotation_flags", [])
+
+        by_candidate: dict = {}
+        for rf in rotation_flags:
+            by_candidate.setdefault((rf["candidate_ticker"], rf["category"]), []).append(rf["held_ticker"])
+        rotation_lines = []
+        for (cand, cat), held_list in by_candidate.items():
+            held_str = ", ".join(held_list[:4]) + ("…" if len(held_list) > 4 else "")
+            rotation_lines.append(
+                tr("🔄 {held} outranked by {cand} in the same {cat} pool.").format(
+                    held=held_str, cand=cand, cat=tr(cat)
+                )
+            )
+
+        all_lines = warnings + rotation_lines
+        if not all_lines:
+            self.lbl_concentration_warning.clear()
+            self.lbl_concentration_warning.setToolTip("")
+            self.lbl_concentration_warning.hide()
+            return
+
+        if len(all_lines) == 1:
+            summary = all_lines[0]
+        else:
+            summary = tr("{first}  •  +{n} more risk note(s) — hover for details").format(
+                first=all_lines[0], n=len(all_lines) - 1
+            )
+        # Belt-and-braces against a single very long warning line still
+        # overflowing the fixed-height bar on a narrower window - the full
+        # text is always in the tooltip regardless, this is just what's
+        # painted in the bar itself.
+        if len(summary) > 160:
+            summary = summary[:157].rstrip() + "…"
+        self.lbl_concentration_warning.setText(summary)
+        self.lbl_concentration_warning.setToolTip("\n\n".join(all_lines))
+        self.lbl_concentration_warning.show()
+
     def populate_tables(self, buys, exits, top10, closed_trades, fin_stmt, sector_summary, breakout_watchlist=None, portfolio_risk=None, session_picks=None, _push_cloud_stats=True):
         breakout_watchlist = breakout_watchlist or []
         session_picks = session_picks or {}
@@ -4329,26 +4425,7 @@ class QuantDashboard(QMainWindow):
         )
 
         pr = portfolio_risk or {}
-        banner_msgs = list(pr.get("warnings", []))
-        if pr.get("low_cash_drag"):
-            banner_msgs.append(
-                tr("💵 {pct}% cash — fully invested, no dry powder for new signals.").format(
-                    pct=pr.get("cash_drag_pct", 0)
-                )
-            )
-        for rf in pr.get("rotation_flags", [])[:3]:
-            banner_msgs.append(
-                tr("🔄 You're holding {held} ({hs}) but the matrix now prefers {cand} ({cs}) in the same {cat} pool.").format(
-                    held=rf["held_ticker"], hs=rf["held_score"],
-                    cand=rf["candidate_ticker"], cs=rf["candidate_score"], cat=tr(rf["category"]),
-                )
-            )
-        if banner_msgs:
-            self.lbl_concentration_warning.setText(" | ".join(banner_msgs))
-            self.lbl_concentration_warning.show()
-        else:
-            self.lbl_concentration_warning.clear()
-            self.lbl_concentration_warning.hide()
+        self._render_risk_banner(pr)
 
         if self.user_info and _push_cloud_stats:
             stats = self._compute_dealing_stats(exits, closed_trades, fin_stmt)
@@ -4418,8 +4495,9 @@ class QuantDashboard(QMainWindow):
                 "Breakeven Shares Needed", "Breakeven New Avg Cost", "Breakeven Cost (EGP)",
             ]
             _n_sectors_preview = len({row_data.get("Sector") or "General / Diversified" for row_data in exits})
+            _show_sector_rows = self.chk_sector_subtotals.isChecked()
             _show_combined_row = bool(exits) and bool(closed_trades)
-            _extra_rows = (_n_sectors_preview if exits else 0) + (1 if exits else 0) + (1 if _show_combined_row else 0)
+            _extra_rows = ((_n_sectors_preview if exits else 0) if _show_sector_rows else 0) + (1 if exits else 0) + (1 if _show_combined_row else 0)
             self.tbl_exits.setRowCount(len(exits) + _extra_rows)
 
             # Portfolio-wide accumulators for the summary rows appended after
@@ -4600,10 +4678,12 @@ class QuantDashboard(QMainWindow):
                     self.tbl_exits.setItem(row_idx, col_idx, item)
 
             if exits:
-                next_row = self._fill_exits_sector_rows(
-                    row_idx_start=len(exits), keys=_exit_keys,
-                    by_sector=_by_sector, total_current=_tot_current,
-                )
+                next_row = len(exits)
+                if _show_sector_rows:
+                    next_row = self._fill_exits_sector_rows(
+                        row_idx_start=len(exits), keys=_exit_keys,
+                        by_sector=_by_sector, total_current=_tot_current,
+                    )
                 next_row = self._fill_exits_totals_row(
                     row_idx=next_row,
                     keys=_exit_keys,
