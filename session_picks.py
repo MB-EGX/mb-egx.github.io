@@ -284,15 +284,11 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
             price = row.get("Current Price")
             if not ticker or price is None or ticker in active_tickers or ticker in excluded_today:
                 continue
-            is_pre_breakout = bool(row.get("Pre-Breakout Pick"))
-            if is_pre_breakout:
+            if row.get("Pre-Breakout Pick"):
                 if pre_breakout_fills >= SESSION_PICKS_PRE_BREAKOUT_MAX_SLOTS:
                     continue
                 pre_breakout_fills += 1
-            dbm.add_pick(
-                ticker, horizon, session_date, price,
-                source="pre_breakout" if is_pre_breakout else "signal",
-            )
+            dbm.add_pick(ticker, horizon, session_date, price)
             active_tickers.add(ticker)
             needed -= 1
 
@@ -306,17 +302,6 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
     return state
 
 
-def _pick_label(p: dict) -> str:
-    """Ticker label for a digest line — flags a still-coiling Pre-Breakout
-    Watchlist pick (source == 'pre_breakout', see _candidate_pool /
-    refresh_session_picks) so it never reads as an equally-confirmed
-    signal in a caption someone might post publicly. Confirmed-signal
-    picks (source == 'signal', or missing on picks stored before this
-    column existed) are unmarked, unchanged from before."""
-    ticker = p.get("ticker", "?")
-    return f"{ticker} 🎯pre-breakout" if p.get("source") == "pre_breakout" else ticker
-
-
 def build_digest_payload(state: dict) -> dict:
     short = state.get("short", [])[:3]
     medium = state.get("medium", [])[:2]
@@ -324,13 +309,13 @@ def build_digest_payload(state: dict) -> dict:
     achieved = state.get("achieved_today", [])[:5]
     lines = [f"Session date: {state.get('session_date')}"]
     if short:
-        lines.append("Short-term: " + ", ".join(f"{_pick_label(p)} (+{p.get('expected_pct', 0)}%)" for p in short))
+        lines.append("Short-term: " + ", ".join(f"{p['ticker']} (+{p.get('expected_pct', 0)}%)" for p in short))
     if medium:
-        lines.append("Medium-term: " + ", ".join(f"{_pick_label(p)} (+{p.get('expected_pct', 0)}%)" for p in medium))
+        lines.append("Medium-term: " + ", ".join(f"{p['ticker']} (+{p.get('expected_pct', 0)}%)" for p in medium))
     if long_:
-        lines.append("Long-term: " + ", ".join(f"{_pick_label(p)} (+{p.get('expected_pct', 0)}%)" for p in long_))
+        lines.append("Long-term: " + ", ".join(f"{p['ticker']} (+{p.get('expected_pct', 0)}%)" for p in long_))
     if achieved:
-        lines.append("Achieved today: " + ", ".join(f"{_pick_label(p)} ({p['achieved_pct']}%)" for p in achieved))
+        lines.append("Achieved today: " + ", ".join(f"{p['ticker']} ({p['achieved_pct']}%)" for p in achieved))
     return {
         "subject": f"MB-EGX Session Picks — {state.get('session_date')}",
         "text": "\n".join(lines),

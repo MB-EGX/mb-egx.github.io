@@ -445,6 +445,27 @@ class DatabaseManager:
                     last_fired_date DATE
                 );
             """)
+            # Daily snapshot of the Pre-Breakout Watchlist's own scoring
+            # (decision_matrix.analyze_market's bw_score / "Breakout
+            # Score" - see config.ACTION_THRESHOLDS' breakout_watch_*
+            # keys). Nothing before this ever persisted that score over
+            # time, which meant its predictive power could never actually
+            # be checked against what happened afterwards - see
+            # factor_analysis.evaluate_pre_breakout_history(), the reader
+            # for this table. One row per (ticker, session_date); a
+            # same-day re-run overwrites that day's row rather than
+            # duplicating it (see log_breakout_watchlist_snapshot below).
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS breakout_watch_snapshots (
+                    ticker VARCHAR,
+                    session_date DATE,
+                    breakout_score DOUBLE,
+                    tier VARCHAR,
+                    current_price DOUBLE,
+                    dist_to_resistance_pct DOUBLE,
+                    PRIMARY KEY (ticker, session_date)
+                );
+            """)
 
             count_cash = conn.execute("SELECT COUNT(*) FROM account_cash;").fetchone()[0]
             if count_cash == 0:
@@ -469,6 +490,16 @@ class DatabaseManager:
         if not t.endswith(".CA") and len(t) <= 6 and "." not in t:
             return t + ".CA"
         return t
+
+    @staticmethod
+    def is_benchmark_ticker(ticker: str) -> bool:
+        """True if ``ticker`` is one of config.BENCHMARK_TICKERS (EGX30/
+        EGX70/... raw index-level data) rather than a tradeable stock -
+        see that config list's own docstring for why these must never
+        be scored, ranked, or backtested like an ordinary ticker."""
+        from config import BENCHMARK_TICKERS
+        norm = DatabaseManager.normalize_symbol(ticker)
+        return norm in {DatabaseManager.normalize_symbol(b) for b in BENCHMARK_TICKERS}
 
     def get_latest_market_date(self) -> str:
         with self.get_connection() as conn:
@@ -649,6 +680,70 @@ class DatabaseManager:
                 tuple(keep_ids),
             ).rowcount
             return int(deleted or 0)
+
+    def log_breakout_watchlist_snapshot(self, rows: list, session_date: str):
+        """Persists today's Pre-Breakout Watchlist scores (see
+        decision_matrix.analyze_market / config.ACTION_THRESHOLDS'
+        breakout_watch_* keys) so factor_analysis.evaluate_pre_breakout_
+        history() can later check, against REAL subsequent price data,
+        whether a high Breakout Score actually predicted a later move -
+        something that was impossible to check retroactively before
+        this, since the score itself was never being saved anywhere.
+        One row per (ticker, session_date); INSERT OR REPLACE so a
+        same-day re-run (e.g. two "Execute Matrix" clicks, or a
+        publish.py re-run) just overwrites that day's snapshot instead
+        of duplicating it. Never raises - a logging failure here must
+        not be able to take down analyze_market()'s own return value.
+        """
+        if not rows or not session_date or session_date == "N/A":
+            return
+        records = [
+            (
+                self.normalize_symbol(r["Ticker"]), str(session_date),
+                float(r.get("Breakout Score", 0.0) or 0.0), r.get("Tier"),
+                float(r["Current Price"]) if r.get("Current Price") is not None else None,
+                float(r["Dist. to Resistance (%)"]) if r.get("Dist. to Resistance (%)") is not None else None,
+            )
+            for r in rows if r.get("Ticker")
+        ]
+        if not records:
+            return
+        try:
+            with self.get_connection() as conn:
+                conn.executemany(
+                    """
+                    INSERT OR REPLACE INTO breakout_watch_snapshots
+                        (ticker, session_date, breakout_score, tier, current_price, dist_to_resistance_pct)
+                    VALUES (?, ?, ?, ?, ?, ?);
+                    """,
+                    records,
+                )
+        except Exception as e:
+            logger.warning(f"log_breakout_watchlist_snapshot failed: {e}")
+
+    def get_breakout_watchlist_snapshots(self, min_session_date: str | None = None) -> list:
+        """Every logged snapshot (see log_breakout_watchlist_snapshot),
+        oldest first - the raw input to factor_analysis.
+        evaluate_pre_breakout_history(). Optionally restrict to
+        snapshots on/after ``min_session_date``."""
+        query = (
+            "SELECT ticker, session_date, breakout_score, tier, current_price "
+            "FROM breakout_watch_snapshots"
+        )
+        params = ()
+        if min_session_date:
+            query += " WHERE session_date >= ?"
+            params = (str(min_session_date),)
+        query += " ORDER BY session_date ASC, ticker ASC;"
+        with self.get_connection() as conn:
+            rows = conn.cursor().execute(query, params).fetchall()
+        return [
+            {
+                "ticker": r[0], "session_date": str(r[1]), "breakout_score": float(r[2]),
+                "tier": r[3], "current_price": float(r[4]) if r[4] is not None else None,
+            }
+            for r in rows
+        ]
 
     def record_leaderboard_hit(self, ticker: str, achieved_pct: float, achieved_date: str):
         ticker = self.normalize_symbol(ticker)

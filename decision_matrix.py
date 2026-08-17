@@ -51,6 +51,7 @@ import pandas as pd
 from analytics import QuantitativeEngine
 from db_manager import DatabaseManager
 from session_picks import refresh_session_picks, emit_alert
+from market_regime import normalized_benchmark_set
 
 logger = get_logger("decision_matrix")
 
@@ -502,7 +503,18 @@ class DecisionMatrix:
         # volume (and the indicator recompute cost) substantially without
         # changing any signal.
         market_data_bulk = self.qe.get_all_market_data_bulk(days=MATRIX_LOOKBACK_DAYS)
-        tickers = list(market_data_bulk.keys())
+        # Exclude EGX30/EGX70/... benchmark-index feeds from the
+        # tradeable/scored universe (see config.BENCHMARK_TICKERS) - an
+        # index LEVEL is not something you place a buy/sell order on the
+        # way you do COMI or HRHO, so it must never be classified,
+        # ranked, or turned into a Session Pick like an ordinary stock.
+        # market_regime.py reads these same rows separately for
+        # regime/relative-strength calculations.
+        _benchmark_norms = normalized_benchmark_set(self.dbm)
+        tickers = [
+            t for t in market_data_bulk.keys()
+            if self.dbm.normalize_symbol(t) not in _benchmark_norms
+        ]
 
         owned_dict = self.dbm.get_all_owned_stocks()
         position_targets = self.dbm.get_all_position_targets()
@@ -1404,6 +1416,19 @@ class DecisionMatrix:
         breakout_watchlist = confirmed_bw + watching_bw
 
         session_date = self.dbm.get_latest_market_date()
+
+        # Persist today's Breakout Score for every watchlist entry so its
+        # actual predictive power can eventually be checked against real
+        # subsequent price action - see db_manager.log_breakout_watchlist_
+        # snapshot / factor_analysis.evaluate_pre_breakout_history(). This
+        # was never being recorded anywhere before, so the score's
+        # reliability could never be measured, only assumed. Wrapped in
+        # try/except like the alert calls below: a logging failure here
+        # must never be able to take down analyze_market()'s own return.
+        try:
+            self.dbm.log_breakout_watchlist_snapshot(breakout_watchlist, session_date)
+        except Exception as e:
+            logger.warning(f"log_breakout_watchlist_snapshot failed: {e}")
 
         # Rotation flags: for each held position, does the matrix currently
         # rate an UNHELD candidate higher within the same signal category

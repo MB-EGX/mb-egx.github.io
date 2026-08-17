@@ -294,6 +294,57 @@ WALK_FORWARD_BACKTEST_DEFAULTS = {
     "max_hold_bars": 60,
 }
 
+# --- Benchmark / index data (EGX30, EGX70, ...) ---
+# These tickers represent EGX INDEX LEVELS - not individual tradeable
+# stocks. They must NEVER be scored, ranked, or backtested as if they
+# were a stock (see decision_matrix.analyze_market's ticker-universe
+# filter and backtester.run_walk_forward_backtest's own filter, both of
+# which exclude these before touching any signal/scoring/simulation
+# code) - you can't place a buy order on "the index" the way you can on
+# COMI or HRHO. Instead they feed market_regime.py's regime/relative-
+# strength (alpha) calculations.
+# NOTE: this is deliberately NOT the same list as db_manager.get_sector_
+# map's ALIASES entry "EGX3" -> "EGX30ETF" - EGX30ETF is a real,
+# tradeable exchange-traded fund with its own sector mapping and price
+# history; it belongs in the normal tradeable universe. Only add raw
+# index-LEVEL feeds here (normalized form - no need to add ".CA",
+# normalize_symbol() handles that).
+BENCHMARK_TICKERS = ["EGX30", "EGX70", "EGX100"]
+
+# Which of BENCHMARK_TICKERS is used as the single default benchmark for
+# market-regime classification and excess-return (alpha) calculations
+# when a caller doesn't pick one explicitly (market_regime.py,
+# backtester.py, factor_analysis.py). EGX30 is Egypt's flagship blue-
+# chip index and the most widely-quoted "is the market up or down
+# today" reference.
+PRIMARY_BENCHMARK_TICKER = "EGX30"
+
+# --- Market regime classification (market_regime.py) ---
+# A benchmark session is "bull" when its close is above its own SMA of
+# this length AND that SMA has been rising over the last
+# BENCHMARK_REGIME_SLOPE_LOOKBACK bars (trend confirmed, not just a
+# single bar poking above the average); "bear" is the symmetric
+# opposite; anything else is "neutral". Same spirit as
+# analytics.QuantitativeEngine.classify_regime, but applied to the
+# INDEX as a whole rather than one stock - a single name's own regime
+# says nothing about whether the broad tape favors long entries.
+BENCHMARK_REGIME_SMA_PERIOD = 50
+BENCHMARK_REGIME_SLOPE_LOOKBACK = 10
+
+# --- Factor-backtest reliability gate (factor_analysis.py) ---
+# A factor bucket (an action type, an ADX band, a market regime, ...)
+# needs at least this many closed backtested trades before its win-
+# rate/avg-return numbers are labeled "reliable". Separate from
+# WALK_FORWARD_BACKTEST_DEFAULTS["min_folds"] above: that gates the
+# AGGREGATE backtest result on having enough independent out-of-sample
+# windows; this gates each individual FACTOR SLICE (which typically has
+# far fewer trades than the aggregate) on having enough raw sample size
+# for its win-rate to mean anything statistically. Since this app
+# drives real trading decisions, a slice below this bar is always
+# reported alongside its numbers, never hidden - just labeled
+# unreliable rather than presented as if it were a validated edge.
+FACTOR_BACKTEST_MIN_TRADES_RELIABLE = 30
+
 PAPER_TRADING_DEFAULTS = {
     "starting_cash_egp": 100000.0,
     "max_open_positions": 10,

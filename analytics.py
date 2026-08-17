@@ -721,7 +721,7 @@ class QuantitativeEngine:
                 "reason": "Not enough prior windows to search for an analog.",
             }
 
-        all_windows = sliding_window_view(historical_close, window_length=window_size)[
+        all_windows = sliding_window_view(historical_close, window_shape=window_size)[
             :n_windows
         ]
         w_mean = np.mean(all_windows, axis=1, keepdims=True)

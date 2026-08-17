@@ -78,6 +78,13 @@ from config import (
     get_logger,
 )
 from analytics import QuantitativeEngine
+from market_regime import (
+    normalized_benchmark_set,
+    load_benchmark_indicators,
+    build_regime_map,
+    build_close_by_date,
+    pct_change_between,
+)
 
 logger = get_logger("backtester")
 
@@ -203,7 +210,70 @@ def _point_in_time_signal(df_upto: pd.DataFrame) -> dict | None:
         "raw_action": raw_action,
         "stop_loss": round(stop_loss, 4),
         "take_profit": round(take_profit, 4),
+        # Snapshot of the factors that fed this classification, carried
+        # through into the closed trade record by _simulate_ticker so
+        # factor_analysis.py can bucket outcomes by them (ADX/RSI/gap/
+        # volume-confirmation strength) - see that module's _bucket_stats.
+        "adx": round(adx, 2),
+        "rsi": round(rsi, 2),
+        "gap_pct": round(gap_pct, 3),
+        "vol_ratio": round(vol_ratio, 3),
+        "vol_z": round(vol_z, 3),
     }
+
+
+def _bucket_adx(adx: float) -> str:
+    if adx < 20:
+        return "adx<20 (weak trend)"
+    if adx < 25:
+        return "adx 20-25"
+    if adx < 35:
+        return "adx 25-35"
+    return "adx>=35 (strong trend)"
+
+
+def _bucket_rsi(rsi: float) -> str:
+    if rsi < 40:
+        return "rsi<40"
+    if rsi < 55:
+        return "rsi 40-55"
+    if rsi < 65:
+        return "rsi 55-65"
+    if rsi < 75:
+        return "rsi 65-75"
+    return "rsi>=75"
+
+
+def _bucket_gap(gap_pct: float) -> str:
+    if gap_pct < -1.0:
+        return "gap<-1%"
+    if gap_pct < 0.0:
+        return "gap -1%..0%"
+    if gap_pct < 1.0:
+        return "gap 0%..1%"
+    if gap_pct < 3.0:
+        return "gap 1%..3%"
+    return "gap>=3%"
+
+
+def _volume_confirmation_label(vol_ratio: float, vol_z: float) -> str:
+    """How strongly volume confirmed the signal at entry. vol_ratio/vol_z
+    are the same two readings ACTION_THRESHOLDS['volume_ratio_threshold']
+    / ['volume_z_score_threshold'] gate confirmation on (see
+    _point_in_time_signal's 'confirmed' check) - bucketed here into a
+    human-readable strength label rather than a pass/fail flag, so the
+    factor report can show whether MORE volume confirmation actually
+    correlates with a better outcome, not just whether the minimum bar
+    was cleared. BUY ON DIP / ACCUMULATE don't require confirmation to
+    fire, so "unconfirmed" is a normal, valid bucket for those - not an
+    error."""
+    if vol_ratio >= 2.0 or vol_z >= 3.0:
+        return "very strong volume"
+    if vol_ratio >= 1.5 or vol_z >= 2.0:
+        return "strong volume"
+    if vol_ratio >= ACTION_THRESHOLDS["volume_ratio_threshold"] or vol_z >= ACTION_THRESHOLDS["volume_z_score_threshold"]:
+        return "confirmed (minimum bar)"
+    return "unconfirmed"
 
 
 def _simulate_ticker(
@@ -213,11 +283,30 @@ def _simulate_ticker(
     test_bars: int,
     step_bars: int,
     max_hold_bars: int,
+    sector: str | None = None,
+    regime_map: dict | None = None,
+    bench_close_by_date: dict | None = None,
 ) -> list[dict]:
     """Expanding walk-forward simulation for one ticker's full,
     already-indicator-enriched history. Returns every trade the strategy
-    would have closed, each tagged with its (ticker-local) fold number.
+    would have closed, each tagged with its (ticker-local) fold number
+    and, when available, a benchmark-relative regime/alpha snapshot -
+    see ``regime_map``/``bench_close_by_date`` below.
+
+    ``sector`` : this ticker's sector name (db_manager.get_sector_map()),
+    tagged onto every trade for factor_analysis.py's by-sector breakdown.
+    ``regime_map`` / ``bench_close_by_date`` : precomputed once per
+    backtest run by market_regime.build_regime_map / build_close_by_date
+    off config.PRIMARY_BENCHMARK_TICKER's own indicator frame. Both are
+    keyed by date string so they line up with THIS ticker's own trading
+    calendar even when it doesn't perfectly match the benchmark's (a
+    stock can have a data gap the index doesn't, or vice versa). Left
+    None (both default to {}), every trade's regime/alpha fields come
+    back as "unknown"/None instead of raising - a missing benchmark is a
+    silently-disabled feature, never a hard failure of the backtest.
     """
+    regime_map = regime_map or {}
+    bench_close_by_date = bench_close_by_date or {}
     n = len(df_ind)
     trades: list[dict] = []
     fold_id = 0
@@ -236,16 +325,28 @@ def _simulate_ticker(
                         entry_bar = df_ind.iloc[t + 1]
                         entry_price = float(entry_bar.get("open", entry_bar.get("close")) or 0.0)
                         if entry_price > 0:
+                            entry_date_str = str(df_ind.index[t + 1])[:10]
                             open_trade = {
                                 "ticker": ticker,
                                 "fold": fold_id,
                                 "action": sig["raw_action"],
                                 "entry_idx": t + 1,
-                                "entry_date": str(df_ind.index[t + 1]).split("T")[0],
+                                "entry_date": entry_date_str,
                                 "entry_price": round(entry_price, 4),
                                 "stop_loss": sig["stop_loss"],
                                 "take_profit": sig["take_profit"],
                                 "max_exit_idx": min(t + 1 + max_hold_bars, test_end - 1, n - 1),
+                                # Factor snapshot at the bar the signal
+                                # fired (t, not t+1's fill bar - the
+                                # classification itself was made off bar
+                                # t's close) - carried into the closed
+                                # trade record below for factor_analysis.py.
+                                "sector": sector or "General / Diversified",
+                                "adx_bucket": _bucket_adx(sig["adx"]),
+                                "rsi_bucket": _bucket_rsi(sig["rsi"]),
+                                "gap_bucket": _bucket_gap(sig["gap_pct"]),
+                                "volume_confirmation": _volume_confirmation_label(sig["vol_ratio"], sig["vol_z"]),
+                                "entry_regime": regime_map.get(entry_date_str, "unknown"),
                             }
             else:
                 bar = df_ind.iloc[t]
@@ -263,17 +364,32 @@ def _simulate_ticker(
                 if exit_price is not None:
                     gross_pct = (exit_price / open_trade["entry_price"] - 1.0) * 100.0
                     net_pct = gross_pct - (ROUND_TRIP_FEE_PCT * 100.0)
+                    exit_date_str = str(df_ind.index[t])[:10]
+                    bench_ret = pct_change_between(bench_close_by_date, open_trade["entry_date"], exit_date_str)
+                    excess_return_pct = round(net_pct - bench_ret, 3) if bench_ret is not None else None
                     trades.append({
                         "ticker": open_trade["ticker"],
                         "fold": open_trade["fold"],
                         "action": open_trade["action"],
                         "entry_date": open_trade["entry_date"],
                         "entry_price": open_trade["entry_price"],
-                        "exit_date": str(df_ind.index[t]).split("T")[0],
+                        "exit_date": exit_date_str,
                         "exit_price": round(exit_price, 4),
                         "exit_reason": exit_reason,
                         "return_pct": round(net_pct, 3),
                         "holding_bars": t - open_trade["entry_idx"],
+                        # Factor tags (see market_regime.py / config.
+                        # BENCHMARK_TICKERS) - all additive fields, safe
+                        # for any existing caller of run_walk_forward_
+                        # backtest() that only reads the fields above.
+                        "sector": open_trade["sector"],
+                        "adx_bucket": open_trade["adx_bucket"],
+                        "rsi_bucket": open_trade["rsi_bucket"],
+                        "gap_bucket": open_trade["gap_bucket"],
+                        "volume_confirmation": open_trade["volume_confirmation"],
+                        "entry_regime": open_trade["entry_regime"],
+                        "benchmark_return_pct": bench_ret,
+                        "excess_return_pct": excess_return_pct,
                     })
                     open_trade = None
             t += 1
@@ -359,9 +475,28 @@ def run_walk_forward_backtest(tickers: list[str] | None = None, progress_callbac
     qe = QuantitativeEngine()
     bulk = qe.get_all_market_data_bulk(days=None)
 
+    # Load the benchmark (config.PRIMARY_BENCHMARK_TICKER, e.g. EGX30)
+    # BEFORE excluding benchmark rows from ``bulk`` below - it has to
+    # come from the same bulk fetch. A missing/unconfigured benchmark
+    # degrades gracefully: regime_map/bench_close_by_date come back {},
+    # every trade's entry_regime reads "unknown" and its benchmark_
+    # return_pct/excess_return_pct read None - the walk-forward result
+    # itself (win rate, avg return, ...) is completely unaffected.
+    bench_df_ind = load_benchmark_indicators(qe, market_data_bulk=bulk)
+    regime_map = build_regime_map(bench_df_ind)
+    bench_close_by_date = build_close_by_date(bench_df_ind)
+
+    # Never backtest an index/benchmark feed as if it were a tradeable
+    # stock (see config.BENCHMARK_TICKERS) - it would generate
+    # meaningless "trades" on a number nobody can actually buy or sell.
+    benchmark_norms = normalized_benchmark_set(qe.dbm)
+    bulk = {t: df for t, df in bulk.items() if qe.dbm.normalize_symbol(t) not in benchmark_norms}
+
     if tickers:
         wanted = {qe.dbm.normalize_symbol(t) for t in tickers} | set(tickers)
         bulk = {t: df for t, df in bulk.items() if t in wanted or qe.dbm.normalize_symbol(t) in wanted}
+
+    sector_map = qe.dbm.get_sector_map()
 
     min_bars_needed = cfg["min_train_bars"] + cfg["test_bars"]
     all_trades: list[dict] = []
@@ -381,9 +516,12 @@ def run_walk_forward_backtest(tickers: list[str] | None = None, progress_callbac
             continue
         if df_ind.empty:
             continue
+        norm_ticker = qe.dbm.normalize_symbol(ticker)
+        sector = sector_map.get(norm_ticker, sector_map.get(ticker, "General / Diversified"))
         trades = _simulate_ticker(
             ticker, df_ind,
             cfg["min_train_bars"], cfg["test_bars"], cfg["step_bars"], cfg["max_hold_bars"],
+            sector=sector, regime_map=regime_map, bench_close_by_date=bench_close_by_date,
         )
         all_trades.extend(trades)
         tickers_run += 1
