@@ -1,45 +1,45 @@
 {
   "ticker": "ASPI.CA",
-  "last_data_date": "2026-08-16",
+  "last_data_date": "2026-08-17",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "ASPI.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 34.9,
-    "Current Price": 0.54,
-    "Target Entry (VWAP)": 0.4416,
-    "Suggested Stop-Loss": 0.4689,
-    "Take-Profit Target": 0.6327,
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 61.0,
+    "Current Price": 0.55,
+    "Target Entry (VWAP)": 0.4511,
+    "Suggested Stop-Loss": 0.4803,
+    "Take-Profit Target": 0.7276,
     "Resistance (52W High)": 0.585,
     "Support (52W Low)": 0.301,
-    "Pivot Point": 0.4933,
-    "R1": 0.5557,
-    "R2": 0.5913,
-    "R3": 0.6537,
-    "S1": 0.4577,
-    "S2": 0.3953,
-    "S3": 0.3597,
-    "Projected Gain (%)": "N/A",
-    "Pattern Conf (%)": "N/A",
-    "Projected Range 95%": "N/A",
-    "Kelly %": 1.4,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | positive money flow | vol x1.65",
+    "Pivot Point": 0.5357,
+    "R1": 0.5893,
+    "R2": 0.6387,
+    "R3": 0.6923,
+    "S1": 0.4863,
+    "S2": 0.4327,
+    "S3": 0.3833,
+    "Projected Gain (%)": 31.59,
+    "Pattern Conf (%)": 67.5,
+    "Projected Range 95%": "31.59% to 31.59%",
+    "Kelly %": 25.0,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
-      "pattern": 0.0,
-      "projected": 0.0,
-      "range": 4.21,
-      "trend_bonus": 63.0,
+      "pattern": 20.25,
+      "projected": 47.38,
+      "range": 4.38,
+      "trend_bonus": 44.8,
       "confidence_weight": 0.52
     },
-    "Regime": "N/A",
+    "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 75.8,
-    "ADX-14": 64.6,
-    "Vol Z-Score": 0.82,
+    "RSI-14": 76.9,
+    "ADX-14": 65.2,
+    "Vol Z-Score": -0.5,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0053,
-    "Bollinger %B": 0.935,
-    "Avg Volume (20D)": 109024413,
+    "MACD Histogram": 0.0062,
+    "Bollinger %B": 0.937,
+    "Avg Volume (20D)": 104990909,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -77,7 +77,8 @@
       "2026-08-11 00:00:00",
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
-      "2026-08-16 00:00:00"
+      "2026-08-16 00:00:00",
+      "2026-08-17 00:00:00"
     ],
     "close": [
       0.313,
@@ -113,7 +114,8 @@
       0.5,
       0.483,
       0.496,
-      0.54
+      0.54,
+      0.55
     ],
     "open": [
       0.322,
@@ -149,7 +151,8 @@
       0.501,
       0.506,
       0.483,
-      0.501
+      0.501,
+      0.55
     ],
     "high": [
       0.323,
@@ -185,7 +188,8 @@
       0.517,
       0.506,
       0.496,
-      0.585
+      0.585,
+      0.56
     ],
     "low": [
       0.312,
@@ -221,7 +225,8 @@
       0.484,
       0.482,
       0.482,
-      0.5
+      0.5,
+      0.533
     ],
     "volume": [
       63916099,
@@ -257,7 +262,8 @@
       126501162,
       67172388,
       20811637,
-      179383473
+      179383473,
+      61562476
     ],
     "vwap": [
       0.316,
@@ -293,18 +299,19 @@
       0.4116,
       0.4178,
       0.424,
-      0.4416
+      0.4416,
+      0.4511
     ],
     "resistance": 0.585,
     "support": 0.301,
     "pivots": {
-      "pp": 0.4933,
-      "r1": 0.5557,
-      "r2": 0.5913,
-      "r3": 0.6537,
-      "s1": 0.4577,
-      "s2": 0.3953,
-      "s3": 0.3597
+      "pp": 0.5357,
+      "r1": 0.5893,
+      "r2": 0.6387,
+      "r3": 0.6923,
+      "s1": 0.4863,
+      "s2": 0.4327,
+      "s3": 0.3833
     },
     "patterns": []
   }

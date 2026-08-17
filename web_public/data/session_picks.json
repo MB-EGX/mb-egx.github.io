@@ -1,7 +1,18 @@
 {
-  "last_data_date": "2026-08-16",
+  "last_data_date": "2026-08-17",
   "session_picks": {
     "short": [
+      {
+        "id": 17,
+        "ticker": "AFMC.CA",
+        "horizon": "short",
+        "pick_date": "2026-08-17",
+        "ref_price": 247.89,
+        "source": "signal",
+        "expected_from": "2026-08-18",
+        "expected_by": "2026-08-20",
+        "expected_pct": 3.0
+      },
       {
         "id": 16,
         "ticker": "AIFI.CA",
@@ -30,17 +41,6 @@
         "horizon": "short",
         "pick_date": "2026-08-13",
         "ref_price": 23.51,
-        "source": "signal",
-        "expected_from": "2026-08-14",
-        "expected_by": "2026-08-16",
-        "expected_pct": 3.0
-      },
-      {
-        "id": 2,
-        "ticker": "FAIT.CA",
-        "horizon": "short",
-        "pick_date": "2026-08-13",
-        "ref_price": 40.81,
         "source": "signal",
         "expected_from": "2026-08-14",
         "expected_by": "2026-08-16",
@@ -130,19 +130,30 @@
     ],
     "achieved_today": [
       {
-        "id": 5,
-        "ticker": "ETRS.CA",
+        "id": 2,
+        "ticker": "FAIT.CA",
         "horizon": "short",
         "pick_date": "2026-08-13",
-        "ref_price": 10.91,
-        "achieved_date": "2026-08-16",
-        "achieved_price": 11.25,
-        "achieved_pct": 3.12,
+        "ref_price": 40.81,
+        "achieved_date": "2026-08-17",
+        "achieved_price": 42.91,
+        "achieved_pct": 5.15,
         "source": "signal"
       }
     ],
-    "session_date": "2026-08-16",
+    "session_date": "2026-08-17",
     "achieved_history": [
+      {
+        "id": 2,
+        "ticker": "FAIT.CA",
+        "horizon": "short",
+        "pick_date": "2026-08-13",
+        "ref_price": 40.81,
+        "achieved_date": "2026-08-17",
+        "achieved_price": 42.91,
+        "achieved_pct": 5.15,
+        "source": "signal"
+      },
       {
         "id": 5,
         "ticker": "ETRS.CA",

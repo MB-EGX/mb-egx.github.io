@@ -1,45 +1,45 @@
 {
   "ticker": "TYCN.CA",
-  "last_data_date": "2026-08-16",
+  "last_data_date": "2026-08-17",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "TYCN.CA",
-    "Action": "🛑 SELL / AVOID",
-    "Rank Score": -18.2,
-    "Current Price": 13.82,
-    "Target Entry (VWAP)": 13.82,
-    "Suggested Stop-Loss": 10.53,
-    "Take-Profit Target": 18.0292,
+    "Action": "⏳ BUY ON DIP",
+    "Rank Score": 28.2,
+    "Current Price": 15.25,
+    "Target Entry (VWAP)": 15.25,
+    "Suggested Stop-Loss": 11.6343,
+    "Take-Profit Target": 15.6617,
     "Resistance (52W High)": 36.4,
     "Support (52W Low)": 13.4,
-    "Pivot Point": 15.1133,
-    "R1": 16.8267,
-    "R2": 18.6933,
-    "R3": 20.4067,
-    "S1": 13.2467,
-    "S2": 11.5333,
-    "S3": 9.6667,
-    "Projected Gain (%)": "N/A",
-    "Pattern Conf (%)": "N/A",
-    "Projected Range 95%": "N/A",
-    "Kelly %": 1.01,
-    "Signal Reason": "🛑 SELL / AVOID | trend=Strong Bearish | awaiting confirmation",
+    "Pivot Point": 14.2733,
+    "R1": 14.7467,
+    "R2": 15.6733,
+    "R3": 16.1467,
+    "S1": 13.3467,
+    "S2": 12.8733,
+    "S3": 11.9467,
+    "Projected Gain (%)": -4.32,
+    "Pattern Conf (%)": 50.55,
+    "Projected Range 95%": "-4.32% to -4.32%",
+    "Kelly %": 0.0,
+    "Signal Reason": "⏳ BUY ON DIP | trend=Strong Bearish | confirmed | vol x2.18",
     "Score Breakdown": {
-      "pattern": 0.0,
-      "projected": 0.0,
-      "range": 0.09,
-      "trend_bonus": -35.0,
+      "pattern": 15.16,
+      "projected": -6.48,
+      "range": 0.4,
+      "trend_bonus": 45.0,
       "confidence_weight": 0.52
     },
-    "Regime": "N/A",
+    "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bearish",
-    "RSI-14": 23.4,
-    "ADX-14": 44.1,
-    "Vol Z-Score": -0.92,
+    "RSI-14": 34.7,
+    "ADX-14": 42.4,
+    "Vol Z-Score": 1.72,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.1782,
-    "Bollinger %B": 0.207,
-    "Avg Volume (20D)": 1627839,
+    "MACD Histogram": -0.0131,
+    "Bollinger %B": 0.338,
+    "Avg Volume (20D)": 1775395,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -77,7 +77,8 @@
       "2026-08-11 00:00:00",
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
-      "2026-08-16 00:00:00"
+      "2026-08-16 00:00:00",
+      "2026-08-17 00:00:00"
     ],
     "close": [
       25.44,
@@ -113,7 +114,8 @@
       14.4,
       14.02,
       13.86,
-      13.82
+      13.82,
+      15.25
     ],
     "open": [
       22.11,
@@ -149,7 +151,8 @@
       14.39,
       14.59,
       14.02,
-      13.9
+      13.9,
+      13.94
     ],
     "high": [
       25.44,
@@ -185,7 +188,8 @@
       15.2,
       14.6,
       14.15,
-      14.05
+      14.05,
+      16.48
     ],
     "low": [
       21.21,
@@ -221,7 +225,8 @@
       14.0,
       13.99,
       13.8,
-      13.81
+      13.81,
+      13.8
     ],
     "volume": [
       5290826,
@@ -257,7 +262,8 @@
       2054642,
       1140532,
       763788,
-      592719
+      592719,
+      3876433
     ],
     "vwap": [
       24.03,
@@ -293,18 +299,19 @@
       18.5389,
       17.963,
       17.5959,
-      17.1699
+      17.1699,
+      16.8217
     ],
     "resistance": 36.4,
     "support": 13.4,
     "pivots": {
-      "pp": 15.1133,
-      "r1": 16.8267,
-      "r2": 18.6933,
-      "r3": 20.4067,
-      "s1": 13.2467,
-      "s2": 11.5333,
-      "s3": 9.6667
+      "pp": 14.2733,
+      "r1": 14.7467,
+      "r2": 15.6733,
+      "r3": 16.1467,
+      "s1": 13.3467,
+      "s2": 12.8733,
+      "s3": 11.9467
     },
     "patterns": []
   }

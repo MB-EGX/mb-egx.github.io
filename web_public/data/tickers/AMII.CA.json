@@ -1,8 +1,47 @@
 {
   "ticker": "AMII.CA",
-  "last_data_date": "2026-08-16",
+  "last_data_date": "2026-08-17",
   "sector": "Real Estate",
-  "matrix": null,
+  "matrix": {
+    "Ticker": "AMII.CA",
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 8.5,
+    "Current Price": 14.0,
+    "Target Entry (VWAP)": 14.0,
+    "Suggested Stop-Loss": 11.6043,
+    "Take-Profit Target": 17.0926,
+    "Resistance (52W High)": 17.25,
+    "Support (52W Low)": 11.8,
+    "Pivot Point": 14.47,
+    "R1": 15.29,
+    "R2": 15.81,
+    "R3": 16.63,
+    "S1": 13.95,
+    "S2": 13.13,
+    "S3": 12.61,
+    "Projected Gain (%)": "N/A",
+    "Pattern Conf (%)": "N/A",
+    "Projected Range 95%": "N/A",
+    "Kelly %": 1.2,
+    "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation | positive money flow",
+    "Score Breakdown": {
+      "pattern": 0.0,
+      "projected": 0.0,
+      "range": 2.02,
+      "trend_bonus": 15.0,
+      "confidence_weight": 0.5
+    },
+    "Regime": "N/A",
+    "Trend Class": "Weak Bullish",
+    "RSI-14": 54.9,
+    "ADX-14": 66.4,
+    "Vol Z-Score": -0.84,
+    "MACD Signal": "Bearish",
+    "MACD Histogram": -0.0182,
+    "Bollinger %B": 0.431,
+    "Avg Volume (20D)": 5621559,
+    "Data Confidence": "Very Low (New/Short History)"
+  },
   "chart_history": {
     "dates": [
       "2026-07-28 00:00:00",
@@ -18,7 +57,8 @@
       "2026-08-11 00:00:00",
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
-      "2026-08-16 00:00:00"
+      "2026-08-16 00:00:00",
+      "2026-08-17 00:00:00"
     ],
     "close": [
       12.08,
@@ -34,7 +74,8 @@
       13.81,
       14.05,
       14.66,
-      14.77
+      14.77,
+      14.0
     ],
     "open": [
       12.5,
@@ -50,7 +91,8 @@
       13.8,
       14.0,
       14.05,
-      14.7
+      14.7,
+      14.86
     ],
     "high": [
       13.0,
@@ -66,7 +108,8 @@
       14.45,
       14.5,
       14.66,
-      14.99
+      14.99,
+      14.86
     ],
     "low": [
       12.07,
@@ -82,7 +125,8 @@
       13.8,
       13.65,
       13.86,
-      14.45
+      14.45,
+      13.82
     ],
     "volume": [
       5260726,
@@ -98,7 +142,8 @@
       2844814,
       3573936,
       2899933,
-      2085049
+      2085049,
+      2422237
     ],
     "vwap": [
       12.3833,
@@ -114,18 +159,19 @@
       14.4292,
       14.4124,
       14.4117,
-      14.42
+      14.42,
+      14.4144
     ],
     "resistance": 17.25,
     "support": 11.8,
     "pivots": {
-      "pp": 14.5733,
-      "r1": 15.7167,
-      "r2": 16.9433,
-      "r3": 18.0867,
-      "s1": 13.3467,
-      "s2": 12.2033,
-      "s3": 10.9767
+      "pp": 14.47,
+      "r1": 15.29,
+      "r2": 15.81,
+      "r3": 16.63,
+      "s1": 13.95,
+      "s2": 13.13,
+      "s3": 12.61
     },
     "patterns": []
   }
