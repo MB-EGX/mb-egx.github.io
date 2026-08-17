@@ -386,8 +386,8 @@
             <button onclick="switchTab('tab-exits')" id="btn-tab-exits" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap">
                 🛡️ Owned Portfolio Exit Strategy
             </button>
-            <button onclick="switchTab('tab-breakout')" id="btn-tab-breakout" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap">
-                🎯 Breakouts
+            <button onclick="switchTab('tab-breakout')" id="btn-tab-breakout" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap" data-i18n="tab_breakout">
+                🎯 Pre-Breakout Watchlist
             </button>
             <button onclick="switchTab('tab-picks')" id="btn-tab-picks" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap" data-i18n="tab_session_picks">
                 🚀 Session Picks
@@ -1536,7 +1536,7 @@
                 tour_sectors_text: "See which sectors are seeing inflow vs distribution, and each sector's breadth and leader ticker.",
                 tour_exits_title: "🛡️ Exit Strategy",
                 tour_exits_text: "For every position you've logged in Manage Portfolio, see its live stop-loss, take-profit, and trailing-stop levels.",
-                tour_breakout_title: "🎯 Breakouts",
+                tour_breakout_title: "🎯 Pre-Breakout Watchlist",
                 tour_breakout_text: "Tickers that look like they're coiling for a move — still setting up, not yet fired — worth watching for the next session.",
                 tour_picks_title: "🚀 Session Picks",
                 tour_picks_text: "A forward-looking watchlist, auto-picked and auto-refilled from the matrix. Each pick is flagged 'Achieved' once it hits its target gain.",
@@ -1577,6 +1577,7 @@
                 hdr_recent_achievements: "🏆 Achieved Today",
                 hdr_track_record: "📜 Track Record — Calls That Hit",
                 lbl_no_track_record: "No achieved picks yet — check back once one hits its target.",
+                tab_breakout: "🎯 Pre-Breakout Watchlist",
                 tab_session_picks: "🚀 Session Picks",
                 lbl_session_picks_intro: "Forward-looking watchlist, auto-picked and auto-refilled from the same matrix as the tables above. Each horizon carries its own target gain — a pick is flagged as Achieved Today once it's up that much from the price it was picked at.",
                 lbl_no_active_picks: "No active picks right now",
@@ -1725,7 +1726,7 @@
                 lbl_no_stocks_category: "No stocks in category",
                 lbl_no_positions: `No active stock positions. Click "+ Add Position" to start tracking!`,
                 lbl_no_closed_trades: "No closed trades recorded yet.",
-                lbl_breakout_data_missing: "Breakout watchlist data isn't in the current market data feed yet.",
+                lbl_breakout_data_missing: "Pre-Breakout Watchlist data isn't in the current market data feed yet.",
                 lbl_no_breakout_qualifiers: "No stocks currently qualify for the breakout watchlist.",
                 lbl_no_filter_matches: "No stocks match your active filter criteria.",
                 lbl_data_unavailable: "Data temporarily unavailable. Please try refreshing in a moment.",
@@ -1774,7 +1775,7 @@
                 tour_sectors_text: "تعرّف على القطاعات التي تشهد تدفقات شراء أو بيع، واتساعها والسهم القائد في كل قطاع.",
                 tour_exits_title: "🛡️ استراتيجية الخروج",
                 tour_exits_text: "لكل مركز سجلته في إدارة المحفظة، شاهد مستويات وقف الخسارة وجني الأرباح والوقف المتحرك الحية.",
-                tour_breakout_title: "🎯 الاختراقات",
+                tour_breakout_title: "🎯 قائمة مراقبة ما قبل الاختراق",
                 tour_breakout_text: "أسهم تبدو في طور التجهز لحركة قادمة — لم تنطلق بعد — تستحق المراقبة للجلسة القادمة.",
                 tour_picks_title: "🚀 ترشيحات الجلسة",
                 tour_picks_text: "قائمة مراقبة تطلعية، تُختار وتُجدد تلقائيًا من المصفوفة. يُوسم كل ترشيح بـ 'تم التحقيق' عند بلوغه هدف الربح.",
@@ -1815,6 +1816,7 @@
                 hdr_recent_achievements: "🏆 تحقق اليوم",
                 hdr_track_record: "📜 سجل الأداء — ترشيحات تحققت",
                 lbl_no_track_record: "لا توجد ترشيحات متحققة بعد — تحقق مجددًا عند تحقق أول هدف.",
+                tab_breakout: "🎯 قائمة مراقبة ما قبل الاختراق",
                 tab_session_picks: "🚀 ترشيحات الجلسة",
                 lbl_session_picks_intro: "قائمة ترشيحات استشرافية، يتم اختيارها وتجديدها تلقائيًا من نفس المصفوفة أعلاه. لكل مدى زمني هدف ربح خاص به — يُصنَّف الترشيح ضمن (تحقق اليوم) بمجرد ارتفاعه بنفس تلك النسبة عن سعر الترشيح.",
                 lbl_no_active_picks: "لا توجد ترشيحات نشطة حاليًا",
@@ -1963,7 +1965,7 @@
                 lbl_no_stocks_category: "لا توجد أسهم في هذه الفئة",
                 lbl_no_positions: `لا توجد مراكز أسهم نشطة. اضغط "+ إضافة مركز" للبدء في التتبع!`,
                 lbl_no_closed_trades: "لا توجد صفقات مغلقة مسجلة بعد.",
-                lbl_breakout_data_missing: "بيانات قائمة الاختراقات غير متوفرة بعد في تغذية بيانات السوق الحالية.",
+                lbl_breakout_data_missing: "بيانات قائمة مراقبة ما قبل الاختراق غير متوفرة بعد في تغذية بيانات السوق الحالية.",
                 lbl_no_breakout_qualifiers: "لا توجد أسهم مؤهلة حاليًا لقائمة الاختراقات.",
                 lbl_no_filter_matches: "لا توجد أسهم مطابقة لمعايير التصفية الحالية.",
                 lbl_data_unavailable: "البيانات غير متاحة مؤقتًا. يرجى محاولة التحديث بعد قليل.",

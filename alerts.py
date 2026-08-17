@@ -102,6 +102,33 @@ def send_telegram_concentration_breach(event_type: str, payload: dict) -> None:
     _post_telegram_message(text)
 
 
+def send_telegram_pre_breakout_high_confidence(event_type: str, payload: dict) -> None:
+    """session_picks.py ALERT_CHANNELS callback signature: (event_type,
+    payload). Handles 'pre_breakout_high_confidence' - fired from
+    decision_matrix.py for any still-coiling (not yet fired) name whose
+    Pre-Breakout Watchlist score clears config.ACTION_THRESHOLDS[
+    "breakout_watch_alert_score"]. This is the proactive half of the
+    watchlist: a name can score well and just sit in a table nobody
+    happens to open that session, which is exactly the kind of miss a
+    push notification is for. Deduped by session_picks.emit_alert over
+    config.PRE_BREAKOUT_ALERT_DEDUP_DAYS so a name sitting near the top
+    of the list for a week doesn't re-push every single run.
+    """
+    if event_type != "pre_breakout_high_confidence":
+        return
+    ticker = payload.get("Ticker", "?")
+    score = payload.get("Breakout Score", "?")
+    price = payload.get("Current Price", "?")
+    dist = payload.get("Dist. to Resistance (%)", "?")
+    signals = payload.get("Signals", "")
+    text = (
+        f"🎯 <b>{ticker}</b> — new High-Confidence Pre-Breakout entrant (score {score})\n"
+        f"Price {price} · {dist}% from resistance\n"
+        f"{signals}"
+    )
+    _post_telegram_message(text)
+
+
 def register_default_channels() -> None:
     """Idempotent — safe to call from multiple import sites."""
     if not SESSION_PICKS_TELEGRAM_WEBHOOK:
@@ -111,6 +138,7 @@ def register_default_channels() -> None:
     # session_picks.py imports THIS module for its side effect instead.
     session_picks.register_alert_channel(send_telegram_pick_achieved)
     session_picks.register_alert_channel(send_telegram_concentration_breach)
+    session_picks.register_alert_channel(send_telegram_pre_breakout_high_confidence)
 
 
 register_default_channels()

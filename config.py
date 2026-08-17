@@ -124,13 +124,53 @@ ACTION_THRESHOLDS = {
     # COILING - i.e. still setting up, not yet fired - so it answers a
     # different question: "what might break out next session/week", not
     # "what broke out today".
-    "breakout_watch_adx_min": 15.0,   # ADX floor: some trend forming, not flat
-    "breakout_watch_adx_max": 25.0,   # ADX ceiling: below the "already trending hard" zone
-    "breakout_watch_rsi_min": 50.0,   # RSI floor: bullish bias
-    "breakout_watch_rsi_max": 65.0,   # RSI ceiling: room to run before overbought
-    "breakout_watch_range_pos_min": 80.0,  # % of 250-day range: near resistance
-    "breakout_watch_volume_build_ratio": 1.1,  # last 5D avg vol vs prior 5D avg vol
-    "breakout_watch_min_score": 45.0,  # minimum composite score to qualify
+    "breakout_watch_adx_min": 15.0,   # ADX floor: full credit zone starts here
+    "breakout_watch_adx_max": 25.0,   # ADX ceiling: full credit zone ends here
+    "breakout_watch_adx_soft_min": 8.0,   # below this, zero ADX credit (was a hard floor before)
+    "breakout_watch_adx_soft_max": 34.0,  # above this, zero ADX credit (was a hard ceiling before)
+    "breakout_watch_rsi_min": 50.0,   # RSI floor: full credit zone starts here
+    "breakout_watch_rsi_max": 65.0,   # RSI ceiling: full credit zone ends here
+    "breakout_watch_rsi_soft_min": 42.0,  # graduated taper floor
+    "breakout_watch_rsi_soft_max": 73.0,  # graduated taper ceiling
+    "breakout_watch_range_pos_min": 80.0,  # % of 250-day range: full credit from here
+    "breakout_watch_range_pos_soft_min": 62.0,  # graduated taper floor
+    "breakout_watch_volume_build_ratio": 1.1,  # last 5D avg vol vs prior 5D avg vol: full credit from here
+    "breakout_watch_volume_build_soft_ratio": 0.9,  # graduated taper floor
+    # NEW factors (v2 scoring — see decision_matrix._score_breakout_watch)
+    "breakout_watch_sector_rs_bonus_max": 12.0,   # ticker's 5D return vs its own sector's 5D avg
+    "breakout_watch_sector_rs_span_pct": 6.0,     # outperformance (pct pts) needed for full bonus
+    "breakout_watch_pattern_bonus_max": 12.0,     # bullish chart-pattern confirmation bonus
+    "breakout_watch_failed_breakout_penalty": -15.0,  # recent failed test of resistance
+    "breakout_watch_failed_test_lookback": 10,        # bars checked for a failed resistance test
+    "breakout_watch_failed_test_near_pct": 2.0,       # "tested" = high within this % of range high
+    "breakout_watch_failed_test_reject_pct": 5.0,     # "failed" = pulled back at least this % since
+    # NEW (v2b): "quiet before the storm" volume/volatility signature. All
+    # three are LEADING signals - they describe the base BEING BUILT, as
+    # opposed to breakout_watch_volume_build_ratio above, which is closer
+    # to a COINCIDENT tell that fires nearer the actual breakout day. A
+    # name can score well here well before it ever shows rising volume.
+    "breakout_watch_dryup_lookback_recent": 10,   # recent window (bars) for the dry-up ratio
+    "breakout_watch_dryup_lookback_base": 50,     # baseline window (bars) the recent one is compared to
+    "breakout_watch_dryup_volume_ratio_max": 0.75,  # recent/base avg volume <= this = "dried up"
+    "breakout_watch_dryup_volume_ratio_soft_max": 0.95,  # graduated taper ceiling
+    "breakout_watch_dryup_bonus_max": 12.0,
+    "breakout_watch_atr_contraction_lookback": 60,   # bars of ATR% history used for the percentile rank
+    "breakout_watch_atr_contraction_percentile_max": 40.0,  # full credit at/under this percentile
+    "breakout_watch_atr_contraction_percentile_soft_max": 65.0,  # graduated taper ceiling
+    "breakout_watch_atr_contraction_bonus_max": 10.0,
+    "breakout_watch_updown_vol_lookback": 15,       # bars used for the up-day vs down-day volume split
+    "breakout_watch_updown_vol_ratio_min": 1.3,     # up-day vol / down-day vol >= this = full credit
+    "breakout_watch_updown_vol_ratio_soft_min": 0.9,  # graduated taper floor
+    "breakout_watch_updown_vol_bonus_max": 10.0,
+    "breakout_watch_min_score": 45.0,  # minimum composite score for the confirmed list
+    "breakout_watch_fallback_min_score": 30.0,  # secondary "Watching" tier (see fallback_top_n)
+    "breakout_watch_fallback_top_n": 15,   # always surface the top N by score even under min_score,
+                                            # tagged as lower-confidence, so near-miss setups are
+                                            # never simply invisible (see decision_matrix.py notes)
+    "breakout_watch_alert_score": 75.0,  # score bar for a proactive "new pre-breakout" push alert
+                                          # (raised from 70 alongside the new v2b bonus factors below,
+                                          # so "High Confidence" stays selective now that there are
+                                          # more ways to accumulate points)
     "breakout_watch_max_results": 25,
 }
 
@@ -175,6 +215,20 @@ SESSION_PICKS_QUOTA = {
     "medium": 3,  # medium-term candidates (ACCUMULATE / BUY ON DIP pool)
     "long": 3,    # long-term candidates (strong-inflow sector leaders)
 }
+
+# Historically, the "short" pool above only ever drew from tickers that had
+# ALREADY fired STRONG BUY / BREAKOUT BUY - i.e. the move was already
+# underway. The Pre-Breakout Watchlist (decision_matrix's coiling-stock
+# screen, config.ACTION_THRESHOLDS["breakout_watch_*"]) never fed Session
+# Picks at all, so a stock quietly coiling before a breakout could never
+# become a pick until AFTER it had already moved - defeating the "get in
+# before the move" point of a forward-looking watchlist. These two knobs
+# let a bounded number of the "short" horizon's slots be filled by the
+# highest-scoring still-coiling names once the already-fired pool is
+# exhausted, instead of leaving genuine setups completely unflagged (see
+# session_picks._candidate_pool).
+SESSION_PICKS_PRE_BREAKOUT_MAX_SLOTS = 2      # cap: never more than this many of the 5 "short" slots
+SESSION_PICKS_PRE_BREAKOUT_MIN_SCORE = 55.0   # quality bar, stricter than the base watchlist's 45
 
 # Per-horizon expected % gain target. A LONGER horizon gets a bigger
 # target, not just a bigger window — a 3% move over 2-6 months would be a
@@ -308,6 +362,14 @@ CASH_DRAG_LOW_PCT = 5.0
 # the nightly pipeline, so re-opening the desktop app repeatedly in one day
 # doesn't spam the channel while the breach is still live.
 CONCENTRATION_ALERT_DEDUP_DAYS = 1
+
+# Same should_fire_alert() dedup mechanism, applied to new "High Confidence"
+# Pre-Breakout Watchlist entrants (see decision_matrix.analyze_market /
+# alerts.send_telegram_pre_breakout_high_confidence). A coiling setup can sit
+# in the watchlist for many sessions in a row - this stops the same ticker
+# re-pushing a Telegram alert every single run while it's still qualifying,
+# while still re-notifying every few sessions in case it was missed/dismissed.
+PRE_BREAKOUT_ALERT_DEDUP_DAYS = 3
 
 
 def get_logger(name: str) -> logging.Logger:

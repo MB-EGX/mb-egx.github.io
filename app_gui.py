@@ -792,7 +792,7 @@ TRANSLATIONS = {
         "tab_matrix": "📈 Action Matrix",
         "tab_sectors": "🏢 Sectors",
         "tab_exits": "🛡️ Exits",
-        "tab_breakout": "🎯 Breakouts",
+        "tab_breakout": "🎯 Pre-Breakout Watchlist",
         "tab_history": "📜 History",
         "tab_fin": "📊 Financials",
         "tab_top10": "🏆 Top 10",
@@ -824,7 +824,7 @@ TRANSLATIONS = {
         "tab_matrix": "📈 مصفوفة السوق",
         "tab_sectors": "🏢 القطاعات",
         "tab_exits": "🛡️ التخارج",
-        "tab_breakout": "🎯 الاختراقات",
+        "tab_breakout": "🎯 قائمة مراقبة ما قبل الاختراق",
         "tab_history": "📜 سجل الصفقات",
         "tab_fin": "📊 الماليات",
         "tab_top10": "🏆 أفضل 10",
@@ -3804,7 +3804,7 @@ class QuantDashboard(QMainWindow):
         self.tabs.addTab(self.tbl_buys, "📈 Action Matrix")
         self.tabs.addTab(self.tbl_sectors, "🏢 Sectors")
         self.tabs.addTab(self.tbl_exits, "🛡️ Exits")
-        self.tabs.addTab(self.tbl_breakout_watch, "🎯 Breakouts")
+        self.tabs.addTab(self.tbl_breakout_watch, "🎯 Pre-Breakout Watchlist")
         self.tabs.addTab(self.session_picks_widget, "🎯 Session Picks")
         logger.info(f"Session Picks tab added. Total tab count is now: {self.tabs.count()}")
         self.tabs.addTab(tab_history_widget, "📜 History")
@@ -3901,7 +3901,7 @@ class QuantDashboard(QMainWindow):
         self.tabs.setTabText(0, t.get("tab_matrix", "📈 Action Matrix"))
         self.tabs.setTabText(1, t.get("tab_sectors", "🏢 Sectors"))
         self.tabs.setTabText(2, t.get("tab_exits", "🛡️ Exits"))
-        self.tabs.setTabText(3, t.get("tab_breakout", "🎯 Breakouts"))
+        self.tabs.setTabText(3, t.get("tab_breakout", "🎯 Pre-Breakout Watchlist"))
         self.tabs.setTabText(4, t.get("tab_session_picks", "🎯 Session Picks"))
         self.tabs.setTabText(5, t.get("tab_history", "📜 History"))
         self.tabs.setTabText(6, t.get("tab_fin", "📊 Financials"))

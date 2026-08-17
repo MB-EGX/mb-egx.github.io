@@ -287,6 +287,53 @@ def _kelly_fraction(win_rate: float, payoff_ratio: float) -> float:
     return max(0.0, min(raw * 0.5, 0.25))
 
 
+def _graduated_score(value: float, soft_lo: float, lo: float, hi: float, soft_hi: float, max_pts: float) -> float:
+    """Smooth, cliff-free scoring for the Pre-Breakout Watchlist (v2).
+
+    Full ``max_pts`` credit for any value inside [lo, hi]. Credit tapers
+    LINEARLY to zero between soft_lo->lo and hi->soft_hi, and is exactly
+    zero outside [soft_lo, soft_hi]. This replaces the old binary
+    in-band/out-of-band checks, whose hard edges meant a stock at, say,
+    ADX 25.3 (vs. a 15-25 band) scored a flat zero on that factor despite
+    being economically indistinguishable from one at 24.7. A real
+    pre-breakout candidate can very plausibly sit just outside any single
+    hand-picked band on any single factor - the graduated taper means one
+    borderline reading no longer silently zeroes out the whole factor,
+    while values already well past strict criteria still earn full marks.
+    """
+    if value is None or (isinstance(value, float) and math.isnan(value)):
+        return 0.0
+    if lo <= value <= hi:
+        return max_pts
+    if soft_lo < value < lo and (lo - soft_lo) > 0:
+        return max_pts * (value - soft_lo) / (lo - soft_lo)
+    if hi < value < soft_hi and (soft_hi - hi) > 0:
+        return max_pts * (soft_hi - value) / (soft_hi - hi)
+    return 0.0
+
+
+def _recent_failed_resistance_test(df_ind, range_high: float, curr_price: float,
+                                     lookback: int, near_pct: float, reject_pct: float) -> bool:
+    """True if price tested (came within ``near_pct``% of) the range high
+    within the last ``lookback`` bars but has since pulled back at least
+    ``reject_pct``% from that high without closing above it - i.e. a
+    recent failed breakout attempt. Chasing a resistance level that just
+    rejected the stock is a materially worse setup than a fresh approach,
+    even though both can otherwise look identical on RSI/ADX/volume,
+    which is why the base score doesn't already capture this."""
+    try:
+        highs = df_ind["high"].iloc[-lookback:]
+    except Exception:
+        return False
+    if highs.empty or range_high <= 0:
+        return False
+    tested = bool((highs >= range_high * (1 - near_pct / 100.0)).any())
+    if not tested:
+        return False
+    pulled_back = curr_price <= range_high * (1 - reject_pct / 100.0)
+    return bool(tested and pulled_back)
+
+
 def _build_signal_reason(action_cmd: str, trend_latest: str, confirmed: bool, weekly_aligned: bool, is_squeezed: bool, cmf: float, vol_ratio: float) -> str:
     reasons = [action_cmd, f"trend={trend_latest}"]
     reasons.append("confirmed" if confirmed else "awaiting confirmation")
@@ -544,6 +591,33 @@ class DecisionMatrix:
                             ),
                         )
 
+        # -------------------------------------------------------------------
+        # Lightweight pre-pass: per-sector average 5-day return, used by the
+        # Pre-Breakout Watchlist's relative-strength factor below. Needs to
+        # happen BEFORE the main per-ticker loop (which is where each
+        # ticker's own bw_score gets computed) since a ticker's relative
+        # strength is only meaningful once every other ticker's 5D return in
+        # its sector is known. Cheap: just two closes per ticker, no new
+        # indicator computation, reuses the already-parallelized precomputed
+        # indicator frames.
+        # -------------------------------------------------------------------
+        sector_5d_returns: dict = {}
+        for ticker, norm_ticker, df, is_owned, n_bars in eligible:
+            df_ind_pre, _ = precomputed.get(ticker, (pd.DataFrame(), None))
+            if df_ind_pre.empty or len(df_ind_pre) < 6:
+                continue
+            try:
+                c_now = df_ind_pre["close"].iloc[-1]
+                c_5d_ago = df_ind_pre["close"].iloc[-6]
+                if c_5d_ago > 0:
+                    sec = sector_map.get(norm_ticker, sector_map.get(ticker, "General / Diversified"))
+                    sector_5d_returns.setdefault(sec, []).append(((c_now - c_5d_ago) / c_5d_ago) * 100.0)
+            except Exception:
+                continue
+        sector_avg_5d = {
+            sec: (sum(vals) / len(vals)) for sec, vals in sector_5d_returns.items() if vals
+        }
+
         for idx, (ticker, norm_ticker, df, is_owned, n_bars) in enumerate(eligible):
             if progress_callback and idx % 5 == 0:
                 progress_callback(
@@ -735,7 +809,11 @@ class DecisionMatrix:
                     if (range_high - range_low) > 0
                     else 50.0
                 )
-                pivots = self.qe.compute_pivot_points(df_ind)
+                try:
+                    pivots = self.qe.compute_pivot_points(df_ind)
+                except Exception as e:
+                    logger.warning(f"{norm_ticker}: pivot points failed ({e}) - continuing without them")
+                    pivots = None
                 if macd_hist > 0 and prev_macd_hist <= 0:
                     macd_state = "🟢 Bullish Cross"
                 elif macd_hist < 0 and prev_macd_hist >= 0:
@@ -833,76 +911,277 @@ class DecisionMatrix:
                     trend_bonus += SCORE_WEIGHTS["illiquid_penalty"]
 
                 # -------------------------------------------------------------
-                # Pre-breakout screening: "what might break out NEXT session/
-                # week", separate from the reactive BREAKOUT BUY labels above
-                # (which confirm a move already in progress). A stock only
-                # qualifies here if it's still coiling - not already fired.
+                # Pre-breakout screening (v2): "what might break out NEXT
+                # session/week", separate from the reactive BREAKOUT BUY
+                # labels above (which confirm a move already in progress). A
+                # stock only qualifies here if it's still coiling - not
+                # already fired.
+                #
+                # Isolated in its own try/except deliberately: this used to
+                # sit inside the same try block as pattern-matching, pivots,
+                # Kelly sizing, etc. further down, so ANY exception anywhere
+                # in a ticker's scoring (even something unrelated, e.g. a
+                # pivot-point edge case) silently dropped that ticker from
+                # EVERY output - the Action Matrix, Top 10, the Watchlist,
+                # and therefore Session Picks - with only a log line nobody
+                # was watching. A confirmed real-world case: GTWL.CA broke
+                # out ~20% while showing up nowhere, despite having valid
+                # price data (it was even computed as a Sector Leader
+                # elsewhere in this same run, which uses the same indicator
+                # frame). Running this block first and independently means a
+                # failure anywhere else in this ticker's row can no longer
+                # take the watchlist entry down with it.
                 # -------------------------------------------------------------
-                if is_liquid and n_bars >= 20:
-                    bw_score = 0.0
-                    bw_reasons = []
+                try:
+                    if is_liquid and n_bars >= 20:
+                        bw_score = 0.0
+                        bw_reasons = []
+                        at = ACTION_THRESHOLDS
 
-                    if is_squeezed:
-                        bw_score += 25.0
-                        bw_reasons.append("Volatility squeeze")
+                        if is_squeezed:
+                            bw_score += 25.0
+                            bw_reasons.append("Volatility squeeze")
 
-                    adx_series = df_ind["adx_14"]
-                    adx_prior = adx_series.iloc[-6] if len(adx_series) > 6 else adx
-                    adx_rising = pd.notna(adx_prior) and adx > adx_prior
-                    if (
-                        ACTION_THRESHOLDS["breakout_watch_adx_min"] <= adx < ACTION_THRESHOLDS["breakout_watch_adx_max"]
-                        and adx_rising
-                    ):
-                        bw_score += 20.0
-                        bw_reasons.append("ADX trend just building")
-
-                    if ACTION_THRESHOLDS["breakout_watch_rsi_min"] <= rsi <= ACTION_THRESHOLDS["breakout_watch_rsi_max"]:
-                        bw_score += 15.0
-                        bw_reasons.append("RSI bullish with room to run")
-
-                    vol_recent = df_ind["volume"].iloc[-5:].mean() if n_bars >= 10 else avg_volume_20
-                    vol_prior = df_ind["volume"].iloc[-10:-5].mean() if n_bars >= 10 else avg_volume_20
-                    volume_building = (
-                        pd.notna(vol_recent) and pd.notna(vol_prior) and vol_prior > 0
-                        and vol_recent > vol_prior * ACTION_THRESHOLDS["breakout_watch_volume_build_ratio"]
-                    )
-                    if volume_building:
-                        bw_score += 15.0
-                        bw_reasons.append("Volume trending up")
-
-                    if range_pos_pct >= ACTION_THRESHOLDS["breakout_watch_range_pos_min"]:
-                        bw_score += 15.0
-                        bw_reasons.append("Near recent high (resistance test)")
-
-                    if cmf > 0:
-                        bw_score += 10.0
-                        bw_reasons.append("Positive money flow")
-
-                    if weekly_aligned:
-                        bw_score += 10.0
-                        bw_reasons.append("Weekly trend aligned")
-
-                    already_fired = (
-                        "STRONG BUY" in raw_action or "BREAKOUT BUY" in raw_action or "SELL" in raw_action
-                    )
-                    if bw_score >= ACTION_THRESHOLDS["breakout_watch_min_score"] and not already_fired:
-                        dist_to_resistance = (
-                            round(max(0.0, ((range_high - curr_price) / curr_price) * 100), 2)
-                            if curr_price > 0 else None
+                        adx_series = df_ind.get("adx_14")
+                        adx_prior = (
+                            adx_series.iloc[-6] if adx_series is not None and len(adx_series) > 6 else adx
                         )
-                        breakout_watchlist.append({
-                            "Ticker": norm_ticker,
-                            "Breakout Score": round(bw_score, 1),
-                            "Current Price": round(curr_price, 4),
-                            "Dist. to Resistance (%)": dist_to_resistance,
-                            "RSI-14": round(rsi, 1),
-                            "ADX-14": round(adx, 1),
-                            "Squeeze Active": bool(is_squeezed),
-                            "Volume Trend": "Rising" if volume_building else "Flat/Falling",
-                            "Trend Class": trend_latest,
-                            "Signals": ", ".join(bw_reasons),
-                            "Data Confidence": data_conf_tier,
-                        })
+                        adx_rising = pd.notna(adx_prior) and adx > adx_prior
+                        adx_pts = _graduated_score(
+                            adx, at["breakout_watch_adx_soft_min"], at["breakout_watch_adx_min"],
+                            at["breakout_watch_adx_max"], at["breakout_watch_adx_soft_max"], 20.0,
+                        )
+                        if adx_rising:
+                            bw_score += adx_pts
+                            if adx_pts > 0:
+                                label = "ADX trend just building" if adx_pts >= 20.0 else "ADX trend building (borderline)"
+                                bw_reasons.append(label)
+                        elif adx_pts > 0:
+                            # Rising trend strength matters more than the raw
+                            # level - a stalled ADX inside the "sweet spot"
+                            # still gets partial credit, just less than one
+                            # that's actively climbing.
+                            bw_score += adx_pts * 0.4
+                            bw_reasons.append("ADX in range (not yet rising)")
+
+                        rsi_pts = _graduated_score(
+                            rsi, at["breakout_watch_rsi_soft_min"], at["breakout_watch_rsi_min"],
+                            at["breakout_watch_rsi_max"], at["breakout_watch_rsi_soft_max"], 15.0,
+                        )
+                        if rsi_pts > 0:
+                            bw_score += rsi_pts
+                            bw_reasons.append("RSI bullish with room to run")
+
+                        vol_recent = df_ind["volume"].iloc[-5:].mean() if n_bars >= 10 else avg_volume_20
+                        vol_prior = df_ind["volume"].iloc[-10:-5].mean() if n_bars >= 10 else avg_volume_20
+                        vol_build_ratio = (
+                            (vol_recent / vol_prior) if pd.notna(vol_recent) and pd.notna(vol_prior) and vol_prior > 0 else 0.0
+                        )
+                        volume_building = vol_build_ratio >= at["breakout_watch_volume_build_ratio"]
+                        vol_pts = _graduated_score(
+                            vol_build_ratio, at["breakout_watch_volume_build_soft_ratio"], at["breakout_watch_volume_build_ratio"],
+                            10.0, 10.0, 15.0,  # no meaningful "too much" ceiling for volume build
+                        )
+                        if vol_pts > 0:
+                            bw_score += vol_pts
+                            bw_reasons.append("Volume trending up" if volume_building else "Volume starting to build")
+
+                        range_pts = _graduated_score(
+                            range_pos_pct, at["breakout_watch_range_pos_soft_min"], at["breakout_watch_range_pos_min"],
+                            100.0, 100.0, 15.0,
+                        )
+                        if range_pts > 0:
+                            bw_score += range_pts
+                            bw_reasons.append("Near recent high (resistance test)")
+
+                        if cmf > 0:
+                            bw_score += 10.0
+                            bw_reasons.append("Positive money flow")
+
+                        if weekly_aligned:
+                            bw_score += 10.0
+                            bw_reasons.append("Weekly trend aligned")
+
+                        # NEW: relative strength vs. this ticker's own sector.
+                        # A stock coiling WHILE outperforming its peers is a
+                        # meaningfully stronger setup than one coiling in
+                        # lockstep with (or lagging) a sector that isn't
+                        # moving - see sector_avg_5d pre-pass above.
+                        sec_name = sector_map.get(norm_ticker, sector_map.get(ticker, "General / Diversified"))
+                        ticker_5d = 0.0
+                        if n_bars >= 6:
+                            c_5d_ago = df_ind["close"].iloc[-6]
+                            if c_5d_ago > 0:
+                                ticker_5d = ((curr_price - c_5d_ago) / c_5d_ago) * 100.0
+                        sector_rs = ticker_5d - sector_avg_5d.get(sec_name, 0.0)
+                        rs_pts = _graduated_score(
+                            sector_rs, 0.0, at["breakout_watch_sector_rs_span_pct"], 999.0, 999.0,
+                            at["breakout_watch_sector_rs_bonus_max"],
+                        )
+                        if rs_pts > 0:
+                            bw_score += rs_pts
+                            bw_reasons.append("Outperforming its sector")
+
+                        # NEW: bullish chart-pattern confirmation, reusing the
+                        # same pattern match already computed for the main
+                        # matrix instead of re-running pattern detection.
+                        if pattern_data and pattern_data.get("match_found") and pattern_data.get("projected_change_pct", 0) > 0:
+                            pat_conf = pattern_data.get("confidence", 0.0) or 0.0
+                            pat_pts = min(at["breakout_watch_pattern_bonus_max"], pat_conf * at["breakout_watch_pattern_bonus_max"] / 100.0)
+                            if pat_pts > 0:
+                                bw_score += pat_pts
+                                bw_reasons.append("Bullish historical-analog pattern match")
+
+                        # NEW (v2b): recent failed test of the same
+                        # resistance level - chasing a level that already
+                        # rejected the stock once is a worse setup than a
+                        # fresh approach, even with identical RSI/ADX/volume.
+                        failed_test = _recent_failed_resistance_test(
+                            df_ind, range_high, curr_price,
+                            int(at["breakout_watch_failed_test_lookback"]),
+                            at["breakout_watch_failed_test_near_pct"],
+                            at["breakout_watch_failed_test_reject_pct"],
+                        )
+                        if failed_test:
+                            bw_score += at["breakout_watch_failed_breakout_penalty"]
+                            bw_reasons.append("⚠️ Recently rejected at this level")
+
+                        # NEW (v2b): "quiet before the storm" — volume
+                        # drying up during the base. This is the mirror
+                        # image of "Volume trending up" above: that factor
+                        # is closer to a COINCIDENT tell (fires near the
+                        # actual breakout day, once buying has already
+                        # picked up); a genuine dry-up shows sellers have
+                        # exhausted themselves BEFORE any of that starts,
+                        # which is why it's scored as its own independent
+                        # factor rather than folded into volume_building.
+                        dry_recent_n = int(at["breakout_watch_dryup_lookback_recent"])
+                        dry_base_n = int(at["breakout_watch_dryup_lookback_base"])
+                        dry_up_ratio = None
+                        if n_bars >= dry_base_n:
+                            vol_recent_dry = df_ind["volume"].iloc[-dry_recent_n:].mean()
+                            vol_base = df_ind["volume"].iloc[-dry_base_n:].mean()
+                            if pd.notna(vol_recent_dry) and pd.notna(vol_base) and vol_base > 0:
+                                dry_up_ratio = vol_recent_dry / vol_base
+                        dryup_pts = 0.0
+                        if dry_up_ratio is not None:
+                            dryup_pts = _graduated_score(
+                                dry_up_ratio, -1.0, -1.0,
+                                at["breakout_watch_dryup_volume_ratio_max"],
+                                at["breakout_watch_dryup_volume_ratio_soft_max"],
+                                at["breakout_watch_dryup_bonus_max"],
+                            )
+                            # dry_up_ratio has no meaningful lower bound (an
+                            # ultra-thin recent window is still "dried up",
+                            # not a reason for LESS credit), so the soft/lo
+                            # floor is set below any plausible ratio - only
+                            # the upper taper (base -> soft_max) matters.
+                        if dryup_pts > 0:
+                            bw_score += dryup_pts
+                            bw_reasons.append("Volume dried up during base (supply exhausted)")
+
+                        # NEW (v2b): volatility contraction rank. Extends the
+                        # existing boolean bb_kc_squeeze flag with a
+                        # continuous read: how tight is today's ATR% against
+                        # its OWN recent history, not just "is it inside the
+                        # Keltner Channel right now". Catches names that are
+                        # coiling tightly but haven't (yet) tripped the
+                        # strict squeeze flag.
+                        atr_lookback = int(at["breakout_watch_atr_contraction_lookback"])
+                        atr_pts = 0.0
+                        atr_percentile = None
+                        if n_bars >= 20 and atr and curr_price > 0:
+                            atr_pct_now = (atr / curr_price) * 100.0
+                            atr_series_raw = df_ind.get("atr_14")
+                            close_series = df_ind.get("close")
+                            if atr_series_raw is not None and close_series is not None:
+                                hist_n = min(atr_lookback, n_bars)
+                                atr_pct_hist = (atr_series_raw.iloc[-hist_n:] / close_series.iloc[-hist_n:] * 100.0).dropna()
+                                if len(atr_pct_hist) >= 10:
+                                    atr_percentile = float((atr_pct_hist <= atr_pct_now).mean() * 100.0)
+                                    atr_pts = _graduated_score(
+                                        atr_percentile, -1.0, -1.0,
+                                        at["breakout_watch_atr_contraction_percentile_max"],
+                                        at["breakout_watch_atr_contraction_percentile_soft_max"],
+                                        at["breakout_watch_atr_contraction_bonus_max"],
+                                    )
+                        if atr_pts > 0:
+                            bw_score += atr_pts
+                            bw_reasons.append("Volatility contraction (tightening range)")
+
+                        # NEW (v2b): up-day vs down-day volume split - a
+                        # cruder, more direct read on accumulation than CMF
+                        # alone: are the heavier-volume days the UP days or
+                        # the DOWN days over the recent base? Buyers quietly
+                        # absorbing supply on strength (and sellers thin on
+                        # weakness) tends to precede a breakout even before
+                        # price itself has moved much.
+                        ud_n = int(at["breakout_watch_updown_vol_lookback"])
+                        updown_pts = 0.0
+                        updown_ratio = None
+                        if n_bars >= ud_n + 1:
+                            recent_closes = df_ind["close"].iloc[-ud_n:]
+                            recent_vols = df_ind["volume"].iloc[-ud_n:]
+                            prev_closes = df_ind["close"].iloc[-ud_n - 1:-1].reset_index(drop=True)
+                            up_mask = recent_closes.reset_index(drop=True) >= prev_closes
+                            up_vol = recent_vols.reset_index(drop=True)[up_mask].sum()
+                            down_vol = recent_vols.reset_index(drop=True)[~up_mask].sum()
+                            if down_vol > 0:
+                                updown_ratio = up_vol / down_vol
+                            elif up_vol > 0:
+                                updown_ratio = at["breakout_watch_updown_vol_ratio_min"]  # all up-volume, no down-volume to divide by
+                            if updown_ratio is not None:
+                                updown_pts = _graduated_score(
+                                    updown_ratio, at["breakout_watch_updown_vol_ratio_soft_min"],
+                                    at["breakout_watch_updown_vol_ratio_min"], 999.0, 999.0,
+                                    at["breakout_watch_updown_vol_bonus_max"],
+                                )
+                        if updown_pts > 0:
+                            bw_score += updown_pts
+                            bw_reasons.append("Buyers absorbing supply (up-volume > down-volume)")
+
+                        already_fired = (
+                            "STRONG BUY" in raw_action or "BREAKOUT BUY" in raw_action or "SELL" in raw_action
+                        )
+                        if not already_fired:
+                            dist_to_resistance = (
+                                round(max(0.0, ((range_high - curr_price) / curr_price) * 100), 2)
+                                if curr_price > 0 else None
+                            )
+                            tier = (
+                                "Watching"
+                                if bw_score < at["breakout_watch_min_score"]
+                                else "High Confidence" if bw_score >= at["breakout_watch_alert_score"]
+                                else "Confirmed"
+                            )
+                            # Confirmed/High-Confidence entries always qualify.
+                            # Sub-threshold "Watching" entries are collected
+                            # too (min_score gated only at fallback_min_score)
+                            # so a genuinely strong-but-borderline setup is
+                            # never simply invisible - it's ranked and capped
+                            # to the top N instead (see below, after the loop).
+                            if bw_score >= at["breakout_watch_fallback_min_score"]:
+                                breakout_watchlist.append({
+                                    "Ticker": norm_ticker,
+                                    "Breakout Score": round(bw_score, 1),
+                                    "Tier": tier,
+                                    "Current Price": round(curr_price, 4),
+                                    "Dist. to Resistance (%)": dist_to_resistance,
+                                    "RSI-14": round(rsi, 1),
+                                    "ADX-14": round(adx, 1),
+                                    "Squeeze Active": bool(is_squeezed),
+                                    "Volume Trend": "Rising" if volume_building else "Flat/Falling",
+                                    "Dry-Up Ratio (10D/50D Vol)": round(dry_up_ratio, 2) if dry_up_ratio is not None else None,
+                                    "ATR% Contraction Percentile": round(atr_percentile, 1) if atr_percentile is not None else None,
+                                    "Up/Down Volume Ratio": round(updown_ratio, 2) if updown_ratio is not None else None,
+                                    "Sector RS (5D, pts)": round(sector_rs, 2),
+                                    "Recently Rejected": bool(failed_test),
+                                    "Trend Class": trend_latest,
+                                    "Signals": ", ".join(bw_reasons) if bw_reasons else "—",
+                                    "Data Confidence": data_conf_tier,
+                                })
+                except Exception as e:
+                    logger.warning(f"{norm_ticker}: pre-breakout screening failed ({e}) - skipping watchlist for this ticker only")
 
                 pattern_component = (
                     pattern_data["confidence"] * SCORE_WEIGHTS["pattern_confidence_weight"]
@@ -1106,8 +1385,23 @@ class DecisionMatrix:
 
         sector_summary = self.qe.compute_sector_analytics(processed_tickers_dict, sector_map)
 
-        breakout_watchlist.sort(key=lambda x: x["Breakout Score"], reverse=True)
-        breakout_watchlist = breakout_watchlist[: ACTION_THRESHOLDS["breakout_watch_max_results"]]
+        # Confirmed/High-Confidence entries (score >= breakout_watch_min_score)
+        # are the primary list, capped at breakout_watch_max_results as
+        # before. "Watching" entries (below min_score but above the looser
+        # fallback_min_score gate applied in the loop) are appended after,
+        # capped separately at breakout_watch_fallback_top_n - so a
+        # borderline setup is always visible SOMEWHERE, just clearly labeled
+        # lower-confidence, instead of a single fixed cutoff making it
+        # invisible outright.
+        confirmed_bw = sorted(
+            [r for r in breakout_watchlist if r["Breakout Score"] >= ACTION_THRESHOLDS["breakout_watch_min_score"]],
+            key=lambda x: x["Breakout Score"], reverse=True,
+        )[: ACTION_THRESHOLDS["breakout_watch_max_results"]]
+        watching_bw = sorted(
+            [r for r in breakout_watchlist if r["Breakout Score"] < ACTION_THRESHOLDS["breakout_watch_min_score"]],
+            key=lambda x: x["Breakout Score"], reverse=True,
+        )[: ACTION_THRESHOLDS["breakout_watch_fallback_top_n"]]
+        breakout_watchlist = confirmed_bw + watching_bw
 
         session_date = self.dbm.get_latest_market_date()
 
@@ -1131,13 +1425,35 @@ class DecisionMatrix:
                 dbm=self.dbm, dedup_key=f"concentration:{subject}", session_date=session_date,
             )
 
+        # Proactive push alert for NEW "High Confidence" Pre-Breakout
+        # Watchlist entrants - this is the early-warning half of fixing the
+        # GTWL-type miss: even a name that's coiling correctly and shows up
+        # in the watchlist table is easy to miss if nobody's looking at the
+        # app that session. Deduped per ticker over
+        # config.PRE_BREAKOUT_ALERT_DEDUP_DAYS so a name sitting near the
+        # top of the list for a week doesn't re-push every single run.
+        from config import PRE_BREAKOUT_ALERT_DEDUP_DAYS
+        for row in confirmed_bw:
+            if row.get("Tier") != "High Confidence":
+                continue
+            emit_alert(
+                "pre_breakout_high_confidence", dict(row),
+                dbm=self.dbm, dedup_key=f"prebreakout:{row['Ticker']}", session_date=session_date,
+                dedup_days=PRE_BREAKOUT_ALERT_DEDUP_DAYS,
+            )
+
         # Session Picks: check active picks for achievement + refill each
         # bucket back up to quota. Runs here (not in export_json.py / the
         # GUI separately) so "Execute Matrix" in the desktop app and the
         # unattended nightly export always agree on picks/achievements.
+        # breakout_watchlist is now passed through too (see
+        # session_picks._candidate_pool) so a still-coiling, not-yet-fired
+        # pre-breakout name can fill a bounded number of "short" horizon
+        # slots once the already-fired STRONG BUY/BREAKOUT BUY pool runs
+        # dry, instead of never being eligible until after it's already run.
         session_picks = refresh_session_picks(
             self.dbm, buy_recommendations, top_10_by_category, sector_summary,
-            session_date,
+            session_date, breakout_watchlist=breakout_watchlist,
         )
 
         if progress_callback:

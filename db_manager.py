@@ -392,9 +392,27 @@ class DatabaseManager:
                     status VARCHAR DEFAULT 'active',  -- 'active' | 'achieved'
                     achieved_date DATE,
                     achieved_price DOUBLE,
-                    achieved_pct DOUBLE
+                    achieved_pct DOUBLE,
+                    source VARCHAR DEFAULT 'signal'  -- 'signal' (fired STRONG BUY/BREAKOUT
+                    -- BUY/sector-leader pool) | 'pre_breakout' (still-coiling Pre-Breakout
+                    -- Watchlist fallback — see session_picks._candidate_pool /
+                    -- SESSION_PICKS_PRE_BREAKOUT_MAX_SLOTS). Lets callers tell a
+                    -- speculative pre-breakout pick apart from a confirmed signal
+                    -- everywhere the pick is later displayed or posted.
                 );
             """)
+            # CREATE TABLE IF NOT EXISTS above is a no-op on a database that
+            # already has a session_picks table from before the 'source'
+            # column existed — DuckDB doesn't retroactively add columns to
+            # an existing table, so an explicit migration is needed for
+            # anyone upgrading in place. IF NOT EXISTS on the column itself
+            # makes this safe to run every startup, on both old and new DBs.
+            try:
+                conn.execute(
+                    "ALTER TABLE session_picks ADD COLUMN IF NOT EXISTS source VARCHAR DEFAULT 'signal';"
+                )
+            except Exception as e:
+                logger.warning(f"session_picks.source column migration skipped: {e}")
             # Manual-removal memory (see remove_pick / get_excluded_tickers
             # below). Without this, clicking "Remove" just deletes the row
             # and re-runs the matrix - but refresh_session_picks() refills
@@ -472,7 +490,7 @@ class DatabaseManager:
         """Active (not-yet-achieved) picks, newest first. Pass a horizon
         ('short'/'medium'/'long') to filter to just that bucket, or omit
         it to get every active pick across all three."""
-        query = "SELECT id, ticker, horizon, pick_date, ref_price FROM session_picks WHERE status = 'active'"
+        query = "SELECT id, ticker, horizon, pick_date, ref_price, source FROM session_picks WHERE status = 'active'"
         params = ()
         if horizon:
             query += " AND horizon = ?"
@@ -481,17 +499,26 @@ class DatabaseManager:
         with self.get_connection() as conn:
             rows = conn.cursor().execute(query, params).fetchall()
         return [
-            {"id": r[0], "ticker": r[1], "horizon": r[2], "pick_date": str(r[3]), "ref_price": float(r[4])}
+            {
+                "id": r[0], "ticker": r[1], "horizon": r[2], "pick_date": str(r[3]),
+                "ref_price": float(r[4]), "source": r[5] or "signal",
+            }
             for r in rows
         ]
 
-    def add_pick(self, ticker: str, horizon: str, pick_date: str, ref_price: float):
+    def add_pick(self, ticker: str, horizon: str, pick_date: str, ref_price: float, source: str = "signal"):
+        """``source`` distinguishes a confirmed-signal pick ('signal', the
+        default — unchanged behavior for every existing caller) from a
+        still-coiling Pre-Breakout Watchlist fallback pick ('pre_breakout'
+        — see session_picks._candidate_pool). Purely informational: it
+        never affects achievement logic or quota, only how the pick is
+        later labeled when displayed or posted."""
         ticker = self.normalize_symbol(ticker)
         with self.get_connection() as conn:
             conn.execute(
-                "INSERT INTO session_picks (ticker, horizon, pick_date, ref_price, status) "
-                "VALUES (?, ?, ?, ?, 'active');",
-                (ticker, horizon, str(pick_date), float(ref_price)),
+                "INSERT INTO session_picks (ticker, horizon, pick_date, ref_price, status, source) "
+                "VALUES (?, ?, ?, ?, 'active', ?);",
+                (ticker, horizon, str(pick_date), float(ref_price), source or "signal"),
             )
 
     def mark_pick_achieved(self, pick_id: int, achieved_date: str, achieved_price: float, achieved_pct: float):
@@ -579,7 +606,7 @@ class DatabaseManager:
         without depending on it still being in the same process run."""
         with self.get_connection() as conn:
             rows = conn.cursor().execute(
-                "SELECT id, ticker, horizon, pick_date, ref_price, achieved_date, achieved_price, achieved_pct "
+                "SELECT id, ticker, horizon, pick_date, ref_price, achieved_date, achieved_price, achieved_pct, source "
                 "FROM session_picks WHERE status = 'achieved' AND achieved_date = ? "
                 "ORDER BY achieved_pct DESC;",
                 (str(achieved_date),),
@@ -589,6 +616,7 @@ class DatabaseManager:
                 "id": r[0], "ticker": r[1], "horizon": r[2], "pick_date": str(r[3]),
                 "ref_price": float(r[4]), "achieved_date": str(r[5]),
                 "achieved_price": float(r[6]), "achieved_pct": float(r[7]),
+                "source": r[8] or "signal",
             }
             for r in rows
         ]
@@ -803,7 +831,7 @@ class DatabaseManager:
         first — powers the desktop app's 'Recent Achievements' list."""
         with self.get_connection() as conn:
             rows = conn.cursor().execute(
-                "SELECT id, ticker, horizon, pick_date, ref_price, achieved_date, achieved_price, achieved_pct "
+                "SELECT id, ticker, horizon, pick_date, ref_price, achieved_date, achieved_price, achieved_pct, source "
                 "FROM session_picks WHERE status = 'achieved' "
                 "ORDER BY achieved_date DESC, achieved_pct DESC LIMIT ?;",
                 (int(limit),),
@@ -813,6 +841,7 @@ class DatabaseManager:
                 "id": r[0], "ticker": r[1], "horizon": r[2], "pick_date": str(r[3]),
                 "ref_price": float(r[4]), "achieved_date": str(r[5]),
                 "achieved_price": float(r[6]), "achieved_pct": float(r[7]),
+                "source": r[8] or "signal",
             }
             for r in rows
         ]

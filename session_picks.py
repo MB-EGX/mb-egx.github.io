@@ -31,7 +31,10 @@ from __future__ import annotations
 
 from datetime import date, timedelta
 
-from config import SESSION_PICKS_QUOTA, SESSION_PICKS_EXPECTED_PCT, SESSION_PICKS_EXPECTED_DAYS, MAX_ACHIEVED_HISTORY
+from config import (
+    SESSION_PICKS_QUOTA, SESSION_PICKS_EXPECTED_PCT, SESSION_PICKS_EXPECTED_DAYS,
+    MAX_ACHIEVED_HISTORY, SESSION_PICKS_PRE_BREAKOUT_MAX_SLOTS, SESSION_PICKS_PRE_BREAKOUT_MIN_SCORE,
+)
 
 HORIZONS = ("short", "medium", "long")
 
@@ -61,22 +64,31 @@ def _emit_alert(event_type: str, payload: dict):
             continue
 
 
-def emit_alert(event_type: str, payload: dict, dbm=None, dedup_key: str | None = None, session_date: str | None = None):
+def emit_alert(event_type: str, payload: dict, dbm=None, dedup_key: str | None = None,
+                session_date: str | None = None, dedup_days: int | None = None):
     """Public entry point for OTHER modules (decision_matrix.py's
-    concentration-breach check, etc.) to reuse the exact same
-    ALERT_CHANNELS fan-out that refresh_session_picks() uses for
-    'pick_achieved', instead of every caller re-implementing its own
-    dispatch. If ``dbm``/``dedup_key``/``session_date`` are all provided,
-    gates the push through DatabaseManager.should_fire_alert() first (see
-    config.CONCENTRATION_ALERT_DEDUP_DAYS) so a still-unresolved condition
-    doesn't re-push on every single analyze_market() run. Without those
-    three, fires unconditionally - matches the existing 'pick_achieved'
-    behavior, which is inherently a one-time event and needs no dedup.
+    concentration-breach check and pre-breakout-watchlist alert, etc.) to
+    reuse the exact same ALERT_CHANNELS fan-out that refresh_session_picks()
+    uses for 'pick_achieved', instead of every caller re-implementing its
+    own dispatch. If ``dbm``/``dedup_key``/``session_date`` are all
+    provided, gates the push through DatabaseManager.should_fire_alert()
+    first so a still-unresolved condition doesn't re-push on every single
+    analyze_market() run. Without those three, fires unconditionally -
+    matches the existing 'pick_achieved' behavior, which is inherently a
+    one-time event and needs no dedup.
+
+    ``dedup_days`` lets each caller pick its own re-notify cadence (e.g.
+    config.CONCENTRATION_ALERT_DEDUP_DAYS vs. config.
+    PRE_BREAKOUT_ALERT_DEDUP_DAYS) instead of every event type being forced
+    onto the same window; defaults to CONCENTRATION_ALERT_DEDUP_DAYS to
+    keep existing callers' behavior unchanged.
     """
     if dbm is not None and dedup_key and session_date:
         try:
-            from config import CONCENTRATION_ALERT_DEDUP_DAYS
-            if not dbm.should_fire_alert(dedup_key, session_date, CONCENTRATION_ALERT_DEDUP_DAYS):
+            if dedup_days is None:
+                from config import CONCENTRATION_ALERT_DEDUP_DAYS
+                dedup_days = CONCENTRATION_ALERT_DEDUP_DAYS
+            if not dbm.should_fire_alert(dedup_key, session_date, dedup_days):
                 return
         except Exception:
             pass
@@ -124,17 +136,44 @@ def _price_map(buys: list) -> dict:
     return {r["Ticker"]: r["Current Price"] for r in buys if r.get("Current Price") is not None}
 
 
-def _candidate_pool(horizon: str, top10: dict, buys: list, sectors: list, by_ticker: dict) -> list:
+def _candidate_pool(horizon: str, top10: dict, buys: list, sectors: list, by_ticker: dict,
+                     breakout_watchlist: list | None = None) -> list:
     """Ranked candidate list for one horizon. Mirrors the exact category
     logic social_poster.py's pick_daily_highlights() used for its old
     single next/medium/long pick, generalized from 'take the #1 row' to
-    'take rows in ranked order until a bucket is full'."""
+    'take rows in ranked order until a bucket is full'.
+
+    For "short", the already-fired STRONG BUY / BREAKOUT BUY pool is
+    always tried first (unchanged). Pre-Breakout Watchlist candidates
+    (still-coiling, not-yet-fired names — see decision_matrix.py's
+    breakout-watch scoring) are appended AFTER that pool, at lower
+    priority, marked with "Pre-Breakout Pick": True. Previously the
+    watchlist never fed Session Picks at all, so a name could sit at the
+    top of the watchlist for weeks and never become a pick until it had
+    ALREADY broken out - by which point the early entry was gone. The
+    caller (refresh_session_picks) still caps how many of these
+    lower-confidence, speculative picks can actually fill a slot via
+    SESSION_PICKS_PRE_BREAKOUT_MAX_SLOTS, so they can only ever
+    supplement the fired-signal pool, never crowd it out.
+    """
     if horizon == "short":
         pool = list(top10.get("🔥 STRONG BUY", []))
         for cat, rows in top10.items():
             if "BREAKOUT BUY" in cat:
                 pool.extend(rows)
         pool.sort(key=lambda r: r.get("Rank Score", 0), reverse=True)
+        if breakout_watchlist:
+            pb_candidates = sorted(
+                (r for r in breakout_watchlist if r.get("Breakout Score", 0) >= SESSION_PICKS_PRE_BREAKOUT_MIN_SCORE),
+                key=lambda r: r.get("Breakout Score", 0), reverse=True,
+            )
+            for r in pb_candidates:
+                pool.append({
+                    "Ticker": r.get("Ticker"),
+                    "Current Price": r.get("Current Price"),
+                    "Rank Score": r.get("Breakout Score", 0),
+                    "Pre-Breakout Pick": True,
+                })
         return pool
 
     if horizon == "medium":
@@ -157,7 +196,8 @@ def _candidate_pool(horizon: str, top10: dict, buys: list, sectors: list, by_tic
     return pool
 
 
-def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_date: str) -> dict:
+def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_date: str,
+                           breakout_watchlist: list | None = None) -> dict:
     """Checks active picks for achievement, refills each bucket back up to
     quota, persists everything via ``dbm``, and returns the resulting
     state for the caller to display/export/post.
@@ -166,6 +206,12 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
     DatabaseManager.get_latest_market_date()), not wall-clock "today" —
     matches the "freshness judged by the data's own date" rule the rest
     of this pipeline already follows (see post_state.py).
+
+    ``breakout_watchlist``, if provided, lets a bounded number of the
+    "short" horizon's slots be filled by still-coiling Pre-Breakout
+    Watchlist names once the already-fired STRONG BUY/BREAKOUT BUY pool
+    is exhausted — see _candidate_pool and
+    config.SESSION_PICKS_PRE_BREAKOUT_MAX_SLOTS.
 
     Returns:
         {
@@ -230,14 +276,23 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
         # straight back just because they're still the top-ranked
         # candidate in this same run's pool.
         excluded_today = dbm.get_excluded_tickers(horizon, session_date)
-        for row in _candidate_pool(horizon, top10, buys, sectors, by_ticker):
+        pre_breakout_fills = 0
+        for row in _candidate_pool(horizon, top10, buys, sectors, by_ticker, breakout_watchlist):
             if needed <= 0:
                 break
             ticker = row.get("Ticker")
             price = row.get("Current Price")
             if not ticker or price is None or ticker in active_tickers or ticker in excluded_today:
                 continue
-            dbm.add_pick(ticker, horizon, session_date, price)
+            is_pre_breakout = bool(row.get("Pre-Breakout Pick"))
+            if is_pre_breakout:
+                if pre_breakout_fills >= SESSION_PICKS_PRE_BREAKOUT_MAX_SLOTS:
+                    continue
+                pre_breakout_fills += 1
+            dbm.add_pick(
+                ticker, horizon, session_date, price,
+                source="pre_breakout" if is_pre_breakout else "signal",
+            )
             active_tickers.add(ticker)
             needed -= 1
 
@@ -251,6 +306,17 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
     return state
 
 
+def _pick_label(p: dict) -> str:
+    """Ticker label for a digest line — flags a still-coiling Pre-Breakout
+    Watchlist pick (source == 'pre_breakout', see _candidate_pool /
+    refresh_session_picks) so it never reads as an equally-confirmed
+    signal in a caption someone might post publicly. Confirmed-signal
+    picks (source == 'signal', or missing on picks stored before this
+    column existed) are unmarked, unchanged from before."""
+    ticker = p.get("ticker", "?")
+    return f"{ticker} 🎯pre-breakout" if p.get("source") == "pre_breakout" else ticker
+
+
 def build_digest_payload(state: dict) -> dict:
     short = state.get("short", [])[:3]
     medium = state.get("medium", [])[:2]
@@ -258,13 +324,13 @@ def build_digest_payload(state: dict) -> dict:
     achieved = state.get("achieved_today", [])[:5]
     lines = [f"Session date: {state.get('session_date')}"]
     if short:
-        lines.append("Short-term: " + ", ".join(f"{p['ticker']} (+{p.get('expected_pct', 0)}%)" for p in short))
+        lines.append("Short-term: " + ", ".join(f"{_pick_label(p)} (+{p.get('expected_pct', 0)}%)" for p in short))
     if medium:
-        lines.append("Medium-term: " + ", ".join(f"{p['ticker']} (+{p.get('expected_pct', 0)}%)" for p in medium))
+        lines.append("Medium-term: " + ", ".join(f"{_pick_label(p)} (+{p.get('expected_pct', 0)}%)" for p in medium))
     if long_:
-        lines.append("Long-term: " + ", ".join(f"{p['ticker']} (+{p.get('expected_pct', 0)}%)" for p in long_))
+        lines.append("Long-term: " + ", ".join(f"{_pick_label(p)} (+{p.get('expected_pct', 0)}%)" for p in long_))
     if achieved:
-        lines.append("Achieved today: " + ", ".join(f"{p['ticker']} ({p['achieved_pct']}%)" for p in achieved))
+        lines.append("Achieved today: " + ", ".join(f"{_pick_label(p)} ({p['achieved_pct']}%)" for p in achieved))
     return {
         "subject": f"MB-EGX Session Picks — {state.get('session_date')}",
         "text": "\n".join(lines),
