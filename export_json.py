@@ -40,6 +40,10 @@ CHANGELOG vs the original:
     see index.html's loadMarketData()) could never populate the Breakouts
     tab from shards alone. cache_manifest.json picks it up automatically
     since it's generated from _write_shards()'s own shard dict.
+  * The full bilingual glossary is now exported as data/glossary.json
+    straight from glossary_content.py, so publish.py regenerates it on
+    every run and the web Glossary modal stays in lock-step with the
+    desktop app instead of relying on a manually-maintained static file.
 """
 from __future__ import annotations
 
@@ -60,6 +64,7 @@ import pandas as pd
 from decision_matrix import DecisionMatrix
 from db_manager import DatabaseManager, strip_private_export_fields
 from chart_patterns import PatternDetector
+from glossary_content import ACTION_LABELS as GLOSSARY_ACTIONS, CHART_PATTERNS as GLOSSARY_PATTERNS, TERMS as GLOSSARY_TERMS
 
 def _strip_private_row_fields(rows):
     """Remove account-derived fields from a list of signal-row dicts."""
@@ -69,6 +74,15 @@ def _strip_private_row_fields(rows):
 def _write_json(path, payload):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(sanitize_for_json(payload), f, ensure_ascii=False, indent=2)
+
+
+def _build_glossary_payload() -> dict:
+    """Desktop/web shared glossary bundle written to glossary.json."""
+    return {
+        "terms": GLOSSARY_TERMS,
+        "actions": GLOSSARY_ACTIONS,
+        "patterns": GLOSSARY_PATTERNS,
+    }
 
 
 def _write_shards(output_dir: str, payload: dict):
@@ -88,6 +102,7 @@ def _write_shards(output_dir: str, payload: dict):
         "ticker_sectors.json": {"ticker_sectors": payload["ticker_sectors"]},
         "leaderboard.json": {"leaderboard": payload.get("leaderboard", [])},
         "paper_trading.json": payload.get("paper_trading", {}),
+        "glossary.json": _build_glossary_payload(),
     }
     for filename, shard_payload in shards.items():
         _write_json(os.path.join(output_dir, filename), shard_payload)

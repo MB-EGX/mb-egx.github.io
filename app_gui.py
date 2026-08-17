@@ -466,6 +466,13 @@ AR_TRANSLATIONS = {
     " [👑 WEEKLY ALIGNED]": " [👑 توافق أسبوعي]",
     "🚫 ILLIQUID - ": "🚫 سيولة ضعيفة - ",
     "🖨️ Print": "🖨️ طباعة",
+    "Printing is not available in this build.": "الطباعة غير متاحة في هذا الإصدار.",
+    "This tab has no printable table.": "لا يحتوي هذا التبويب على جدول قابل للطباعة.",
+    "MB-EGX — Session Pick Achieved": "MB-EGX — تم تحقيق هدف ترشيح الجلسة",
+    "short-term": "قصير الأجل",
+    "medium-term": "متوسط الأجل",
+    "long-term": "طويل الأجل",
+    "🚀 {ticker} hit its {horizon} target ({ref} → {achieved} EGP, +{pct}%)": "🚀 وصل {ticker} إلى هدفه {horizon} ({ref} → {achieved} جنيه، +{pct}%)",
 }
 
 # Sorted longest-first so multi-word fragments (e.g. an entire action badge)
@@ -3143,12 +3150,18 @@ class QuantDashboard(QMainWindow):
             self._tray.setVisible(True)
         body_lines = []
         for a in fresh[:3]:
+            horizon_label = tr(f"{a.get('horizon', '?')}-term")
             body_lines.append(
-                f"🚀 {a.get('ticker', '?')} hit its {a.get('horizon', '?')}-term target "
-                f"({a.get('ref_price')} → {a.get('achieved_price')} EGP, +{a.get('achieved_pct', 0):.2f}%)"
+                tr("🚀 {ticker} hit its {horizon} target ({ref} → {achieved} EGP, +{pct}%)").format(
+                    ticker=a.get('ticker', '?'),
+                    horizon=horizon_label,
+                    ref=a.get('ref_price'),
+                    achieved=a.get('achieved_price'),
+                    pct=f"{a.get('achieved_pct', 0):.2f}",
+                )
             )
         self._tray.showMessage(
-            "MB-EGX — Session Pick Achieved", "\n".join(body_lines),
+            tr("MB-EGX — Session Pick Achieved"), "\n".join(body_lines),
             QSystemTrayIcon.MessageIcon.Information, 8000,
         )
 
