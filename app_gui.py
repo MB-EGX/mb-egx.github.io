@@ -2,6 +2,7 @@ import os
 import sys
 import time
 import traceback
+import html
 import json
 from datetime import datetime, timezone, date
 from pathlib import Path
@@ -24,8 +25,15 @@ from PyQt6.QtWidgets import (
     QFileDialog, QFormLayout, QHBoxLayout, QHeaderView, QInputDialog, QLabel,
     QLineEdit, QMainWindow, QMessageBox, QProgressBar, QPushButton, QScrollArea,
     QTableWidget, QTableWidgetItem, QTableView, QTabWidget, QVBoxLayout, QWidget,
-    QCheckBox, QTextEdit, QSizePolicy, QRadioButton, QFrame, QTextBrowser
+    QCheckBox, QTextEdit, QSizePolicy, QRadioButton, QFrame, QTextBrowser,
+    QSystemTrayIcon
 )
+
+try:
+    from PyQt6.QtPrintSupport import QPrinter, QPrintDialog
+    _HAS_PRINT = True
+except Exception:  # pragma: no cover - optional Qt module on some builds
+    _HAS_PRINT = False
 from glossary_content import TERMS as GLOSSARY_TERMS, ACTION_LABELS as GLOSSARY_ACTIONS, CHART_PATTERNS as GLOSSARY_PATTERNS
 
 logger = get_logger("app_gui")
@@ -457,6 +465,7 @@ AR_TRANSLATIONS = {
     " [💥 SQUEEZE]": " [💥 انضغاط]",
     " [👑 WEEKLY ALIGNED]": " [👑 توافق أسبوعي]",
     "🚫 ILLIQUID - ": "🚫 سيولة ضعيفة - ",
+    "🖨️ Print": "🖨️ طباعة",
 }
 
 # Sorted longest-first so multi-word fragments (e.g. an entire action badge)
@@ -2975,6 +2984,8 @@ class QuantDashboard(QMainWindow):
         self.user_info = user_info
         self._session_id = None
         self._cloud_threads = set()
+        self._tray = None
+        self._notified_achieved = set()
         self._init_ui()
         self.apply_theme(self.current_theme)
         self.apply_compact_mode(self.compact_mode)
@@ -2983,6 +2994,7 @@ class QuantDashboard(QMainWindow):
         # shows up immediately instead of only updating the dropdown itself.
         self.switch_language(1 if self.current_lang == "AR" else 0)
         self._start_cloud_session()
+        QTimer.singleShot(800, self._show_first_run_tips)
 
     def _run_cloud(self, fn, *args, on_result=None, **kwargs):
         if requests is None or not self.user_info:
@@ -3063,6 +3075,109 @@ class QuantDashboard(QMainWindow):
     def open_strategy_calculator_dialog(self):
         dlg = StrategyCalculatorDialog(self)
         dlg.exec()
+
+    def _print_active_tab(self):
+        """Parity port of the web dashboard's Print button (index.html's
+        window.print() + print stylesheet): render the currently active tab's
+        table to an HTML QTextDocument and send it to the OS print dialog.
+        """
+        if not _HAS_PRINT:
+            QMessageBox.information(self, tr("🖨️ Print"), tr("Printing is not available in this build."))
+            return
+        w = self.tabs.currentWidget()
+        table = w if isinstance(w, QTableWidget) else None
+        if table is None and w is not None:
+            for child in w.findChildren(QTableWidget):
+                table = child
+                break
+        if table is None or table.rowCount() == 0 or table.columnCount() == 0:
+            QMessageBox.information(self, tr("🖨️ Print"), tr("This tab has no printable table."))
+            return
+        cols = table.columnCount()
+        rows = table.rowCount()
+        parts = ["<html><body><table border='1' cellspacing='0' cellpadding='4' style='border-collapse:collapse;font-size:9px;font-family:Arial'>"]
+        parts.append("<tr>")
+        for c in range(cols):
+            it = table.horizontalHeaderItem(c)
+            parts.append(f"<th style='background:#2d3748;color:#ffffff'>{html.escape(str(it.text()) if it else '')}</th>")
+        parts.append("</tr>")
+        for r in range(rows):
+            parts.append("<tr>")
+            for c in range(cols):
+                it = table.item(r, c)
+                parts.append(f"<td>{html.escape(str(it.text()) if it else '')}</td>")
+            parts.append("</tr>")
+        parts.append("</table></body></html>")
+        from PyQt6.QtGui import QTextDocument
+        doc = QTextDocument()
+        doc.setHtml("".join(parts))
+        printer = QPrinter(QPrinter.PrinterMode.HighResolution)
+        dlg = QPrintDialog(printer, self)
+        if dlg.exec() != QDialog.DialogCode.Accepted:
+            return
+        doc.print_(printer)
+
+    def _notify_achieved_picks(self, session_picks: dict):
+        """Parity port of the web dashboard's browser notifications for
+        achieved Session Picks (index.html's notifyAchievedPicks): a system
+        tray balloon when today's run shows a pick crossed its target,
+        de-duplicated per pick so re-runs don't re-notify.
+        """
+        achieved = session_picks.get("achieved_today", []) or []
+        if not achieved:
+            return
+        fresh = []
+        for a in achieved:
+            key = f"{a.get('ticker')}:{a.get('horizon')}:{a.get('achieved_date')}"
+            if key not in self._notified_achieved:
+                self._notified_achieved.add(key)
+                fresh.append(a)
+        if not fresh:
+            return
+        if not QSystemTrayIcon.isSystemTrayAvailable():
+            return
+        if self._tray is None:
+            icon = QIcon(str(LOGO_PATH)) if LOGO_PATH.exists() else QIcon()
+            self._tray = QSystemTrayIcon(icon, self)
+            self._tray.setToolTip("MB-EGX")
+            self._tray.setVisible(True)
+        body_lines = []
+        for a in fresh[:3]:
+            body_lines.append(
+                f"🚀 {a.get('ticker', '?')} hit its {a.get('horizon', '?')}-term target "
+                f"({a.get('ref_price')} → {a.get('achieved_price')} EGP, +{a.get('achieved_pct', 0):.2f}%)"
+            )
+        self._tray.showMessage(
+            "MB-EGX — Session Pick Achieved", "\n".join(body_lines),
+            QSystemTrayIcon.MessageIcon.Information, 8000,
+        )
+
+    def _show_first_run_tips(self):
+        """Parity port of the web dashboard's onboarding tour (index.html's
+        startOnboardingTour) — one compact summary shown once per install.
+        """
+        if _SETTINGS.value("first_run_tips_seen", False, type=bool):
+            return
+        _SETTINGS.setValue("first_run_tips_seen", True)
+        if self.current_lang == "AR":
+            tips = (
+                "مرحباً بك في MB-EGX!\n\n"
+                "1. ⚡ تشغيل الاستيراد – تحميل خلاصات بيانات السوق الجديدة.\n"
+                "2. 🧠 تنفيذ المصفوفة – إعادة حساب الإشارات وخرائط القطاعات.\n"
+                "3. 💼 إدارة المحفظة – متابعة المراكز والأهداف والمخارج.\n"
+                "4. 📊 الرسوم البيانية – لكل سهم/قطاع مع VWAP والارتكازات والأنماط.\n"
+                "5. 🎯 اختيارات الجلسة – قائمة مراقبة استباقية لكل أفق زمني."
+            )
+        else:
+            tips = (
+                "Welcome to MB-EGX!\n\n"
+                "1. ⚡ Run Ingestion – load new market data feeds.\n"
+                "2. 🧠 Execute Matrix – recompute signals & sector heatmaps.\n"
+                "3. 💼 Manage Portfolio – track positions, targets & exits.\n"
+                "4. 📊 Charts – per stock/sector with VWAP, pivots & patterns.\n"
+                "5. 🎯 Session Picks – forward-looking watchlist per horizon."
+            )
+        QMessageBox.information(self, tr("MB-EGX — First Run"), tips)
 
     def closeEvent(self, event):
         if self._session_id and self.user_info and requests is not None:
@@ -3284,6 +3399,9 @@ class QuantDashboard(QMainWindow):
         self.btn_settings = QPushButton("⚙️ Themes")
         self.btn_settings.clicked.connect(self.open_settings_dialog)
 
+        self.btn_print = QPushButton("🖨️ Print")
+        self.btn_print.clicked.connect(self._print_active_tab)
+
         self.btn_density = QPushButton("↕ Compact")
         self.btn_density.setCheckable(True)
         self.btn_density.setChecked(self.compact_mode)
@@ -3303,6 +3421,7 @@ class QuantDashboard(QMainWindow):
         controls_row.addWidget(self.btn_calc)
         controls_row.addWidget(self.btn_set_cash)
         controls_row.addWidget(self.btn_settings)
+        controls_row.addWidget(self.btn_print)
         controls_row.addWidget(self.btn_density)
         controls_row.addWidget(self.btn_top10)
         controls_row.addWidget(self.btn_strategy_calc)
@@ -3716,7 +3835,23 @@ class QuantDashboard(QMainWindow):
     def update_last_data_date_display(self):
         last_date = self.dbm.get_latest_market_date()
         t = TRANSLATIONS[self.current_lang]
-        self.lbl_last_date.setText(f"{t['last_date']} {last_date}")
+        text = f"{t['last_date']} {last_date}"
+        # Parity port of the web dashboard's stale-data banner (index.html's
+        # updateStaleBanner): if the latest market date is >4 calendar days
+        # behind today (weekend-aware), flag it so nobody mistakes stale
+        # numbers for fresh ones.
+        stale = False
+        try:
+            d = date.fromisoformat(str(last_date)[:10])
+            if (date.today() - d).days > 4:
+                stale = True
+        except (ValueError, TypeError):
+            pass
+        self.lbl_last_date.setText(("⚠️ " + text) if stale else text)
+        self.lbl_last_date.setStyleSheet(
+            "font-weight: bold; color: #f6ad55; font-size: 11px;" if stale
+            else "font-weight: bold; color: #93ccff; font-size: 11px;"
+        )
 
     def switch_language(self, index):
         self.current_lang = "AR" if index == 1 else "EN"
@@ -3740,6 +3875,7 @@ class QuantDashboard(QMainWindow):
         self.btn_calc.setText(t["risk_calc"])
         self.btn_set_cash.setText(t["set_cash"])
         self.btn_settings.setText(t["themes"])
+        self.btn_print.setText(tr("🖨️ Print"))
         self.btn_density.setText("↕ Compact" if self.current_lang == "EN" else "↕ وضع مضغوط")
         self.btn_top10.setText(t["top10_btn"])
         self.lbl_filter.setText(t["filters"])
@@ -4015,6 +4151,8 @@ class QuantDashboard(QMainWindow):
                 elif col_idx == 6:
                     item.setForeground(QColor("#38a169"))
                 self.tbl_picks_achieved.setItem(row_idx, col_idx, item)
+
+        self._notify_achieved_picks(session_picks)
 
     def browse_folder(self):
         selected_dir = QFileDialog.getExistingDirectory(self, "Select Folder", self.txt_scan_dir.text())

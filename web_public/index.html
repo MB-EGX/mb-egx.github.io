@@ -283,6 +283,9 @@
                 <button onclick="openModal('modal-guide')" id="btn-guide" class="bg-teal-600 hover:bg-teal-500 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
                     <span>❓</span> <span id="btn-guide-text">Guide</span>
                 </button>
+                <button onclick="openGlossaryModal()" id="btn-glossary" class="bg-purple-600 hover:bg-purple-500 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
+                    <span>📖</span> <span id="btn-glossary-text">Glossary</span>
+                </button>
                 <button onclick="startOnboardingTour()" id="btn-tour" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-lg font-bold shadow flex items-center gap-1.5 transition">
                     <span>▶️</span> <span id="btn-tour-text" data-i18n="btn_tour">Tour</span>
                 </button>
@@ -417,29 +420,30 @@
                         <tr id="thead-matrix-tr">
                             <th class="p-2.5 border border-darkbg" data-col="0">#</th>
                             <th class="p-2.5 border border-darkbg" data-col="1" data-i18n="hdr_ticker">Ticker</th>
-                            <th class="p-2.5 border border-darkbg text-center" data-col="2" data-i18n="hdr_action">Action</th>
-                            <th class="p-2.5 border border-darkbg" data-col="3" data-i18n="hdr_score">Score</th>
-                            <th class="p-2.5 border border-darkbg" data-col="4" data-i18n="hdr_price">Price</th>
-                            <th class="p-2.5 border border-darkbg" data-col="5" data-i18n="hdr_entry_vwap">Entry (VWAP)</th>
-                            <th class="p-2.5 border border-darkbg" data-col="6" data-i18n="hdr_stop_loss">Stop-Loss</th>
-                            <th class="p-2.5 border border-darkbg" data-col="7" data-i18n="hdr_shares_risk">Shares (1% Risk)</th>
-                            <th class="p-2.5 border border-darkbg" data-col="8" data-i18n="hdr_proj_gain">Proj. Gain %</th>
-                            <th class="p-2.5 border border-darkbg" data-col="9" data-i18n="hdr_pattern_conf">Pattern Conf %</th>
-                            <th class="p-2.5 border border-darkbg font-sans" data-col="10" data-i18n="hdr_trend">Trend</th>
-                            <th class="p-2.5 border border-darkbg" data-col="11">RSI-14</th>
-                            <th class="p-2.5 border border-darkbg" data-col="12">ADX-14</th>
-                            <th class="p-2.5 border border-darkbg" data-col="13" data-i18n="hdr_vol_zscore">Vol Z-Score</th>
-                            <th class="p-2.5 border border-darkbg font-sans" data-col="14">MACD</th>
-                            <th class="p-2.5 border border-darkbg" data-col="15" data-i18n="hdr_bollinger">Bollinger %B</th>
-                            <th class="p-2.5 border border-darkbg" data-col="16" data-i18n="hdr_avg_vol">Avg Vol (20D)</th>
-                            <th class="p-2.5 border border-darkbg font-sans" data-col="17" data-i18n="hdr_data_conf">Data Conf.</th>
-                            <th class="p-2.5 border border-darkbg" data-col="18" data-i18n="hdr_take_profit">Take-Profit</th>
-                            <th class="p-2.5 border border-darkbg" data-col="19" data-i18n="hdr_resistance">Resistance (R1/R2/R3)</th>
-                            <th class="p-2.5 border border-darkbg" data-col="20" data-i18n="hdr_support">Support (S1/S2/S3)</th>
+                            <th class="p-2.5 border border-darkbg text-center font-sans" data-col="2" data-i18n="hdr_position">Position</th>
+                            <th class="p-2.5 border border-darkbg text-center" data-col="3" data-i18n="hdr_action">Action</th>
+                            <th class="p-2.5 border border-darkbg" data-col="4" data-i18n="hdr_score">Score</th>
+                            <th class="p-2.5 border border-darkbg" data-col="5" data-i18n="hdr_price">Price</th>
+                            <th class="p-2.5 border border-darkbg" data-col="6" data-i18n="hdr_entry_vwap">Entry (VWAP)</th>
+                            <th class="p-2.5 border border-darkbg" data-col="7" data-i18n="hdr_stop_loss">Stop-Loss</th>
+                            <th class="p-2.5 border border-darkbg" data-col="8" data-i18n="hdr_shares_risk">Shares (1% Risk)</th>
+                            <th class="p-2.5 border border-darkbg" data-col="9" data-i18n="hdr_proj_gain">Proj. Gain %</th>
+                            <th class="p-2.5 border border-darkbg" data-col="10" data-i18n="hdr_pattern_conf">Pattern Conf %</th>
+                            <th class="p-2.5 border border-darkbg font-sans" data-col="11" data-i18n="hdr_trend">Trend</th>
+                            <th class="p-2.5 border border-darkbg" data-col="12">RSI-14</th>
+                            <th class="p-2.5 border border-darkbg" data-col="13">ADX-14</th>
+                            <th class="p-2.5 border border-darkbg" data-col="14" data-i18n="hdr_vol_zscore">Vol Z-Score</th>
+                            <th class="p-2.5 border border-darkbg font-sans" data-col="15">MACD</th>
+                            <th class="p-2.5 border border-darkbg" data-col="16" data-i18n="hdr_bollinger">Bollinger %B</th>
+                            <th class="p-2.5 border border-darkbg" data-col="17" data-i18n="hdr_avg_vol">Avg Vol (20D)</th>
+                            <th class="p-2.5 border border-darkbg font-sans" data-col="18" data-i18n="hdr_data_conf">Data Conf.</th>
+                            <th class="p-2.5 border border-darkbg" data-col="19" data-i18n="hdr_take_profit">Take-Profit</th>
+                            <th class="p-2.5 border border-darkbg" data-col="20" data-i18n="hdr_resistance">Resistance (R1/R2/R3)</th>
+                            <th class="p-2.5 border border-darkbg" data-col="21" data-i18n="hdr_support">Support (S1/S2/S3)</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-matrix" class="divide-y divide-bordercol/50 text-xs">
-                        <tr><td colspan="21" class="p-8 text-center text-textmuted font-sans" data-i18n="loading_matrix">Loading quantitative matrix...</td></tr>
+                        <tr><td colspan="22" class="p-8 text-center text-textmuted font-sans" data-i18n="loading_matrix">Loading quantitative matrix...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -476,6 +480,7 @@
                 <span class="text-textmuted text-xs" data-i18n="lbl_positions_local">Positions stored securely in browser local storage.</span>
                 <div class="flex gap-2">
                     <button onclick="toggleExitsDetail()" id="btn-exits-detail" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded font-bold text-xs" data-i18n="btn_show_all_columns">👁️ Show All Columns</button>
+                    <button onclick="toggleSectorSubtotals()" id="btn-sector-subtotals" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded font-bold text-xs">🏢 <span data-i18n="btn_sector_subtotals">Sector Subtotals</span></button>
                     <button onclick="clearDemoData()" class="bg-rose-800 hover:bg-rose-700 text-white px-3 py-1.5 rounded font-bold text-xs">🧹 <span data-i18n="btn_clear_demo">Clear Demo Data</span></button>
                     <button onclick="openModal('modal-portfolio')" class="bg-purple-600 hover:bg-purple-500 text-white px-3 py-1.5 rounded font-bold text-xs" data-i18n="btn_add_position">+ Add Position</button>
                 </div>
@@ -1132,6 +1137,24 @@
         </div>
     </div>
 
+    <!-- Full Glossary Modal (desktop parity — data-driven from glossary.json) -->
+    <div id="modal-glossary" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-panelbg border border-bordercol rounded-xl max-w-3xl w-full p-5 space-y-4 shadow-2xl max-h-[85vh] flex flex-col">
+            <div class="flex items-center justify-between">
+                <h3 class="text-base font-bold text-sky-400">📖 <span data-i18n="glossary_title">Full Glossary & Chart Patterns</span></h3>
+                <button onclick="closeModal('modal-glossary')" class="text-textmuted hover:text-white text-lg font-bold">✕</button>
+            </div>
+            <div class="flex bg-darkbg border border-bordercol rounded-lg overflow-hidden text-xs font-bold w-fit">
+                <button id="glossary-tab-terms" onclick="setGlossaryTab('terms')" class="px-3 py-1.5 bg-sky-600 text-white">📊 <span data-i18n="glossary_tab_terms">Indicators & Terms</span></button>
+                <button id="glossary-tab-actions" onclick="setGlossaryTab('actions')" class="px-3 py-1.5 text-textmuted">🏷️ <span data-i18n="glossary_tab_actions">Action Labels</span></button>
+                <button id="glossary-tab-patterns" onclick="setGlossaryTab('patterns')" class="px-3 py-1.5 text-textmuted">📐 <span data-i18n="glossary_tab_patterns">Chart Patterns</span></button>
+            </div>
+            <input type="text" id="glossary-search" oninput="renderGlossary()" data-i18n-placeholder="glossary_search_ph" placeholder="🔎 Search terms…" class="bg-darkbg border border-bordercol rounded px-3 py-2 text-textmain text-sm focus:outline-none focus:border-sky-500">
+            <div id="glossary-status" class="text-xs text-textmuted"></div>
+            <div id="glossary-list" class="overflow-y-auto flex-1 border border-bordercol rounded-lg p-3 bg-darkbg space-y-1"></div>
+        </div>
+    </div>
+
     <!-- Usage Analytics Modal (admin only) -->
     <div id="modal-analytics" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
         <div class="bg-panelbg border border-bordercol rounded-xl max-w-3xl w-full p-5 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
@@ -1331,6 +1354,10 @@
 
         let userPortfolio = JSON.parse(localStorage.getItem('quant_portfolio')) || [];
         let userHistory = JSON.parse(localStorage.getItem('quant_history')) || [];
+        // Desktop-app parity: per-sector subtotal rows in the Exits tab
+        // (app_gui.py's chk_sector_subtotals / _fill_exits_sector_rows).
+        let sectorSubtotalsOn = localStorage.getItem('quant_sector_subtotals') === '1';
+        let sectorBuckets = {};
         let hiddenCols = JSON.parse(localStorage.getItem('quant_hidden_cols')) || [];
 
         // Paper Trading state - mirrors userCash/userPortfolio/userHistory
@@ -1600,6 +1627,13 @@
                 btn_export_ledger: "Export Tax & Audit Ledger (CSV)",
                 loading_matrix: "Loading quantitative matrix...", loading_breakout: "Loading breakout watchlist...",
                 modal_columns_title: "Select Columns to Display", btn_select_all: "Select All", btn_deselect_all: "Deselect All", btn_ok: "OK",
+                hdr_position: "Position", pos_owned: "✓ Owned", pos_new: "New",
+                btn_sector_subtotals: "Sector Subtotals", btn_glossary: "📖 Glossary",
+                glossary_title: "Full Glossary & Chart Patterns", glossary_tab_terms: "Indicators & Terms",
+                glossary_tab_actions: "Action Labels", glossary_tab_patterns: "Chart Patterns",
+                glossary_search_ph: "🔎 Search terms…", glossary_loading: "Loading glossary…",
+                glossary_offline: "Glossary unavailable — web_public/data/glossary.json not found.",
+                glossary_no_results: "No matching terms.",
                 modal_theme_title: "Appearance & Theme Settings", modal_theme_desc: "Choose your preferred visual dashboard palette:",
                 theme_dark: "🌙 Institutional Dark", theme_light: "☀️ Professional Light", theme_blue: "🌊 Midnight Blue",
                 theme_blush: "🌸 Soft Blush Rose (Pastel)", theme_velvet: "✨ Velvet Rose Gold (Elegance)", btn_close_save: "Close & Save",
@@ -1831,6 +1865,13 @@
                 btn_export_ledger: "تصدير سجل الضرائب والمراجعة (CSV)",
                 loading_matrix: "جاري تحميل مصفوفة السوق...", loading_breakout: "جاري تحميل قائمة الاختراقات...",
                 modal_columns_title: "اختر الأعمدة المعروضة", btn_select_all: "تحديد الكل", btn_deselect_all: "إلغاء تحديد الكل", btn_ok: "موافق",
+                hdr_position: "المركز", pos_owned: "✓ مملوك", pos_new: "جديد",
+                btn_sector_subtotals: "إجماليات القطاعات", btn_glossary: "📖 المعجم",
+                glossary_title: "المعجم الكامل وأنماط الرسم", glossary_tab_terms: "المؤشرات والمصطلحات",
+                glossary_tab_actions: "تسميات الإجراءات", glossary_tab_patterns: "أنماط الرسم البياني",
+                glossary_search_ph: "🔎 ابحث في المصطلحات…", glossary_loading: "جاري تحميل المعجم…",
+                glossary_offline: "المعجم غير متاح — الملف glossary.json غير موجود.",
+                glossary_no_results: "لا توجد نتائج مطابقة.",
                 modal_theme_title: "إعدادات المظهر والألوان", modal_theme_desc: "اختر لوحة الألوان المفضلة لديك:",
                 theme_dark: "🌙 داكن مؤسسي", theme_light: "☀️ فاتح احترافي", theme_blue: "🌊 أزرق منتصف الليل",
                 theme_blush: "🌸 وردي فاتح ناعم", theme_velvet: "✨ ذهبي وردي مخملي", btn_close_save: "إغلاق وحفظ",
@@ -2434,6 +2475,87 @@
         }
 
         // Populate Dropdowns
+        // Desktop-app parity: pressing 1-9 jumps to a tab (same numbering as
+        // the desktop QTabWidget). Ignored while typing in a form control so
+        // search boxes keep receiving digits. (Also fixes the keyboard
+        // shortcuts cheat-sheet that already advertised this but had no
+        // handler wired.)
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey || e.altKey) return;
+            const tag = (document.activeElement && document.activeElement.tagName) || '';
+            if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+            if (e.key >= '1' && e.key <= '9') {
+                const names = ['matrix', 'sectors', 'exits', 'breakout', 'picks', 'history', 'fin', 'top10', 'leaderboard'];
+                const btn = document.getElementById('btn-tab-' + names[Number(e.key) - 1]);
+                if (btn) btn.click();
+            }
+        });
+
+        // Full data-driven Glossary (desktop parity): reads the same
+        // glossary_content.py content exported to web_public/data/glossary.json
+        // that the desktop app's GlossaryDialog shows — indicators, action
+        // labels and chart patterns, searchable, with bias badges.
+        let glossaryData = null;
+        let glossaryTab = 'terms';
+        async function openGlossaryModal() {
+            const modal = document.getElementById('modal-glossary');
+            if (!modal) return;
+            openModal('modal-glossary');
+            const t = TRANSLATIONS[currentLang] || TRANSLATIONS.EN;
+            const search = document.getElementById('glossary-search');
+            if (search) { search.value = ''; search.placeholder = t.glossary_search_ph || '🔎 Search terms…'; }
+            const status = document.getElementById('glossary-status');
+            if (!glossaryData) {
+                status.textContent = t.glossary_loading || 'Loading glossary…';
+                try {
+                    const res = await fetch('./data/glossary.json');
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    glossaryData = await res.json();
+                } catch (err) {
+                    status.textContent = t.glossary_offline || 'Glossary unavailable — web_public/data/glossary.json not found.';
+                    return;
+                }
+            }
+            status.textContent = '';
+            renderGlossary();
+        }
+        function setGlossaryTab(which) {
+            glossaryTab = which;
+            ['terms', 'actions', 'patterns'].forEach(w => {
+                const b = document.getElementById('glossary-tab-' + w);
+                if (b) b.classList.toggle('bg-sky-600', w === which);
+            });
+            renderGlossary();
+        }
+        function renderGlossary() {
+            if (!glossaryData) return;
+            const ar = currentLang === 'AR';
+            const t = TRANSLATIONS[currentLang] || TRANSLATIONS.EN;
+            const q = (document.getElementById('glossary-search').value || '').trim().toLowerCase();
+            const list = glossaryData[glossaryTab === 'actions' ? 'actions' : glossaryTab === 'patterns' ? 'patterns' : 'terms'] || [];
+            const biasAr = { bullish: '🟢 صاعد', bearish: '🔴 هابط', neutral: '⚪ محايد' };
+            const biasEn = { bullish: '🟢 Bullish', bearish: '🔴 Bearish', neutral: '⚪ Neutral' };
+            const wrap = document.getElementById('glossary-list');
+            wrap.innerHTML = '';
+            const filtered = list.filter(en => {
+                if (!q) return true;
+                const hay = [en.term.en, en.term.ar || '', en.definition.en, en.definition.ar || '', en.why_it_matters.en, en.why_it_matters.ar || ''].join(' ').toLowerCase();
+                return hay.includes(q);
+            });
+            if (!filtered.length) { wrap.innerHTML = `<p class="text-center text-textmuted py-8">${t.glossary_no_results || 'No matching terms.'}</p>`; return; }
+            filtered.forEach(en => {
+                const term = ar && en.term.ar ? en.term.ar : en.term.en;
+                const def = ar && en.definition.ar ? en.definition.ar : en.definition.en;
+                const why = ar && en.why_it_matters.ar ? en.why_it_matters.ar : en.why_it_matters.en;
+                const bias = en.bias || null;
+                const badge = bias ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${bias === 'bullish' ? 'bg-emerald-800 text-emerald-200' : bias === 'bearish' ? 'bg-rose-800 text-rose-200' : 'bg-slate-600 text-slate-200'}">${ar ? biasAr[bias] : biasEn[bias]}</span>` : '';
+                const div = document.createElement('div');
+                div.className = 'border-b border-bordercol/50 py-3';
+                div.innerHTML = `<div class="flex items-center justify-between gap-2"><div class="font-bold text-sky-400 text-sm">${escapeHtml(term)}</div>${badge}</div><p class="text-textmuted text-xs mt-1">${escapeHtml(def)}</p>${why ? `<p class="text-[11px] mt-1"><span class="text-sky-300 font-semibold">${ar ? 'لماذا يهم' : 'Why it matters'}:</span> <span class="text-textmuted">${escapeHtml(why)}</span></p>` : ''}`;
+                wrap.appendChild(div);
+            });
+        }
+
         function populateSelects() {
             if (!globalData || !globalData.market_matrix) return;
             const tickers = globalData.market_matrix.map(row => row.Ticker).filter(Boolean).sort();
@@ -3709,6 +3831,7 @@
             tbody.innerHTML = '';
             if (userPortfolio.length === 0) { tbody.innerHTML = `<tr><td colspan="24" class="p-6 text-center text-textmuted font-sans">${tt('lbl_no_positions')}</td></tr>`; initColumnDrag('thead-exits-tr', 'quant_col_order_exits'); return; }
             const totalEquity = computeTotalEquityForRisk();
+            sectorBuckets = {};
             userPortfolio.forEach(pos => {
                 let cp = pos.buyPrice, rsi = 50.0, adx = 0.0, trend = "Consolidation";
                 if (globalData && globalData.market_matrix) {
@@ -3727,6 +3850,11 @@
                 const ea = computeExitAnalyticsFields(pos, cp, stop);
 
                 const posValue = cp * pos.shares;
+                if (sectorSubtotalsOn) {
+                    const sec = (globalData && globalData.ticker_sectors && globalData.ticker_sectors[pos.ticker]) || 'General / Diversified';
+                    const b = sectorBuckets[sec] || (sectorBuckets[sec] = { shares: 0, cost: 0, value: 0 });
+                    b.shares += pos.shares; b.cost += pos.buyPrice * pos.shares; b.value += posValue;
+                }
                 const riskUnitPct = RISK_PER_TRADE_PCT * 100;
                 const pctOfEquity = totalEquity > 0 ? (posValue / totalEquity) * 100 : null;
                 const riskMultiple = pctOfEquity != null && riskUnitPct > 0 ? pctOfEquity / riskUnitPct : null;
@@ -3761,8 +3889,41 @@
                 `;
                 tbody.appendChild(tr);
             });
+            if (sectorSubtotalsOn) renderSectorSubtotalRows(tbody);
             applyColumnOrder('thead-exits-tr', 'tbody-exits', 'quant_col_order_exits');
             renderPortfolioBanner(totalEquity);
+        }
+
+        // Desktop-app parity: per-sector rollup rows + a portfolio totals row
+        // in the Exits tab (app_gui.py's chk_sector_subtotals). Toggle state
+        // persists in localStorage like every other view preference.
+        function toggleSectorSubtotals() {
+            sectorSubtotalsOn = localStorage.getItem('quant_sector_subtotals') !== '1';
+            localStorage.setItem('quant_sector_subtotals', sectorSubtotalsOn ? '1' : '0');
+            const btn = document.getElementById('btn-sector-subtotals');
+            if (btn) btn.classList.toggle('bg-sky-700', sectorSubtotalsOn);
+            renderPortfolio(); renderAccountBar();
+        }
+        function renderSectorSubtotalRows(tbody) {
+            const keys = Object.keys(sectorBuckets);
+            if (!keys.length) return;
+            const ar = currentLang === 'AR';
+            keys.forEach(sec => {
+                const b = sectorBuckets[sec];
+                const pnl = b.value - b.cost, pct = b.cost > 0 ? (pnl / b.cost) * 100 : 0;
+                const tr = document.createElement('tr');
+                tr.className = 'bg-[#1e293b] border-b border-bordercol/60';
+                tr.innerHTML = `<td colspan="24" class="p-2 text-[11px] font-sans">🏢 ${escapeHtml(sec)} <span class="text-textmuted">${ar ? '— إجمالي' : '— subtotal'}</span> · <strong>${b.shares.toLocaleString()}</strong> sh · <strong>${b.value.toLocaleString(undefined,{minimumFractionDigits:2})}</strong> EGP · <span class="${pnl >= 0 ? 'text-emerald-400' : 'text-rose-400 font-bold'}">${pnl.toLocaleString(undefined,{minimumFractionDigits:2})} EGP (${pct.toFixed(2)}%)</span></td>`;
+                tbody.appendChild(tr);
+            });
+            const totShares = keys.reduce((s, k) => s + sectorBuckets[k].shares, 0);
+            const totCost = keys.reduce((s, k) => s + sectorBuckets[k].cost, 0);
+            const totVal = keys.reduce((s, k) => s + sectorBuckets[k].value, 0);
+            const tPnl = totVal - totCost, tPct = totCost > 0 ? (tPnl / totCost) * 100 : 0;
+            const tr = document.createElement('tr');
+            tr.className = 'bg-[#2d3748] border-b border-bordercol';
+            tr.innerHTML = `<td colspan="24" class="p-2 text-[11px] font-sans font-bold">📊 ${ar ? 'إجمالي المحفظة' : 'Portfolio totals'} — ${totShares.toLocaleString()} sh · ${totVal.toLocaleString(undefined,{minimumFractionDigits:2})} EGP · <span class="${tPnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${tPnl.toLocaleString(undefined,{minimumFractionDigits:2})} EGP (${tPct.toFixed(2)}%)</span></td>`;
+            tbody.appendChild(tr);
         }
 
         // Mirrors decision_matrix.py's cash-drag note and rotation_flags:
@@ -4084,6 +4245,9 @@
             pageRows.forEach((row, i) => {
                 const rowCount = startIdx + i + 1; // absolute rank across the full filtered set, not just this page
                 const action = row.Action || "", conf = row["Data Confidence"] || "";
+                const held = userPortfolio.find(x => (x.ticker || '').toUpperCase() === (row.Ticker || '').toUpperCase());
+                const posLabel = held ? tt('pos_owned') : tt('pos_new');
+                const posStyle = held ? 'text-amber-300 font-bold' : 'text-textmuted';
                 let actionStyle = 'bg-slate-800 text-slate-300';
                 if (action.includes('STRONG BUY') || action.includes('BREAKOUT BUY')) actionStyle = 'bg-[#276749] text-white font-bold';
                 else if (action.includes('ACCUMULATE') || action.includes('BUY ON DIP')) actionStyle = 'bg-[#2b6cb0] text-white';
@@ -4096,7 +4260,7 @@
                 const tr = document.createElement('tr');
                 tr.className = 'border-b border-bordercol/40 hover:bg-panelbg transition';
                 tr.innerHTML = `
-                    <td class="p-2.5 font-sans text-textmuted">${rowCount}</td><td class="p-2.5 font-bold text-sky-400">${escapeHtml(row.Ticker) || '-'}</td><td class="p-2 text-center font-sans ${actionStyle} rounded-full shadow-sm px-3" title="${escapeHtml(row['Signal Reason'] || '')}">${trAction(row.Action) || '-'}</td>
+                    <td class="p-2.5 font-sans text-textmuted">${rowCount}</td><td class="p-2.5 font-bold text-sky-400">${escapeHtml(row.Ticker) || '-'}</td><td class="p-2.5 text-center font-sans ${posStyle}">${posLabel}</td><td class="p-2 text-center font-sans ${actionStyle} rounded-full shadow-sm px-3" title="${escapeHtml(row['Signal Reason'] || '')}">${trAction(row.Action) || '-'}</td>
                     <td class="p-2.5 text-textmain font-bold">${row["Rank Score"] || 0} <span class="text-[10px] font-normal text-textmuted" title="Kelly %: ${row["Kelly %"] ?? '-'}">K ${row["Kelly %"] ?? '-'}</span></td><td class="p-2.5 font-bold text-white">${row["Current Price"] || 0}</td><td class="p-2.5 text-textmain">${row["Target Entry (VWAP)"] || 0}</td>
                     <td class="p-2.5 text-rose-400 font-semibold">${row["Suggested Stop-Loss"] || 0}</td><td class="p-2.5 text-textmain" title="Estimated from your own cash balance">${estimateSuggestedShares(row["Target Entry (VWAP)"], row["Suggested Stop-Loss"]).toLocaleString()}</td>
                     <td class="p-2.5 text-emerald-400 font-semibold">${row["Projected Gain (%)"] || 'N/A'}</td><td class="p-2.5 text-textmain">${row["Pattern Conf (%)"] || 'N/A'}</td><td class="p-2.5 font-sans text-textmuted">${trTrend(row["Trend Class"]) || '-'}</td>
@@ -4110,7 +4274,7 @@
                 `;
                 tbody.appendChild(tr);
             });
-            if (total === 0) tbody.innerHTML = `<tr><td colspan="21" class="p-8 text-center text-textmuted font-sans">${tt('lbl_no_filter_matches')}</td></tr>`;
+            if (total === 0) tbody.innerHTML = `<tr><td colspan="22" class="p-8 text-center text-textmuted font-sans">${tt('lbl_no_filter_matches')}</td></tr>`;
             applyColumnOrder('thead-matrix-tr', 'tbody-matrix', 'quant_col_order_matrix');
             applyColumnVisibility();
             renderMatrixPaginationControls();
@@ -4396,7 +4560,7 @@
                 prefetchChartHistoryInBackground();
             } catch (error) {
                 console.error("Failed to load market data:", error);
-                document.getElementById('tbody-matrix').innerHTML = `<tr><td colspan="21" class="p-8 text-center text-rose-400 font-sans">⚠️ ${tt('lbl_data_unavailable')}</td></tr>`;
+                document.getElementById('tbody-matrix').innerHTML = `<tr><td colspan="22" class="p-8 text-center text-rose-400 font-sans">⚠️ ${tt('lbl_data_unavailable')}</td></tr>`;
             }
         }
 
@@ -5578,5 +5742,6 @@
             });
         }
     </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 </body>
 </html>

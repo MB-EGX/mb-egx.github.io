@@ -155,6 +155,30 @@ class StockSectorChartWidget(QWidget):
         style_layout.addStretch()
         layout.addLayout(style_layout)
 
+        # 1c. Time-horizon zoom (parity port of the web dashboard's
+        # timeframe-buttons bar — index.html's applyTimeFrame). Slices the
+        # plotted window to the last N bars; 'ALL' plots everything.
+        zoom_row = QHBoxLayout()
+        self.lbl_time_zoom = QLabel("⏱️ Time Horizon:")
+        self.lbl_time_zoom.setStyleSheet("font-weight: bold; color: #38bdf8; font-size: 11px;")
+        zoom_row.addWidget(self.lbl_time_zoom)
+        self._timeframe_buttons = {}
+        self._timeframe_limit = 0
+        for tf, bars in (("1M", 22), ("3M", 66), ("6M", 132), ("1Y", 252), ("ALL", 0)):
+            btn = QPushButton(tf)
+            btn.setCheckable(True)
+            btn.setChecked(bars == 0)
+            btn.setStyleSheet(
+                "QPushButton { background-color: #1e293b; color: #cbd5e0; padding: 3px 12px; "
+                "font-size: 11px; font-weight: bold; border-radius: 12px; border: 1px solid #334155; }"
+                "QPushButton:checked { background-color: #0284c7; color: white; border: 1px solid #38bdf8; }"
+            )
+            btn.clicked.connect(lambda _, b=bars, btb=btn: self._select_timeframe(b, btb))
+            zoom_row.addWidget(btn)
+            self._timeframe_buttons[tf] = btn
+        zoom_row.addStretch()
+        layout.addLayout(zoom_row)
+
         # 2. Alphabet Quick-Filter Bar
         self.alpha_container = QFrame()
         self.alpha_container.setStyleSheet("QFrame { background-color: #222730; border-radius: 4px; padding: 2px; }")
@@ -302,6 +326,8 @@ class StockSectorChartWidget(QWidget):
             self.chk_sr.setText("📐 الدعم / المقاومة")
             self.chk_volume.setText("📊 الحجم")
             self.btn_save_chart.setText("💾 حفظ الرسم")
+            if hasattr(self, "lbl_time_zoom"):
+                self.lbl_time_zoom.setText("⏱️ الأفق الزمني:")
         else:
             self.rad_stock.setText("📈 Per Stock")
             self.rad_sector.setText("🏢 Per Sector")
@@ -313,6 +339,8 @@ class StockSectorChartWidget(QWidget):
             self.chk_sr.setText("📐 Support / Resistance")
             self.chk_volume.setText("📊 Volume")
             self.btn_save_chart.setText("💾 Save Chart")
+            if hasattr(self, "lbl_time_zoom"):
+                self.lbl_time_zoom.setText("⏱️ Time Horizon:")
 
         if not self.rad_stock.isChecked():
             # Sector-mode dropdown items are translated display text with the
@@ -341,6 +369,13 @@ class StockSectorChartWidget(QWidget):
         for l, btn in self.alpha_buttons.items():
             btn.setStyleSheet(self._get_alpha_btn_style(l == letter))
         self.populate_selector()
+
+    def _select_timeframe(self, bars: int, btn):
+        self._timeframe_limit = bars
+        for b in self._timeframe_buttons.values():
+            if b is not btn:
+                b.setChecked(False)
+        self.plot_chart()
 
     def populate_selector(self):
         self.cmb_selector.blockSignals(True)
@@ -402,6 +437,8 @@ class StockSectorChartWidget(QWidget):
                 return
                 
             df = self.qe.compute_indicators(df)
+            if self._timeframe_limit and len(df) > self._timeframe_limit:
+                df = df.iloc[-self._timeframe_limit:]
             dates = df.index
             prices = df['close']
             trend_vals, slope_pct = self.qe.compute_trendline(prices)
@@ -454,7 +491,9 @@ class StockSectorChartWidget(QWidget):
             if df_sec.empty:
                 self.canvas.draw()
                 return
-                
+            if self._timeframe_limit and len(df_sec) > self._timeframe_limit:
+                df_sec = df_sec.iloc[-self._timeframe_limit:]
+
             dates = df_sec.index
             idx_vals = df_sec['sector_index']
             trend_vals, slope_pct = self.qe.compute_trendline(idx_vals)
