@@ -1370,6 +1370,14 @@
         // (POSITION_CONCENTRATION_WARN_PCT is declared once, further down,
         // alongside SECTOR_CONCENTRATION_WARN_PCT - reused here too.)
         const CASH_DRAG_LOW_PCT = 5.0;
+        // Mirrors config.py's ACTION_THRESHOLDS - only the two constants the
+        // web Exits tab's CUT LOSS check needs (the ATR-based stop and the
+        // pattern/ATR-based take-profit come straight from each ticker's own
+        // "Suggested Stop-Loss" / "Take-Profit Target" in market_matrix
+        // instead of being re-derived here - see computeExitActionFields).
+        const CUT_LOSS_PNL_PCT = -8.0;
+        const VWAP_CUT_LOSS_RATIO = 0.92;
+        const DEFAULT_TAKE_PROFIT_PCT = 5.0;
         // Mirrors config.py's PAPER_TRADING_DEFAULTS.starting_cash_egp - the
         // balance a brand-new visitor's paper account starts with.
         const PAPER_TRADING_STARTING_CASH_EGP = 100000.0;
@@ -3174,6 +3182,54 @@
             return { shares: nShares, avgCost: newAvgCost, cost, note };
         }
 
+        // Mirrors decision_matrix.py's owned-position stop/take-profit/
+        // action logic EXACTLY, instead of the old flat "+5.35% / -5% /
+        // -8%" approximation that used to live inline in renderPortfolio().
+        // Both apps derive the stop and take-profit from CURRENT price
+        // (ATR-based stop, pattern/ATR-blended take-profit) - not from the
+        // buy price - so they're identical for a given ticker regardless of
+        // who's holding it or at what cost. That means the exact numbers
+        // decision_matrix.py already computed for THIS ticker are sitting
+        // right there, public, in market_matrix.json's "Suggested Stop-Loss"
+        // / "Take-Profit Target" fields - no need to re-derive ATR/pattern
+        // math in JS at all, just look them up.
+        // Falls back to decision_matrix.py's own "Low Data" formula
+        // (flat -5% stop / +5% target) ONLY when there's no market_matrix
+        // row for this ticker at all - which is exactly when the desktop
+        // app itself would have taken that same fallback path (too little
+        // price history to trust ATR/pattern math).
+        function computeExitActionFields(pos, cp) {
+            const m = (globalData && globalData.market_matrix)
+                ? globalData.market_matrix.find(x => x.Ticker === pos.ticker) : null;
+            let stop, takeProfit, lowData = false;
+            if (m && m["Suggested Stop-Loss"] != null && m["Take-Profit Target"] != null) {
+                stop = m["Suggested Stop-Loss"];
+                takeProfit = m["Take-Profit Target"];
+            } else {
+                lowData = true;
+                stop = cp * 0.95;
+                takeProfit = cp * (1 + DEFAULT_TAKE_PROFIT_PCT / 100 + ROUND_TRIP_FEE_PCT);
+            }
+
+            const pnlPct = pos.buyPrice > 0 ? ((cp - pos.buyPrice) / pos.buyPrice) * 100 : 0;
+            const vwapSeries = (globalData && globalData.chart_history && globalData.chart_history.stocks &&
+                globalData.chart_history.stocks[pos.ticker]) ? globalData.chart_history.stocks[pos.ticker].vwap : null;
+            let vwap = null;
+            if (vwapSeries) {
+                for (let i = vwapSeries.length - 1; i >= 0; i--) {
+                    if (vwapSeries[i] != null) { vwap = vwapSeries[i]; break; }
+                }
+            }
+
+            let action = lowData ? "🛡️ HOLD / TRAIL STOP (Low Data)" : "🛡️ HOLD / TRAIL STOP";
+            if (pnlPct <= CUT_LOSS_PNL_PCT || (vwap != null && cp < vwap * VWAP_CUT_LOSS_RATIO && pnlPct < 0)) {
+                action = "⚠️ CUT LOSS / REVIEW (Below VWAP)";
+            } else if (cp >= takeProfit) {
+                action = "💰 TAKE PROFIT ZONE";
+            }
+            return { stop, takeProfit, action };
+        }
+
         // Mirrors decision_matrix.py's _compute_exit_analytics_fields():
         // Days Held / Annualized Return, Distance to Stop, Drawdown from
         // Peak, and fee-adjusted Net P&L - same formulas, computed
@@ -3490,17 +3546,17 @@
             if (userPortfolio.length === 0) { tbody.innerHTML = `<tr><td colspan="24" class="p-6 text-center text-textmuted font-sans">${tt('lbl_no_positions')}</td></tr>`; return; }
             const totalEquity = computeTotalEquityForRisk();
             userPortfolio.forEach(pos => {
-                let cp = pos.buyPrice, rsi = 50.0, adx = 0.0, trend = "Consolidation", action = "🛡️ HOLD / TRAIL STOP";
+                let cp = pos.buyPrice, rsi = 50.0, adx = 0.0, trend = "Consolidation";
                 if (globalData && globalData.market_matrix) {
                     const m = globalData.market_matrix.find(x => x.Ticker === pos.ticker);
                     if (m) { cp = m["Current Price"]; rsi = m["RSI-14"]; adx = m["ADX-14"]; trend = m["Trend Class"]; }
                 }
                 const pnl = (cp - pos.buyPrice) * pos.shares;
                 const pnlPct = ((cp - pos.buyPrice) / pos.buyPrice) * 100;
-                const tp = cp * 1.0535, stop = cp * 0.95;
+                const { stop, takeProfit: tp, action } = computeExitActionFields(pos, cp);
                 let actionBg = 'bg-[#975a16] text-white';
-                if (pnlPct <= -8.0) { action = "⚠️ CUT LOSS / REVIEW"; actionBg = 'bg-[#9b2c2c] text-white font-bold'; }
-                else if (cp >= tp) { action = "💰 TAKE PROFIT ZONE"; actionBg = 'bg-[#22543d] text-white font-bold'; }
+                if (action.includes("CUT LOSS")) actionBg = 'bg-[#9b2c2c] text-white font-bold';
+                else if (action.includes("TAKE PROFIT")) actionBg = 'bg-[#22543d] text-white font-bold';
 
                 const tgt = computeTargetFields(pos, cp);
                 const be = computeBreakevenFields(pos, cp, userCash);
