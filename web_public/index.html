@@ -771,6 +771,11 @@
                         <input type="checkbox" id="toggle-patterns" onchange="plotChart()" class="rounded text-sky-500">
                         <span id="lbl-toggle-patterns">🔺 Patterns</span>
                     </label>
+                    <label class="flex items-center gap-1.5 cursor-pointer" id="wrap-toggle-volume">
+                        <input type="checkbox" id="toggle-volume" checked onchange="plotChart()" class="rounded text-sky-500">
+                        <span id="lbl-toggle-volume">📊 Volume</span>
+                    </label>
+                    <button onclick="saveChartImage()" class="bg-teal-700 hover:bg-teal-600 text-white px-3 py-1.5 rounded font-bold" id="btn-save-chart">💾 Save Chart</button>
                 </div>
             </div>
 
@@ -1537,6 +1542,7 @@
                 rad_stock: "📈 Per Stock", rad_sector: "🏢 Per Sector", select_item: "Select Item:", alpha_quick: "🔤 Quick Filter:",
                 time_zoom: "⏱️ Time Horizon:", guide: "Guide",
                 style_line: "📉 Line", style_candle: "🕯️ Candles", toggle_sr: "📐 Support / Resistance",
+                toggle_patterns: "🔺 Patterns", toggle_volume: "📊 Volume", btn_save_chart_img: "💾 Save Chart",
                 // Table headers
                 hdr_ticker: "Ticker", hdr_action: "Action", hdr_score: "Score", hdr_price: "Price",
                 hdr_horizon: "Horizon", hdr_picked_on: "Picked On", hdr_pick_price: "Pick Price",
@@ -1767,6 +1773,7 @@
                 rad_stock: "📈 تحليل الأسهم", rad_sector: "🏢 تحليل القطاعات", select_item: "اختر العنصر:", alpha_quick: "🔤 تصفية بالحرف:",
                 time_zoom: "⏱️ الفترة الزمنية:", guide: "الدليل",
                 style_line: "📉 خط", style_candle: "🕯️ شموع", toggle_sr: "📐 الدعم / المقاومة",
+                toggle_patterns: "🔺 الأنماط", toggle_volume: "📊 الحجم", btn_save_chart_img: "💾 حفظ الرسم",
                 // Table headers
                 hdr_ticker: "الرمز", hdr_action: "الإجراء", hdr_score: "الدرجة", hdr_price: "السعر",
                 hdr_horizon: "المدى", hdr_picked_on: "تاريخ الترشيح", hdr_pick_price: "سعر الترشيح",
@@ -2117,6 +2124,9 @@
             if (document.getElementById('lbl-style-line')) document.getElementById('lbl-style-line').innerText = t.style_line;
             if (document.getElementById('lbl-style-candle')) document.getElementById('lbl-style-candle').innerText = t.style_candle;
             if (document.getElementById('lbl-toggle-sr')) document.getElementById('lbl-toggle-sr').innerText = t.toggle_sr;
+            if (document.getElementById('lbl-toggle-patterns')) document.getElementById('lbl-toggle-patterns').innerText = t.toggle_patterns;
+            if (document.getElementById('lbl-toggle-volume')) document.getElementById('lbl-toggle-volume').innerText = t.toggle_volume;
+            if (document.getElementById('btn-save-chart')) document.getElementById('btn-save-chart').innerText = t.btn_save_chart_img;
             document.getElementById('lbl-alpha-quick').innerText = t.alpha_quick;
             if (document.getElementById('lbl-time-zoom')) document.getElementById('lbl-time-zoom').innerText = t.time_zoom;
             if (chartInstance) plotChart();
@@ -2504,14 +2514,17 @@
             let vwaps = [];
             let labels = [];
             let opens = [], highs = [], lows = [];
+            let volumes = [];
             let resistance = null, support = null, pivots = null, patterns = [];
 
             const wrapCandle = document.getElementById('wrap-style-candle');
             const wrapSr = document.getElementById('wrap-toggle-sr');
             const wrapPatterns = document.getElementById('wrap-toggle-patterns');
+            const wrapVolume = document.getElementById('wrap-toggle-volume');
             if (wrapCandle) wrapCandle.style.opacity = (mode === 'stock') ? '1' : '0.4';
             if (wrapSr) wrapSr.style.opacity = (mode === 'stock') ? '1' : '0.4';
             if (wrapPatterns) wrapPatterns.style.opacity = (mode === 'stock') ? '1' : '0.4';
+            if (wrapVolume) wrapVolume.style.opacity = (mode === 'stock') ? '1' : '0.4';
             const radCandle = document.querySelector('input[name="chart_style"][value="candle"]');
             const radLine = document.querySelector('input[name="chart_style"][value="line"]');
             if (mode !== 'stock' && radCandle && radCandle.checked) { radCandle.checked = false; if (radLine) radLine.checked = true; }
@@ -2525,6 +2538,7 @@
                     opens = (stockHistory.open || []).map(Number);
                     highs = (stockHistory.high || []).map(Number);
                     lows = (stockHistory.low || []).map(Number);
+                    volumes = (stockHistory.volume || []).map(v => v == null ? null : Number(v));
                     resistance = (typeof stockHistory.resistance === 'number') ? stockHistory.resistance : null;
                     support = (typeof stockHistory.support === 'number') ? stockHistory.support : null;
                     pivots = stockHistory.pivots || null;
@@ -2560,6 +2574,7 @@
                 if (opens.length > 0) opens = opens.slice(-barCount);
                 if (highs.length > 0) highs = highs.slice(-barCount);
                 if (lows.length > 0) lows = lows.slice(-barCount);
+                if (volumes.length > 0) volumes = volumes.slice(-barCount);
             }
             if (document.getElementById('lbl-bars-shown')) {
                 document.getElementById('lbl-bars-shown').innerText = `Showing ${prices.length} trading bar(s) (${labels[0] || ''} to ${labels[labels.length-1] || ''})`;
@@ -2588,9 +2603,25 @@
             const style = (document.querySelector('input[name="chart_style"]:checked') || {}).value || 'line';
             const showSr = document.getElementById('toggle-sr') && document.getElementById('toggle-sr').checked;
             const showPatterns = document.getElementById('toggle-patterns') && document.getElementById('toggle-patterns').checked;
+            const showVolume = document.getElementById('toggle-volume') && document.getElementById('toggle-volume').checked;
             const isCandle = style === 'candle' && mode === 'stock' && opens.length === n && highs.length === n && lows.length === n;
+            const hasVolume = mode === 'stock' && showVolume && volumes.length === n && volumes.some(v => typeof v === 'number' && isFinite(v));
 
             const datasets = [];
+            if (hasVolume) {
+                const volColors = Array.from({length: n}, (_, i) => {
+                    const upDay = opens.length === n ? prices[i] >= opens[i] : true;
+                    return upDay ? 'rgba(34, 197, 94, 0.16)' : 'rgba(239, 68, 68, 0.16)';
+                });
+                // order: 0 keeps this behind the price/candle/trendline series
+                // (which use order 1-4 below), same background-layer look as
+                // the desktop app's twinx() volume overlay.
+                datasets.push({
+                    type: 'bar', label: 'Volume', data: volumes,
+                    backgroundColor: volColors, borderWidth: 0,
+                    yAxisID: 'yVolume', order: 0, barPercentage: 0.8, categoryPercentage: 0.9,
+                });
+            }
             let candleWickPoints = null;
             if (isCandle) {
                 const upColor = '#22c55e', downColor = '#ef4444';
@@ -2774,9 +2805,10 @@
                     responsive: true, maintainAspectRatio: false,
                     scales: {
                         x: { grid: { color: gridCol }, ticks: { color: textCol, maxTicksLimit: 12 } },
-                        y: { grid: { color: gridCol }, ticks: { color: textCol }, beginAtZero: false, ...(yMin !== undefined ? { min: yMin, max: yMax } : {}) }
+                        y: { grid: { color: gridCol }, ticks: { color: textCol }, beginAtZero: false, ...(yMin !== undefined ? { min: yMin, max: yMax } : {}) },
+                        ...(hasVolume ? { yVolume: { display: false, beginAtZero: true, position: 'right', grid: { drawOnChartArea: false } } } : {})
                     },
-                    plugins: { legend: { labels: { color: textCol, font: { weight: 'bold' } } } }
+                    plugins: { legend: { labels: { color: textCol, font: { weight: 'bold' }, filter: (item) => item.text !== 'Volume' } } }
                 }
             });
             let needsOverlayUpdate = false;
@@ -2789,6 +2821,24 @@
                 needsOverlayUpdate = true;
             }
             if (needsOverlayUpdate) chartInstance.update();
+        }
+
+        // Mirrors the desktop app's 💾 Save Chart button: exports the
+        // current chart canvas as a PNG download. Chart.js's own
+        // toBase64Image() already composites against a white background
+        // for transparent canvases and gives back a data URL, so no
+        // manual canvas work is needed here.
+        function saveChartImage() {
+            if (!chartInstance) return;
+            const link = document.createElement('a');
+            const selector = document.getElementById('chart-selector');
+            const itemName = selector && selector.value ? selector.value : 'chart';
+            const safeName = String(itemName).replace(/[^a-zA-Z0-9_.-]/g, '_');
+            link.href = chartInstance.toBase64Image('image/png', 1);
+            link.download = `mb_egx_${safeName}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         // Portfolio & Risk Engine

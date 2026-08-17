@@ -232,6 +232,7 @@ def build_chart_history(qe, dbm, sector_map):
             opens = _round_col("open")
             highs = _round_col("high")
             lows = _round_col("low")
+            volumes = [int(v) if pd.notna(v) else None for v in df_ind["volume"]] if "volume" in df_ind.columns else [None] * len(dates)
             vwaps = [
                 round(float(v), 4)
                 if "vwap_20" in df_ind.columns and pd.notna(v)
@@ -252,6 +253,7 @@ def build_chart_history(qe, dbm, sector_map):
                 "open": opens,
                 "high": highs,
                 "low": lows,
+                "volume": volumes,
                 "vwap": vwaps,
                 "resistance": resistance,
                 "support": support,
