@@ -137,6 +137,28 @@ DISCLAIMER_TEXT_AR = (
 _SETTINGS = QSettings("MB-EGX", "QuantDashboard")
 CURRENT_LANG = _SETTINGS.value("lang", "EN")
 
+
+def enable_movable_columns(header: QHeaderView, settings_key: str) -> None:
+    """Makes a table's header columns drag-to-reorder, and persists the
+    result to QSettings so the layout survives a restart. Call this once,
+    right after a table's columns/labels are set up (column-visibility
+    toggles like setColumnHidden can happen before or after - they're
+    independent of section order).
+
+    QHeaderView.saveState()/restoreState() bundle section order, widths,
+    AND per-section hidden state into one opaque blob, which is exactly
+    what we want here: whatever the user last dragged into place (and
+    whatever the existing 👁️ Columns chooser last hid/showed) both come
+    back together on the next launch.
+    """
+    header.setSectionsMovable(True)
+    saved = _SETTINGS.value(f"header_state/{settings_key}")
+    if saved is not None:
+        header.restoreState(saved)
+    header.sectionMoved.connect(
+        lambda *_args, h=header, key=settings_key: _SETTINGS.setValue(f"header_state/{key}", h.saveState())
+    )
+
 # Keyed by the exact English string used at the call site — this lets us
 # retrofit i18n onto an existing codebase without inventing a parallel set
 # of semantic keys everywhere; tr() just looks up the literal you already
@@ -3514,7 +3536,7 @@ class QuantDashboard(QMainWindow):
             "QTabBar QToolButton { background-color: #2b6cb0; border: 1px solid #cbd5e0; "
             "border-radius: 4px; }"
         )
-        self.tbl_buys = self._create_matrix_table()
+        self.tbl_buys = self._create_matrix_table(settings_key="matrix")
         
         self.tbl_sectors = QTableWidget()
         # Stored in English and re-applied through tr() both here and from
@@ -3525,6 +3547,7 @@ class QuantDashboard(QMainWindow):
         self.tbl_sectors.setColumnCount(len(self._sector_cols))
         self.tbl_sectors.setHorizontalHeaderLabels([tr(c) for c in self._sector_cols])
         self.tbl_sectors.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        enable_movable_columns(self.tbl_sectors.horizontalHeader(), "sectors")
 
         self.tbl_exits = QTableWidget()
         self._exit_columns = [
@@ -3581,6 +3604,11 @@ class QuantDashboard(QMainWindow):
         }
         for idx, (header, _tooltip) in enumerate(self._exit_columns):
             self.tbl_exits.setColumnHidden(idx, header in _exit_secondary_columns)
+        # Movable + persisted AFTER the default hidden set above, so a first
+        # launch (nothing saved yet) still gets the curated view; any saved
+        # state from a later launch (drag order and/or 👁️ Columns choices)
+        # overrides these defaults, since it's the user's own last layout.
+        enable_movable_columns(self.tbl_exits.horizontalHeader(), "exits")
 
         self.tbl_breakout_watch = QTableWidget()
         self._breakout_watch_columns = [
@@ -3602,6 +3630,7 @@ class QuantDashboard(QMainWindow):
             self.tbl_breakout_watch.setHorizontalHeaderItem(idx, item)
         self.tbl_breakout_watch.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
         self.tbl_breakout_watch.horizontalHeader().setMinimumSectionSize(70)
+        enable_movable_columns(self.tbl_breakout_watch.horizontalHeader(), "breakout_watch")
 
         tab_history_widget = QWidget()
         history_layout = QVBoxLayout(tab_history_widget)
@@ -3618,6 +3647,7 @@ class QuantDashboard(QMainWindow):
         ]
         self.tbl_closed.setHorizontalHeaderLabels([tr(c) for c in self._closed_cols])
         self.tbl_closed.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        enable_movable_columns(self.tbl_closed.horizontalHeader(), "closed")
         history_layout.addWidget(self.tbl_closed)
 
         self.tbl_fin_stmt = QTableWidget()
@@ -3789,7 +3819,7 @@ class QuantDashboard(QMainWindow):
         if getattr(self, "_last_populate_args", None):
             self.populate_tables(**self._last_populate_args, _push_cloud_stats=False)
 
-    def _create_matrix_table(self):
+    def _create_matrix_table(self, settings_key: str | None = None):
         tbl = QTableView()
         model = MatrixTableModel()
         tbl.setModel(model)
@@ -3798,6 +3828,8 @@ class QuantDashboard(QMainWindow):
         tbl.verticalHeader().setVisible(False)
         tbl.setSelectionBehavior(QTableView.SelectionBehavior.SelectRows)
         tbl.setEditTriggers(QTableView.EditTrigger.NoEditTriggers)
+        if settings_key:
+            enable_movable_columns(tbl.horizontalHeader(), settings_key)
         return tbl
 
     def _build_top10_overview_tab(self):

@@ -483,7 +483,7 @@
             <div class="overflow-x-auto">
                 <table id="tbl-exits" class="exits-compact w-full text-left border-collapse whitespace-nowrap font-mono">
                     <thead class="bg-[#2d3748] text-white font-sans text-xs">
-                        <tr>
+                        <tr id="thead-exits-tr">
                             <th class="p-2.5 border border-darkbg" data-i18n="hdr_ticker">Ticker</th>
                             <th class="p-2.5 border border-darkbg excol-sec" data-i18n="hdr_shares">Shares</th>
                             <th class="p-2.5 border border-darkbg excol-sec" data-i18n="hdr_buy_price">Buy Price</th>
@@ -1571,6 +1571,7 @@
                 hdr_drawdown_peak: "Drawdown from Peak %", hdr_risk_vs_plan: "Risk vs Plan",
                 hdr_cash_drag: "Cash Drag (%)",
                 btn_show_all_columns: "👁️ Show All Columns", btn_show_essential_columns: "👁️ Show Essential Columns",
+                hint_drag_col: "drag to reorder",
                 lbl_low_cash_drag: "💵 {pct}% cash — fully invested, no dry powder for new signals.",
                 lbl_rotation_flag: "🔄 You're holding {held} ({hs}) but the matrix now prefers {cand} ({cs}) in the same {cat} pool.",
                 lbl_rotation_flag_grouped: "🔄 {held} outranked by {cand} in the same {cat} pool.",
@@ -1800,6 +1801,7 @@
                 hdr_drawdown_peak: "التراجع من القمة %", hdr_risk_vs_plan: "الحجم مقابل خطة المخاطرة",
                 hdr_cash_drag: "النقد غير المستثمر (%)",
                 btn_show_all_columns: "👁️ عرض كل الأعمدة", btn_show_essential_columns: "👁️ عرض الأعمدة الأساسية",
+                hint_drag_col: "اسحب لإعادة الترتيب",
                 lbl_low_cash_drag: "💵 {pct}% نقدًا فقط — رأس المال مستثمر بالكامل، لا توجد سيولة لصفقات جديدة.",
                 lbl_rotation_flag: "🔄 أنت تمتلك {held} ({hs}) لكن المصفوفة تفضّل الآن {cand} ({cs}) ضمن نفس فئة {cat}.",
                 lbl_rotation_flag_grouped: "🔄 المصفوفة تفضّل {cand} على {held} ضمن نفس فئة {cat}.",
@@ -2300,9 +2302,24 @@
             document.getElementById('guide-btn-ar').classList.toggle('text-textmuted', lang !== 'ar');
         }
 
-        // Column Visibility Engine
+        // ===== Column layout engine: visibility + drag-to-reorder =====
+        // Every cell (header <th> and each row's <td>) is tagged with a
+        // data-col-idx the FIRST time it's seen - a stable identity based
+        // on the table's original source order that never changes again,
+        // even after the user drags columns around. Both the hide/show
+        // logic (hiddenCols, unchanged in meaning) and the reorder logic
+        // below key off that identity instead of the cell's current DOM
+        // position, so hiding and reordering never fight each other.
+        function tagColumnIdentity(row) {
+            Array.from(row.children).forEach((cell, i) => {
+                if (cell.dataset.colIdx === undefined) cell.dataset.colIdx = String(i);
+            });
+        }
         function buildColumnCheckboxes() {
-            const headers = Array.from(document.querySelectorAll('#thead-matrix-tr th')).map((th, i) => ({ idx: i, text: th.textContent || '' }));
+            const headRow = document.getElementById('thead-matrix-tr');
+            tagColumnIdentity(headRow);
+            const headers = Array.from(headRow.children).map(th => ({ idx: parseInt(th.dataset.colIdx, 10), text: th.textContent || '' }));
+            headers.sort((a, b) => a.idx - b.idx); // list in original order regardless of current drag position
             const container = document.getElementById('col-checkboxes');
             container.innerHTML = '';
             headers.forEach(h => {
@@ -2329,14 +2346,81 @@
         }
         function toggleAllColumns(show) {
             const checkboxes = document.querySelectorAll('#col-checkboxes input[type="checkbox"]');
-            checkboxes.forEach((chk, i) => { chk.checked = show; toggleColumn(i, show); });
+            const headers = Array.from(document.getElementById('thead-matrix-tr').children);
+            checkboxes.forEach((chk, i) => { chk.checked = show; toggleColumn(parseInt(headers[i].dataset.colIdx, 10), show); });
         }
         function applyColumnVisibility() {
             document.querySelectorAll('#table-matrix tr').forEach(tr => {
-                Array.from(tr.children).forEach((td, i) => {
-                    td.style.display = hiddenCols.includes(i) ? 'none' : '';
+                Array.from(tr.children).forEach(cell => {
+                    const idx = parseInt(cell.dataset.colIdx, 10);
+                    cell.style.display = hiddenCols.includes(idx) ? 'none' : '';
                 });
             });
+        }
+
+        // ---- Drag-to-reorder ----
+        // Call at the end of any function that rebuilds a table's <tbody>
+        // (renderMatrixPage, renderPortfolio, ...). First call for a given
+        // table also wires up the drag handlers on its header (idempotent -
+        // guarded by a flag on the header row) and restores whatever order
+        // the user left it in last time; every call re-applies that saved
+        // order to the freshly-built rows, which always come out of their
+        // template strings in the original source order.
+        function getColOrder(storageKey, colCount) {
+            let saved = null;
+            try { saved = JSON.parse(localStorage.getItem(storageKey)); } catch (e) { /* ignore */ }
+            if (Array.isArray(saved) && saved.length === colCount && saved.every(n => Number.isInteger(n) && n >= 0 && n < colCount)) return saved;
+            return Array.from({ length: colCount }, (_, i) => i);
+        }
+        function reorderCellsByIdentity(row, order) {
+            const byIdx = {};
+            Array.from(row.children).forEach(cell => { byIdx[cell.dataset.colIdx] = cell; });
+            const frag = document.createDocumentFragment();
+            order.forEach(idx => { if (byIdx[idx]) frag.appendChild(byIdx[idx]); });
+            row.appendChild(frag);
+        }
+        function initColumnDrag(theadRowId, storageKey) {
+            const headRow = document.getElementById(theadRowId);
+            if (!headRow || headRow.dataset.dragInit) return;
+            tagColumnIdentity(headRow);
+            headRow.dataset.dragInit = '1';
+
+            const savedOrder = getColOrder(storageKey, headRow.children.length);
+            reorderCellsByIdentity(headRow, savedOrder);
+
+            let dragSrc = null;
+            Array.from(headRow.children).forEach(th => {
+                th.setAttribute('draggable', 'true');
+                th.classList.add('cursor-move');
+                th.title = (th.title ? th.title + ' — ' : '') + tt('hint_drag_col');
+                th.addEventListener('dragstart', (e) => {
+                    dragSrc = th;
+                    e.dataTransfer.effectAllowed = 'move';
+                    th.classList.add('opacity-40');
+                });
+                th.addEventListener('dragend', () => th.classList.remove('opacity-40'));
+                th.addEventListener('dragover', (e) => e.preventDefault());
+                th.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    if (!dragSrc || dragSrc === th) return;
+                    const children = Array.from(headRow.children);
+                    if (children.indexOf(dragSrc) < children.indexOf(th)) th.after(dragSrc);
+                    else th.before(dragSrc);
+                    const newOrder = Array.from(headRow.children).map(el => parseInt(el.dataset.colIdx, 10));
+                    localStorage.setItem(storageKey, JSON.stringify(newOrder));
+                    const tbody = headRow.closest('table').querySelector('tbody');
+                    if (tbody) Array.from(tbody.rows).forEach(row => reorderCellsByIdentity(row, newOrder));
+                    if (theadRowId === 'thead-matrix-tr') applyColumnVisibility(); // re-check hidden state after the move
+                });
+            });
+        }
+        function applyColumnOrder(theadRowId, tbodyId, storageKey) {
+            initColumnDrag(theadRowId, storageKey); // no-op after the first call
+            const headRow = document.getElementById(theadRowId);
+            const tbody = document.getElementById(tbodyId);
+            if (!headRow || !tbody) return;
+            const order = getColOrder(storageKey, headRow.children.length);
+            Array.from(tbody.rows).forEach(row => { tagColumnIdentity(row); reorderCellsByIdentity(row, order); });
         }
 
         // Populate Dropdowns
@@ -3573,7 +3657,7 @@
         function renderPortfolio() {
             const tbody = document.getElementById('tbody-exits');
             tbody.innerHTML = '';
-            if (userPortfolio.length === 0) { tbody.innerHTML = `<tr><td colspan="24" class="p-6 text-center text-textmuted font-sans">${tt('lbl_no_positions')}</td></tr>`; return; }
+            if (userPortfolio.length === 0) { tbody.innerHTML = `<tr><td colspan="24" class="p-6 text-center text-textmuted font-sans">${tt('lbl_no_positions')}</td></tr>`; initColumnDrag('thead-exits-tr', 'quant_col_order_exits'); return; }
             const totalEquity = computeTotalEquityForRisk();
             userPortfolio.forEach(pos => {
                 let cp = pos.buyPrice, rsi = 50.0, adx = 0.0, trend = "Consolidation";
@@ -3627,6 +3711,7 @@
                 `;
                 tbody.appendChild(tr);
             });
+            applyColumnOrder('thead-exits-tr', 'tbody-exits', 'quant_col_order_exits');
             renderPortfolioBanner(totalEquity);
         }
 
@@ -3976,6 +4061,7 @@
                 tbody.appendChild(tr);
             });
             if (total === 0) tbody.innerHTML = `<tr><td colspan="21" class="p-8 text-center text-textmuted font-sans">${tt('lbl_no_filter_matches')}</td></tr>`;
+            applyColumnOrder('thead-matrix-tr', 'tbody-matrix', 'quant_col_order_matrix');
             applyColumnVisibility();
             renderMatrixPaginationControls();
         }
