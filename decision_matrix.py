@@ -43,6 +43,10 @@ from config import (
     MATRIX_LOOKBACK_DAYS,
     PORTFOLIO_RISK_THRESHOLDS,
     CASH_DRAG_LOW_PCT,
+    PRIMARY_BENCHMARK_TICKER,
+    SECTOR_BENCHMARK_MAP,
+    BREAKOUT_WATCH_BULL_REGIME_BONUS,
+    BREAKOUT_WATCH_BEAR_REGIME_PENALTY,
     get_logger,
 )
 
@@ -51,7 +55,14 @@ import pandas as pd
 from analytics import QuantitativeEngine
 from db_manager import DatabaseManager
 from session_picks import refresh_session_picks, emit_alert
-from market_regime import normalized_benchmark_set
+from market_regime import (
+    normalized_benchmark_set,
+    load_all_benchmark_indicators,
+    live_regime_snapshot,
+    build_close_by_date,
+    benchmark_label,
+    get_sector_benchmark_ticker,
+)
 
 logger = get_logger("decision_matrix")
 
@@ -313,6 +324,18 @@ def _graduated_score(value: float, soft_lo: float, lo: float, hi: float, soft_hi
     return 0.0
 
 
+def sector_benchmark_label(sec_name: str) -> str:
+    """Display string for the Pre-Breakout Watchlist's "Sector Index RS"
+    reason (e.g. "its sector index (EGX Banks)"), or a generic fallback
+    if this sector has no dedicated EGX sub-index in config.
+    SECTOR_BENCHMARK_MAP - keeps the reason string informative without
+    the caller needing to know whether a mapped index exists."""
+    bench_ticker = get_sector_benchmark_ticker(sec_name)
+    if not bench_ticker:
+        return "its sector index"
+    return f"its sector index ({benchmark_label(bench_ticker)})"
+
+
 def _recent_failed_resistance_test(df_ind, range_high: float, curr_price: float,
                                      lookback: int, near_pct: float, reject_pct: float) -> bool:
     """True if price tested (came within ``near_pct``% of) the range high
@@ -516,6 +539,71 @@ class DecisionMatrix:
             if self.dbm.normalize_symbol(t) not in _benchmark_norms
         ]
 
+        # -------------------------------------------------------------------
+        # LIVE market regime + per-sector benchmark data (config.
+        # BENCHMARK_TICKERS / SECTOR_BENCHMARK_MAP). Previously this data
+        # was only ever computed inside the offline backtester/factor
+        # harness (run_backtest.py --save, run_factor_backtest.py) - this
+        # live run never consulted it. Computed once per run, up front,
+        # from the SAME market_data_bulk pull above (no extra DB round
+        # trip), and reused below for: (1) the Pre-Breakout Watchlist's
+        # regime-based bw_score nudge and "Sector Index RS" factor, (2)
+        # the "market_regime" block returned to callers (app_gui.py /
+        # export_json.py) for a header badge, and (3) Session Picks' live
+        # alpha-vs-benchmark (see refresh_session_picks call below).
+        # Every consumer here treats a missing/not-yet-ingested benchmark
+        # as "feature unavailable this run", never a hard failure - see
+        # market_regime.load_all_benchmark_indicators's own graceful-empty
+        # behavior per ticker.
+        # -------------------------------------------------------------------
+        benchmark_frames = load_all_benchmark_indicators(self.qe, market_data_bulk=market_data_bulk)
+        benchmark_regimes = live_regime_snapshot(benchmark_frames)
+        primary_norm = self.dbm.normalize_symbol(PRIMARY_BENCHMARK_TICKER)
+        primary_regime_info = benchmark_regimes.get(primary_norm, {})
+        primary_market_regime = primary_regime_info.get("regime", "unknown")
+        primary_bench_close_by_date = build_close_by_date(benchmark_frames.get(primary_norm, pd.DataFrame()))
+
+        # Sector-name -> that sector's own EGX sub-index indicator frame,
+        # for whichever sectors have a mapped benchmark (config.
+        # SECTOR_BENCHMARK_MAP) AND that benchmark's data has actually
+        # been ingested. Built once here (not per-ticker) since multiple
+        # tickers usually share a sector.
+        sector_bench_frames = {}
+        for sec_name, bench_ticker in SECTOR_BENCHMARK_MAP.items():
+            bnorm = self.dbm.normalize_symbol(bench_ticker)
+            if bnorm in benchmark_frames:
+                sector_bench_frames[sec_name] = benchmark_frames[bnorm]
+
+        # Small, additive nudge to the Pre-Breakout Watchlist's composite
+        # score based on the broad-market regime (see config.
+        # BREAKOUT_WATCH_BULL_REGIME_BONUS / BEAR_REGIME_PENALTY's own
+        # docstring for why this is additive rather than a hard gate).
+        regime_score_adj = {
+            "bull": BREAKOUT_WATCH_BULL_REGIME_BONUS,
+            "bear": BREAKOUT_WATCH_BEAR_REGIME_PENALTY,
+        }.get(primary_market_regime, 0.0)
+
+        # Public, non-sensitive - benchmark index LEVELS, same trust
+        # boundary as the rest of market_matrix/sectors (no account data).
+        # Returned from every analyze_market() code path (including the
+        # early "no tickers" return below) so a caller can always show a
+        # regime badge even before any stock has been ingested.
+        # "benchmarks" is keyed by normalized ticker (e.g. "EGBANK.CA")
+        # and includes every configured benchmark whose data is currently
+        # available - not just the primary one - so a UI can show
+        # per-sector-index regimes too (Sectors tab), not only the single
+        # broad-market badge.
+        market_regime_summary = {
+            "primary": {
+                "ticker": PRIMARY_BENCHMARK_TICKER,
+                "label": benchmark_label(PRIMARY_BENCHMARK_TICKER),
+                "regime": primary_market_regime,
+                "close": primary_regime_info.get("close"),
+                "as_of": primary_regime_info.get("as_of"),
+            },
+            "benchmarks": dict(benchmark_regimes),
+        }
+
         owned_dict = self.dbm.get_all_owned_stocks()
         position_targets = self.dbm.get_all_position_targets()
         closed_trades = self.dbm.get_all_closed_trades()
@@ -553,7 +641,9 @@ class DecisionMatrix:
                 "warnings": [],
             }
             session_picks = refresh_session_picks(
-                self.dbm, buy_recommendations, {}, [], self.dbm.get_latest_market_date()
+                self.dbm, buy_recommendations, {}, [], self.dbm.get_latest_market_date(),
+                bench_close_by_date=primary_bench_close_by_date,
+                benchmark_label=benchmark_label(PRIMARY_BENCHMARK_TICKER),
             )
             return (
                 buy_recommendations,
@@ -565,6 +655,7 @@ class DecisionMatrix:
                 breakout_watchlist,
                 empty_risk,
                 session_picks,
+                market_regime_summary,
             )
 
         eligible = []
@@ -1034,6 +1125,36 @@ class DecisionMatrix:
                             bw_score += rs_pts
                             bw_reasons.append("Outperforming its sector")
 
+                        # NEW: relative strength vs. the REAL EGX sector
+                        # sub-index (config.SECTOR_BENCHMARK_MAP), where one
+                        # exists and its data has been ingested - distinct
+                        # from "Outperforming its sector" above, which only
+                        # compares against the average of whatever other
+                        # tickers this app happens to classify into the same
+                        # sector. This compares against the actual published
+                        # index (e.g. EGX Banks, EGX Real Estate), the same
+                        # kind of benchmark EGX30 is for the whole market,
+                        # just scoped to this ticker's own sector. Skipped
+                        # silently (0 pts) if this sector has no mapped
+                        # index or that index's data isn't loaded - see
+                        # sector_bench_frames built once above the main loop.
+                        sector_index_rs = None
+                        bench_frame_for_sector = sector_bench_frames.get(sec_name)
+                        if bench_frame_for_sector is not None and len(bench_frame_for_sector) >= 6:
+                            b_close = bench_frame_for_sector["close"]
+                            b_now, b_5d_ago = b_close.iloc[-1], b_close.iloc[-6]
+                            if pd.notna(b_now) and pd.notna(b_5d_ago) and b_5d_ago > 0:
+                                sector_index_5d = ((b_now - b_5d_ago) / b_5d_ago) * 100.0
+                                sector_index_rs = ticker_5d - sector_index_5d
+                        if sector_index_rs is not None:
+                            idx_rs_pts = _graduated_score(
+                                sector_index_rs, 0.0, at["breakout_watch_sector_index_rs_span_pct"], 999.0, 999.0,
+                                at["breakout_watch_sector_index_rs_bonus_max"],
+                            )
+                            if idx_rs_pts > 0:
+                                bw_score += idx_rs_pts
+                                bw_reasons.append(f"Outperforming {sector_benchmark_label(sec_name)}")
+
                         # NEW: bullish chart-pattern confirmation, reusing the
                         # same pattern match already computed for the main
                         # matrix instead of re-running pattern detection.
@@ -1152,6 +1273,19 @@ class DecisionMatrix:
                             bw_score += updown_pts
                             bw_reasons.append("Buyers absorbing supply (up-volume > down-volume)")
 
+                        # NEW: small additive nudge from the LIVE broad-market
+                        # regime (EGX30 - see market_regime_summary computed
+                        # once above the main loop). Not a hard gate - see
+                        # config.BREAKOUT_WATCH_BULL_REGIME_BONUS / BEAR_
+                        # REGIME_PENALTY's own docstring for why.
+                        if regime_score_adj:
+                            bw_score += regime_score_adj
+                            if regime_score_adj > 0:
+                                bw_reasons.append(f"Broad market in confirmed uptrend ({benchmark_label(PRIMARY_BENCHMARK_TICKER)})")
+                            else:
+                                bw_reasons.append(f"Broad market in confirmed downtrend ({benchmark_label(PRIMARY_BENCHMARK_TICKER)})")
+                        bw_score = max(0.0, bw_score)
+
                         already_fired = (
                             "STRONG BUY" in raw_action or "BREAKOUT BUY" in raw_action or "SELL" in raw_action
                         )
@@ -1187,10 +1321,13 @@ class DecisionMatrix:
                                     "ATR% Contraction Percentile": round(atr_percentile, 1) if atr_percentile is not None else None,
                                     "Up/Down Volume Ratio": round(updown_ratio, 2) if updown_ratio is not None else None,
                                     "Sector RS (5D, pts)": round(sector_rs, 2),
+                                    "Sector Index RS (5D, pts)": round(sector_index_rs, 2) if sector_index_rs is not None else None,
+                                    "Sector Index": benchmark_label(get_sector_benchmark_ticker(sec_name)) if get_sector_benchmark_ticker(sec_name) else None,
                                     "Recently Rejected": bool(failed_test),
                                     "Trend Class": trend_latest,
                                     "Signals": ", ".join(bw_reasons) if bw_reasons else "—",
                                     "Data Confidence": data_conf_tier,
+                                    "Market Regime (EGX30)": primary_market_regime,
                                 })
                 except Exception as e:
                     logger.warning(f"{norm_ticker}: pre-breakout screening failed ({e}) - skipping watchlist for this ticker only")
@@ -1476,9 +1613,15 @@ class DecisionMatrix:
         # pre-breakout name can fill a bounded number of "short" horizon
         # slots once the already-fired STRONG BUY/BREAKOUT BUY pool runs
         # dry, instead of never being eligible until after it's already run.
+        # bench_close_by_date/benchmark_label (see market_regime_summary
+        # computed above) let refresh_session_picks attach a live
+        # "beating/lagging EGX30" alpha figure to every active pick - see
+        # that function's own docstring.
         session_picks = refresh_session_picks(
             self.dbm, buy_recommendations, top_10_by_category, sector_summary,
             session_date, breakout_watchlist=breakout_watchlist,
+            bench_close_by_date=primary_bench_close_by_date,
+            benchmark_label=benchmark_label(PRIMARY_BENCHMARK_TICKER),
         )
 
         if progress_callback:
@@ -1493,6 +1636,7 @@ class DecisionMatrix:
             breakout_watchlist,
             portfolio_risk,
             session_picks,
+            market_regime_summary,
         )
 
 

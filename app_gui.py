@@ -1771,14 +1771,14 @@ class IngestionWorker(QThread):
 
 class AnalysisWorker(QThread):
     progress_signal = pyqtSignal(int, str)
-    results_signal = pyqtSignal(list, list, dict, list, dict, list, list, dict, dict)
+    results_signal = pyqtSignal(list, list, dict, list, dict, list, list, dict, dict, dict)
 
     def run(self):
         matrix = DecisionMatrix()
-        buys, exits, top10, closed, fin_stmt, sectors, breakout_watchlist, portfolio_risk, session_picks = matrix.analyze_market(
+        buys, exits, top10, closed, fin_stmt, sectors, breakout_watchlist, portfolio_risk, session_picks, market_regime = matrix.analyze_market(
             progress_callback=lambda pct, msg: self.progress_signal.emit(pct, msg)
         )
-        self.results_signal.emit(buys, exits, top10, closed, fin_stmt, sectors, breakout_watchlist, portfolio_risk, session_picks)
+        self.results_signal.emit(buys, exits, top10, closed, fin_stmt, sectors, breakout_watchlist, portfolio_risk, session_picks, market_regime)
 
 
 # =============================================================================
@@ -3374,11 +3374,20 @@ class QuantDashboard(QMainWindow):
         status_layout.setSpacing(2)
         self.lbl_last_date = QLabel("📅 Last Data Date: Loading...")
         self.lbl_last_date.setStyleSheet("font-weight: bold; color: #93ccff; font-size: 11px;")
+        # NEW: live broad-market regime badge (EGX30 - see decision_matrix's
+        # market-regime block / market_regime.py). Updated in populate_tables()
+        # via _update_market_regime_badge(); blank/hidden until the first
+        # analysis run returns data, same "Loading..." → real-value pattern
+        # as lbl_last_date above.
+        self.lbl_market_regime = QLabel("")
+        self.lbl_market_regime.setStyleSheet("font-weight: bold; font-size: 11px;")
+        self.lbl_market_regime.hide()
         self.lbl_welcome_user = QLabel("")
         if self.user_info:
             self.lbl_welcome_user.setText(f"👋 {self.user_info['name']}")
             self.lbl_welcome_user.setStyleSheet("font-weight: bold; color: #cbd5e0; font-size: 11px;")
         status_layout.addWidget(self.lbl_last_date, alignment=Qt.AlignmentFlag.AlignRight)
+        status_layout.addWidget(self.lbl_market_regime, alignment=Qt.AlignmentFlag.AlignRight)
         status_layout.addWidget(self.lbl_welcome_user, alignment=Qt.AlignmentFlag.AlignRight)
         top_row.addLayout(status_layout)
         
@@ -3745,6 +3754,7 @@ class QuantDashboard(QMainWindow):
         self.tbl_breakout_watch = QTableWidget()
         self._breakout_watch_columns = [
             ("Ticker", "Stock ticker symbol"),
+            ("Tier", "Watching (below the confirmed bar) / Confirmed / High Confidence (also pushes a Telegram alert)"),
             ("Breakout Score", "0-100 composite pre-breakout score (higher = more setup elements aligned)"),
             ("Price", "Current close price"),
             ("Dist. to Resistance %", "% move still needed to reach the recent high"),
@@ -3752,7 +3762,14 @@ class QuantDashboard(QMainWindow):
             ("ADX-14", "14-period trend-strength index"),
             ("Squeeze", "Bollinger Bands inside Keltner Channels — volatility compression, often precedes a move"),
             ("Volume Trend", "Is 5-day average volume rising vs. the prior 5 days"),
+            ("Dry-Up Ratio", "Recent (10D) vs. base (50D) average volume — a low ratio means sellers have dried up during the base"),
+            ("ATR% Contr. %ile", "Where today's volatility-contraction reading ranks vs. its own recent history — lower = tighter, more compressed range"),
+            ("Up/Down Vol Ratio", "Up-day volume ÷ down-day volume over the recent window — above 1 means buyers are absorbing supply"),
+            ("Sector RS (5D)", "This ticker's 5-day return minus the AVERAGE 5-day return of other tickers in the same sector (peer comparison)"),
+            ("Sector Idx RS (5D)", "This ticker's 5-day return minus the REAL EGX sector sub-index's own 5-day return (e.g. vs EGX Banks) — see the Sector Idx column for which index"),
+            ("Rejected?", "Price recently tested resistance and pulled back without closing above it — a meaningfully weaker setup than a fresh approach"),
             ("Trend", "Trend classification"),
+            ("Data Confidence", "How much price history this ticker has — a young listing's signals carry less weight"),
             ("Signals", "Which setup elements fired for this ticker"),
         ]
         self.tbl_breakout_watch.setColumnCount(len(self._breakout_watch_columns))
@@ -4021,7 +4038,7 @@ class QuantDashboard(QMainWindow):
     # displays what's already in the DB + lets you manually clear a pick;
     # it never decides which tickers get picked.
     # =========================================================================
-    _PICKS_COLS = ["Ticker", "Picked On", "Target Gain", "Expected By", "Pick Price", "Current Price", "Change (%)", "Status", ""]
+    _PICKS_COLS = ["Ticker", "Picked On", "Target Gain", "Expected By", "Pick Price", "Current Price", "Change (%)", "vs Benchmark", "Status", ""]
     _ACHIEVED_COLS = ["Ticker", "Horizon", "Picked On", "Pick Price", "Achieved On", "Achieved Price", "Achieved (%)"]
 
     def _make_picks_table(self, columns):
@@ -4092,6 +4109,17 @@ class QuantDashboard(QMainWindow):
         price_map = {r["Ticker"]: r.get("Current Price") for r in (self._raw_buys_data or [])}
         achieved_today_ids = {p["id"] for p in session_picks.get("achieved_today", [])}
 
+        # NEW: live "beating/lagging the index" column. benchmark_label
+        # (e.g. "EGX 30" - see market_regime.benchmark_label) comes from
+        # this same run's session_picks payload (decision_matrix.py's
+        # refresh_session_picks call) so the header always names the
+        # actual benchmark being compared against, not a hard-coded one.
+        bench_label = session_picks.get("benchmark_label") or "Benchmark"
+        for tbl in self._picks_tables.values():
+            header_item = tbl.horizontalHeaderItem(7)
+            if header_item is not None:
+                header_item.setText(tr(f"vs {bench_label}"))
+
         for horizon, tbl in self._picks_tables.items():
             picks = session_picks.get(horizon, [])
             tbl.setRowCount(len(picks))
@@ -4103,6 +4131,9 @@ class QuantDashboard(QMainWindow):
                     pct_str = f"{pct:+.2f}%"
                 else:
                     pct, pct_str = None, "-"
+
+                alpha = pick.get("alpha_vs_benchmark_pct")
+                alpha_str = f"{alpha:+.2f}%" if alpha is not None else "-"
 
                 expected_from = pick.get("expected_from")
                 expected_by = pick.get("expected_by")
@@ -4122,6 +4153,7 @@ class QuantDashboard(QMainWindow):
                     f"{ref_price:.4f}",
                     f"{current_price:.4f}" if current_price is not None else "-",
                     pct_str,
+                    alpha_str,
                     tr("🟢 Active"),
                 ]
                 for col_idx, val in enumerate(values):
@@ -4131,12 +4163,14 @@ class QuantDashboard(QMainWindow):
                     if col_idx == 6 and pct is not None:
                         item.setForeground(QColor("#38a169" if pct >= 0 else "#e53e3e"))
                         item.setFont(QFont("Inter", 10, QFont.Weight.Bold))
+                    elif col_idx == 7 and alpha is not None:
+                        item.setForeground(QColor("#38a169" if alpha >= 0 else "#e53e3e"))
                     tbl.setItem(row_idx, col_idx, item)
 
                 btn_remove = QPushButton(tr("✖ Remove"))
                 btn_remove.setStyleSheet("background-color: #742a2a; color: white; border-radius: 4px; padding: 2px 8px;")
                 btn_remove.clicked.connect(lambda _, pid=pick["id"]: self._remove_session_pick(pid))
-                tbl.setCellWidget(row_idx, 8, btn_remove)
+                tbl.setCellWidget(row_idx, 9, btn_remove)
 
         # Track Record — pulled fresh from the DB (full history, not just
         # this run), with today's newly-achieved rows highlighted gold.
@@ -4588,13 +4622,37 @@ class QuantDashboard(QMainWindow):
         self.lbl_concentration_warning.setToolTip("\n\n".join(all_lines))
         self.lbl_concentration_warning.show()
 
-    def populate_tables(self, buys, exits, top10, closed_trades, fin_stmt, sector_summary, breakout_watchlist=None, portfolio_risk=None, session_picks=None, _push_cloud_stats=True):
+    def _update_market_regime_badge(self, market_regime: dict | None):
+        """Updates the header badge (self.lbl_market_regime) from the live
+        EGX30 regime decision_matrix.analyze_market() now computes every
+        run (see market_regime.py / config.BENCHMARK_TICKERS). Hidden
+        entirely if no regime data is available yet (e.g. EGX30 hasn't
+        been ingested - see market_regime.load_all_benchmark_indicators's
+        graceful-empty behavior) rather than showing a misleading value."""
+        primary = (market_regime or {}).get("primary") or {}
+        regime = primary.get("regime")
+        label = primary.get("label") or "EGX30"
+        if not regime or regime == "unknown":
+            self.lbl_market_regime.hide()
+            return
+        icon, color = {
+            "bull": ("📈", "#38a169"),
+            "bear": ("📉", "#e53e3e"),
+            "neutral": ("➖", "#a0aec0"),
+        }.get(regime, ("➖", "#a0aec0"))
+        regime_text = {"bull": tr("Bullish"), "bear": tr("Bearish"), "neutral": tr("Neutral")}.get(regime, regime)
+        self.lbl_market_regime.setText(f"{icon} {label}: {regime_text}")
+        self.lbl_market_regime.setStyleSheet(f"font-weight: bold; font-size: 11px; color: {color};")
+        self.lbl_market_regime.show()
+
+    def populate_tables(self, buys, exits, top10, closed_trades, fin_stmt, sector_summary, breakout_watchlist=None, portfolio_risk=None, session_picks=None, market_regime=None, _push_cloud_stats=True):
         breakout_watchlist = breakout_watchlist or []
         session_picks = session_picks or {}
         self._set_ui_controls_enabled(True)
         self.lbl_status.setText(tr("✅ Quantitative signal matrix & sector heatmaps successfully updated."))
         self.refresh_account_header(fin_stmt)
         self.update_last_data_date_display()
+        self._update_market_regime_badge(market_regime)
         self._raw_buys_data = buys
 
         # Cached so a language switch can re-render every table's already-
@@ -4604,7 +4662,7 @@ class QuantDashboard(QMainWindow):
             buys=buys, exits=exits, top10=top10, closed_trades=closed_trades,
             fin_stmt=fin_stmt, sector_summary=sector_summary,
             breakout_watchlist=breakout_watchlist, portfolio_risk=portfolio_risk,
-            session_picks=session_picks,
+            session_picks=session_picks, market_regime=market_regime,
         )
 
         pr = portfolio_risk or {}
@@ -4942,17 +5000,23 @@ class QuantDashboard(QMainWindow):
                 self.tbl_fin_stmt.setItem(row_idx, 0, item_name)
                 self.tbl_fin_stmt.setItem(row_idx, 1, item_val)
 
-            _breakout_translatable = {"Squeeze Active", "Volume Trend", "Trend Class", "Signals"}
+            _breakout_translatable = {"Squeeze Active", "Volume Trend", "Trend Class", "Signals", "Tier", "Data Confidence"}
+            _breakout_keys = [
+                "Ticker", "Tier", "Breakout Score", "Current Price", "Dist. to Resistance (%)",
+                "RSI-14", "ADX-14", "Squeeze Active", "Volume Trend",
+                "Dry-Up Ratio (10D/50D Vol)", "ATR% Contraction Percentile", "Up/Down Volume Ratio",
+                "Sector RS (5D, pts)", "Sector Index RS (5D, pts)", "Recently Rejected",
+                "Trend Class", "Data Confidence", "Signals",
+            ]
 
             self.tbl_breakout_watch.setRowCount(len(breakout_watchlist))
             for row_idx, row_data in enumerate(breakout_watchlist):
-                for col_idx, key in enumerate([
-                    "Ticker", "Breakout Score", "Current Price", "Dist. to Resistance (%)",
-                    "RSI-14", "ADX-14", "Squeeze Active", "Volume Trend", "Trend Class", "Signals",
-                ]):
+                for col_idx, key in enumerate(_breakout_keys):
                     val = row_data.get(key, "")
-                    if key == "Squeeze Active":
+                    if key in ("Squeeze Active", "Recently Rejected"):
                         val_str = "✅ Yes" if val else "—"
+                    elif val is None:
+                        val_str = "—"
                     else:
                         val_str = str(val)
                     display_str = tr(val_str) if key in _breakout_translatable else val_str
@@ -4972,6 +5036,13 @@ class QuantDashboard(QMainWindow):
                                 item.setForeground(Qt.GlobalColor.white)
                         except (TypeError, ValueError):
                             pass
+                    elif key == "Tier" and val == "High Confidence":
+                        item.setForeground(QColor("#f6ad55"))
+                        item.setFont(QFont("Inter", 10, QFont.Weight.Bold))
+                    elif key == "Recently Rejected" and val:
+                        item.setForeground(QColor("#e53e3e"))
+                    elif key in ("Sector RS (5D, pts)", "Sector Index RS (5D, pts)") and isinstance(val, (int, float)):
+                        item.setForeground(QColor("#38a169" if val >= 0 else "#e53e3e"))
 
                     self.tbl_breakout_watch.setItem(row_idx, col_idx, item)
         finally:

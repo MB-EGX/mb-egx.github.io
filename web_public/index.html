@@ -246,6 +246,11 @@
                     <div>
                         <h1 id="lbl-title" class="text-sm md:text-base font-headline font-bold text-sky-400 tracking-tight">MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard</h1>
                         <p class="text-[11px] text-textmuted mt-0.5">📅 <span id="lbl-last-date">Last Data Date:</span> <strong id="val-last-date" class="text-sky-400">—</strong></p>
+                        <!-- NEW: live broad-market regime badge (EGX30 - see decision_matrix's
+                             market-regime block / market_regime.py). Populated by
+                             updateMarketRegimeBadge(), hidden until data with regime info
+                             loads (same "start hidden" pattern as the stale-data banner). -->
+                        <p id="lbl-market-regime" class="text-[11px] font-bold mt-0.5 hidden"></p>
                     </div>
                 </div>
                 <!-- Mobile-only toggle for the control buttons below (hidden on desktop — see @media rules in <style>) -->
@@ -529,6 +534,7 @@
                         <tr>
                             <th class="p-2.5 border border-darkbg">#</th>
                             <th class="p-2.5 border border-darkbg" data-i18n="hdr_ticker">Ticker</th>
+                            <th class="p-2.5 border border-darkbg font-sans" data-i18n="hdr_tier" title="Watching (below the confirmed bar) / Confirmed / High Confidence (also pushes a Telegram alert)">Tier</th>
                             <th class="p-2.5 border border-darkbg text-right" data-i18n="hdr_breakout_score">Breakout Score</th>
                             <th class="p-2.5 border border-darkbg text-right" data-i18n="hdr_price">Price</th>
                             <th class="p-2.5 border border-darkbg text-right" data-i18n="hdr_dist_resistance">Dist. to Resistance %</th>
@@ -536,12 +542,19 @@
                             <th class="p-2.5 border border-darkbg text-right">ADX-14</th>
                             <th class="p-2.5 border border-darkbg text-center" data-i18n="hdr_squeeze">Squeeze</th>
                             <th class="p-2.5 border border-darkbg font-sans" data-i18n="hdr_volume_trend">Volume Trend</th>
+                            <th class="p-2.5 border border-darkbg text-right font-sans" data-i18n="hdr_dryup_ratio" title="Recent (10D) vs. base (50D) average volume — a low ratio means sellers have dried up during the base">Dry-Up Ratio</th>
+                            <th class="p-2.5 border border-darkbg text-right font-sans" data-i18n="hdr_atr_contraction" title="Where today's volatility-contraction reading ranks vs. its own recent history — lower = tighter, more compressed range">ATR% Contr. %ile</th>
+                            <th class="p-2.5 border border-darkbg text-right font-sans" data-i18n="hdr_updown_vol" title="Up-day volume ÷ down-day volume over the recent window — above 1 means buyers are absorbing supply">Up/Down Vol Ratio</th>
+                            <th class="p-2.5 border border-darkbg text-right font-sans" data-i18n="hdr_sector_rs" title="This ticker's 5-day return minus the AVERAGE 5-day return of other tickers in the same sector (peer comparison)">Sector RS (5D)</th>
+                            <th class="p-2.5 border border-darkbg text-right font-sans" data-i18n="hdr_sector_index_rs" title="This ticker's 5-day return minus the REAL EGX sector sub-index's own 5-day return">Sector Idx RS (5D)</th>
+                            <th class="p-2.5 border border-darkbg text-center font-sans" data-i18n="hdr_recently_rejected" title="Price recently tested resistance and pulled back without closing above it">Rejected?</th>
                             <th class="p-2.5 border border-darkbg font-sans" data-i18n="hdr_trend">Trend</th>
+                            <th class="p-2.5 border border-darkbg font-sans" data-i18n="hdr_data_confidence">Data Confidence</th>
                             <th class="p-2.5 border border-darkbg font-sans" data-i18n="hdr_signals">Signals</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-breakout" class="divide-y divide-bordercol/50 text-xs">
-                        <tr><td colspan="11" class="p-8 text-center text-textmuted font-sans" data-i18n="loading_breakout">Loading breakout watchlist...</td></tr>
+                        <tr><td colspan="19" class="p-8 text-center text-textmuted font-sans" data-i18n="loading_breakout">Loading breakout watchlist...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -1619,6 +1632,12 @@
                 breakeven_no_history: "Not enough history", target_no_history: "Not enough history",
                 hdr_dist_resistance: "Dist. to Resistance %", hdr_squeeze: "Squeeze", hdr_volume_trend: "Volume Trend",
                 hdr_signals: "Signals", hdr_shares_sold: "Shares Sold", hdr_sell_price: "Sell Price",
+                hdr_tier: "Tier", hdr_dryup_ratio: "Dry-Up Ratio", hdr_atr_contraction: "ATR% Contr. %ile",
+                hdr_updown_vol: "Up/Down Vol Ratio", hdr_sector_rs: "Sector RS (5D)", hdr_sector_index_rs: "Sector Idx RS (5D)",
+                hdr_recently_rejected: "Rejected?", hdr_data_confidence: "Data Confidence",
+                hdr_vs_benchmark: "vs {bench}", hdr_market_regime: "Market Regime",
+                tier_watching: "Watching", tier_confirmed: "Confirmed", tier_high_confidence: "High Confidence",
+                regime_bull: "Bullish", regime_bear: "Bearish", regime_neutral: "Neutral", regime_unknown: "Unknown",
                 hdr_realized_pnl_egp: "Realized P&L (EGP)", hdr_realized_pnl_pct: "Realized P&L (%)",
                 hdr_purchase_date: "Purchase Date", hdr_sell_date: "Sell Date",
                 // Misc labels / loading states
@@ -1858,6 +1877,12 @@
                 breakeven_no_history: "لا يوجد سجل كافٍ", target_no_history: "لا يوجد سجل كافٍ",
                 hdr_dist_resistance: "المسافة للمقاومة %", hdr_squeeze: "انضغاط", hdr_volume_trend: "اتجاه الحجم",
                 hdr_signals: "الإشارات", hdr_shares_sold: "الأسهم المباعة", hdr_sell_price: "سعر البيع",
+                hdr_tier: "المستوى", hdr_dryup_ratio: "نسبة جفاف السيولة", hdr_atr_contraction: "انضغاط التقلب %",
+                hdr_updown_vol: "نسبة حجم الصعود/الهبوط", hdr_sector_rs: "قوة القطاع النسبية (5 أيام)", hdr_sector_index_rs: "قوة مؤشر القطاع النسبية (5 أيام)",
+                hdr_recently_rejected: "مرفوض مؤخرًا؟", hdr_data_confidence: "مستوى الثقة في البيانات",
+                hdr_vs_benchmark: "مقابل {bench}", hdr_market_regime: "نظام السوق العام",
+                tier_watching: "قيد المراقبة", tier_confirmed: "مؤكد", tier_high_confidence: "ثقة عالية",
+                regime_bull: "صاعد", regime_bear: "هابط", regime_neutral: "محايد", regime_unknown: "غير معروف",
                 hdr_realized_pnl_egp: "الربح المحقق (جنيه)", hdr_realized_pnl_pct: "الربح المحقق (%)",
                 hdr_purchase_date: "تاريخ الشراء", hdr_sell_date: "تاريخ البيع",
                 // Misc labels / loading states
@@ -4028,14 +4053,19 @@
             const tbody = document.getElementById('tbody-breakout');
             tbody.innerHTML = '';
             if (!globalData || !Array.isArray(globalData.breakout_watchlist)) {
-                tbody.innerHTML = `<tr><td colspan="11" class="p-8 text-center text-textmuted font-sans">${tt('lbl_breakout_data_missing')}</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="19" class="p-8 text-center text-textmuted font-sans">${tt('lbl_breakout_data_missing')}</td></tr>`;
                 return;
             }
             const list = globalData.breakout_watchlist;
             if (list.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="11" class="p-8 text-center text-textmuted font-sans">${tt('lbl_no_breakout_qualifiers')}</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="19" class="p-8 text-center text-textmuted font-sans">${tt('lbl_no_breakout_qualifiers')}</td></tr>`;
                 return;
             }
+            const tierLabel = (tier) => ({
+                "Watching": tt('tier_watching'), "Confirmed": tt('tier_confirmed'), "High Confidence": tt('tier_high_confidence'),
+            }[tier] || tier || '-');
+            const fmtOrDash = (v) => (v === null || v === undefined || v === '') ? '<span class="text-textmuted">—</span>' : v;
+            const rsClass = (v) => (typeof v === 'number' && !isNaN(v)) ? (v >= 0 ? 'text-emerald-400' : 'text-rose-400') : 'text-textmain';
             list.forEach((row, i) => {
                 const score = parseFloat(row["Breakout Score"]);
                 let scoreStyle = 'text-textmain';
@@ -4043,10 +4073,18 @@
                 else if (!isNaN(score) && score >= 55) scoreStyle = 'bg-[#2b6cb0] text-white font-bold rounded px-2 py-1';
                 const squeeze = row["Squeeze Active"];
                 const squeezeLabel = squeeze ? '<span class="text-emerald-400 font-bold">✅ Yes</span>' : '<span class="text-textmuted">—</span>';
+                const tierStyle = row["Tier"] === "High Confidence" ? 'text-amber-400 font-bold' : (row["Tier"] === "Confirmed" ? 'text-sky-400' : 'text-textmuted');
+                const rejected = row["Recently Rejected"];
+                const rejectedLabel = rejected ? '<span class="text-rose-400 font-bold">⚠️ Yes</span>' : '<span class="text-textmuted">—</span>';
+                const sectorRs = parseFloat(row["Sector RS (5D, pts)"]);
+                const sectorIdxRs = row["Sector Index RS (5D, pts)"];
+                const sectorIdxRsNum = (sectorIdxRs === null || sectorIdxRs === undefined) ? NaN : parseFloat(sectorIdxRs);
+                const sectorIdxTitle = row["Sector Index"] ? `title="vs ${escapeHtml(row["Sector Index"])}"` : '';
                 const tr = document.createElement('tr');
                 tr.className = 'border-b border-bordercol/40 hover:bg-panelbg transition';
                 tr.innerHTML = `
                     <td class="p-2.5 font-sans text-textmuted">${i + 1}</td><td class="p-2.5 font-bold text-sky-400">${escapeHtml(row.Ticker) || '-'}</td>
+                    <td class="p-2.5 font-sans ${tierStyle}">${tierLabel(row["Tier"])}</td>
                     <td class="p-2.5 text-right"><span class="${scoreStyle}">${!isNaN(score) ? score.toFixed(1) : '-'}</span></td>
                     <td class="p-2.5 text-right text-textmain">${row["Current Price"] ?? '-'}</td>
                     <td class="p-2.5 text-right text-textmain">${row["Dist. to Resistance (%)"] ?? '-'}</td>
@@ -4054,11 +4092,41 @@
                     <td class="p-2.5 text-right text-textmain">${row["ADX-14"] ?? '-'}</td>
                     <td class="p-2.5 text-center">${squeezeLabel}</td>
                     <td class="p-2.5 font-sans text-textmuted">${trVolumeTrend(row["Volume Trend"]) || '-'}</td>
+                    <td class="p-2.5 text-right text-textmain">${fmtOrDash(row["Dry-Up Ratio (10D/50D Vol)"])}</td>
+                    <td class="p-2.5 text-right text-textmain">${fmtOrDash(row["ATR% Contraction Percentile"])}</td>
+                    <td class="p-2.5 text-right text-textmain">${fmtOrDash(row["Up/Down Volume Ratio"])}</td>
+                    <td class="p-2.5 text-right ${rsClass(sectorRs)}">${fmtOrDash(row["Sector RS (5D, pts)"])}</td>
+                    <td class="p-2.5 text-right ${rsClass(sectorIdxRsNum)}" ${sectorIdxTitle}>${fmtOrDash(sectorIdxRs)}</td>
+                    <td class="p-2.5 text-center">${rejectedLabel}</td>
                     <td class="p-2.5 font-sans text-textmuted">${trTrend(row["Trend Class"]) || '-'}</td>
+                    <td class="p-2.5 font-sans text-textmuted">${escapeHtml(row["Data Confidence"]) || '-'}</td>
                     <td class="p-2.5 font-sans text-textmuted whitespace-normal">${trSignals(row.Signals) || '-'}</td>
                 `;
                 tbody.appendChild(tr);
             });
+        }
+
+        // NEW: updates the header's live market-regime badge (see market_regime.py /
+        // decision_matrix's market-regime block). Reads from globalData.market_regime -
+        // "primary" (broad-market EGX30 regime) - hidden entirely if that data isn't
+        // available yet (e.g. EGX30 not ingested) rather than showing a misleading value.
+        function updateMarketRegimeBadge(marketRegime) {
+            const el = document.getElementById('lbl-market-regime');
+            if (!el) return;
+            const primary = (marketRegime && marketRegime.primary) || {};
+            const regime = primary.regime;
+            if (!regime || regime === 'unknown') {
+                el.classList.add('hidden');
+                return;
+            }
+            const meta = {
+                bull: { icon: '📈', color: 'text-emerald-400', key: 'regime_bull' },
+                bear: { icon: '📉', color: 'text-rose-400', key: 'regime_bear' },
+                neutral: { icon: '➖', color: 'text-slate-400', key: 'regime_neutral' },
+            }[regime] || { icon: '➖', color: 'text-slate-400', key: 'regime_unknown' };
+            el.className = `text-[11px] font-bold mt-0.5 ${meta.color}`;
+            const label = primary.label || 'EGX30';
+            el.innerText = `${meta.icon} ${escapeHtml(label)}: ${tt(meta.key)}`;
         }
 
         function renderSectors() {
@@ -4128,6 +4196,7 @@
                 const picks = sp[sec.key] || [];
                 const targetPct = picks.length && picks[0].expected_pct != null ? picks[0].expected_pct : null;
                 const titleWithTarget = targetPct != null ? `${sec.title} (${tt('lbl_picks_target')} +${targetPct.toFixed(0)}%)` : sec.title;
+                const benchLabel = sp.benchmark_label || 'Benchmark';
 
                 let rowsHtml = picks.map(p => {
                     const current = priceMap[p.ticker];
@@ -4137,6 +4206,14 @@
                     const expectedStr = (p.expected_from && p.expected_by)
                         ? (p.expected_from === p.expected_by ? p.expected_from : `${p.expected_from} → ${p.expected_by}`)
                         : '-';
+                    // NEW: live alpha vs the benchmark used for this run (see
+                    // session_picks.refresh_session_picks / market_regime.py).
+                    // alpha_vs_benchmark_pct is None (not 0) whenever benchmark
+                    // data isn't available for the relevant dates - shown as
+                    // "-" rather than a fabricated figure.
+                    const alpha = p.alpha_vs_benchmark_pct;
+                    const alphaStr = (alpha != null) ? `${alpha >= 0 ? '+' : ''}${alpha.toFixed(2)}%` : '-';
+                    const alphaColor = alpha == null ? 'text-textmuted' : (alpha >= 0 ? 'text-emerald-400' : 'text-rose-400');
                     return `
                         <div class="bg-panelbg rounded-lg p-3 border border-bordercol/60 space-y-1">
                             <div class="flex justify-between items-center">
@@ -4148,6 +4225,10 @@
                                 <span>${p.ref_price != null ? p.ref_price : '-'} → ${current != null ? current : '-'} EGP</span>
                             </div>
                             <div class="text-[11px] text-textmuted font-sans">${tt('lbl_picks_expected_by')}: ${escapeHtml(expectedStr)}</div>
+                            <div class="text-[11px] font-mono flex justify-between">
+                                <span class="text-textmuted font-sans">${tt('hdr_vs_benchmark').replace('{bench}', escapeHtml(benchLabel))}:</span>
+                                <span class="font-bold ${alphaColor}">${alphaStr}</span>
+                            </div>
                         </div>
                     `;
                 }).join('');
@@ -4548,6 +4629,10 @@
                     sectors: (sectors && sectors.sectors) || [],
                     top_10: (top10 && top10.top_10) || {},
                     breakout_watchlist: (breakout && breakout.breakout_watchlist) || [],
+                    // market_regime is bundled inside breakout.json (see export_json.py's
+                    // _write_shards) since the Breakouts tab is the primary consumer -
+                    // no extra fetch needed for the header badge below.
+                    market_regime: (breakout && breakout.market_regime) || null,
                     session_picks: (sessionPicks && sessionPicks.session_picks) || {},
                     ticker_sectors: (tickerSectors && tickerSectors.ticker_sectors) || {},
                     leaderboard: (leaderboard && leaderboard.leaderboard) || [],
@@ -4557,6 +4642,7 @@
 
                 updateStaleBanner(globalData.last_data_date);
                 document.getElementById('val-last-date').innerText = escapeHtml(globalData.last_data_date || "N/A");
+                updateMarketRegimeBadge(globalData.market_regime);
                 populateSelects(); applyFilters(); renderSectors(); renderTop10(); renderBreakouts(); renderSessionPicks(); renderPortfolio(); renderHistory(); renderAccountBar(); renderPaperTradingPreview(); renderLeaderboardPreview(); renderLeaderboardTab(); renderScreenerPresetChips(); updateNotifyButtonState();
 
                 prefetchChartHistoryInBackground();

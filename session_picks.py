@@ -35,6 +35,7 @@ from config import (
     SESSION_PICKS_QUOTA, SESSION_PICKS_EXPECTED_PCT, SESSION_PICKS_EXPECTED_DAYS,
     MAX_ACHIEVED_HISTORY, SESSION_PICKS_PRE_BREAKOUT_MAX_SLOTS, SESSION_PICKS_PRE_BREAKOUT_MIN_SCORE,
 )
+from market_regime import pct_change_between
 
 HORIZONS = ("short", "medium", "long")
 
@@ -119,16 +120,31 @@ def _expected_window(pick_date: str, horizon: str) -> tuple[str | None, str | No
     return (d + timedelta(days=lo)).isoformat(), (d + timedelta(days=hi)).isoformat()
 
 
-def _with_expected_window(picks: list, horizon: str) -> list:
+def _with_expected_window(picks: list, horizon: str, session_date: str | None = None,
+                           bench_close_by_date: dict | None = None) -> list:
     """Attaches display-only expected metadata to each active pick:
     the expected_from/expected_by date window (see _expected_window) AND
     expected_pct — this horizon's target % gain from config, so the
     GUI/web tab and the social captions can all show "target +X%"
-    without duplicating the config lookup themselves."""
+    without duplicating the config lookup themselves.
+
+    NEW: when ``bench_close_by_date`` (a {date_str: close} map for the
+    live primary benchmark — see market_regime.build_close_by_date and
+    decision_matrix's market-regime block) and ``session_date`` are both
+    given, also attaches ``benchmark_pct`` — the benchmark's own % move
+    from this pick's pick_date to today — so the caller can show
+    "beating/lagging the index" without a separate lookup. Left as
+    ``None`` (never a fabricated 0) whenever benchmark data isn't
+    available for the relevant dates — same missing-means-missing
+    contract as market_regime.pct_change_between itself."""
     expected_pct = SESSION_PICKS_EXPECTED_PCT.get(horizon)
     for p in picks:
         p["expected_from"], p["expected_by"] = _expected_window(p["pick_date"], horizon)
         p["expected_pct"] = expected_pct
+        p["benchmark_pct"] = (
+            pct_change_between(bench_close_by_date, p["pick_date"], session_date)
+            if bench_close_by_date and session_date else None
+        )
     return picks
 
 
@@ -197,7 +213,9 @@ def _candidate_pool(horizon: str, top10: dict, buys: list, sectors: list, by_tic
 
 
 def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_date: str,
-                           breakout_watchlist: list | None = None) -> dict:
+                           breakout_watchlist: list | None = None,
+                           bench_close_by_date: dict | None = None,
+                           benchmark_label: str | None = None) -> dict:
     """Checks active picks for achievement, refills each bucket back up to
     quota, persists everything via ``dbm``, and returns the resulting
     state for the caller to display/export/post.
@@ -213,11 +231,24 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
     is exhausted — see _candidate_pool and
     config.SESSION_PICKS_PRE_BREAKOUT_MAX_SLOTS.
 
+    ``bench_close_by_date``/``benchmark_label`` (see market_regime.
+    build_close_by_date and decision_matrix's market-regime block), if
+    provided, attach a LIVE "beating/lagging the index" figure to every
+    active pick and to every pick achieved this run: ``benchmark_pct``
+    (the benchmark's own % move since pick_date) and
+    ``alpha_vs_benchmark_pct`` (the pick's own % move minus that). Left
+    as ``None`` on a pick when benchmark data isn't available for the
+    relevant date — never a fabricated 0, same contract as
+    market_regime.pct_change_between. This was previously only ever
+    computed after the fact by the offline backtester's benchmark-alpha
+    summary; this is the same idea applied live, per active pick.
+
     Returns:
         {
           "short": [...active picks...], "medium": [...], "long": [...],
           "achieved_today": [...picks newly marked achieved this run...],
           "session_date": session_date,
+          "benchmark_label": benchmark_label,
         }
     """
     if not session_date or session_date == "N/A":
@@ -227,6 +258,7 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
         state = {h: _with_expected_window(dbm.get_active_picks(h), h) for h in HORIZONS}
         state["achieved_today"] = []
         state["session_date"] = session_date
+        state["benchmark_label"] = benchmark_label
         return state
 
     prices = _price_map(buys)
@@ -250,11 +282,19 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
                     dbm.record_leaderboard_hit(pick["ticker"], achieved_pct, session_date)
                 except Exception:
                     pass
+                benchmark_pct = (
+                    pct_change_between(bench_close_by_date, pick["pick_date"], session_date)
+                    if bench_close_by_date else None
+                )
                 event_payload = {
                     **pick,
                     "achieved_date": session_date,
                     "achieved_price": current_price,
                     "achieved_pct": achieved_pct,
+                    "benchmark_pct": benchmark_pct,
+                    "alpha_vs_benchmark_pct": (
+                        round(achieved_pct - benchmark_pct, 2) if benchmark_pct is not None else None
+                    ),
                 }
                 achieved_today.append(event_payload)
                 _emit_alert("pick_achieved", event_payload)
@@ -296,9 +336,30 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
         dbm.prune_achieved_picks(MAX_ACHIEVED_HISTORY)
     except Exception:
         pass
-    state = {h: _with_expected_window(dbm.get_active_picks(h), h) for h in HORIZONS}
+    state = {
+        h: _with_expected_window(dbm.get_active_picks(h), h, session_date, bench_close_by_date)
+        for h in HORIZONS
+    }
+    # Live alpha for the currently-active picks: benchmark_pct was already
+    # attached by _with_expected_window above; add the pick's own move
+    # (from `prices`, the same current-price map the achievement check
+    # used) and derive alpha_vs_benchmark_pct from the two.
+    for horizon in HORIZONS:
+        for p in state[horizon]:
+            current_price = prices.get(p["ticker"])
+            ref_price = p.get("ref_price")
+            stock_pct = (
+                round((current_price / ref_price - 1.0) * 100.0, 2)
+                if current_price is not None and ref_price else None
+            )
+            benchmark_pct = p.get("benchmark_pct")
+            p["alpha_vs_benchmark_pct"] = (
+                round(stock_pct - benchmark_pct, 2)
+                if stock_pct is not None and benchmark_pct is not None else None
+            )
     state["achieved_today"] = achieved_today
     state["session_date"] = session_date
+    state["benchmark_label"] = benchmark_label
     return state
 
 

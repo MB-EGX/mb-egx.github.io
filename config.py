@@ -172,6 +172,13 @@ ACTION_THRESHOLDS = {
                                           # so "High Confidence" stays selective now that there are
                                           # more ways to accumulate points)
     "breakout_watch_max_results": 25,
+    # NEW: relative strength vs. the REAL EGX sector sub-index (config.
+    # SECTOR_BENCHMARK_MAP), not just the peer-average "breakout_watch_
+    # sector_rs_*" factor above. See decision_matrix's "Sector Index RS"
+    # block. Same convention as every other breakout_watch_* knob above -
+    # read via the `at` dict at the call site.
+    "breakout_watch_sector_index_rs_bonus_max": 10.0,
+    "breakout_watch_sector_index_rs_span_pct": 5.0,  # outperformance (pct pts) vs. the real sector index needed for full bonus
 }
 
 # --- Data-confidence weighting ---
@@ -294,7 +301,7 @@ WALK_FORWARD_BACKTEST_DEFAULTS = {
     "max_hold_bars": 60,
 }
 
-# --- Benchmark / index data (EGX30, EGX70, ...) ---
+# --- Benchmark / index data (EGX30, EGX70 EWI, EGX sector indices, ...) ---
 # These tickers represent EGX INDEX LEVELS - not individual tradeable
 # stocks. They must NEVER be scored, ranked, or backtested as if they
 # were a stock (see decision_matrix.analyze_market's ticker-universe
@@ -302,22 +309,124 @@ WALK_FORWARD_BACKTEST_DEFAULTS = {
 # which exclude these before touching any signal/scoring/simulation
 # code) - you can't place a buy order on "the index" the way you can on
 # COMI or HRHO. Instead they feed market_regime.py's regime/relative-
-# strength (alpha) calculations.
+# strength (alpha) calculations, both the offline backtester/factor
+# harness AND (as of this list) the LIVE decision_matrix run.
+#
 # NOTE: this is deliberately NOT the same list as db_manager.get_sector_
 # map's ALIASES entry "EGX3" -> "EGX30ETF" - EGX30ETF is a real,
 # tradeable exchange-traded fund with its own sector mapping and price
-# history; it belongs in the normal tradeable universe. Only add raw
-# index-LEVEL feeds here (normalized form - no need to add ".CA",
-# normalize_symbol() handles that).
-BENCHMARK_TICKERS = ["EGX30", "EGX70", "EGX100"]
+# history (ingested as "EGX30ETF.CA" - the normal no-dot-prefix stock
+# convention, confirmed against your own watchlist CSV's Symbol column);
+# it belongs in the normal tradeable universe, so it is intentionally
+# left OUT of this list even though it's an index product. If you'd
+# rather it be treated as a pure benchmark instead (excluded from
+# Buy/Sell scoring, Top 10, Session Picks, etc.), add "EGX30ETF.CA"
+# here - nothing else needs to change, every consumer of this list
+# (decision_matrix.py, backtester.py, market_regime.py) already derives
+# its behavior from this one list.
+#
+# BUGFIX (round 2): every raw ticker below was missing a leading "." -
+# this app's CSV feed (investing.com-style watchlist exports - see your
+# own Excel_*_Watchlist_*.csv files) writes EVERY index-level symbol
+# with a leading dot (".EGX30", ".EGBANK", ".EGX70EWI", ...) to
+# distinguish an index from a tradeable stock ticker - EGX30ETF.CA is
+# the one exception, since it's a real tradeable fund and follows the
+# normal no-dot + ".CA" stock convention instead. DatabaseManager.
+# normalize_symbol() does NOT strip a leading dot, and does NOT append
+# ".CA" to a string that already contains a "." anywhere - so a
+# dotless "EGX30" here normalized to "EGX30.CA" while the ingested row
+# was stored as ".EGX30" (unchanged, dot survives sanitization - see
+# ingestion.py's _sanitize_text_field / _FORMULA_INJECTION_PREFIXES,
+# which does not treat "." as dangerous). Two different strings -
+# never matched, so every regime/relative-strength feature below was
+# silently inert even once the CSVs were fed in. Confirmed directly
+# against the "Symbol" column of your own daily watchlist exports.
+BENCHMARK_TICKERS = [
+    ".EGX30",       # EGX 30 - flagship blue-chip index
+    ".EGX70EWI",    # EGX 70 EWI - equal-weighted broad index
+    ".EGX100EWI",   # EGX 100 EWI - equal-weighted broad index
+    ".EGX30CAP",    # EGX 30 Capped
+    ".SHARIAH",     # EGX 33 Shariah Compliant Index
+    ".EGBANK",      # EGX Banks
+    ".EGREAL",      # EGX Real Estate
+    ".EGBULM",      # EGX Building Materials
+    ".EGBASC",      # EGX Basic Resources
+    ".EGFOBT",      # EGX Food & Beverages
+    ".EGEDUS",      # EGX Education Services
+    ".EGTRDB",      # EGX Trading & Distributors
+    ".EGSHTS",      # EGX Shipping & Transportation Services
+    ".EGNBFC",      # EGX Non-Bank Financial Services
+    ".EGCOCE",      # EGX Consulting Engineers
+    ".EGTRVL",      # EGX Travel & Leisure
+    ".EGHLTH",      # EGX Health Care / Health Index
+    ".EGIGSA",      # EGX Industrial Goods & Services
+    # NOT currently requested/mapped, but also present in your feed
+    # under the same dotted convention if you ever want it added:
+    # ".EGX35LV" - EGX35 Lv Index.
+]
 
-# Which of BENCHMARK_TICKERS is used as the single default benchmark for
-# market-regime classification and excess-return (alpha) calculations
-# when a caller doesn't pick one explicitly (market_regime.py,
-# backtester.py, factor_analysis.py). EGX30 is Egypt's flagship blue-
-# chip index and the most widely-quoted "is the market up or down
-# today" reference.
-PRIMARY_BENCHMARK_TICKER = "EGX30"
+# Human-readable labels for the tickers above - used anywhere a benchmark
+# needs to be shown to a person (market-regime badge, breakout-watchlist
+# "Sector Index RS" tooltip, Telegram alert text, glossary) instead of a
+# raw ticker code. Falls back to the raw ticker itself if a code is ever
+# added to BENCHMARK_TICKERS without a matching label here (see
+# market_regime.benchmark_label()).
+BENCHMARK_LABELS = {
+    ".EGX30": "EGX 30",
+    ".EGX70EWI": "EGX 70 EWI",
+    ".EGX100EWI": "EGX 100 EWI",
+    ".EGX30CAP": "EGX 30 Capped",
+    ".SHARIAH": "EGX 33 Shariah",
+    ".EGBANK": "EGX Banks",
+    ".EGREAL": "EGX Real Estate",
+    ".EGBULM": "EGX Building Materials",
+    ".EGBASC": "EGX Basic Resources",
+    ".EGFOBT": "EGX Food & Beverages",
+    ".EGEDUS": "EGX Education Services",
+    ".EGTRDB": "EGX Trading & Distributors",
+    ".EGSHTS": "EGX Shipping & Transportation",
+    ".EGNBFC": "EGX Non-Bank Financial Services",
+    ".EGCOCE": "EGX Consulting Engineers",
+    ".EGTRVL": "EGX Travel & Leisure",
+    ".EGHLTH": "EGX Health Care",
+    ".EGIGSA": "EGX Industrial Goods & Services",
+    "EGX30ETF.CA": "EGX 30 Index ETF",
+}
+
+# Which of BENCHMARK_TICKERS is used as the single default/broad-market
+# benchmark for market-regime classification and excess-return (alpha)
+# calculations when a caller doesn't pick one explicitly (market_regime.py,
+# backtester.py, factor_analysis.py, and now the LIVE decision_matrix
+# run - see decision_matrix.analyze_market's market-regime block).
+# EGX30 is Egypt's flagship blue-chip index and the most widely-quoted
+# "is the market up or down today" reference.
+PRIMARY_BENCHMARK_TICKER = ".EGX30"
+
+# Maps this app's own sector names (db_manager.get_sector_map()'s output
+# / the "Sector" column in sectors.json - e.g. "Banks", "Real Estate")
+# to the EGX sector sub-index in BENCHMARK_TICKERS that actually tracks
+# that sector, so a stock's relative strength can be measured against
+# the REAL index for its sector instead of only ever against the broad
+# EGX30 (see decision_matrix's "Sector Index RS" pre-breakout factor and
+# market_regime.get_sector_benchmark). A sector with no dedicated EGX
+# sub-index (e.g. "Textiles & Durables", "Chemicals" - EGX doesn't
+# currently publish one) is simply absent here; callers fall back to
+# PRIMARY_BENCHMARK_TICKER, never a hard failure.
+SECTOR_BENCHMARK_MAP = {
+    "Banks": ".EGBANK",
+    "Real Estate": ".EGREAL",
+    "Building Materials": ".EGBULM",
+    "Basic Resources": ".EGBASC",
+    "Food, Beverages & Tobacco": ".EGFOBT",
+    "Education Services": ".EGEDUS",
+    "Trade & Distributors": ".EGTRDB",
+    "Shipping & Transportation Services": ".EGSHTS",
+    "Non-Bank Financial Services": ".EGNBFC",
+    "Construction & Engineering": ".EGCOCE",
+    "Travel & Leisure": ".EGTRVL",
+    "Health Care & Pharmaceuticals": ".EGHLTH",
+    "Industrial Goods, Services & Automobiles": ".EGIGSA",
+}
 
 # --- Market regime classification (market_regime.py) ---
 # A benchmark session is "bull" when its close is above its own SMA of
@@ -330,6 +439,28 @@ PRIMARY_BENCHMARK_TICKER = "EGX30"
 # says nothing about whether the broad tape favors long entries.
 BENCHMARK_REGIME_SMA_PERIOD = 50
 BENCHMARK_REGIME_SLOPE_LOOKBACK = 10
+
+# --- Live market-regime feed into the Pre-Breakout Watchlist ---
+# Previously, EGX30/70/100 regime data was computed ONLY inside the
+# offline backtester/factor-validation tools (run_backtest.py --save,
+# run_factor_backtest.py) - the live decision_matrix.analyze_market()
+# run (the one that drives the desktop "Execute Matrix" button, the
+# nightly publish.py export, and therefore both the desktop app and the
+# website) never consulted it at all. These two knobs let the ALREADY-
+# COMPUTED live EGX30 regime (see decision_matrix's market-regime block)
+# nudge the Pre-Breakout Watchlist's composite bw_score - small and
+# additive, not a hard gate, so a genuinely strong individual setup is
+# never made invisible just because the broad tape is weak, but a
+# borderline one needs to work a little harder in a confirmed downtrend,
+# and gets a little extra credit in a confirmed uptrend.
+BREAKOUT_WATCH_BULL_REGIME_BONUS = 3.0
+BREAKOUT_WATCH_BEAR_REGIME_PENALTY = -6.0
+
+# Sector-index relative strength (decision_matrix's Pre-Breakout Watchlist)
+# lives inside ACTION_THRESHOLDS above as "breakout_watch_sector_index_rs_
+# bonus_max" / "breakout_watch_sector_index_rs_span_pct" - same convention
+# as every other breakout_watch_* knob (read via the `at` dict at the call
+# site) rather than a separate top-level pair here.
 
 # --- Factor-backtest reliability gate (factor_analysis.py) ---
 # A factor bucket (an action type, an ADX band, a market regime, ...)

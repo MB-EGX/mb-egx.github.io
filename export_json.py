@@ -40,6 +40,13 @@ CHANGELOG vs the original:
     see index.html's loadMarketData()) could never populate the Breakouts
     tab from shards alone. cache_manifest.json picks it up automatically
     since it's generated from _write_shards()'s own shard dict.
+  * NEW: "market_regime" is now part of the payload (top-level in
+    market_data.json, and in both breakout.json and its own
+    market_regime.json shard) - the live EGX30 + per-EGX-sector-index
+    regime snapshot decision_matrix.analyze_market() now computes on
+    every run (see market_regime.py / config.BENCHMARK_TICKERS /
+    SECTOR_BENCHMARK_MAP). Previously this benchmark data existed only
+    inside the offline backtester/factor-validation tools.
   * The full bilingual glossary is now exported as data/glossary.json
     straight from glossary_content.py, so publish.py regenerates it on
     every run and the web Glossary modal stays in lock-step with the
@@ -95,8 +102,20 @@ def _write_shards(output_dir: str, payload: dict):
         # own here, so a frontend reading only the shards - the whole point of
         # sharding - could never populate the Breakouts tab. Added as its own
         # shard, same shape/key as the monolith so no caller-side format changes
-        # are needed.
-        "breakout.json": {"last_data_date": payload["last_data_date"], "breakout_watchlist": payload["breakout_watchlist"]},
+        # are needed. market_regime is bundled into this same shard (not a
+        # separate fetch) since the Breakouts tab is the one place that most
+        # wants the live EGX30/sector-index regime context alongside it.
+        "breakout.json": {
+            "last_data_date": payload["last_data_date"],
+            "breakout_watchlist": payload["breakout_watchlist"],
+            "market_regime": payload.get("market_regime"),
+        },
+        # Its own small standalone shard too (same data, different key
+        # name) so a caller only interested in the market-wide/sector-index
+        # regime badge (e.g. the dashboard header, which renders before the
+        # Breakouts tab is ever opened) doesn't need to pull breakout.json's
+        # full watchlist just to read this.
+        "market_regime.json": {"last_data_date": payload["last_data_date"], "market_regime": payload.get("market_regime")},
         "session_picks.json": {"last_data_date": payload["last_data_date"], "session_picks": payload["session_picks"]},
         "chart_history.json": {"last_data_date": payload["last_data_date"], "chart_history": payload["chart_history"]},
         "ticker_sectors.json": {"ticker_sectors": payload["ticker_sectors"]},
@@ -312,7 +331,7 @@ def export_market_matrix():
     # not unpacked into a used variable so it can't accidentally end up in
     # the public payload below. The desktop app (app_gui.py), which reads
     # its own private local DB, is the correct place to display this.
-    buys, exits, top10, closed_trades, fin_stmt, sectors, breakout_watchlist, _portfolio_risk, session_picks = matrix.analyze_market()
+    buys, exits, top10, closed_trades, fin_stmt, sectors, breakout_watchlist, _portfolio_risk, session_picks, market_regime = matrix.analyze_market()
     last_data_date = dbm.get_latest_market_date()
 
     # Overwrite with the FULL set of picks achieved on this session date,
@@ -353,6 +372,14 @@ def export_market_matrix():
         "sectors": sectors,
         "top_10": top10,
         "breakout_watchlist": breakout_watchlist,
+        # Public, non-sensitive - benchmark INDEX LEVELS (EGX30 + every
+        # configured EGX sector sub-index - see config.BENCHMARK_TICKERS /
+        # SECTOR_BENCHMARK_MAP and decision_matrix's market-regime block),
+        # never account data. Drives the dashboard's market-regime badge
+        # and the Sectors tab's per-sector-index regime, and is what the
+        # Pre-Breakout Watchlist's live regime nudge / Session Picks' live
+        # alpha-vs-benchmark were computed from this same run.
+        "market_regime": market_regime,
         # Public, non-sensitive (see session_picks.py) - the forward-looking
         # watchlist tab's current state, including any picks that crossed
         # +3% on THIS run ("achieved_today"). post_state.py/social_poster.py
