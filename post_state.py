@@ -209,6 +209,19 @@ def cmd_due(args):
     print(f"market_data.json last_data_date: {last_data_date or '(missing/unreadable)'}", file=sys.stderr)
     print(f"Today (Cairo date): {today_str}", file=sys.stderr)
     print(f"Status today: {json.dumps(state['posted'])}", file=sys.stderr)
+    # W13: make the HOLD visible to the operator. Before this line, a stale-data
+    # run printed "Due now: (none)" which is technically correct but doesn't
+    # explain WHY nothing posts — easy to misread as "the schedule hasn't fired
+    # yet" rather than "I'm holding because your data is from yesterday's
+    # session, not today's." Print a single explicit line on the stale branch so
+    # the operator can see the gate tripping in CI logs.
+    if not fresh:
+        print(
+            f"HOLDING: market_data.json is for session {last_data_date or '(missing)'}, "
+            f"NOT today's {today_str} — NOTHING will post until you run publish.py "
+            f"with today's CSV. Run publish.py, then re-run this workflow.",
+            file=sys.stderr,
+        )
     print(f"Due now: {due_types or '(none)'}", file=sys.stderr)
 
     _save_state(state)  # persists the day-rollover reset, if one happened
