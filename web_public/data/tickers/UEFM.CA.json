@@ -1,15 +1,21 @@
 {
   "ticker": "UEFM.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "UEFM.CA",
+    "Sector": "Food, Beverages & Tobacco",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
     "Action": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE]",
     "Rank Score": -6.5,
-    "Current Price": 543.52,
-    "Target Entry (VWAP)": 543.52,
-    "Suggested Stop-Loss": 502.8614,
-    "Take-Profit Target": 598.1479,
+    "Current Price": 544.63,
+    "Target Entry (VWAP)": 544.63,
+    "Suggested Stop-Loss": 509.4157,
+    "Take-Profit Target": 592.4603,
     "Resistance (52W High)": 625.0,
     "Support (52W Low)": 460.0,
     "Pivot Point": 566.56,
@@ -22,24 +28,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.03,
-    "Signal Reason": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE] | trend=Strong Bullish | confirmed | weekly aligned | volatility squeeze | vol x3.23",
+    "Kelly %": 2.25,
+    "Signal Reason": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.53,
+      "range": 2.56,
       "trend_bonus": -15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 52.1,
-    "ADX-14": 68.5,
-    "Vol Z-Score": 1.84,
-    "MACD Signal": "🔴 Bearish Cross",
-    "MACD Histogram": -0.7579,
-    "Bollinger %B": 0.385,
-    "Avg Volume (20D)": 9264,
+    "RSI-14": 52.6,
+    "ADX-14": 65.8,
+    "Vol Z-Score": -0.19,
+    "MACD Signal": "Bearish",
+    "MACD Histogram": -1.8538,
+    "Bollinger %B": 0.418,
+    "Avg Volume (20D)": 8282,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       486.78,
@@ -115,7 +122,8 @@
       574.98,
       568.44,
       568.68,
-      543.52
+      543.52,
+      544.63
     ],
     "open": [
       493.13,
@@ -152,7 +160,8 @@
       553.5,
       574.98,
       585.0,
-      568.25
+      568.25,
+      543.52
     ],
     "high": [
       505.0,
@@ -189,7 +198,8 @@
       589.0,
       588.0,
       585.0,
-      570.0
+      570.0,
+      555.0
     ],
     "low": [
       484.05,
@@ -226,7 +236,8 @@
       553.5,
       565.0,
       566.0,
-      531.0
+      531.0,
+      535.11
     ],
     "volume": [
       2051,
@@ -263,7 +274,8 @@
       39420,
       5217,
       3972,
-      29932
+      29932,
+      6289
     ],
     "vwap": [
       491.9433,
@@ -300,7 +312,8 @@
       559.2924,
       560.2597,
       561.087,
-      556.5536
+      556.5536,
+      556.0209
     ],
     "resistance": 625.0,
     "support": 460.0,

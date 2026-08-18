@@ -1,15 +1,20 @@
 {
   "ticker": "CLHO.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "CLHO.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
-    "Rank Score": 21.8,
-    "Current Price": 17.34,
-    "Target Entry (VWAP)": 17.34,
-    "Suggested Stop-Loss": 15.8343,
-    "Take-Profit Target": 19.3435,
+    "Sector": "Health Care & Pharmaceuticals",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE [💥 SQUEEZE]",
+    "Rank Score": 14.0,
+    "Current Price": 17.2,
+    "Target Entry (VWAP)": 17.2,
+    "Suggested Stop-Loss": 15.6943,
+    "Take-Profit Target": 19.2025,
     "Resistance (52W High)": 19.72,
     "Support (52W Low)": 15.9,
     "Pivot Point": 17.65,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.83,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze",
+    "Kelly %": 1.82,
+    "Signal Reason": "📈 ACCUMULATE [💥 SQUEEZE] | trend=Strong Bullish | awaiting confirmation | volatility squeeze",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 1.88,
-      "trend_bonus": 39.8,
+      "range": 1.7,
+      "trend_bonus": 25.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 52.1,
-    "ADX-14": 43.0,
-    "Vol Z-Score": -0.31,
+    "RSI-14": 49.9,
+    "ADX-14": 41.7,
+    "Vol Z-Score": -0.13,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0458,
-    "Bollinger %B": 0.513,
-    "Avg Volume (20D)": 3006899,
+    "MACD Histogram": -0.0615,
+    "Bollinger %B": 0.441,
+    "Avg Volume (20D)": 2773233,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       16.8,
@@ -115,7 +121,8 @@
       17.49,
       17.14,
       17.27,
-      17.34
+      17.34,
+      17.2
     ],
     "open": [
       17.06,
@@ -152,7 +159,8 @@
       17.65,
       17.49,
       17.14,
-      17.46
+      17.46,
+      17.34
     ],
     "high": [
       17.24,
@@ -189,7 +197,8 @@
       17.9,
       17.58,
       17.35,
-      17.62
+      17.62,
+      17.47
     ],
     "low": [
       16.45,
@@ -226,7 +235,8 @@
       17.25,
       16.95,
       17.14,
-      17.3
+      17.3,
+      17.19
     ],
     "volume": [
       2487151,
@@ -263,7 +273,8 @@
       2942669,
       5472167,
       697058,
-      2369514
+      2369514,
+      2533347
     ],
     "vwap": [
       16.83,
@@ -300,7 +311,8 @@
       17.4174,
       17.4342,
       17.5013,
-      17.5123
+      17.5123,
+      17.5387
     ],
     "resistance": 19.72,
     "support": 15.9,

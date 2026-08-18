@@ -1,15 +1,20 @@
 {
   "ticker": "OFH.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "IT, Media & Communication Services",
   "matrix": {
     "Ticker": "OFH.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
+    "Sector": "IT, Media & Communication Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
     "Rank Score": 39.9,
-    "Current Price": 0.885,
-    "Target Entry (VWAP)": 0.7941,
-    "Suggested Stop-Loss": 0.8043,
-    "Take-Profit Target": 0.9128,
+    "Current Price": 0.905,
+    "Target Entry (VWAP)": 0.8028,
+    "Suggested Stop-Loss": 0.8241,
+    "Take-Profit Target": 0.9312,
     "Resistance (52W High)": 0.95,
     "Support (52W Low)": 0.573,
     "Pivot Point": 0.892,
@@ -19,27 +24,27 @@
     "S1": 0.834,
     "S2": 0.797,
     "S3": 0.739,
-    "Projected Gain (%)": 2.44,
-    "Pattern Conf (%)": 79.3,
-    "Projected Range 95%": "2.44% to 2.44%",
-    "Kelly %": 9.6,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Projected Gain (%)": 2.19,
+    "Pattern Conf (%)": 78.71,
+    "Projected Range 95%": "1.97% to 2.41%",
+    "Kelly %": 6.5,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
-      "pattern": 23.79,
-      "projected": 3.66,
-      "range": 4.14,
+      "pattern": 23.61,
+      "projected": 3.29,
+      "range": 4.4,
       "trend_bonus": 44.8,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 74.1,
-    "ADX-14": 68.0,
-    "Vol Z-Score": -0.33,
+    "RSI-14": 76.1,
+    "ADX-14": 67.8,
+    "Vol Z-Score": -0.61,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.008,
-    "Bollinger %B": 0.805,
-    "Avg Volume (20D)": 104351006,
+    "MACD Histogram": 0.0067,
+    "Bollinger %B": 0.829,
+    "Avg Volume (20D)": 100841284,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       0.595,
@@ -115,7 +121,8 @@
       0.907,
       0.892,
       0.871,
-      0.885
+      0.885,
+      0.905
     ],
     "open": [
       0.605,
@@ -152,7 +159,8 @@
       0.905,
       0.907,
       0.893,
-      0.863
+      0.863,
+      0.885
     ],
     "high": [
       0.605,
@@ -189,7 +197,8 @@
       0.95,
       0.928,
       0.9,
-      0.888
+      0.888,
+      0.916
     ],
     "low": [
       0.59,
@@ -226,7 +235,8 @@
       0.89,
       0.892,
       0.855,
-      0.857
+      0.857,
+      0.89
     ],
     "volume": [
       24104299,
@@ -263,7 +273,8 @@
       113779932,
       47298400,
       82749551,
-      84052982
+      84052982,
+      62890855
     ],
     "vwap": [
       0.5967,
@@ -300,7 +311,8 @@
       0.7536,
       0.7666,
       0.7859,
-      0.7941
+      0.7941,
+      0.8028
     ],
     "resistance": 0.95,
     "support": 0.573,

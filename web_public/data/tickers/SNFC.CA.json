@@ -1,15 +1,20 @@
 {
   "ticker": "SNFC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "SNFC.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 16.4,
-    "Current Price": 11.11,
-    "Target Entry (VWAP)": 11.0344,
-    "Suggested Stop-Loss": 10.5929,
-    "Take-Profit Target": 11.8342,
+    "Sector": "Food, Beverages & Tobacco",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned)",
+    "Rank Score": 11.5,
+    "Current Price": 10.94,
+    "Target Entry (VWAP)": 10.94,
+    "Suggested Stop-Loss": 10.42,
+    "Take-Profit Target": 11.6666,
     "Resistance (52W High)": 12.39,
     "Support (52W Low)": 10.6,
     "Pivot Point": 10.97,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.86,
-    "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation | positive money flow",
+    "Kelly %": 2.82,
+    "Signal Reason": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned) | trend=Weak Bullish | awaiting confirmation | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 1.42,
-      "trend_bonus": 30.0,
+      "range": 0.95,
+      "trend_bonus": 21.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Weak Bullish",
-    "RSI-14": 44.7,
-    "ADX-14": 30.3,
-    "Vol Z-Score": -0.12,
+    "RSI-14": 39.3,
+    "ADX-14": 28.9,
+    "Vol Z-Score": -1.16,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0423,
-    "Bollinger %B": 0.522,
-    "Avg Volume (20D)": 1102980,
+    "MACD Histogram": 0.0395,
+    "Bollinger %B": 0.325,
+    "Avg Volume (20D)": 1090640,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       12.29,
@@ -115,7 +121,8 @@
       10.79,
       11.02,
       11.11,
-      11.11
+      11.11,
+      10.94
     ],
     "open": [
       11.9,
@@ -152,7 +159,8 @@
       10.67,
       10.79,
       11.02,
-      11.12
+      11.12,
+      11.11
     ],
     "high": [
       12.3,
@@ -189,7 +197,8 @@
       10.8,
       11.04,
       11.2,
-      11.2
+      11.2,
+      11.11
     ],
     "low": [
       11.85,
@@ -226,7 +235,8 @@
       10.65,
       10.67,
       11.0,
-      10.94
+      10.94,
+      10.9
     ],
     "volume": [
       1851882,
@@ -263,7 +273,8 @@
       982826,
       1547055,
       782951,
-      1046509
+      1046509,
+      547764
     ],
     "vwap": [
       12.1467,
@@ -300,7 +311,8 @@
       11.1038,
       11.0608,
       11.0439,
-      11.0344
+      11.0344,
+      11.0232
     ],
     "resistance": 12.39,
     "support": 10.6,

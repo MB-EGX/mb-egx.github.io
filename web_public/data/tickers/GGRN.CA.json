@@ -1,15 +1,20 @@
 {
   "ticker": "GGRN.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "GGRN.CA",
-    "Action": "⚡ BREAKOUT BUY (X-OVER + MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 23.6,
-    "Current Price": 1.47,
-    "Target Entry (VWAP)": 1.47,
-    "Suggested Stop-Loss": 1.3657,
-    "Take-Profit Target": 1.6106,
+    "Sector": "Food, Beverages & Tobacco",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 9.4,
+    "Current Price": 1.46,
+    "Target Entry (VWAP)": 1.46,
+    "Suggested Stop-Loss": 1.3614,
+    "Take-Profit Target": 1.5934,
     "Resistance (52W High)": 1.61,
     "Support (52W Low)": 1.25,
     "Pivot Point": 1.3867,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.1,
-    "Signal Reason": "⚡ BREAKOUT BUY (X-OVER + MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Kelly %": 2.18,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 3.06,
-      "trend_bonus": 42.05,
+      "range": 2.92,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 53.9,
-    "ADX-14": 32.6,
-    "Vol Z-Score": -0.21,
+    "RSI-14": 51.9,
+    "ADX-14": 32.1,
+    "Vol Z-Score": -0.67,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.006,
-    "Bollinger %B": 0.538,
-    "Avg Volume (20D)": 11811997,
+    "MACD Histogram": -0.0044,
+    "Bollinger %B": 0.47,
+    "Avg Volume (20D)": 11805863,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       1.39,
@@ -115,7 +121,8 @@
       1.41,
       1.41,
       1.44,
-      1.47
+      1.47,
+      1.46
     ],
     "open": [
       1.43,
@@ -152,7 +159,8 @@
       1.45,
       1.41,
       1.42,
-      1.44
+      1.44,
+      1.47
     ],
     "high": [
       1.44,
@@ -189,7 +197,8 @@
       1.46,
       1.44,
       1.44,
-      1.49
+      1.49,
+      1.48
     ],
     "low": [
       1.39,
@@ -226,7 +235,8 @@
       1.25,
       1.41,
       1.41,
-      1.43
+      1.43,
+      1.45
     ],
     "volume": [
       9858257,
@@ -263,7 +273,8 @@
       27046952,
       5897617,
       6208593,
-      10201931
+      10201931,
+      6598391
     ],
     "vwap": [
       1.4067,
@@ -300,7 +311,8 @@
       1.4736,
       1.4731,
       1.4727,
-      1.4732
+      1.4732,
+      1.4739
     ],
     "resistance": 1.61,
     "support": 1.25,

@@ -1,15 +1,20 @@
 {
   "ticker": "EPCO.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "EPCO.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 23.7,
-    "Current Price": 11.95,
-    "Target Entry (VWAP)": 11.711,
-    "Suggested Stop-Loss": 10.5243,
-    "Take-Profit Target": 12.5762,
+    "Sector": "Food, Beverages & Tobacco",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 29.3,
+    "Current Price": 12.26,
+    "Target Entry (VWAP)": 11.78,
+    "Suggested Stop-Loss": 10.8157,
+    "Take-Profit Target": 12.591,
     "Resistance (52W High)": 13.65,
     "Support (52W Low)": 8.5,
     "Pivot Point": 12.43,
@@ -19,27 +24,27 @@
     "S1": 11.21,
     "S2": 10.27,
     "S3": 9.05,
-    "Projected Gain (%)": 4.54,
-    "Pattern Conf (%)": 67.45,
-    "Projected Range 95%": "4.54% to 4.54%",
+    "Projected Gain (%)": 1.1,
+    "Pattern Conf (%)": 68.92,
+    "Projected Range 95%": "1.1% to 1.1%",
     "Kelly %": 0.0,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 20.23,
-      "projected": 6.81,
-      "range": 3.35,
-      "trend_bonus": 15.0,
+      "pattern": 20.68,
+      "projected": 1.65,
+      "range": 3.65,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 62.4,
-    "ADX-14": 53.8,
-    "Vol Z-Score": -0.45,
-    "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0036,
-    "Bollinger %B": 0.714,
-    "Avg Volume (20D)": 2457832,
+    "RSI-14": 65.5,
+    "ADX-14": 51.7,
+    "Vol Z-Score": -0.0,
+    "MACD Signal": "🔴 Bearish Cross",
+    "MACD Histogram": -0.0008,
+    "Bollinger %B": 0.807,
+    "Avg Volume (20D)": 2397723,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       8.9,
@@ -115,7 +121,8 @@
       12.07,
       11.88,
       12.15,
-      11.95
+      11.95,
+      12.26
     ],
     "open": [
       9.04,
@@ -152,7 +159,8 @@
       12.9,
       12.07,
       12.19,
-      12.17
+      12.17,
+      11.95
     ],
     "high": [
       9.09,
@@ -189,7 +197,8 @@
       13.0,
       12.64,
       12.4,
-      12.5
+      12.5,
+      12.4
     ],
     "low": [
       8.89,
@@ -226,7 +235,8 @@
       11.8,
       11.49,
       12.0,
-      11.85
+      11.85,
+      11.72
     ],
     "volume": [
       384240,
@@ -263,7 +273,8 @@
       1662554,
       3207127,
       4130728,
-      1692777
+      1692777,
+      2390919
     ],
     "vwap": [
       8.96,
@@ -300,7 +311,8 @@
       11.3446,
       11.4621,
       11.5984,
-      11.711
+      11.711,
+      11.78
     ],
     "resistance": 13.65,
     "support": 8.5,

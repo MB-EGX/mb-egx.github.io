@@ -1,15 +1,20 @@
 {
   "ticker": "EBSC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "EBSC.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
-    "Rank Score": 21.8,
-    "Current Price": 1.93,
-    "Target Entry (VWAP)": 1.93,
-    "Suggested Stop-Loss": 1.8057,
-    "Take-Profit Target": 2.0989,
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
+    "Rank Score": 21.9,
+    "Current Price": 1.92,
+    "Target Entry (VWAP)": 1.92,
+    "Suggested Stop-Loss": 1.7886,
+    "Take-Profit Target": 2.0977,
     "Resistance (52W High)": 2.25,
     "Support (52W Low)": 1.71,
     "Pivot Point": 1.9367,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.26,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze",
+    "Kelly %": 2.16,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze | vol x1.48",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.04,
+      "range": 1.94,
       "trend_bonus": 39.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 54.5,
-    "ADX-14": 51.1,
-    "Vol Z-Score": -0.45,
+    "RSI-14": 52.5,
+    "ADX-14": 51.0,
+    "Vol Z-Score": 0.45,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0031,
-    "Bollinger %B": 0.647,
-    "Avg Volume (20D)": 2653607,
+    "MACD Histogram": -0.0034,
+    "Bollinger %B": 0.553,
+    "Avg Volume (20D)": 2817620,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       1.79,
@@ -115,7 +121,8 @@
       1.92,
       1.91,
       1.91,
-      1.93
+      1.93,
+      1.92
     ],
     "open": [
       1.83,
@@ -152,7 +159,8 @@
       1.94,
       1.92,
       1.91,
-      1.91
+      1.91,
+      1.93
     ],
     "high": [
       1.85,
@@ -189,7 +197,8 @@
       1.96,
       1.95,
       1.93,
-      1.94
+      1.94,
+      2.0
     ],
     "low": [
       1.77,
@@ -224,6 +233,7 @@
       1.93,
       1.91,
       1.91,
+      1.9,
       1.9,
       1.9,
       1.9
@@ -263,7 +273,8 @@
       1141422,
       950885,
       925566,
-      1300704
+      1300704,
+      4176147
     ],
     "vwap": [
       1.8033,
@@ -300,7 +311,8 @@
       1.9362,
       1.9388,
       1.9397,
-      1.9412
+      1.9412,
+      1.942
     ],
     "resistance": 2.25,
     "support": 1.71,

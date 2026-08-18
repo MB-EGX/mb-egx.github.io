@@ -1,15 +1,20 @@
 {
   "ticker": "BIGP.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "BIGP.CA",
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "📈 ACCUMULATE",
     "Rank Score": 8.7,
-    "Current Price": 0.257,
-    "Target Entry (VWAP)": 0.257,
-    "Suggested Stop-Loss": 0.2293,
-    "Take-Profit Target": 0.2934,
+    "Current Price": 0.253,
+    "Target Entry (VWAP)": 0.253,
+    "Suggested Stop-Loss": 0.2244,
+    "Take-Profit Target": 0.2905,
     "Resistance (52W High)": 0.399,
     "Support (52W Low)": 0.181,
     "Pivot Point": 0.2403,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.56,
-    "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation",
+    "Kelly %": 1.55,
+    "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation | vol x1.05",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 1.74,
+      "range": 1.65,
       "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Weak Bullish",
-    "RSI-14": 49.6,
-    "ADX-14": 34.4,
-    "Vol Z-Score": -0.16,
+    "RSI-14": 48.1,
+    "ADX-14": 32.1,
+    "Vol Z-Score": 0.1,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0054,
-    "Bollinger %B": 0.368,
-    "Avg Volume (20D)": 14227982,
+    "MACD Histogram": -0.0043,
+    "Bollinger %B": 0.322,
+    "Avg Volume (20D)": 13675946,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       0.185,
@@ -115,7 +121,8 @@
       0.245,
       0.241,
       0.234,
-      0.257
+      0.257,
+      0.253
     ],
     "open": [
       0.186,
@@ -152,7 +159,8 @@
       0.248,
       0.245,
       0.241,
-      0.22
+      0.22,
+      0.257
     ],
     "high": [
       0.186,
@@ -189,7 +197,8 @@
       0.248,
       0.246,
       0.242,
-      0.257
+      0.257,
+      0.264
     ],
     "low": [
       0.183,
@@ -226,7 +235,8 @@
       0.241,
       0.241,
       0.223,
-      0.217
+      0.217,
+      0.245
     ],
     "volume": [
       577184,
@@ -263,7 +273,8 @@
       4982495,
       8618463,
       10830964,
-      12937106
+      12937106,
+      14404568
     ],
     "vwap": [
       0.1847,
@@ -300,7 +311,8 @@
       0.2879,
       0.2746,
       0.2722,
-      0.2696
+      0.2696,
+      0.2665
     ],
     "resistance": 0.399,
     "support": 0.181,

@@ -1,15 +1,20 @@
 {
   "ticker": "EFIH.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "IT, Media & Communication Services",
   "matrix": {
     "Ticker": "EFIH.CA",
-    "Action": "🔥 STRONG BUY (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 44.0,
-    "Current Price": 24.99,
-    "Target Entry (VWAP)": 23.748,
-    "Suggested Stop-Loss": 23.2543,
-    "Take-Profit Target": 26.0146,
+    "Sector": "IT, Media & Communication Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 30.5,
+    "Current Price": 24.6,
+    "Target Entry (VWAP)": 23.8101,
+    "Suggested Stop-Loss": 22.8329,
+    "Take-Profit Target": 25.2642,
     "Resistance (52W High)": 25.4,
     "Support (52W Low)": 20.0,
     "Pivot Point": 24.39,
@@ -19,27 +24,27 @@
     "S1": 23.83,
     "S2": 22.71,
     "S3": 22.15,
-    "Projected Gain (%)": 3.4,
-    "Pattern Conf (%)": 73.21,
-    "Projected Range 95%": "3.4% to 3.4%",
-    "Kelly %": 13.91,
-    "Signal Reason": "🔥 STRONG BUY (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Projected Gain (%)": 1.81,
+    "Pattern Conf (%)": 70.49,
+    "Projected Range 95%": "1.81% to 1.81%",
+    "Kelly %": 0.0,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
-      "pattern": 21.96,
-      "projected": 5.1,
-      "range": 4.62,
-      "trend_bonus": 52.5,
+      "pattern": 21.15,
+      "projected": 2.71,
+      "range": 4.26,
+      "trend_bonus": 30.0,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 65.5,
-    "ADX-14": 42.2,
-    "Vol Z-Score": -0.1,
+    "RSI-14": 61.1,
+    "ADX-14": 42.1,
+    "Vol Z-Score": -0.93,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0783,
-    "Bollinger %B": 0.949,
-    "Avg Volume (20D)": 5239440,
+    "MACD Histogram": 0.0593,
+    "Bollinger %B": 0.804,
+    "Avg Volume (20D)": 5205131,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       20.78,
@@ -115,7 +121,8 @@
       23.57,
       24.21,
       24.95,
-      24.99
+      24.99,
+      24.6
     ],
     "open": [
       20.86,
@@ -152,6 +159,7 @@
       24.3,
       23.57,
       24.21,
+      24.99,
       24.99
     ],
     "high": [
@@ -189,7 +197,8 @@
       24.4,
       24.3,
       24.95,
-      25.4
+      25.4,
+      24.96
     ],
     "low": [
       20.7,
@@ -226,7 +235,8 @@
       23.43,
       23.45,
       24.01,
-      24.5
+      24.5,
+      24.33
     ],
     "volume": [
       613296,
@@ -263,7 +273,8 @@
       7173895,
       6597148,
       7464487,
-      4924338
+      4924338,
+      2264971
     ],
     "vwap": [
       20.8533,
@@ -300,7 +311,8 @@
       23.5279,
       23.5804,
       23.6718,
-      23.748
+      23.748,
+      23.8101
     ],
     "resistance": 25.4,
     "support": 20.0,

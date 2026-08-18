@@ -1,16 +1,21 @@
 {
   "ticker": "SUGR.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "SUGR.CA",
-    "Action": "🔥 STRONG BUY [👑 WEEKLY ALIGNED]",
-    "Rank Score": 38.8,
-    "Current Price": 51.06,
-    "Target Entry (VWAP)": 49.0488,
-    "Suggested Stop-Loss": 48.5814,
-    "Take-Profit Target": 54.5156,
-    "Resistance (52W High)": 51.98,
+    "Sector": "Food, Beverages & Tobacco",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 17.8,
+    "Current Price": 52.1,
+    "Target Entry (VWAP)": 49.6637,
+    "Suggested Stop-Loss": 49.32,
+    "Take-Profit Target": 55.9397,
+    "Resistance (52W High)": 53.5,
     "Support (52W Low)": 45.31,
     "Pivot Point": 50.31,
     "R1": 52.37,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.78,
-    "Signal Reason": "🔥 STRONG BUY [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | vol x2.04",
+    "Kelly %": 2.59,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x3.67",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 4.31,
-      "trend_bonus": 70.0,
+      "range": 4.15,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 74.8,
-    "ADX-14": 50.5,
-    "Vol Z-Score": 0.96,
+    "RSI-14": 78.6,
+    "ADX-14": 53.1,
+    "Vol Z-Score": 2.47,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.3792,
-    "Bollinger %B": 1.073,
-    "Avg Volume (20D)": 365322,
+    "MACD Histogram": 0.4502,
+    "Bollinger %B": 1.101,
+    "Avg Volume (20D)": 442319,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       47.05,
@@ -115,7 +121,8 @@
       49.82,
       49.36,
       50.7,
-      51.06
+      51.06,
+      52.1
     ],
     "open": [
       47.5,
@@ -152,7 +159,8 @@
       48.97,
       49.82,
       49.73,
-      51.49
+      51.49,
+      51.06
     ],
     "high": [
       47.55,
@@ -189,7 +197,8 @@
       51.98,
       50.72,
       51.5,
-      51.8
+      51.8,
+      53.5
     ],
     "low": [
       47.03,
@@ -226,7 +235,8 @@
       48.61,
       49.3,
       49.73,
-      50.84
+      50.84,
+      51.26
     ],
     "volume": [
       93822,
@@ -263,7 +273,8 @@
       1548023,
       462507,
       767646,
-      744101
+      744101,
+      1625183
     ],
     "vwap": [
       47.21,
@@ -300,9 +311,10 @@
       48.3424,
       48.4747,
       48.7501,
-      49.0488
+      49.0488,
+      49.6637
     ],
-    "resistance": 51.98,
+    "resistance": 53.5,
     "support": 45.31,
     "pivots": {
       "pp": 50.31,

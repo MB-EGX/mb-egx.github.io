@@ -1,15 +1,21 @@
 {
   "ticker": "CPCI.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "CPCI.CA",
-    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 8.9,
-    "Current Price": 538.84,
-    "Target Entry (VWAP)": 516.8019,
-    "Suggested Stop-Loss": 467.1743,
-    "Take-Profit Target": 553.3887,
+    "Sector": "Health Care & Pharmaceuticals",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
+    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 6.5,
+    "Current Price": 535.89,
+    "Target Entry (VWAP)": 519.1374,
+    "Suggested Stop-Loss": 467.0957,
+    "Take-Profit Target": 550.359,
     "Resistance (52W High)": 644.0,
     "Support (52W Low)": 370.01,
     "Pivot Point": 554.2933,
@@ -19,27 +25,27 @@
     "S1": 464.5867,
     "S2": 394.4933,
     "S3": 304.7867,
-    "Projected Gain (%)": 1.36,
-    "Pattern Conf (%)": 73.91,
-    "Projected Range 95%": "1.36% to 1.36%",
+    "Projected Gain (%)": 0.43,
+    "Pattern Conf (%)": 63.32,
+    "Projected Range 95%": "-0.41% to 1.27%",
     "Kelly %": 0.0,
-    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 22.17,
-      "projected": 2.04,
-      "range": 3.08,
+      "pattern": 19.0,
+      "projected": 0.65,
+      "range": 3.03,
       "trend_bonus": -10.2,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 67.4,
-    "ADX-14": 76.6,
-    "Vol Z-Score": -0.45,
+    "RSI-14": 66.1,
+    "ADX-14": 76.2,
+    "Vol Z-Score": -0.66,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 2.1144,
-    "Bollinger %B": 0.799,
-    "Avg Volume (20D)": 20087,
+    "MACD Histogram": 1.0203,
+    "Bollinger %B": 0.751,
+    "Avg Volume (20D)": 19543,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       377.33,
@@ -115,7 +122,8 @@
       537.52,
       534.19,
       534.68,
-      538.84
+      538.84,
+      535.89
     ],
     "open": [
       378.48,
@@ -152,7 +160,8 @@
       560.0,
       537.52,
       535.4,
-      534.01
+      534.01,
+      538.84
     ],
     "high": [
       378.5,
@@ -189,7 +198,8 @@
       569.99,
       560.0,
       549.99,
-      550.0
+      550.0,
+      544.0
     ],
     "low": [
       373.01,
@@ -226,7 +236,8 @@
       536.0,
       520.0,
       531.51,
-      531.6
+      531.6,
+      532.01
     ],
     "volume": [
       1737,
@@ -263,7 +274,8 @@
       14174,
       16851,
       6088,
-      10146
+      10146,
+      4989
     ],
     "vwap": [
       376.28,
@@ -300,7 +312,8 @@
       498.1993,
       509.8096,
       514.5072,
-      516.8019
+      516.8019,
+      519.1374
     ],
     "resistance": 644.0,
     "support": 370.01,

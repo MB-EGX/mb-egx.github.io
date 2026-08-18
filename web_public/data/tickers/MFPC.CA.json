@@ -1,15 +1,20 @@
 {
   "ticker": "MFPC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Basic Resources",
   "matrix": {
     "Ticker": "MFPC.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 13.9,
-    "Current Price": 39.7,
-    "Target Entry (VWAP)": 37.9824,
-    "Suggested Stop-Loss": 37.8614,
-    "Take-Profit Target": 40.7719,
+    "Sector": "Basic Resources",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 22.8,
+    "Current Price": 39.46,
+    "Target Entry (VWAP)": 38.0472,
+    "Suggested Stop-Loss": 37.56,
+    "Take-Profit Target": 40.5254,
     "Resistance (52W High)": 41.49,
     "Support (52W Low)": 34.22,
     "Pivot Point": 39.7467,
@@ -19,27 +24,27 @@
     "S1": 38.0033,
     "S2": 35.2067,
     "S3": 33.4633,
-    "Projected Gain (%)": -4.9,
-    "Pattern Conf (%)": 50.48,
-    "Projected Range 95%": "-4.9% to -4.9%",
+    "Projected Gain (%)": -4.23,
+    "Pattern Conf (%)": 54.7,
+    "Projected Range 95%": "-4.83% to -3.63%",
     "Kelly %": 0.0,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x1.10",
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 15.14,
-      "projected": -7.35,
-      "range": 3.77,
-      "trend_bonus": 15.0,
+      "pattern": 16.41,
+      "projected": -6.35,
+      "range": 3.6,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "Trending",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 64.8,
-    "ADX-14": 33.2,
-    "Vol Z-Score": 0.15,
+    "RSI-14": 62.7,
+    "ADX-14": 33.5,
+    "Vol Z-Score": -0.27,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.3011,
-    "Bollinger %B": 0.939,
-    "Avg Volume (20D)": 2175128,
+    "MACD Histogram": 0.2642,
+    "Bollinger %B": 0.852,
+    "Avg Volume (20D)": 2194241,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       35.5,
@@ -115,7 +121,8 @@
       38.0,
       39.91,
       40.8,
-      39.7
+      39.7,
+      39.46
     ],
     "open": [
       36.16,
@@ -152,7 +159,8 @@
       37.99,
       38.0,
       40.89,
-      40.99
+      40.99,
+      39.7
     ],
     "high": [
       36.46,
@@ -189,7 +197,8 @@
       38.79,
       40.0,
       41.49,
-      41.0
+      41.0,
+      40.1
     ],
     "low": [
       35.45,
@@ -226,7 +235,8 @@
       37.91,
       38.3,
       40.31,
-      39.4
+      39.4,
+      39.3
     ],
     "volume": [
       2400432,
@@ -263,7 +273,8 @@
       3673739,
       5403868,
       4275558,
-      2393173
+      2393173,
+      1808767
     ],
     "vwap": [
       35.8033,
@@ -300,7 +311,8 @@
       37.3407,
       37.5667,
       37.8861,
-      37.9824
+      37.9824,
+      38.0472
     ],
     "resistance": 41.49,
     "support": 34.22,

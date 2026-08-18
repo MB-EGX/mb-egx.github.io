@@ -1,15 +1,20 @@
 {
   "ticker": "EMFD.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "EMFD.CA",
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "📈 ACCUMULATE",
-    "Rank Score": 9.1,
-    "Current Price": 11.64,
-    "Target Entry (VWAP)": 11.64,
-    "Suggested Stop-Loss": 11.09,
-    "Take-Profit Target": 12.409,
+    "Rank Score": 19.4,
+    "Current Price": 11.58,
+    "Target Entry (VWAP)": 11.58,
+    "Suggested Stop-Loss": 11.01,
+    "Take-Profit Target": 11.8927,
     "Resistance (52W High)": 12.22,
     "Support (52W Low)": 11.08,
     "Pivot Point": 11.7533,
@@ -19,27 +24,27 @@
     "S1": 11.5067,
     "S2": 11.3533,
     "S3": 11.1067,
-    "Projected Gain (%)": "N/A",
-    "Pattern Conf (%)": "N/A",
-    "Projected Range 95%": "N/A",
-    "Kelly %": 2.83,
-    "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation",
+    "Projected Gain (%)": -1.11,
+    "Pattern Conf (%)": 71.51,
+    "Projected Range 95%": "-1.11% to -1.11%",
+    "Kelly %": 9.79,
+    "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation | vol x1.32",
     "Score Breakdown": {
-      "pattern": 0.0,
-      "projected": 0.0,
-      "range": 2.46,
+      "pattern": 21.45,
+      "projected": -1.67,
+      "range": 2.19,
       "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
-    "Regime": "N/A",
+    "Regime": "Range / Consolidation",
     "Trend Class": "Weak Bullish",
-    "RSI-14": 47.6,
-    "ADX-14": 18.9,
-    "Vol Z-Score": -0.44,
-    "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0053,
-    "Bollinger %B": 0.46,
-    "Avg Volume (20D)": 5044033,
+    "RSI-14": 45.7,
+    "ADX-14": 18.5,
+    "Vol Z-Score": 0.38,
+    "MACD Signal": "🔴 Bearish Cross",
+    "MACD Histogram": -0.0046,
+    "Bollinger %B": 0.394,
+    "Avg Volume (20D)": 5327740,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       11.84,
@@ -115,7 +121,8 @@
       11.77,
       11.74,
       11.66,
-      11.64
+      11.64,
+      11.58
     ],
     "open": [
       11.75,
@@ -152,7 +159,8 @@
       11.91,
       11.77,
       11.75,
-      11.74
+      11.74,
+      11.64
     ],
     "high": [
       11.98,
@@ -189,7 +197,8 @@
       12.0,
       11.95,
       11.88,
-      11.78
+      11.78,
+      11.83
     ],
     "low": [
       11.63,
@@ -226,7 +235,8 @@
       11.76,
       11.74,
       11.65,
-      11.64
+      11.64,
+      11.51
     ],
     "volume": [
       10800079,
@@ -263,7 +273,8 @@
       6218272,
       3710639,
       5498964,
-      3043841
+      3043841,
+      7016569
     ],
     "vwap": [
       11.8167,
@@ -300,7 +311,8 @@
       11.7566,
       11.757,
       11.7509,
-      11.7498
+      11.7498,
+      11.7434
     ],
     "resistance": 12.22,
     "support": 11.08,

@@ -1,16 +1,21 @@
 {
   "ticker": "CRST.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Construction & Engineering",
   "matrix": {
     "Ticker": "CRST.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 60.2,
-    "Current Price": 3.05,
-    "Target Entry (VWAP)": 2.1571,
-    "Suggested Stop-Loss": 2.7171,
-    "Take-Profit Target": 3.8628,
-    "Resistance (52W High)": 3.05,
+    "Sector": "Construction & Engineering",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 55.5,
+    "Current Price": 3.12,
+    "Target Entry (VWAP)": 2.2176,
+    "Suggested Stop-Loss": 2.7643,
+    "Take-Profit Target": 3.8466,
+    "Resistance (52W High)": 3.28,
     "Support (52W Low)": 1.3,
     "Pivot Point": 2.65,
     "R1": 3.09,
@@ -19,27 +24,27 @@
     "S1": 2.36,
     "S2": 1.92,
     "S3": 1.63,
-    "Projected Gain (%)": 25.95,
-    "Pattern Conf (%)": 88.24,
-    "Projected Range 95%": "25.95% to 25.95%",
+    "Projected Gain (%)": 22.59,
+    "Pattern Conf (%)": 75.18,
+    "Projected Range 95%": "19.57% to 25.61%",
     "Kelly %": 25.0,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
-      "pattern": 26.47,
-      "projected": 38.92,
-      "range": 5.0,
+      "pattern": 22.55,
+      "projected": 33.88,
+      "range": 4.6,
       "trend_bonus": 44.8,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 83.7,
-    "ADX-14": 86.8,
-    "Vol Z-Score": -0.02,
+    "RSI-14": 84.5,
+    "ADX-14": 87.6,
+    "Vol Z-Score": -0.64,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0861,
-    "Bollinger %B": 1.028,
-    "Avg Volume (20D)": 110057224,
+    "MACD Histogram": 0.0896,
+    "Bollinger %B": 0.993,
+    "Avg Volume (20D)": 110504445,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       1.37,
@@ -115,7 +121,8 @@
       2.64,
       2.92,
       2.8,
-      3.05
+      3.05,
+      3.12
     ],
     "open": [
       1.35,
@@ -152,7 +159,8 @@
       2.45,
       2.64,
       2.92,
-      2.84
+      2.84,
+      3.05
     ],
     "high": [
       1.4,
@@ -189,7 +197,8 @@
       2.65,
       2.92,
       2.94,
-      3.05
+      3.05,
+      3.28
     ],
     "low": [
       1.34,
@@ -226,7 +235,8 @@
       2.41,
       2.61,
       2.72,
-      2.84
+      2.84,
+      3.05
     ],
     "volume": [
       54639127,
@@ -263,7 +273,8 @@
       113081574,
       123999943,
       77032447,
-      109217912
+      109217912,
+      88680004
     ],
     "vwap": [
       1.37,
@@ -300,9 +311,10 @@
       1.987,
       2.0532,
       2.1036,
-      2.1571
+      2.1571,
+      2.2176
     ],
-    "resistance": 3.05,
+    "resistance": 3.28,
     "support": 1.3,
     "pivots": {
       "pp": 2.65,

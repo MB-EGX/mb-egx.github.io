@@ -1,15 +1,21 @@
 {
   "ticker": "OCPH.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "OCPH.CA",
-    "Action": "⏳ BUY ON DIP",
-    "Rank Score": 23.8,
-    "Current Price": 270.0,
-    "Target Entry (VWAP)": 270.0,
-    "Suggested Stop-Loss": 183.9271,
-    "Take-Profit Target": 379.4811,
+    "Sector": "Health Care & Pharmaceuticals",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
+    "Action": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor)",
+    "Rank Score": 8.5,
+    "Current Price": 263.61,
+    "Target Entry (VWAP)": 263.61,
+    "Suggested Stop-Loss": 179.5529,
+    "Take-Profit Target": 370.5267,
     "Resistance (52W High)": 504.98,
     "Support (52W Low)": 235.0,
     "Pivot Point": 287.35,
@@ -23,23 +29,23 @@
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
     "Kelly %": 0.88,
-    "Signal Reason": "⏳ BUY ON DIP | trend=Strong Bearish | confirmed | vol x1.49",
+    "Signal Reason": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor) | trend=Strong Bearish | awaiting confirmation",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 0.65,
-      "trend_bonus": 45.0,
+      "range": 0.53,
+      "trend_bonus": 15.75,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bearish",
-    "RSI-14": 33.3,
-    "ADX-14": 53.4,
-    "Vol Z-Score": 0.53,
+    "RSI-14": 32.6,
+    "ADX-14": 51.0,
+    "Vol Z-Score": -0.58,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -19.3759,
-    "Bollinger %B": 0.191,
-    "Avg Volume (20D)": 85019,
+    "MACD Histogram": -17.6659,
+    "Bollinger %B": 0.206,
+    "Avg Volume (20D)": 84419,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       345.35,
@@ -115,7 +122,8 @@
       295.0,
       290.0,
       279.06,
-      270.0
+      270.0,
+      263.61
     ],
     "open": [
       344.02,
@@ -152,7 +160,8 @@
       304.0,
       295.0,
       290.15,
-      281.01
+      281.01,
+      270.0
     ],
     "high": [
       355.0,
@@ -189,7 +198,8 @@
       310.0,
       308.0,
       295.0,
-      295.0
+      295.0,
+      275.0
     ],
     "low": [
       343.51,
@@ -226,7 +236,8 @@
       292.0,
       275.0,
       277.0,
-      269.99
+      269.99,
+      261.11
     ],
     "volume": [
       17163,
@@ -263,7 +274,8 @@
       81895,
       146467,
       50112,
-      126320
+      126320,
+      39445
     ],
     "vwap": [
       347.9533,
@@ -300,7 +312,8 @@
       378.7911,
       362.2372,
       354.5699,
-      347.22
+      347.22,
+      342.7775
     ],
     "resistance": 504.98,
     "support": 235.0,

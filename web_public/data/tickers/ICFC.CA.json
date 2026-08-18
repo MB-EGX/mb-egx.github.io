@@ -1,16 +1,21 @@
 {
   "ticker": "ICFC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Trade & Distributors",
   "matrix": {
     "Ticker": "ICFC.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 29.4,
-    "Current Price": 16.78,
-    "Target Entry (VWAP)": 16.253,
-    "Suggested Stop-Loss": 15.4757,
-    "Take-Profit Target": 17.2331,
-    "Resistance (52W High)": 17.8,
+    "Sector": "Trade & Distributors",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 37.8,
+    "Current Price": 17.41,
+    "Target Entry (VWAP)": 16.4508,
+    "Suggested Stop-Loss": 15.9957,
+    "Take-Profit Target": 17.8801,
+    "Resistance (52W High)": 18.22,
     "Support (52W Low)": 14.32,
     "Pivot Point": 17.1033,
     "R1": 18.0967,
@@ -19,27 +24,27 @@
     "S1": 16.4067,
     "S2": 15.4133,
     "S3": 14.7167,
-    "Projected Gain (%)": -1.35,
-    "Pattern Conf (%)": 82.67,
-    "Projected Range 95%": "-1.35% to -1.35%",
-    "Kelly %": 16.39,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | confirmed | weekly aligned | positive money flow | vol x1.48",
+    "Projected Gain (%)": -0.84,
+    "Pattern Conf (%)": 81.98,
+    "Projected Range 95%": "-1.3% to -0.38%",
+    "Kelly %": 13.88,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow | vol x2.93",
     "Score Breakdown": {
-      "pattern": 24.8,
-      "projected": -2.03,
-      "range": 3.53,
-      "trend_bonus": 30.0,
+      "pattern": 24.59,
+      "projected": -1.26,
+      "range": 3.96,
+      "trend_bonus": 44.8,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 62.3,
-    "ADX-14": 66.9,
-    "Vol Z-Score": 0.84,
+    "RSI-14": 68.9,
+    "ADX-14": 63.1,
+    "Vol Z-Score": 2.9,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0969,
-    "Bollinger %B": 0.727,
-    "Avg Volume (20D)": 1351800,
+    "MACD Histogram": 0.0952,
+    "Bollinger %B": 0.888,
+    "Avg Volume (20D)": 1548827,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       14.59,
@@ -115,7 +121,8 @@
       17.3,
       17.4,
       17.4,
-      16.78
+      16.78,
+      17.41
     ],
     "open": [
       15.04,
@@ -152,7 +159,8 @@
       17.28,
       17.3,
       17.7,
-      17.52
+      17.52,
+      16.78
     ],
     "high": [
       15.06,
@@ -189,7 +197,8 @@
       17.55,
       17.5,
       17.8,
-      17.6
+      17.6,
+      18.22
     ],
     "low": [
       14.5,
@@ -226,7 +235,8 @@
       17.0,
       17.05,
       17.2,
-      15.33
+      15.33,
+      16.82
     ],
     "volume": [
       600233,
@@ -263,7 +273,8 @@
       2187719,
       1598934,
       1363628,
-      2002145
+      2002145,
+      4542331
     ],
     "vwap": [
       14.7167,
@@ -300,9 +311,10 @@
       16.005,
       16.1085,
       16.2044,
-      16.253
+      16.253,
+      16.4508
     ],
-    "resistance": 17.8,
+    "resistance": 18.22,
     "support": 14.32,
     "pivots": {
       "pp": 17.1033,

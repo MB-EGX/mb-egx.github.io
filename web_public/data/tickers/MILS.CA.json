@@ -1,16 +1,21 @@
 {
   "ticker": "MILS.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "MILS.CA",
-    "Action": "📈 ACCUMULATE [💥 SQUEEZE]",
-    "Rank Score": 15.0,
-    "Current Price": 191.35,
-    "Target Entry (VWAP)": 189.3981,
-    "Suggested Stop-Loss": 153.8886,
-    "Take-Profit Target": 239.5162,
-    "Resistance (52W High)": 211.77,
+    "Sector": "Food, Beverages & Tobacco",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "🔥 STRONG BUY [👑 WEEKLY ALIGNED]",
+    "Rank Score": 41.8,
+    "Current Price": 229.62,
+    "Target Entry (VWAP)": 195.3654,
+    "Suggested Stop-Loss": 192.12,
+    "Take-Profit Target": 235.8197,
+    "Resistance (52W High)": 229.62,
     "Support (52W Low)": 126.31,
     "Pivot Point": 194.3333,
     "R1": 209.6167,
@@ -19,27 +24,27 @@
     "S1": 179.6667,
     "S2": 164.3833,
     "S3": 149.7167,
-    "Projected Gain (%)": "N/A",
-    "Pattern Conf (%)": "N/A",
-    "Projected Range 95%": "N/A",
-    "Kelly %": 1.11,
-    "Signal Reason": "📈 ACCUMULATE [💥 SQUEEZE] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze",
+    "Projected Gain (%)": -1.63,
+    "Pattern Conf (%)": 23.94,
+    "Projected Range 95%": "-9.76% to 6.49%",
+    "Kelly %": 0.0,
+    "Signal Reason": "🔥 STRONG BUY [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | positive money flow | vol x4.01",
     "Score Breakdown": {
-      "pattern": 0.0,
-      "projected": 0.0,
-      "range": 3.81,
-      "trend_bonus": 25.0,
+      "pattern": 7.18,
+      "projected": -2.44,
+      "range": 5.0,
+      "trend_bonus": 70.0,
       "confidence_weight": 0.52
     },
-    "Regime": "N/A",
+    "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 57.6,
-    "ADX-14": 58.2,
-    "Vol Z-Score": -0.63,
-    "MACD Signal": "Bearish",
-    "MACD Histogram": -1.7404,
-    "Bollinger %B": 0.568,
-    "Avg Volume (20D)": 320936,
+    "RSI-14": 70.4,
+    "ADX-14": 58.0,
+    "Vol Z-Score": 3.41,
+    "MACD Signal": "🟢 Bullish Cross",
+    "MACD Histogram": 0.4417,
+    "Bollinger %B": 1.177,
+    "Avg Volume (20D)": 342857,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       132.08,
@@ -115,7 +121,8 @@
       194.67,
       190.25,
       194.95,
-      191.35
+      191.35,
+      229.62
     ],
     "open": [
       136.5,
@@ -152,7 +159,8 @@
       197.0,
       194.67,
       192.0,
-      200.0
+      200.0,
+      191.35
     ],
     "high": [
       136.7,
@@ -189,7 +197,8 @@
       209.0,
       195.39,
       199.99,
-      202.0
+      202.0,
+      229.62
     ],
     "low": [
       130.53,
@@ -226,7 +235,8 @@
       190.0,
       188.0,
       188.19,
-      191.0
+      191.0,
+      192.22
     ],
     "volume": [
       16888,
@@ -263,7 +273,8 @@
       508531,
       66134,
       121336,
-      174915
+      174915,
+      1376011
     ],
     "vwap": [
       133.1033,
@@ -300,9 +311,10 @@
       182.7358,
       183.7926,
       184.1851,
-      189.3981
+      189.3981,
+      195.3654
     ],
-    "resistance": 211.77,
+    "resistance": 229.62,
     "support": 126.31,
     "pivots": {
       "pp": 194.3333,

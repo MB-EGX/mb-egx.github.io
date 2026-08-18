@@ -1,15 +1,20 @@
 {
   "ticker": "COMI.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Banks",
   "matrix": {
     "Ticker": "COMI.CA",
+    "Sector": "Banks",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "📈 ACCUMULATE",
     "Rank Score": 9.8,
-    "Current Price": 138.85,
-    "Target Entry (VWAP)": 138.85,
-    "Suggested Stop-Loss": 135.2071,
-    "Take-Profit Target": 144.3755,
+    "Current Price": 138.5,
+    "Target Entry (VWAP)": 138.5,
+    "Suggested Stop-Loss": 135.03,
+    "Take-Profit Target": 143.807,
     "Resistance (52W High)": 142.88,
     "Support (52W Low)": 126.21,
     "Pivot Point": 139.5867,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 4.37,
+    "Kelly %": 4.52,
     "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 3.79,
+      "range": 3.69,
       "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 52.0,
-    "ADX-14": 29.4,
-    "Vol Z-Score": -0.17,
+    "RSI-14": 50.6,
+    "ADX-14": 27.6,
+    "Vol Z-Score": -0.1,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.3836,
-    "Bollinger %B": 0.267,
-    "Avg Volume (20D)": 3049325,
+    "MACD Histogram": -0.4374,
+    "Bollinger %B": 0.067,
+    "Avg Volume (20D)": 2916128,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       132.5,
@@ -115,7 +121,8 @@
       139.99,
       139.27,
       139.96,
-      138.85
+      138.85,
+      138.5
     ],
     "open": [
       132.2,
@@ -152,7 +159,8 @@
       139.11,
       139.99,
       139.0,
-      140.0
+      140.0,
+      138.85
     ],
     "high": [
       133.0,
@@ -189,7 +197,8 @@
       139.99,
       139.99,
       140.0,
-      141.0
+      141.0,
+      139.4
     ],
     "low": [
       131.95,
@@ -226,7 +235,8 @@
       138.3,
       138.8,
       138.4,
-      138.52
+      138.52,
+      138.03
     ],
     "volume": [
       2284054,
@@ -263,7 +273,8 @@
       1326999,
       954071,
       1207682,
-      2714186
+      2714186,
+      2723858
     ],
     "vwap": [
       132.4833,
@@ -300,7 +311,8 @@
       139.2055,
       139.3284,
       139.4393,
-      139.5642
+      139.5642,
+      139.8702
     ],
     "resistance": 142.88,
     "support": 126.21,

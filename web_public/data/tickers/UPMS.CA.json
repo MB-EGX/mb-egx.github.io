@@ -1,15 +1,21 @@
 {
   "ticker": "UPMS.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "UPMS.CA",
+    "Sector": "Health Care & Pharmaceuticals",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
     "Action": "📈 ACCUMULATE",
     "Rank Score": 8.9,
-    "Current Price": 11.28,
-    "Target Entry (VWAP)": 11.28,
-    "Suggested Stop-Loss": 10.2214,
-    "Take-Profit Target": 12.6822,
+    "Current Price": 11.29,
+    "Target Entry (VWAP)": 11.29,
+    "Suggested Stop-Loss": 10.2771,
+    "Take-Profit Target": 12.6351,
     "Resistance (52W High)": 13.61,
     "Support (52W Low)": 9.67,
     "Pivot Point": 11.62,
@@ -22,24 +28,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.74,
+    "Kelly %": 1.79,
     "Signal Reason": "📈 ACCUMULATE | trend=Strong Bearish | awaiting confirmation | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.04,
+      "range": 2.06,
       "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bearish",
-    "RSI-14": 39.5,
-    "ADX-14": 31.9,
-    "Vol Z-Score": -0.54,
+    "RSI-14": 39.7,
+    "ADX-14": 31.3,
+    "Vol Z-Score": -0.97,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.1811,
-    "Bollinger %B": 0.064,
-    "Avg Volume (20D)": 54131,
+    "MACD Histogram": -0.1748,
+    "Bollinger %B": 0.1,
+    "Avg Volume (20D)": 50985,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       9.77,
@@ -115,7 +122,8 @@
       11.71,
       11.37,
       11.43,
-      11.28
+      11.28,
+      11.29
     ],
     "open": [
       9.84,
@@ -152,7 +160,8 @@
       11.8,
       11.71,
       11.49,
-      11.47
+      11.47,
+      11.28
     ],
     "high": [
       9.87,
@@ -189,7 +198,8 @@
       11.94,
       11.75,
       11.67,
-      11.47
+      11.47,
+      11.41
     ],
     "low": [
       9.67,
@@ -226,7 +236,8 @@
       11.68,
       11.04,
       11.15,
-      11.23
+      11.23,
+      11.26
     ],
     "volume": [
       75136,
@@ -263,7 +274,8 @@
       34733,
       39631,
       52023,
-      35135
+      35135,
+      16457
     ],
     "vwap": [
       9.77,
@@ -300,7 +312,8 @@
       12.3404,
       12.2604,
       12.1996,
-      12.1631
+      12.1631,
+      12.0981
     ],
     "resistance": 13.61,
     "support": 9.67,

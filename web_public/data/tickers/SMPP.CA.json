@@ -1,15 +1,21 @@
 {
   "ticker": "SMPP.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Paper & Packaging",
   "matrix": {
     "Ticker": "SMPP.CA",
-    "Action": "🚫 ILLIQUID - ⏳ BUY ON DIP",
-    "Rank Score": 10.6,
+    "Sector": "Paper & Packaging",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
+    "Action": "🚫 ILLIQUID - ⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned)",
+    "Rank Score": -9.8,
     "Current Price": 103.05,
     "Target Entry (VWAP)": 103.05,
-    "Suggested Stop-Loss": 64.2214,
-    "Take-Profit Target": 152.3071,
+    "Suggested Stop-Loss": 64.8214,
+    "Take-Profit Target": 151.5571,
     "Resistance (52W High)": 137.97,
     "Support (52W Low)": 100.1,
     "Pivot Point": 112.0833,
@@ -22,24 +28,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 0.82,
-    "Signal Reason": "🚫 ILLIQUID - ⏳ BUY ON DIP | trend=Strong Bearish | awaiting confirmation | positive money flow",
+    "Kelly %": 0.83,
+    "Signal Reason": "🚫 ILLIQUID - ⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned) | trend=Strong Bearish | awaiting confirmation | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
       "range": 0.39,
-      "trend_bonus": 20.0,
+      "trend_bonus": -19.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bearish",
     "RSI-14": 34.2,
-    "ADX-14": 48.8,
-    "Vol Z-Score": -0.68,
+    "ADX-14": 48.7,
+    "Vol Z-Score": -0.62,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -2.1804,
-    "Bollinger %B": 0.22,
-    "Avg Volume (20D)": 94,
+    "MACD Histogram": -1.9056,
+    "Bollinger %B": 0.244,
+    "Avg Volume (20D)": 74,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       108.0,
@@ -110,6 +117,7 @@
       116.0,
       116.0,
       116.0,
+      103.05,
       103.05,
       103.05,
       103.05,
@@ -152,6 +160,7 @@
       132.0,
       132.0,
       132.0,
+      132.0,
       132.0
     ],
     "high": [
@@ -184,6 +193,7 @@
       116.0,
       116.0,
       116.0,
+      132.0,
       132.0,
       132.0,
       132.0,
@@ -226,6 +236,7 @@
       101.2,
       101.2,
       101.2,
+      101.2,
       101.2
     ],
     "volume": [
@@ -259,6 +270,7 @@
       0,
       26,
       214,
+      0,
       0,
       0,
       0,
@@ -300,7 +312,8 @@
       120.2332,
       120.3267,
       120.4226,
-      120.5211
+      120.5211,
+      121.9275
     ],
     "resistance": 137.97,
     "support": 100.1,

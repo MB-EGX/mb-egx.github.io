@@ -1,15 +1,20 @@
 {
   "ticker": "TANM.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "TANM.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 28.9,
-    "Current Price": 6.64,
-    "Target Entry (VWAP)": 6.4182,
-    "Suggested Stop-Loss": 5.9214,
-    "Take-Profit Target": 7.3365,
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 38.0,
+    "Current Price": 6.66,
+    "Target Entry (VWAP)": 6.4337,
+    "Suggested Stop-Loss": 5.9557,
+    "Take-Profit Target": 7.4219,
     "Resistance (52W High)": 7.19,
     "Support (52W Low)": 4.91,
     "Pivot Point": 6.8233,
@@ -19,27 +24,27 @@
     "S1": 6.4567,
     "S2": 5.9333,
     "S3": 5.5667,
-    "Projected Gain (%)": 9.79,
-    "Pattern Conf (%)": 73.13,
-    "Projected Range 95%": "9.79% to 9.79%",
-    "Kelly %": 22.7,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Projected Gain (%)": 10.74,
+    "Pattern Conf (%)": 75.5,
+    "Projected Range 95%": "9.89% to 11.59%",
+    "Kelly %": 25.0,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 21.94,
-      "projected": 14.68,
-      "range": 3.79,
-      "trend_bonus": 15.0,
+      "pattern": 22.65,
+      "projected": 16.11,
+      "range": 3.84,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 60.9,
-    "ADX-14": 60.7,
-    "Vol Z-Score": -0.56,
+    "RSI-14": 61.4,
+    "ADX-14": 58.2,
+    "Vol Z-Score": -0.47,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0169,
-    "Bollinger %B": 0.697,
-    "Avg Volume (20D)": 2514646,
+    "MACD Histogram": 0.0016,
+    "Bollinger %B": 0.696,
+    "Avg Volume (20D)": 2545296,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       5.08,
@@ -115,7 +121,8 @@
       6.66,
       6.98,
       6.98,
-      6.64
+      6.64,
+      6.66
     ],
     "open": [
       5.12,
@@ -152,7 +159,8 @@
       6.65,
       6.66,
       6.92,
-      7.0
+      7.0,
+      6.64
     ],
     "high": [
       5.28,
@@ -189,7 +197,8 @@
       6.98,
       7.18,
       7.19,
-      7.0
+      7.0,
+      6.92
     ],
     "low": [
       5.05,
@@ -226,7 +235,8 @@
       6.65,
       6.74,
       6.85,
-      6.61
+      6.61,
+      6.43
     ],
     "volume": [
       914369,
@@ -263,7 +273,8 @@
       2674628,
       2070910,
       1830151,
-      1065693
+      1065693,
+      1345577
     ],
     "vwap": [
       5.1367,
@@ -300,7 +311,8 @@
       6.3091,
       6.358,
       6.3935,
-      6.4182
+      6.4182,
+      6.4337
     ],
     "resistance": 7.19,
     "support": 4.91,

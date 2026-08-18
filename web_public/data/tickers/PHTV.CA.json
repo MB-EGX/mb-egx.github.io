@@ -1,15 +1,21 @@
 {
   "ticker": "PHTV.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Travel & Leisure",
   "matrix": {
     "Ticker": "PHTV.CA",
-    "Action": "🚫 ILLIQUID - 📈 ACCUMULATE",
-    "Rank Score": 2.4,
-    "Current Price": 358.55,
-    "Target Entry (VWAP)": 349.7334,
-    "Suggested Stop-Loss": 312.8429,
-    "Take-Profit Target": 368.5177,
+    "Sector": "Travel & Leisure",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
+    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 10.3,
+    "Current Price": 367.95,
+    "Target Entry (VWAP)": 353.3094,
+    "Suggested Stop-Loss": 318.8229,
+    "Take-Profit Target": 380.1659,
     "Resistance (52W High)": 447.99,
     "Support (52W Low)": 246.51,
     "Pivot Point": 390.0733,
@@ -19,27 +25,27 @@
     "S1": 332.1567,
     "S2": 290.0833,
     "S3": 232.1667,
-    "Projected Gain (%)": 2.08,
-    "Pattern Conf (%)": 78.79,
-    "Projected Range 95%": "2.08% to 2.08%",
+    "Projected Gain (%)": 2.62,
+    "Pattern Conf (%)": 76.38,
+    "Projected Range 95%": "2.14% to 3.09%",
     "Kelly %": 0.0,
-    "Signal Reason": "🚫 ILLIQUID - 📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow | vol x1.15",
+    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow | vol x2.12",
     "Score Breakdown": {
-      "pattern": 23.64,
-      "projected": 3.12,
-      "range": 2.78,
-      "trend_bonus": -25.0,
+      "pattern": 22.91,
+      "projected": 3.93,
+      "range": 3.01,
+      "trend_bonus": -10.2,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 58.7,
-    "ADX-14": 78.7,
-    "Vol Z-Score": 0.27,
-    "MACD Signal": "Bullish",
-    "MACD Histogram": 1.3835,
-    "Bollinger %B": 0.617,
-    "Avg Volume (20D)": 7982,
+    "RSI-14": 61.6,
+    "ADX-14": 76.6,
+    "Vol Z-Score": 1.92,
+    "MACD Signal": "🔴 Bearish Cross",
+    "MACD Histogram": -0.0436,
+    "Bollinger %B": 0.67,
+    "Avg Volume (20D)": 8586,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       249.99,
@@ -115,7 +122,8 @@
       403.58,
       390.0,
       374.23,
-      358.55
+      358.55,
+      367.95
     ],
     "open": [
       253.48,
@@ -152,7 +160,8 @@
       414.0,
       403.58,
       390.2,
-      370.13
+      370.13,
+      358.55
     ],
     "high": [
       253.48,
@@ -189,7 +198,8 @@
       420.0,
       413.79,
       390.2,
-      379.99
+      379.99,
+      389.99
     ],
     "low": [
       246.51,
@@ -226,7 +236,8 @@
       392.0,
       385.0,
       361.0,
-      355.3
+      355.3,
+      355.05
     ],
     "volume": [
       36107,
@@ -263,7 +274,8 @@
       2618,
       8424,
       19059,
-      9196
+      9196,
+      18164
     ],
     "vwap": [
       249.9933,
@@ -300,7 +312,8 @@
       331.9423,
       337.1872,
       345.5941,
-      349.7334
+      349.7334,
+      353.3094
     ],
     "resistance": 447.99,
     "support": 246.51,

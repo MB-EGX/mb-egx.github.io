@@ -1,16 +1,21 @@
 {
   "ticker": "EEII.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Industrial Goods, Services & Automobiles",
   "matrix": {
     "Ticker": "EEII.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 17.6,
-    "Current Price": 3.05,
-    "Target Entry (VWAP)": 2.9012,
-    "Suggested Stop-Loss": 2.7471,
-    "Take-Profit Target": 3.4499,
-    "Resistance (52W High)": 3.23,
+    "Sector": "Industrial Goods, Services & Automobiles",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "🔥 STRONG BUY (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 33.2,
+    "Current Price": 3.25,
+    "Target Entry (VWAP)": 2.923,
+    "Suggested Stop-Loss": 2.9343,
+    "Take-Profit Target": 3.3378,
+    "Resistance (52W High)": 3.29,
     "Support (52W Low)": 2.35,
     "Pivot Point": 2.9967,
     "R1": 3.3133,
@@ -19,27 +24,27 @@
     "S1": 2.7633,
     "S2": 2.4467,
     "S3": 2.2133,
-    "Projected Gain (%)": "N/A",
-    "Pattern Conf (%)": "N/A",
-    "Projected Range 95%": "N/A",
-    "Kelly %": 1.67,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Projected Gain (%)": 1.09,
+    "Pattern Conf (%)": 64.43,
+    "Projected Range 95%": "1.09% to 1.09%",
+    "Kelly %": 0.0,
+    "Signal Reason": "🔥 STRONG BUY (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x1.19",
     "Score Breakdown": {
-      "pattern": 0.0,
-      "projected": 0.0,
-      "range": 3.98,
-      "trend_bonus": 29.8,
+      "pattern": 19.33,
+      "projected": 1.64,
+      "range": 4.79,
+      "trend_bonus": 37.5,
       "confidence_weight": 0.52
     },
-    "Regime": "N/A",
+    "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 63.8,
-    "ADX-14": 57.7,
-    "Vol Z-Score": -0.43,
+    "RSI-14": 70.4,
+    "ADX-14": 58.8,
+    "Vol Z-Score": 0.18,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0328,
-    "Bollinger %B": 0.851,
-    "Avg Volume (20D)": 8132148,
+    "MACD Histogram": 0.0406,
+    "Bollinger %B": 1.026,
+    "Avg Volume (20D)": 8284524,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       2.42,
@@ -115,7 +121,8 @@
       3.18,
       3.04,
       3.08,
-      3.05
+      3.05,
+      3.25
     ],
     "open": [
       2.41,
@@ -152,7 +159,8 @@
       2.97,
       3.18,
       3.08,
-      3.11
+      3.11,
+      3.05
     ],
     "high": [
       2.47,
@@ -189,7 +197,8 @@
       3.23,
       3.19,
       3.11,
-      3.16
+      3.16,
+      3.29
     ],
     "low": [
       2.41,
@@ -226,7 +235,8 @@
       2.93,
       3.03,
       3.03,
-      3.04
+      3.04,
+      3.06
     ],
     "volume": [
       4278801,
@@ -263,7 +273,8 @@
       24211061,
       18551745,
       3882685,
-      4457409
+      4457409,
+      9836849
     ],
     "vwap": [
       2.4333,
@@ -300,9 +311,10 @@
       2.854,
       2.8837,
       2.8934,
-      2.9012
+      2.9012,
+      2.923
     ],
-    "resistance": 3.23,
+    "resistance": 3.29,
     "support": 2.35,
     "pivots": {
       "pp": 2.9967,

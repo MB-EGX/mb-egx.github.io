@@ -1,15 +1,20 @@
 {
   "ticker": "RACC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "IT, Media & Communication Services",
   "matrix": {
     "Ticker": "RACC.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 17.6,
+    "Sector": "IT, Media & Communication Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 25.4,
     "Current Price": 10.5,
-    "Target Entry (VWAP)": 10.2538,
-    "Suggested Stop-Loss": 10.0471,
-    "Take-Profit Target": 11.1396,
+    "Target Entry (VWAP)": 10.2672,
+    "Suggested Stop-Loss": 10.0429,
+    "Take-Profit Target": 11.1449,
     "Resistance (52W High)": 10.89,
     "Support (52W Low)": 9.36,
     "Pivot Point": 10.4867,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 3.03,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | confirmed | weekly aligned | positive money flow | vol x2.29",
+    "Kelly %": 3.01,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
       "range": 3.73,
-      "trend_bonus": 30.0,
+      "trend_bonus": 44.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
     "RSI-14": 61.2,
-    "ADX-14": 26.8,
-    "Vol Z-Score": 2.1,
+    "ADX-14": 27.6,
+    "Vol Z-Score": -0.48,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0395,
-    "Bollinger %B": 0.963,
-    "Avg Volume (20D)": 2001620,
+    "MACD Histogram": 0.038,
+    "Bollinger %B": 0.908,
+    "Avg Volume (20D)": 1975453,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       9.8,
@@ -115,6 +121,7 @@
       10.21,
       10.39,
       10.7,
+      10.5,
       10.5
     ],
     "open": [
@@ -152,7 +159,8 @@
       10.14,
       10.21,
       10.5,
-      10.8
+      10.8,
+      10.5
     ],
     "high": [
       10.0,
@@ -189,7 +197,8 @@
       10.28,
       10.6,
       10.77,
-      10.88
+      10.88,
+      10.58
     ],
     "low": [
       9.76,
@@ -226,7 +235,8 @@
       10.07,
       10.21,
       10.42,
-      10.41
+      10.41,
+      10.37
     ],
     "volume": [
       584484,
@@ -263,7 +273,8 @@
       1797853,
       4040332,
       5060124,
-      4583920
+      4583920,
+      1380738
     ],
     "vwap": [
       9.8533,
@@ -300,7 +311,8 @@
       10.1208,
       10.1463,
       10.2054,
-      10.2538
+      10.2538,
+      10.2672
     ],
     "resistance": 10.89,
     "support": 9.36,

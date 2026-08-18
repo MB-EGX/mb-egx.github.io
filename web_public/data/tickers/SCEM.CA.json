@@ -1,15 +1,20 @@
 {
   "ticker": "SCEM.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Building Materials",
   "matrix": {
     "Ticker": "SCEM.CA",
+    "Sector": "Building Materials",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "📈 ACCUMULATE",
-    "Rank Score": 32.2,
-    "Current Price": 107.89,
-    "Target Entry (VWAP)": 89.8614,
-    "Suggested Stop-Loss": 92.54,
-    "Take-Profit Target": 124.1814,
+    "Rank Score": 9.8,
+    "Current Price": 100.0,
+    "Target Entry (VWAP)": 91.7639,
+    "Suggested Stop-Loss": 83.49,
+    "Take-Profit Target": 121.3375,
     "Resistance (52W High)": 113.0,
     "Support (52W Low)": 60.14,
     "Pivot Point": 101.6667,
@@ -19,27 +24,27 @@
     "S1": 90.3333,
     "S2": 69.6667,
     "S3": 58.3333,
-    "Projected Gain (%)": 14.4,
-    "Pattern Conf (%)": 68.37,
-    "Projected Range 95%": "14.4% to 14.4%",
-    "Kelly %": 19.28,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Projected Gain (%)": "N/A",
+    "Pattern Conf (%)": "N/A",
+    "Projected Range 95%": "N/A",
+    "Kelly %": 1.22,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow | vol x1.26",
     "Score Breakdown": {
-      "pattern": 20.51,
-      "projected": 21.6,
-      "range": 4.52,
+      "pattern": 0.0,
+      "projected": 0.0,
+      "range": 3.77,
       "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
-    "Regime": "Trending / Volatile",
+    "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 74.8,
-    "ADX-14": 66.1,
-    "Vol Z-Score": -0.03,
+    "RSI-14": 64.6,
+    "ADX-14": 66.5,
+    "Vol Z-Score": 0.34,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 2.4678,
-    "Bollinger %B": 1.055,
-    "Avg Volume (20D)": 2478033,
+    "MACD Histogram": 1.9538,
+    "Bollinger %B": 0.82,
+    "Avg Volume (20D)": 2434547,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       62.56,
@@ -115,7 +121,8 @@
       93.02,
       94.4,
       111.0,
-      107.89
+      107.89,
+      100.0
     ],
     "open": [
       63.51,
@@ -152,7 +159,8 @@
       105.0,
       93.02,
       96.99,
-      109.9
+      109.9,
+      107.89
     ],
     "high": [
       63.95,
@@ -189,7 +197,8 @@
       113.0,
       97.5,
       111.62,
-      110.99
+      110.99,
+      112.0
     ],
     "low": [
       62.54,
@@ -226,7 +235,8 @@
       90.6,
       91.19,
       95.18,
-      103.0
+      103.0,
+      99.1
     ],
     "volume": [
       220234,
@@ -263,7 +273,8 @@
       7119352,
       2726412,
       5727201,
-      2423681
+      2423681,
+      3075517
     ],
     "vwap": [
       63.0167,
@@ -300,7 +311,8 @@
       84.2919,
       84.9789,
       87.9507,
-      89.8614
+      89.8614,
+      91.7639
     ],
     "resistance": 113.0,
     "support": 60.14,

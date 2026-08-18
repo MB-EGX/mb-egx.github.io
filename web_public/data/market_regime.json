@@ -1,13 +1,136 @@
 {
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "market_regime": {
     "primary": {
       "ticker": ".EGX30",
       "label": "EGX 30",
       "regime": "unknown",
-      "close": null,
-      "as_of": null
+      "close": 55276.78,
+      "as_of": "2026-08-18"
     },
-    "benchmarks": {}
+    "benchmarks": {
+      ".EGX30": {
+        "regime": "unknown",
+        "close": 55276.78,
+        "as_of": "2026-08-18",
+        "label": "EGX 30"
+      },
+      ".EGX70EWI": {
+        "regime": "unknown",
+        "close": 21667.02,
+        "as_of": "2026-08-18",
+        "label": "EGX 70 EWI"
+      },
+      ".EGX100EWI": {
+        "regime": "unknown",
+        "close": 27953.58,
+        "as_of": "2026-08-18",
+        "label": "EGX 100 EWI"
+      },
+      ".EGX30CAP": {
+        "regime": "unknown",
+        "close": 68283.17,
+        "as_of": "2026-08-18",
+        "label": "EGX 30 Capped"
+      },
+      ".SHARIAH": {
+        "regime": "unknown",
+        "close": 6606.93,
+        "as_of": "2026-08-18",
+        "label": "EGX 33 Shariah"
+      },
+      ".EGBANK": {
+        "regime": "unknown",
+        "close": 5535.23,
+        "as_of": "2026-08-18",
+        "label": "EGX Banks"
+      },
+      ".EGREAL": {
+        "regime": "unknown",
+        "close": 6440.53,
+        "as_of": "2026-08-18",
+        "label": "EGX Real Estate"
+      },
+      ".EGBULM": {
+        "regime": "unknown",
+        "close": 12391.33,
+        "as_of": "2026-08-18",
+        "label": "EGX Building Materials"
+      },
+      ".EGBASC": {
+        "regime": "unknown",
+        "close": 5050.9,
+        "as_of": "2026-08-18",
+        "label": "EGX Basic Resources"
+      },
+      ".EGFOBT": {
+        "regime": "unknown",
+        "close": 3575.66,
+        "as_of": "2026-08-18",
+        "label": "EGX Food & Beverages"
+      },
+      ".EGEDUS": {
+        "regime": "unknown",
+        "close": 13609.56,
+        "as_of": "2026-08-18",
+        "label": "EGX Education Services"
+      },
+      ".EGTRDB": {
+        "regime": "unknown",
+        "close": 13650.83,
+        "as_of": "2026-08-18",
+        "label": "EGX Trading & Distributors"
+      },
+      ".EGSHTS": {
+        "regime": "unknown",
+        "close": 5297.76,
+        "as_of": "2026-08-18",
+        "label": "EGX Shipping & Transportation"
+      },
+      ".EGNBFC": {
+        "regime": "unknown",
+        "close": 2059.85,
+        "as_of": "2026-08-18",
+        "label": "EGX Non-Bank Financial Services"
+      },
+      ".EGCOCE": {
+        "regime": "unknown",
+        "close": 8373.2,
+        "as_of": "2026-08-18",
+        "label": "EGX Consulting Engineers"
+      },
+      ".EGTRVL": {
+        "regime": "unknown",
+        "close": 9527.87,
+        "as_of": "2026-08-18",
+        "label": "EGX Travel & Leisure"
+      },
+      ".EGHLTH": {
+        "regime": "unknown",
+        "close": 3629.08,
+        "as_of": "2026-08-18",
+        "label": "EGX Health Care"
+      },
+      ".EGIGSA": {
+        "regime": "unknown",
+        "close": 11552.75,
+        "as_of": "2026-08-18",
+        "label": "EGX Industrial Goods & Services"
+      },
+      ".EGX35LV": {
+        "regime": "unknown",
+        "close": 6869.81,
+        "as_of": "2026-08-18",
+        "label": "EGX 35 LV"
+      }
+    },
+    "sector_rotation": {
+      "available": false,
+      "reason": "Insufficient shared history for both legs yet."
+    },
+    "usd_divergence": {
+      "available": false,
+      "reason": "Only 2 shared session(s) - need at least 60."
+    }
   }
 }

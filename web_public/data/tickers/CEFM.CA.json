@@ -1,15 +1,20 @@
 {
   "ticker": "CEFM.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "CEFM.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 17.4,
-    "Current Price": 135.08,
-    "Target Entry (VWAP)": 135.08,
-    "Suggested Stop-Loss": 117.89,
-    "Take-Profit Target": 157.5131,
+    "Sector": "Food, Beverages & Tobacco",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 17.7,
+    "Current Price": 141.1,
+    "Target Entry (VWAP)": 135.0716,
+    "Suggested Stop-Loss": 126.05,
+    "Take-Profit Target": 160.9002,
     "Resistance (52W High)": 152.0,
     "Support (52W Low)": 95.75,
     "Pivot Point": 137.36,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.43,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Kelly %": 1.6,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x1.67",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 3.5,
+      "range": 4.03,
       "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 60.2,
-    "ADX-14": 56.9,
-    "Vol Z-Score": -0.91,
+    "RSI-14": 65.9,
+    "ADX-14": 56.7,
+    "Vol Z-Score": 0.76,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -1.2348,
-    "Bollinger %B": 0.555,
-    "Avg Volume (20D)": 222989,
+    "MACD Histogram": -0.9037,
+    "Bollinger %B": 0.824,
+    "Avg Volume (20D)": 203468,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       100.06,
@@ -115,7 +121,8 @@
       136.0,
       133.1,
       135.09,
-      135.08
+      135.08,
+      141.1
     ],
     "open": [
       102.26,
@@ -152,7 +159,8 @@
       138.01,
       136.0,
       133.3,
-      136.0
+      136.0,
+      135.08
     ],
     "high": [
       102.5,
@@ -189,7 +197,8 @@
       144.99,
       137.0,
       142.0,
-      137.88
+      137.88,
+      145.0
     ],
     "low": [
       100.0,
@@ -226,7 +235,8 @@
       136.0,
       133.0,
       133.3,
-      135.0
+      135.0,
+      135.9
     ],
     "volume": [
       10702,
@@ -263,7 +273,8 @@
       215161,
       33203,
       58460,
-      29587
+      29587,
+      339365
     ],
     "vwap": [
       100.8533,
@@ -300,7 +311,8 @@
       133.2871,
       133.6909,
       133.8597,
-      135.4828
+      135.4828,
+      135.0716
     ],
     "resistance": 152.0,
     "support": 95.75,

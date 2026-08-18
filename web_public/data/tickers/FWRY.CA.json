@@ -1,15 +1,20 @@
 {
   "ticker": "FWRY.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "IT, Media & Communication Services",
   "matrix": {
     "Ticker": "FWRY.CA",
-    "Action": "📈 ACCUMULATE [💥 SQUEEZE]",
-    "Rank Score": 14.6,
-    "Current Price": 19.13,
-    "Target Entry (VWAP)": 19.13,
-    "Suggested Stop-Loss": 18.3243,
-    "Take-Profit Target": 20.2711,
+    "Sector": "IT, Media & Communication Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
+    "Rank Score": 22.5,
+    "Current Price": 19.19,
+    "Target Entry (VWAP)": 19.1864,
+    "Suggested Stop-Loss": 18.3943,
+    "Take-Profit Target": 20.319,
     "Resistance (52W High)": 19.81,
     "Support (52W Low)": 18.13,
     "Pivot Point": 19.1467,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 3.08,
-    "Signal Reason": "📈 ACCUMULATE [💥 SQUEEZE] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze",
+    "Kelly %": 3.12,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.98,
-      "trend_bonus": 25.0,
+      "range": 3.15,
+      "trend_bonus": 39.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 51.4,
-    "ADX-14": 21.1,
-    "Vol Z-Score": -0.06,
+    "RSI-14": 52.6,
+    "ADX-14": 20.7,
+    "Vol Z-Score": -1.14,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0104,
-    "Bollinger %B": 0.523,
-    "Avg Volume (20D)": 6262113,
+    "MACD Histogram": -0.0059,
+    "Bollinger %B": 0.598,
+    "Avg Volume (20D)": 6026805,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       18.7,
@@ -115,7 +121,8 @@
       18.88,
       19.01,
       19.31,
-      19.13
+      19.13,
+      19.19
     ],
     "open": [
       18.98,
@@ -152,7 +159,8 @@
       18.87,
       18.88,
       19.16,
-      19.4
+      19.4,
+      19.13
     ],
     "high": [
       19.04,
@@ -189,7 +197,8 @@
       19.04,
       19.2,
       19.41,
-      19.55
+      19.55,
+      19.26
     ],
     "low": [
       18.51,
@@ -226,7 +235,8 @@
       18.7,
       18.92,
       19.12,
-      19.12
+      19.12,
+      19.06
     ],
     "volume": [
       5620318,
@@ -263,7 +273,8 @@
       6414437,
       5973734,
       6658492,
-      6058810
+      6058810,
+      2158238
     ],
     "vwap": [
       18.75,
@@ -300,7 +311,8 @@
       19.0994,
       19.1468,
       19.17,
-      19.182
+      19.182,
+      19.1864
     ],
     "resistance": 19.81,
     "support": 18.13,

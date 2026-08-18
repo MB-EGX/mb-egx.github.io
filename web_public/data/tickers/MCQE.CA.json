@@ -1,15 +1,20 @@
 {
   "ticker": "MCQE.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Building Materials",
   "matrix": {
     "Ticker": "MCQE.CA",
+    "Sector": "Building Materials",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "📈 ACCUMULATE",
-    "Rank Score": 9.4,
-    "Current Price": 240.0,
-    "Target Entry (VWAP)": 225.2044,
-    "Suggested Stop-Loss": 208.8114,
-    "Take-Profit Target": 280.6657,
+    "Rank Score": 9.0,
+    "Current Price": 221.5,
+    "Target Entry (VWAP)": 221.5,
+    "Suggested Stop-Loss": 186.4857,
+    "Take-Profit Target": 266.8184,
     "Resistance (52W High)": 292.32,
     "Support (52W Low)": 166.66,
     "Pivot Point": 246.96,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.41,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | confirmed | weekly aligned | positive money flow | vol x1.31",
+    "Kelly %": 1.25,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.92,
+      "range": 2.18,
       "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 70.7,
-    "ADX-14": 57.9,
-    "Vol Z-Score": 0.34,
+    "RSI-14": 58.3,
+    "ADX-14": 56.1,
+    "Vol Z-Score": -0.03,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 5.9533,
-    "Bollinger %B": 0.833,
-    "Avg Volume (20D)": 251772,
+    "MACD Histogram": 3.6205,
+    "Bollinger %B": 0.649,
+    "Avg Volume (20D)": 242036,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       167.34,
@@ -115,7 +121,8 @@
       259.5,
       248.11,
       251.5,
-      240.0
+      240.0,
+      221.5
     ],
     "open": [
       172.05,
@@ -152,7 +159,8 @@
       279.97,
       259.5,
       250.04,
-      254.0
+      254.0,
+      240.0
     ],
     "high": [
       173.5,
@@ -189,7 +197,8 @@
       292.32,
       279.9,
       263.0,
-      255.0
+      255.0,
+      244.79
     ],
     "low": [
       166.66,
@@ -226,7 +235,8 @@
       240.0,
       243.63,
       249.0,
-      238.0
+      238.0,
+      212.01
     ],
     "volume": [
       65230,
@@ -263,7 +273,8 @@
       825457,
       492133,
       570878,
-      330198
+      330198,
+      234207
     ],
     "vwap": [
       169.1667,
@@ -300,7 +311,8 @@
       212.5631,
       218.0364,
       222.9844,
-      225.2044
+      225.2044,
+      228.5706
     ],
     "resistance": 292.32,
     "support": 166.66,

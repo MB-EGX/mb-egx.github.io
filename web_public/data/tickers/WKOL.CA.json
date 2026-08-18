@@ -1,15 +1,20 @@
 {
   "ticker": "WKOL.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Construction & Engineering",
   "matrix": {
     "Ticker": "WKOL.CA",
-    "Action": "🔥 STRONG BUY [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
-    "Rank Score": 44.1,
-    "Current Price": 376.61,
-    "Target Entry (VWAP)": 337.8827,
-    "Suggested Stop-Loss": 327.8757,
-    "Take-Profit Target": 440.1641,
+    "Sector": "Construction & Engineering",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE [💥 SQUEEZE]",
+    "Rank Score": 14.6,
+    "Current Price": 341.0,
+    "Target Entry (VWAP)": 339.5997,
+    "Suggested Stop-Loss": 287.75,
+    "Take-Profit Target": 409.9495,
     "Resistance (52W High)": 390.0,
     "Support (52W Low)": 273.1,
     "Pivot Point": 332.66,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.41,
-    "Signal Reason": "🔥 STRONG BUY [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | volatility squeeze | vol x4.12",
+    "Kelly %": 1.26,
+    "Signal Reason": "📈 ACCUMULATE [💥 SQUEEZE] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze | vol x1.65",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 4.43,
-      "trend_bonus": 80.0,
+      "range": 2.9,
+      "trend_bonus": 25.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 73.2,
-    "ADX-14": 59.3,
-    "Vol Z-Score": 2.54,
-    "MACD Signal": "🟢 Bullish Cross",
-    "MACD Histogram": 2.4516,
-    "Bollinger %B": 1.374,
-    "Avg Volume (20D)": 96607,
+    "RSI-14": 56.5,
+    "ADX-14": 60.0,
+    "Vol Z-Score": 0.55,
+    "MACD Signal": "Bullish",
+    "MACD Histogram": 2.0431,
+    "Bollinger %B": 0.761,
+    "Avg Volume (20D)": 100135,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       284.62,
@@ -115,7 +121,8 @@
       321.9,
       323.02,
       326.14,
-      376.61
+      376.61,
+      341.0
     ],
     "open": [
       288.0,
@@ -152,7 +159,8 @@
       328.1,
       321.9,
       324.0,
-      330.0
+      330.0,
+      376.61
     ],
     "high": [
       289.0,
@@ -189,7 +197,8 @@
       336.95,
       337.0,
       331.89,
-      390.0
+      390.0,
+      372.0
     ],
     "low": [
       284.0,
@@ -226,7 +235,8 @@
       321.01,
       321.9,
       324.0,
-      326.5
+      326.5,
+      341.0
     ],
     "volume": [
       7739,
@@ -263,7 +273,8 @@
       38502,
       71326,
       29895,
-      397922
+      397922,
+      165516
     ],
     "vwap": [
       285.8733,
@@ -300,7 +311,8 @@
       330.701,
       330.7706,
       330.8075,
-      337.8827
+      337.8827,
+      339.5997
     ],
     "resistance": 390.0,
     "support": 273.1,

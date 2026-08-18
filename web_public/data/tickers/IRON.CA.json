@@ -1,15 +1,20 @@
 {
   "ticker": "IRON.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Basic Resources",
   "matrix": {
     "Ticker": "IRON.CA",
-    "Action": "⏳ BUY ON DIP [💥 SQUEEZE]",
-    "Rank Score": 29.4,
-    "Current Price": 31.34,
-    "Target Entry (VWAP)": 31.34,
-    "Suggested Stop-Loss": 28.5771,
-    "Take-Profit Target": 35.013,
+    "Sector": "Basic Resources",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (X-OVER + MOMENTUM) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
+    "Rank Score": 50.3,
+    "Current Price": 32.9,
+    "Target Entry (VWAP)": 31.7759,
+    "Suggested Stop-Loss": 29.9857,
+    "Take-Profit Target": 36.7732,
     "Resistance (52W High)": 34.99,
     "Support (52W Low)": 30.14,
     "Pivot Point": 31.4767,
@@ -23,23 +28,23 @@
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
     "Kelly %": 1.81,
-    "Signal Reason": "⏳ BUY ON DIP [💥 SQUEEZE] | trend=Weak Bullish | awaiting confirmation | volatility squeeze | vol x1.21",
+    "Signal Reason": "⚡ BREAKOUT BUY (X-OVER + MOMENTUM) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | volatility squeeze | vol x2.17",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 1.24,
-      "trend_bonus": 55.0,
+      "range": 2.85,
+      "trend_bonus": 93.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
-    "Trend Class": "Weak Bullish",
-    "RSI-14": 48.2,
-    "ADX-14": 31.1,
-    "Vol Z-Score": 0.49,
-    "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0814,
-    "Bollinger %B": 0.471,
-    "Avg Volume (20D)": 301970,
+    "Trend Class": "Strong Bullish",
+    "RSI-14": 59.7,
+    "ADX-14": 29.2,
+    "Vol Z-Score": 2.53,
+    "MACD Signal": "🟢 Bullish Cross",
+    "MACD Histogram": 0.0304,
+    "Bollinger %B": 0.854,
+    "Avg Volume (20D)": 331680,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       31.31,
@@ -115,7 +121,8 @@
       30.87,
       31.02,
       30.93,
-      31.34
+      31.34,
+      32.9
     ],
     "open": [
       31.79,
@@ -152,7 +159,8 @@
       31.0,
       30.87,
       31.37,
-      31.0
+      31.0,
+      31.34
     ],
     "high": [
       32.0,
@@ -189,7 +197,8 @@
       32.26,
       31.6,
       31.5,
-      31.9
+      31.9,
+      32.9
     ],
     "low": [
       31.28,
@@ -226,7 +235,8 @@
       30.8,
       30.5,
       30.7,
-      30.5
+      30.5,
+      31.06
     ],
     "volume": [
       186478,
@@ -263,7 +273,8 @@
       443829,
       319493,
       186546,
-      365654
+      365654,
+      718576
     ],
     "vwap": [
       31.53,
@@ -300,7 +311,8 @@
       31.7892,
       31.7501,
       31.73,
-      31.7093
+      31.7093,
+      31.7759
     ],
     "resistance": 34.99,
     "support": 30.14,

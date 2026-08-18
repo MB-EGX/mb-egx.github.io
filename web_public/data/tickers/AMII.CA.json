@@ -1,15 +1,20 @@
 {
   "ticker": "AMII.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "AMII.CA",
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "📈 ACCUMULATE",
     "Rank Score": 8.5,
-    "Current Price": 14.0,
-    "Target Entry (VWAP)": 14.0,
-    "Suggested Stop-Loss": 11.6043,
-    "Take-Profit Target": 17.0926,
+    "Current Price": 13.91,
+    "Target Entry (VWAP)": 13.91,
+    "Suggested Stop-Loss": 11.7629,
+    "Take-Profit Target": 16.6913,
     "Resistance (52W High)": 17.25,
     "Support (52W Low)": 11.8,
     "Pivot Point": 14.47,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.2,
+    "Kelly %": 1.27,
     "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.02,
+      "range": 1.94,
       "trend_bonus": 15.0,
       "confidence_weight": 0.5
     },
     "Regime": "N/A",
     "Trend Class": "Weak Bullish",
-    "RSI-14": 54.9,
-    "ADX-14": 66.4,
-    "Vol Z-Score": -0.84,
+    "RSI-14": 53.8,
+    "ADX-14": 62.8,
+    "Vol Z-Score": -1.09,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0182,
-    "Bollinger %B": 0.431,
-    "Avg Volume (20D)": 5621559,
+    "MACD Histogram": -0.0373,
+    "Bollinger %B": 0.407,
+    "Avg Volume (20D)": 5343958,
     "Data Confidence": "Very Low (New/Short History)"
   },
   "chart_history": {
@@ -58,7 +63,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       12.08,
@@ -75,7 +81,8 @@
       14.05,
       14.66,
       14.77,
-      14.0
+      14.0,
+      13.91
     ],
     "open": [
       12.5,
@@ -92,7 +99,8 @@
       14.0,
       14.05,
       14.7,
-      14.86
+      14.86,
+      14.0
     ],
     "high": [
       13.0,
@@ -109,7 +117,8 @@
       14.5,
       14.66,
       14.99,
-      14.86
+      14.86,
+      14.09
     ],
     "low": [
       12.07,
@@ -126,7 +135,8 @@
       13.65,
       13.86,
       14.45,
-      13.82
+      13.82,
+      13.83
     ],
     "volume": [
       5260726,
@@ -143,7 +153,8 @@
       3573936,
       2899933,
       2085049,
-      2422237
+      2422237,
+      1179950
     ],
     "vwap": [
       12.3833,
@@ -160,7 +171,8 @@
       14.4124,
       14.4117,
       14.42,
-      14.4144
+      14.4144,
+      14.4079
     ],
     "resistance": 17.25,
     "support": 11.8,

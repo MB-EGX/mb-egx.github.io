@@ -1,15 +1,20 @@
 {
   "ticker": "ACAMD.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "ACAMD.CA",
-    "Action": "⏳ BUY ON DIP",
-    "Rank Score": 24.1,
-    "Current Price": 2.23,
-    "Target Entry (VWAP)": 2.23,
-    "Suggested Stop-Loss": 2.1086,
-    "Take-Profit Target": 2.3974,
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor)",
+    "Rank Score": 8.4,
+    "Current Price": 2.16,
+    "Target Entry (VWAP)": 2.16,
+    "Suggested Stop-Loss": 2.0357,
+    "Take-Profit Target": 2.3305,
     "Resistance (52W High)": 2.52,
     "Support (52W Low)": 2.14,
     "Pivot Point": 2.27,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.55,
-    "Signal Reason": "⏳ BUY ON DIP | trend=Weak Bullish | awaiting confirmation",
+    "Kelly %": 2.45,
+    "Signal Reason": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor) | trend=Strong Bearish | awaiting confirmation | vol x1.03",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 1.18,
-      "trend_bonus": 45.0,
+      "range": 0.26,
+      "trend_bonus": 15.75,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
-    "Trend Class": "Weak Bullish",
-    "RSI-14": 37.7,
-    "ADX-14": 28.8,
-    "Vol Z-Score": -1.26,
+    "Trend Class": "Strong Bearish",
+    "RSI-14": 31.0,
+    "ADX-14": 29.5,
+    "Vol Z-Score": 0.06,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0212,
-    "Bollinger %B": 0.088,
-    "Avg Volume (20D)": 26625733,
+    "MACD Histogram": -0.0244,
+    "Bollinger %B": -0.039,
+    "Avg Volume (20D)": 25386854,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       2.2,
@@ -115,7 +121,8 @@
       2.27,
       2.24,
       2.23,
-      2.23
+      2.23,
+      2.16
     ],
     "open": [
       2.24,
@@ -152,7 +159,8 @@
       2.28,
       2.27,
       2.23,
-      2.24
+      2.24,
+      2.23
     ],
     "high": [
       2.26,
@@ -189,7 +197,8 @@
       2.3,
       2.28,
       2.28,
-      2.25
+      2.25,
+      2.24
     ],
     "low": [
       2.19,
@@ -226,7 +235,8 @@
       2.25,
       2.23,
       2.23,
-      2.22
+      2.22,
+      2.16
     ],
     "volume": [
       27595086,
@@ -263,7 +273,8 @@
       15960961,
       12215003,
       23183722,
-      11477666
+      11477666,
+      26060900
     ],
     "vwap": [
       2.2167,
@@ -300,7 +311,8 @@
       2.3682,
       2.3671,
       2.3636,
-      2.3632
+      2.3632,
+      2.3534
     ],
     "resistance": 2.52,
     "support": 2.14,

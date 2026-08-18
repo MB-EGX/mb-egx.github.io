@@ -1,11 +1,17 @@
 {
   "ticker": "GOCO.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "GOCO.CA",
-    "Action": "🚫 ILLIQUID - ⏳ BUY ON DIP [💥 SQUEEZE]",
-    "Rank Score": 8.4,
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
+    "Action": "🚫 ILLIQUID - ⏳ BUY ON DIP [💥 SQUEEZE] (Unconfirmed: weekly trend not aligned, CMF below accumulation floor)",
+    "Rank Score": -10.4,
     "Current Price": 0.8,
     "Target Entry (VWAP)": 0.8,
     "Suggested Stop-Loss": 0.3,
@@ -23,12 +29,12 @@
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
     "Kelly %": 0.7,
-    "Signal Reason": "🚫 ILLIQUID - ⏳ BUY ON DIP [💥 SQUEEZE] | trend=Weak Bullish (Low Trend Strength) | awaiting confirmation | volatility squeeze | vol x1.00",
+    "Signal Reason": "🚫 ILLIQUID - ⏳ BUY ON DIP [💥 SQUEEZE] (Unconfirmed: weekly trend not aligned, CMF below accumulation floor) | trend=Weak Bullish (Low Trend Strength) | awaiting confirmation | volatility squeeze | vol x1.00",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
       "range": 1.0,
-      "trend_bonus": 15.0,
+      "trend_bonus": -20.75,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
@@ -78,9 +84,11 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
+      0.8,
       0.8,
       0.8,
       0.8,
@@ -152,9 +160,11 @@
       1.0,
       1.0,
       1.0,
+      1.0,
       1.0
     ],
     "high": [
+      1.0,
       1.0,
       1.0,
       1.0,
@@ -226,6 +236,7 @@
       0.75,
       0.75,
       0.75,
+      0.75,
       0.75
     ],
     "volume": [
@@ -263,9 +274,11 @@
       0,
       0,
       0,
+      0,
       0
     ],
     "vwap": [
+      0.8,
       0.8,
       0.8,
       0.8,

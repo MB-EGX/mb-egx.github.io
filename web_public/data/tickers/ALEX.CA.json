@@ -1,14 +1,20 @@
 {
   "ticker": "ALEX.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Building Materials",
   "matrix": {
     "Ticker": "ALEX.CA",
-    "Action": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE]",
-    "Rank Score": 10.2,
+    "Sector": "Building Materials",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
+    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
+    "Rank Score": 17.0,
     "Current Price": 22.0,
-    "Target Entry (VWAP)": 20.3604,
-    "Suggested Stop-Loss": 16.5071,
+    "Target Entry (VWAP)": 20.3697,
+    "Suggested Stop-Loss": 15.7929,
     "Take-Profit Target": 22.594,
     "Resistance (52W High)": 26.0,
     "Support (52W Low)": 16.18,
@@ -19,27 +25,27 @@
     "S1": 19.0,
     "S2": 15.0,
     "S3": 12.0,
-    "Projected Gain (%)": -2.49,
-    "Pattern Conf (%)": 67.92,
-    "Projected Range 95%": "-2.49% to -2.49%",
+    "Projected Gain (%)": -2.75,
+    "Pattern Conf (%)": 62.79,
+    "Projected Range 95%": "-2.98% to -2.51%",
     "Kelly %": 0.0,
-    "Signal Reason": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze | positive money flow | vol x1.08",
+    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze | positive money flow",
     "Score Breakdown": {
-      "pattern": 20.38,
-      "projected": -3.74,
+      "pattern": 18.84,
+      "projected": -4.12,
       "range": 2.96,
-      "trend_bonus": 0.0,
+      "trend_bonus": 14.8,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
     "RSI-14": 63.5,
-    "ADX-14": 46.1,
-    "Vol Z-Score": 0.06,
+    "ADX-14": 47.9,
+    "Vol Z-Score": -0.72,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.4152,
-    "Bollinger %B": 0.807,
-    "Avg Volume (20D)": 3297,
+    "MACD Histogram": 0.3602,
+    "Bollinger %B": 0.787,
+    "Avg Volume (20D)": 3112,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       19.29,
@@ -115,6 +122,7 @@
       23.0,
       23.0,
       23.0,
+      22.0,
       22.0
     ],
     "open": [
@@ -152,6 +160,7 @@
       18.35,
       18.35,
       18.35,
+      23.0,
       23.0
     ],
     "high": [
@@ -189,6 +198,7 @@
       25.0,
       25.0,
       25.0,
+      26.0,
       26.0
     ],
     "low": [
@@ -226,6 +236,7 @@
       18.35,
       18.35,
       18.35,
+      20.0,
       20.0
     ],
     "volume": [
@@ -263,7 +274,8 @@
       10069,
       0,
       10069,
-      3573
+      3573,
+      0
     ],
     "vwap": [
       18.7633,
@@ -300,7 +312,8 @@
       20.0536,
       20.0031,
       20.2599,
-      20.3604
+      20.3604,
+      20.3697
     ],
     "resistance": 26.0,
     "support": 16.18,

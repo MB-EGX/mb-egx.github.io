@@ -251,6 +251,13 @@
                              updateMarketRegimeBadge(), hidden until data with regime info
                              loads (same "start hidden" pattern as the stale-data banner). -->
                         <p id="lbl-market-regime" class="text-[11px] font-bold mt-0.5 hidden"></p>
+                        <!-- NEW: sector-rotation (EGX IMCS vs EGX Text Double) and EGX30
+                             EGP-vs-USD divergence badges - see sector_rotation.py /
+                             usd_divergence.py, folded into market_regime.sector_rotation /
+                             market_regime.usd_divergence by decision_matrix.analyze_market().
+                             Same "hidden until available" pattern as the regime badge above. -->
+                        <p id="lbl-sector-rotation" class="text-[11px] font-bold mt-0.5 hidden"></p>
+                        <p id="lbl-usd-divergence" class="text-[11px] font-bold mt-0.5 hidden"></p>
                     </div>
                 </div>
                 <!-- Mobile-only toggle for the control buttons below (hidden on desktop — see @media rules in <style>) -->
@@ -4129,6 +4136,45 @@
             el.innerText = `${meta.icon} ${escapeHtml(label)}: ${tt(meta.key)}`;
         }
 
+        // NEW: sector-rotation badge (EGX IMCS vs EGX Text Double - see
+        // sector_rotation.py). Hidden entirely if either leg isn't ingested
+        // yet or there isn't enough shared history - "available: false"
+        // from the backend, never a guessed/fabricated signal shown here.
+        function updateSectorRotationBadge(marketRegime) {
+            const el = document.getElementById('lbl-sector-rotation');
+            if (!el) return;
+            const rot = (marketRegime && marketRegime.sector_rotation) || null;
+            if (!rot || !rot.available) {
+                el.classList.add('hidden');
+                return;
+            }
+            const favorsImcs = rot.signal === 'imcs';
+            const icon = favorsImcs ? '💻' : '🧵';
+            const color = favorsImcs ? 'text-sky-400' : 'text-amber-400';
+            el.className = `text-[11px] font-bold mt-0.5 ${color}`;
+            el.innerText = `${icon} Sector Rotation: ${escapeHtml(rot.favored_label)} (RS ${rot.rs_ratio})`;
+            el.title = `Fast SMA ${rot.rs_fast_sma} vs Slow SMA ${rot.rs_slow_sma} — as of ${rot.as_of}`;
+        }
+
+        // NEW: EGX30 EGP-vs-USD divergence badge (see usd_divergence.py).
+        // Only shown when a real bearish/bullish divergence is currently
+        // detected - "none" or "available: false" both stay hidden, since
+        // "no divergence right now" isn't actionable information worth a
+        // persistent header badge.
+        function updateUsdDivergenceBadge(marketRegime) {
+            const el = document.getElementById('lbl-usd-divergence');
+            if (!el) return;
+            const div = (marketRegime && marketRegime.usd_divergence) || null;
+            if (!div || !div.available || div.divergence === 'none') {
+                el.classList.add('hidden');
+                return;
+            }
+            const isBearish = div.divergence === 'bearish';
+            el.className = `text-[11px] font-bold mt-0.5 ${isBearish ? 'text-rose-400' : 'text-emerald-400'}`;
+            el.innerText = `${isBearish ? '⚠️' : '💡'} EGP/USD Divergence: ${isBearish ? 'Bearish' : 'Bullish'}`;
+            el.title = div.note || '';
+        }
+
         function renderSectors() {
             const tbody = document.getElementById('tbody-sectors');
             tbody.innerHTML = '';
@@ -4643,6 +4689,8 @@
                 updateStaleBanner(globalData.last_data_date);
                 document.getElementById('val-last-date').innerText = escapeHtml(globalData.last_data_date || "N/A");
                 updateMarketRegimeBadge(globalData.market_regime);
+                updateSectorRotationBadge(globalData.market_regime);
+                updateUsdDivergenceBadge(globalData.market_regime);
                 populateSelects(); applyFilters(); renderSectors(); renderTop10(); renderBreakouts(); renderSessionPicks(); renderPortfolio(); renderHistory(); renderAccountBar(); renderPaperTradingPreview(); renderLeaderboardPreview(); renderLeaderboardTab(); renderScreenerPresetChips(); updateNotifyButtonState();
 
                 prefetchChartHistoryInBackground();

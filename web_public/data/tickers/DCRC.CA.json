@@ -1,15 +1,21 @@
 {
   "ticker": "DCRC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "DCRC.CA",
-    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (X-OVER + MOMENTUM) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
-    "Rank Score": 38.0,
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
+    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
+    "Rank Score": 10.2,
     "Current Price": 50.0,
-    "Target Entry (VWAP)": 43.7458,
-    "Suggested Stop-Loss": 35.7257,
-    "Take-Profit Target": 68.1929,
+    "Target Entry (VWAP)": 43.7455,
+    "Suggested Stop-Loss": 36.1614,
+    "Take-Profit Target": 67.6482,
     "Resistance (52W High)": 52.0,
     "Support (52W Low)": 21.3,
     "Pivot Point": 43.51,
@@ -22,24 +28,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 0.92,
-    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (X-OVER + MOMENTUM) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | volatility squeeze | positive money flow | vol x6.53",
+    "Kelly %": 0.94,
+    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
       "range": 4.67,
-      "trend_bonus": 68.0,
+      "trend_bonus": 14.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
     "RSI-14": 54.4,
-    "ADX-14": 86.2,
-    "Vol Z-Score": 2.3,
+    "ADX-14": 85.3,
+    "Vol Z-Score": -0.42,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.5005,
-    "Bollinger %B": 0.576,
-    "Avg Volume (20D)": 9082,
+    "MACD Histogram": -0.1634,
+    "Bollinger %B": 0.562,
+    "Avg Volume (20D)": 9081,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       50.0,
@@ -115,6 +122,7 @@
       42.53,
       42.53,
       42.53,
+      50.0,
       50.0
     ],
     "open": [
@@ -152,6 +160,7 @@
       48.0,
       48.0,
       48.0,
+      49.96,
       49.96
     ],
     "high": [
@@ -189,6 +198,7 @@
       48.0,
       48.0,
       48.0,
+      50.0,
       50.0
     ],
     "low": [
@@ -226,6 +236,7 @@
       40.0,
       40.0,
       40.0,
+      43.05,
       43.05
     ],
     "volume": [
@@ -263,7 +274,8 @@
       819,
       0,
       819,
-      59349
+      59349,
+      0
     ],
     "vwap": [
       50.0,
@@ -300,7 +312,8 @@
       43.2021,
       42.7989,
       42.3504,
-      43.7458
+      43.7458,
+      43.7455
     ],
     "resistance": 52.0,
     "support": 21.3,

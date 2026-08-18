@@ -1,15 +1,20 @@
 {
   "ticker": "IFAP.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Trade & Distributors",
   "matrix": {
     "Ticker": "IFAP.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 29.7,
-    "Current Price": 20.95,
-    "Target Entry (VWAP)": 20.6064,
-    "Suggested Stop-Loss": 19.4343,
-    "Take-Profit Target": 21.7314,
+    "Sector": "Trade & Distributors",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 39.4,
+    "Current Price": 21.0,
+    "Target Entry (VWAP)": 20.6556,
+    "Suggested Stop-Loss": 19.4543,
+    "Take-Profit Target": 21.7833,
     "Resistance (52W High)": 22.7,
     "Support (52W Low)": 18.47,
     "Pivot Point": 21.7367,
@@ -20,26 +25,26 @@
     "S2": 20.0467,
     "S3": 19.0833,
     "Projected Gain (%)": 3.03,
-    "Pattern Conf (%)": 64.56,
+    "Pattern Conf (%)": 75.91,
     "Projected Range 95%": "3.03% to 3.03%",
-    "Kelly %": 0.0,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Kelly %": 14.19,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
-      "pattern": 19.37,
+      "pattern": 22.77,
       "projected": 4.54,
-      "range": 2.93,
-      "trend_bonus": 30.0,
+      "range": 2.99,
+      "trend_bonus": 44.8,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 56.1,
-    "ADX-14": 41.0,
-    "Vol Z-Score": -0.1,
+    "RSI-14": 56.7,
+    "ADX-14": 39.6,
+    "Vol Z-Score": -0.6,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0797,
-    "Bollinger %B": 0.613,
-    "Avg Volume (20D)": 1265468,
+    "MACD Histogram": 0.0224,
+    "Bollinger %B": 0.607,
+    "Avg Volume (20D)": 1268738,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       19.38,
@@ -115,7 +121,8 @@
       22.1,
       21.86,
       21.5,
-      20.95
+      20.95,
+      21.0
     ],
     "open": [
       19.21,
@@ -152,7 +159,8 @@
       22.0,
       22.1,
       21.86,
-      21.5
+      21.5,
+      20.95
     ],
     "high": [
       19.9,
@@ -189,7 +197,8 @@
       22.7,
       22.24,
       21.92,
-      21.5
+      21.5,
+      21.2
     ],
     "low": [
       19.1,
@@ -226,7 +235,8 @@
       21.5,
       21.48,
       21.27,
-      20.51
+      20.51,
+      20.6
     ],
     "volume": [
       655569,
@@ -263,7 +273,8 @@
       1665958,
       799060,
       649660,
-      1173895
+      1173895,
+      736827
     ],
     "vwap": [
       19.46,
@@ -300,7 +311,8 @@
       20.4622,
       20.5146,
       20.5532,
-      20.6064
+      20.6064,
+      20.6556
     ],
     "resistance": 22.7,
     "support": 18.47,

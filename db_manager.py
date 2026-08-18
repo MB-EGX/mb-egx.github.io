@@ -467,6 +467,35 @@ class DatabaseManager:
                 );
             """)
 
+            # Persisted history of walk-forward backtest runs (run_backtest.py
+            # --save / the desktop app's future Walk-Forward dialog history
+            # dropdown - see that script's own docstring). Before this, a
+            # backtest's result only ever lived in the console/JSON output of
+            # that one run - there was no way to compare "did today's config
+            # tweak actually help" against a PRIOR run's numbers without
+            # manually saving files yourself. One row per run; result_json
+            # holds the full _aggregate_results() dict (including the
+            # per-trade list) so a later reader can drill into any past run
+            # without re-running the backtest.
+            conn.execute("CREATE SEQUENCE IF NOT EXISTS seq_walkforward_run_id START 1;")
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS walk_forward_runs (
+                    id INTEGER PRIMARY KEY DEFAULT nextval('seq_walkforward_run_id'),
+                    run_at TIMESTAMP,
+                    tickers_filter VARCHAR,
+                    tickers_backtested INTEGER,
+                    fold_count INTEGER,
+                    is_reliable BOOLEAN,
+                    trade_count INTEGER,
+                    win_rate_pct DOUBLE,
+                    avg_return_pct DOUBLE,
+                    profit_factor DOUBLE,
+                    sharpe DOUBLE,
+                    max_drawdown_pct DOUBLE,
+                    result_json VARCHAR
+                );
+            """)
+
             count_cash = conn.execute("SELECT COUNT(*) FROM account_cash;").fetchone()[0]
             if count_cash == 0:
                 conn.execute("INSERT INTO account_cash VALUES (1, 0.0);")
@@ -744,6 +773,87 @@ class DatabaseManager:
             }
             for r in rows
         ]
+
+    def save_walkforward_run(self, result: dict, tickers_filter: list | None = None) -> int:
+        """Persists one run_walk_forward_backtest() result (see
+        backtester._aggregate_results for the exact shape) to
+        walk_forward_runs, so run_backtest.py --save and
+        run_factor_backtest.py --save (once wired up) have somewhere real
+        to write to, and a future run's numbers can be compared against
+        this one instead of only against whatever's still on screen from
+        the last console run. Returns the new row's id (what run_backtest.py
+        prints as "Saved as walk_forward_runs.id=<id>").
+
+        ``tickers_filter`` is stored as a comma-joined string (or NULL for
+        a full-universe run) purely for display in a future history
+        dropdown - it is never parsed back out programmatically.
+        """
+        import json as _json
+        from datetime import datetime as _dt
+
+        overall = result.get("overall", {}) or {}
+        try:
+            result_json = _json.dumps(result, default=str)
+        except (TypeError, ValueError) as e:
+            logger.warning(f"save_walkforward_run: result not JSON-serializable, saving without trades: {e}")
+            slim = {k: v for k, v in result.items() if k != "trades"}
+            result_json = _json.dumps(slim, default=str)
+
+        with self.get_connection() as conn:
+            row = conn.execute(
+                """
+                INSERT INTO walk_forward_runs (
+                    run_at, tickers_filter, tickers_backtested, fold_count, is_reliable,
+                    trade_count, win_rate_pct, avg_return_pct, profit_factor, sharpe,
+                    max_drawdown_pct, result_json
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                RETURNING id;
+                """,
+                (
+                    _dt.now(),
+                    ",".join(tickers_filter) if tickers_filter else None,
+                    int(result.get("tickers_backtested", 0)),
+                    int(result.get("fold_count", 0)),
+                    bool(result.get("is_reliable", False)),
+                    int(result.get("trade_count", 0)),
+                    float(result.get("win_rate_pct", 0.0)),
+                    float(result.get("avg_return_pct", 0.0)),
+                    float(result["profit_factor"]) if result.get("profit_factor") is not None else None,
+                    float(overall.get("sharpe", 0.0) or 0.0),
+                    float(overall.get("max_drawdown", 0.0) or 0.0) * 100.0,
+                    result_json,
+                ),
+            ).fetchone()
+        return int(row[0])
+
+    def get_walkforward_runs(self, limit: int = 25) -> list:
+        """Most recent saved walk-forward runs (see save_walkforward_run),
+        newest first, WITHOUT the full result_json payload - a summary
+        list for a history dropdown. Call get_walkforward_run(id) for one
+        run's full detail (including its trade list)."""
+        with self.get_connection() as conn:
+            rows = conn.cursor().execute(
+                """
+                SELECT id, run_at, tickers_filter, tickers_backtested, fold_count, is_reliable,
+                       trade_count, win_rate_pct, avg_return_pct, profit_factor, sharpe, max_drawdown_pct
+                FROM walk_forward_runs ORDER BY run_at DESC LIMIT ?;
+                """,
+                (int(limit),),
+            ).fetchall()
+        cols = ["id", "run_at", "tickers_filter", "tickers_backtested", "fold_count", "is_reliable",
+                "trade_count", "win_rate_pct", "avg_return_pct", "profit_factor", "sharpe", "max_drawdown_pct"]
+        return [dict(zip(cols, r)) for r in rows]
+
+    def get_walkforward_run(self, run_id: int) -> dict | None:
+        """Full stored result (see save_walkforward_run) for one run,
+        including its per-trade list - the RETURNING id above already
+        pairs a run to this id at save time."""
+        import json as _json
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT result_json FROM walk_forward_runs WHERE id = ?;", (int(run_id),)
+            ).fetchone()
+        return _json.loads(row[0]) if row else None
 
     def record_leaderboard_hit(self, ticker: str, achieved_pct: float, achieved_date: str):
         ticker = self.normalize_symbol(ticker)

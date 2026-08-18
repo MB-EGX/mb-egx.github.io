@@ -1,15 +1,20 @@
 {
   "ticker": "ACTF.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "ACTF.CA",
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "📈 ACCUMULATE [💥 SQUEEZE]",
-    "Rank Score": 14.6,
+    "Rank Score": 14.7,
     "Current Price": 2.75,
     "Target Entry (VWAP)": 2.75,
-    "Suggested Stop-Loss": 2.6714,
-    "Take-Profit Target": 2.8675,
+    "Suggested Stop-Loss": 2.6729,
+    "Take-Profit Target": 2.8657,
     "Resistance (52W High)": 2.91,
     "Support (52W Low)": 2.5,
     "Pivot Point": 2.78,
@@ -22,7 +27,7 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 4.11,
+    "Kelly %": 4.16,
     "Signal Reason": "📈 ACCUMULATE [💥 SQUEEZE] | trend=Weak Bullish | awaiting confirmation | volatility squeeze",
     "Score Breakdown": {
       "pattern": 0.0,
@@ -34,12 +39,12 @@
     "Regime": "N/A",
     "Trend Class": "Weak Bullish",
     "RSI-14": 48.3,
-    "ADX-14": 20.4,
-    "Vol Z-Score": -0.98,
+    "ADX-14": 19.2,
+    "Vol Z-Score": -0.91,
     "MACD Signal": "Bearish",
     "MACD Histogram": -0.0047,
-    "Bollinger %B": 0.109,
-    "Avg Volume (20D)": 11815495,
+    "Bollinger %B": 0.151,
+    "Avg Volume (20D)": 11681716,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       2.68,
@@ -115,6 +121,7 @@
       2.75,
       2.76,
       2.76,
+      2.75,
       2.75
     ],
     "open": [
@@ -152,7 +159,8 @@
       2.76,
       2.75,
       2.77,
-      2.77
+      2.77,
+      2.75
     ],
     "high": [
       2.72,
@@ -189,7 +197,8 @@
       2.77,
       2.83,
       2.8,
-      2.78
+      2.78,
+      2.77
     ],
     "low": [
       2.68,
@@ -226,7 +235,8 @@
       2.75,
       2.75,
       2.76,
-      2.75
+      2.75,
+      2.74
     ],
     "volume": [
       6259883,
@@ -263,7 +273,8 @@
       7621613,
       28962912,
       8186518,
-      3965597
+      3965597,
+      4275975
     ],
     "vwap": [
       2.6933,
@@ -300,7 +311,8 @@
       2.7732,
       2.7738,
       2.7742,
-      2.775
+      2.775,
+      2.7752
     ],
     "resistance": 2.91,
     "support": 2.5,

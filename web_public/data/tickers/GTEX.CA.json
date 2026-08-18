@@ -1,11 +1,16 @@
 {
   "ticker": "GTEX.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Textiles & Durables",
   "matrix": {
     "Ticker": "GTEX.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 35.1,
+    "Sector": "Textiles & Durables",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 18.0,
     "Current Price": 0.04,
     "Target Entry (VWAP)": 0.0395,
     "Suggested Stop-Loss": 0.0384,
@@ -23,23 +28,23 @@
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
     "Kelly %": 3.37,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | positive money flow | vol x1.83",
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow | vol x2.24",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
       "range": 5.0,
-      "trend_bonus": 63.0,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
     "RSI-14": 100.0,
-    "ADX-14": 25.7,
-    "Vol Z-Score": 0.51,
+    "ADX-14": 24.7,
+    "Vol Z-Score": 0.84,
     "MACD Signal": "Bearish",
     "MACD Histogram": -0.0004,
     "Bollinger %B": 0.5,
-    "Avg Volume (20D)": 250543,
+    "Avg Volume (20D)": 281977,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -75,7 +80,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       0.03,
@@ -88,6 +94,7 @@
       0.03,
       0.03,
       0.03,
+      0.04,
       0.04,
       0.04,
       0.04,
@@ -143,6 +150,7 @@
       0.04,
       0.04,
       0.04,
+      0.04,
       0.04
     ],
     "high": [
@@ -158,6 +166,7 @@
       0.04,
       0.04,
       0.03,
+      0.04,
       0.04,
       0.04,
       0.04,
@@ -211,6 +220,7 @@
       0.04,
       0.04,
       0.04,
+      0.04,
       0.04
     ],
     "volume": [
@@ -245,7 +255,8 @@
       52562,
       18345,
       1745033,
-      458732
+      458732,
+      631271
     ],
     "vwap": [
       0.03,
@@ -279,6 +290,7 @@
       0.0391,
       0.0391,
       0.0394,
+      0.0395,
       0.0395
     ],
     "resistance": 0.04,

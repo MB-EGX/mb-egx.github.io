@@ -1,15 +1,20 @@
 {
   "ticker": "HELI.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "HELI.CA",
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "📈 ACCUMULATE",
-    "Rank Score": 9.3,
-    "Current Price": 7.64,
-    "Target Entry (VWAP)": 7.64,
-    "Suggested Stop-Loss": 6.9557,
-    "Take-Profit Target": 8.5488,
+    "Rank Score": 9.2,
+    "Current Price": 7.56,
+    "Target Entry (VWAP)": 7.56,
+    "Suggested Stop-Loss": 6.9329,
+    "Take-Profit Target": 8.3968,
     "Resistance (52W High)": 8.65,
     "Support (52W Low)": 6.36,
     "Pivot Point": 7.98,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.79,
+    "Kelly %": 1.89,
     "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.79,
+      "range": 2.62,
       "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Weak Bullish",
-    "RSI-14": 42.6,
-    "ADX-14": 49.6,
-    "Vol Z-Score": -0.37,
+    "RSI-14": 40.6,
+    "ADX-14": 47.3,
+    "Vol Z-Score": -0.04,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.1347,
-    "Bollinger %B": -0.117,
-    "Avg Volume (20D)": 19115440,
+    "MACD Histogram": -0.1456,
+    "Bollinger %B": -0.07,
+    "Avg Volume (20D)": 18872097,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       6.53,
@@ -115,7 +121,8 @@
       8.15,
       7.85,
       7.68,
-      7.64
+      7.64,
+      7.56
     ],
     "open": [
       6.6,
@@ -152,7 +159,8 @@
       8.37,
       8.15,
       7.88,
-      7.74
+      7.74,
+      7.64
     ],
     "high": [
       6.64,
@@ -189,7 +197,8 @@
       8.37,
       8.28,
       7.96,
-      7.93
+      7.93,
+      7.74
     ],
     "low": [
       6.47,
@@ -226,7 +235,8 @@
       8.1,
       7.8,
       7.66,
-      7.56
+      7.56,
+      7.5
     ],
     "volume": [
       15719210,
@@ -263,7 +273,8 @@
       9685235,
       30878034,
       15496518,
-      16172300
+      16172300,
+      18523333
     ],
     "vwap": [
       6.5467,
@@ -300,7 +311,8 @@
       8.186,
       8.2109,
       8.2348,
-      8.2258
+      8.2258,
+      8.2066
     ],
     "resistance": 8.65,
     "support": 6.36,

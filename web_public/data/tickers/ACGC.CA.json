@@ -1,16 +1,21 @@
 {
   "ticker": "ACGC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Textiles & Durables",
   "matrix": {
     "Ticker": "ACGC.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 53.9,
-    "Current Price": 13.95,
-    "Target Entry (VWAP)": 11.48,
-    "Suggested Stop-Loss": 12.7214,
-    "Take-Profit Target": 15.2376,
-    "Resistance (52W High)": 13.97,
+    "Sector": "Textiles & Durables",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 44.0,
+    "Current Price": 14.58,
+    "Target Entry (VWAP)": 11.7309,
+    "Suggested Stop-Loss": 13.3057,
+    "Take-Profit Target": 15.9447,
+    "Resistance (52W High)": 14.92,
     "Support (52W Low)": 8.92,
     "Pivot Point": 12.7833,
     "R1": 14.3967,
@@ -19,27 +24,27 @@
     "S1": 11.5967,
     "S2": 9.9833,
     "S3": 8.7967,
-    "Projected Gain (%)": 8.53,
-    "Pattern Conf (%)": 74.8,
-    "Projected Range 95%": "8.53% to 8.53%",
-    "Kelly %": 25.0,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | positive money flow | vol x1.40",
+    "Projected Gain (%)": 8.66,
+    "Pattern Conf (%)": 71.12,
+    "Projected Range 95%": "8.54% to 8.78%",
+    "Kelly %": 22.08,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow | vol x1.44",
     "Score Breakdown": {
-      "pattern": 22.44,
-      "projected": 12.79,
-      "range": 4.98,
-      "trend_bonus": 63.0,
+      "pattern": 21.34,
+      "projected": 12.99,
+      "range": 4.72,
+      "trend_bonus": 44.8,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 87.4,
-    "ADX-14": 54.7,
-    "Vol Z-Score": 0.43,
+    "RSI-14": 89.2,
+    "ADX-14": 56.5,
+    "Vol Z-Score": 0.5,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.2558,
-    "Bollinger %B": 1.186,
-    "Avg Volume (20D)": 3968292,
+    "MACD Histogram": 0.3261,
+    "Bollinger %B": 1.154,
+    "Avg Volume (20D)": 4183818,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       9.41,
@@ -115,7 +121,8 @@
       11.9,
       12.15,
       13.21,
-      13.95
+      13.95,
+      14.58
     ],
     "open": [
       9.7,
@@ -152,7 +159,8 @@
       11.59,
       11.9,
       12.34,
-      13.44
+      13.44,
+      13.95
     ],
     "high": [
       9.77,
@@ -189,7 +197,8 @@
       12.05,
       12.29,
       13.97,
-      13.96
+      13.96,
+      14.92
     ],
     "low": [
       9.35,
@@ -226,7 +235,8 @@
       11.59,
       11.82,
       12.31,
-      12.8
+      12.8,
+      14.01
     ],
     "volume": [
       2870795,
@@ -263,7 +273,8 @@
       3230272,
       2711519,
       14211269,
-      5538288
+      5538288,
+      6010323
     ],
     "vwap": [
       9.51,
@@ -300,9 +311,10 @@
       10.7565,
       10.823,
       11.2789,
-      11.48
+      11.48,
+      11.7309
     ],
-    "resistance": 13.97,
+    "resistance": 14.92,
     "support": 8.92,
     "pivots": {
       "pp": 12.7833,

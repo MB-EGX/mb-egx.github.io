@@ -1,15 +1,20 @@
 {
   "ticker": "SPIN.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Textiles & Durables",
   "matrix": {
     "Ticker": "SPIN.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 27.2,
-    "Current Price": 20.3,
-    "Target Entry (VWAP)": 17.0738,
-    "Suggested Stop-Loss": 18.4171,
-    "Take-Profit Target": 22.7957,
+    "Sector": "Textiles & Durables",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 17.7,
+    "Current Price": 20.2,
+    "Target Entry (VWAP)": 17.3054,
+    "Suggested Stop-Loss": 18.28,
+    "Take-Profit Target": 22.7414,
     "Resistance (52W High)": 21.88,
     "Support (52W Low)": 13.8,
     "Pivot Point": 18.0667,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.75,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | vol x3.88",
+    "Kelly %": 1.72,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 4.02,
-      "trend_bonus": 48.0,
+      "range": 3.96,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 86.5,
-    "ADX-14": 67.2,
-    "Vol Z-Score": 2.9,
+    "RSI-14": 85.0,
+    "ADX-14": 67.8,
+    "Vol Z-Score": -0.12,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.3878,
-    "Bollinger %B": 1.271,
-    "Avg Volume (20D)": 2647101,
+    "MACD Histogram": 0.4715,
+    "Bollinger %B": 1.095,
+    "Avg Volume (20D)": 2654829,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       13.99,
@@ -115,7 +121,8 @@
       15.32,
       16.2,
       19.44,
-      20.3
+      20.3,
+      20.2
     ],
     "open": [
       14.07,
@@ -152,7 +159,8 @@
       15.65,
       15.32,
       17.99,
-      20.59
+      20.59,
+      20.3
     ],
     "high": [
       14.29,
@@ -189,7 +197,8 @@
       15.73,
       16.4,
       19.44,
-      21.88
+      21.88,
+      20.98
     ],
     "low": [
       13.8,
@@ -226,7 +235,8 @@
       15.32,
       15.38,
       16.5,
-      19.82
+      19.82,
+      19.57
     ],
     "volume": [
       978896,
@@ -263,7 +273,8 @@
       1091196,
       1781694,
       5943618,
-      10281878
+      10281878,
+      2328959
     ],
     "vwap": [
       14.0267,
@@ -300,7 +311,8 @@
       15.7046,
       15.7287,
       16.091,
-      17.0738
+      17.0738,
+      17.3054
     ],
     "resistance": 21.88,
     "support": 13.8,

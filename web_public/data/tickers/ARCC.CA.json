@@ -1,15 +1,20 @@
 {
   "ticker": "ARCC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Building Materials",
   "matrix": {
     "Ticker": "ARCC.CA",
+    "Sector": "Building Materials",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "📈 ACCUMULATE",
-    "Rank Score": 9.3,
-    "Current Price": 74.63,
-    "Target Entry (VWAP)": 69.19,
-    "Suggested Stop-Loss": 65.0186,
-    "Take-Profit Target": 87.1667,
+    "Rank Score": 9.2,
+    "Current Price": 73.52,
+    "Target Entry (VWAP)": 70.0767,
+    "Suggested Stop-Loss": 63.5829,
+    "Take-Profit Target": 86.4561,
     "Resistance (52W High)": 91.72,
     "Support (52W Low)": 53.5,
     "Pivot Point": 77.4467,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.42,
+    "Kelly %": 1.38,
     "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.76,
+      "range": 2.62,
       "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 74.0,
-    "ADX-14": 55.0,
-    "Vol Z-Score": -0.26,
+    "RSI-14": 70.7,
+    "ADX-14": 57.2,
+    "Vol Z-Score": -0.41,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 1.9719,
-    "Bollinger %B": 0.875,
-    "Avg Volume (20D)": 1666581,
+    "MACD Histogram": 1.6062,
+    "Bollinger %B": 0.806,
+    "Avg Volume (20D)": 1611333,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       55.44,
@@ -115,7 +121,8 @@
       75.0,
       74.2,
       78.0,
-      74.63
+      74.63,
+      73.52
     ],
     "open": [
       56.4,
@@ -152,7 +159,8 @@
       85.0,
       75.0,
       75.98,
-      78.9
+      78.9,
+      74.63
     ],
     "high": [
       56.5,
@@ -189,7 +197,8 @@
       91.72,
       77.0,
       80.0,
-      78.94
+      78.94,
+      77.7
     ],
     "low": [
       55.4,
@@ -226,7 +235,8 @@
       70.0,
       72.1,
       74.55,
-      73.88
+      73.88,
+      73.52
     ],
     "volume": [
       302154,
@@ -263,7 +273,8 @@
       8454857,
       2453099,
       3250489,
-      1158622
+      1158622,
+      810134
     ],
     "vwap": [
       55.78,
@@ -300,7 +311,8 @@
       66.8708,
       67.6042,
       68.7799,
-      69.19
+      69.19,
+      70.0767
     ],
     "resistance": 91.72,
     "support": 53.5,

@@ -1,15 +1,20 @@
 {
   "ticker": "IDRE.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "IDRE.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 39.4,
-    "Current Price": 55.2,
-    "Target Entry (VWAP)": 51.275,
-    "Suggested Stop-Loss": 50.2514,
-    "Take-Profit Target": 61.7191,
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 36.7,
+    "Current Price": 55.7,
+    "Target Entry (VWAP)": 51.3905,
+    "Suggested Stop-Loss": 50.7457,
+    "Take-Profit Target": 61.3814,
     "Resistance (52W High)": 59.0,
     "Support (52W Low)": 41.1,
     "Pivot Point": 55.9233,
@@ -19,27 +24,27 @@
     "S1": 52.8467,
     "S2": 50.9233,
     "S3": 47.8467,
-    "Projected Gain (%)": 11.11,
-    "Pattern Conf (%)": 83.54,
-    "Projected Range 95%": "11.11% to 11.11%",
-    "Kelly %": 25.0,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Projected Gain (%)": 9.5,
+    "Pattern Conf (%)": 73.08,
+    "Projected Range 95%": "8.05% to 10.95%",
+    "Kelly %": 24.8,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 25.06,
-      "projected": 16.66,
-      "range": 3.94,
+      "pattern": 21.92,
+      "projected": 14.25,
+      "range": 4.08,
       "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 66.5,
-    "ADX-14": 54.2,
+    "RSI-14": 67.7,
+    "ADX-14": 54.1,
     "Vol Z-Score": -0.71,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.276,
-    "Bollinger %B": 0.743,
-    "Avg Volume (20D)": 668757,
+    "MACD Histogram": 0.1792,
+    "Bollinger %B": 0.754,
+    "Avg Volume (20D)": 669062,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       43.93,
@@ -115,7 +121,8 @@
       57.2,
       55.0,
       54.77,
-      55.2
+      55.2,
+      55.7
     ],
     "open": [
       44.85,
@@ -152,7 +159,8 @@
       57.01,
       57.2,
       55.2,
-      54.77
+      54.77,
+      55.2
     ],
     "high": [
       45.0,
@@ -189,7 +197,8 @@
       58.95,
       57.16,
       55.79,
-      55.4
+      55.4,
+      55.9
     ],
     "low": [
       43.8,
@@ -226,7 +235,8 @@
       55.7,
       54.94,
       54.0,
-      54.05
+      54.05,
+      54.28
     ],
     "volume": [
       197143,
@@ -263,7 +273,8 @@
       438848,
       269891,
       216743,
-      160680
+      160680,
+      159605
     ],
     "vwap": [
       44.2433,
@@ -300,7 +311,8 @@
       50.8625,
       51.0348,
       51.1631,
-      51.275
+      51.275,
+      51.3905
     ],
     "resistance": 59.0,
     "support": 41.1,

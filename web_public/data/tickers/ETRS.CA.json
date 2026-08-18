@@ -1,15 +1,20 @@
 {
   "ticker": "ETRS.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Shipping & Transportation Services",
   "matrix": {
     "Ticker": "ETRS.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 35.0,
-    "Current Price": 11.47,
-    "Target Entry (VWAP)": 10.8615,
-    "Suggested Stop-Loss": 10.97,
-    "Take-Profit Target": 12.1753,
+    "Sector": "Shipping & Transportation Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 25.5,
+    "Current Price": 11.39,
+    "Target Entry (VWAP)": 10.8878,
+    "Suggested Stop-Loss": 10.9229,
+    "Take-Profit Target": 12.0537,
     "Resistance (52W High)": 11.79,
     "Support (52W Low)": 10.21,
     "Pivot Point": 11.05,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 3.0,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | positive money flow | vol x2.99",
+    "Kelly %": 3.14,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow | vol x1.02",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 3.99,
-      "trend_bonus": 63.0,
+      "range": 3.73,
+      "trend_bonus": 44.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 72.5,
-    "ADX-14": 30.7,
-    "Vol Z-Score": 2.93,
+    "RSI-14": 68.5,
+    "ADX-14": 32.2,
+    "Vol Z-Score": 0.04,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0978,
-    "Bollinger %B": 1.235,
-    "Avg Volume (20D)": 2994771,
+    "MACD Histogram": 0.1057,
+    "Bollinger %B": 1.037,
+    "Avg Volume (20D)": 3107771,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       11.3,
@@ -115,7 +121,8 @@
       10.87,
       10.91,
       11.25,
-      11.47
+      11.47,
+      11.39
     ],
     "open": [
       10.4,
@@ -152,7 +159,8 @@
       10.72,
       10.87,
       11.0,
-      11.39
+      11.39,
+      11.47
     ],
     "high": [
       11.6,
@@ -189,7 +197,8 @@
       10.9,
       10.98,
       11.32,
-      11.66
+      11.66,
+      11.5
     ],
     "low": [
       10.25,
@@ -226,7 +235,8 @@
       10.64,
       10.83,
       11.0,
-      11.11
+      11.11,
+      11.2
     ],
     "volume": [
       14622366,
@@ -263,7 +273,8 @@
       2821217,
       3784654,
       6306817,
-      8957175
+      8957175,
+      3185237
     ],
     "vwap": [
       11.05,
@@ -300,7 +311,8 @@
       10.6988,
       10.7117,
       10.7655,
-      10.8615
+      10.8615,
+      10.8878
     ],
     "resistance": 11.79,
     "support": 10.21,

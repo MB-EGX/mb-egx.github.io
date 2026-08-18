@@ -1,15 +1,20 @@
 {
   "ticker": "AIFI.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "AIFI.CA",
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "📈 ACCUMULATE",
-    "Rank Score": 20.9,
-    "Current Price": 2.34,
-    "Target Entry (VWAP)": 2.2324,
-    "Suggested Stop-Loss": 2.17,
-    "Take-Profit Target": 2.4032,
+    "Rank Score": 21.3,
+    "Current Price": 2.31,
+    "Target Entry (VWAP)": 2.2361,
+    "Suggested Stop-Loss": 2.1429,
+    "Take-Profit Target": 2.3724,
     "Resistance (52W High)": 2.5,
     "Support (52W Low)": 1.86,
     "Pivot Point": 2.32,
@@ -19,27 +24,27 @@
     "S1": 2.2,
     "S2": 2.0,
     "S3": 1.88,
-    "Projected Gain (%)": 0.91,
-    "Pattern Conf (%)": 66.33,
-    "Projected Range 95%": "0.91% to 0.91%",
+    "Projected Gain (%)": 0.92,
+    "Pattern Conf (%)": 68.87,
+    "Projected Range 95%": "0.91% to 0.93%",
     "Kelly %": 0.0,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | confirmed | weekly aligned | positive money flow | vol x2.56",
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
-      "pattern": 19.9,
-      "projected": 1.36,
-      "range": 3.75,
+      "pattern": 20.66,
+      "projected": 1.38,
+      "range": 3.52,
       "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 66.0,
-    "ADX-14": 42.3,
-    "Vol Z-Score": 1.52,
+    "RSI-14": 62.4,
+    "ADX-14": 43.4,
+    "Vol Z-Score": -0.54,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0134,
-    "Bollinger %B": 1.061,
-    "Avg Volume (20D)": 10756183,
+    "MACD Histogram": 0.0141,
+    "Bollinger %B": 0.893,
+    "Avg Volume (20D)": 10742708,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       2.03,
@@ -115,7 +121,8 @@
       2.14,
       2.15,
       2.4,
-      2.34
+      2.34,
+      2.31
     ],
     "open": [
       1.86,
@@ -152,7 +159,8 @@
       2.18,
       2.14,
       2.15,
-      2.46
+      2.46,
+      2.34
     ],
     "high": [
       2.04,
@@ -189,7 +197,8 @@
       2.19,
       2.19,
       2.44,
-      2.5
+      2.5,
+      2.38
     ],
     "low": [
       1.86,
@@ -226,7 +235,8 @@
       2.13,
       2.14,
       2.15,
-      2.32
+      2.32,
+      2.3
     ],
     "volume": [
       6708341,
@@ -263,7 +273,8 @@
       6006560,
       4456104,
       37287449,
-      27493401
+      27493401,
+      4839551
     ],
     "vwap": [
       1.9767,
@@ -300,7 +311,8 @@
       2.1812,
       2.1828,
       2.2094,
-      2.2324
+      2.2324,
+      2.2361
     ],
     "resistance": 2.5,
     "support": 1.86,

@@ -1,15 +1,20 @@
 {
   "ticker": "ELSH.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "ELSH.CA",
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "📈 ACCUMULATE",
     "Rank Score": 9.4,
-    "Current Price": 13.74,
-    "Target Entry (VWAP)": 13.74,
-    "Suggested Stop-Loss": 12.7971,
-    "Take-Profit Target": 15.0148,
+    "Current Price": 13.8,
+    "Target Entry (VWAP)": 13.8,
+    "Suggested Stop-Loss": 12.8829,
+    "Take-Profit Target": 15.043,
     "Resistance (52W High)": 15.59,
     "Support (52W Low)": 11.1,
     "Pivot Point": 14.0933,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.16,
+    "Kelly %": 2.21,
     "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.94,
+      "range": 3.01,
       "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Weak Bullish",
-    "RSI-14": 48.0,
-    "ADX-14": 25.1,
-    "Vol Z-Score": -0.97,
+    "RSI-14": 49.0,
+    "ADX-14": 23.4,
+    "Vol Z-Score": -1.07,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.1294,
-    "Bollinger %B": 0.236,
-    "Avg Volume (20D)": 5530799,
+    "MACD Histogram": -0.1244,
+    "Bollinger %B": 0.287,
+    "Avg Volume (20D)": 5380069,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       11.68,
@@ -115,7 +121,8 @@
       14.07,
       13.94,
       13.87,
-      13.74
+      13.74,
+      13.8
     ],
     "open": [
       12.04,
@@ -152,7 +159,8 @@
       14.25,
       14.07,
       14.01,
-      13.9
+      13.9,
+      13.74
     ],
     "high": [
       12.1,
@@ -189,7 +197,8 @@
       14.56,
       14.24,
       14.05,
-      14.09
+      14.09,
+      13.95
     ],
     "low": [
       11.68,
@@ -226,7 +235,8 @@
       14.05,
       13.86,
       13.85,
-      13.74
+      13.74,
+      13.6
     ],
     "volume": [
       3670090,
@@ -263,7 +273,8 @@
       4981366,
       2790310,
       2608900,
-      2026751
+      2026751,
+      1418233
     ],
     "vwap": [
       11.82,
@@ -300,7 +311,8 @@
       14.4346,
       14.4173,
       14.4017,
-      14.3959
+      14.3959,
+      14.3884
     ],
     "resistance": 15.59,
     "support": 11.1,

@@ -1,15 +1,20 @@
 {
   "ticker": "EGBE.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Banks",
   "matrix": {
     "Ticker": "EGBE.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 25.2,
-    "Current Price": 0.534,
-    "Target Entry (VWAP)": 0.5187,
-    "Suggested Stop-Loss": 0.4856,
-    "Take-Profit Target": 0.5983,
+    "Sector": "Banks",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 9.4,
+    "Current Price": 0.52,
+    "Target Entry (VWAP)": 0.52,
+    "Suggested Stop-Loss": 0.469,
+    "Take-Profit Target": 0.5874,
     "Resistance (52W High)": 0.579,
     "Support (52W Low)": 0.436,
     "Pivot Point": 0.5407,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.79,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Kelly %": 1.69,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x2.10",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 3.43,
-      "trend_bonus": 44.8,
+      "range": 2.94,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 59.5,
-    "ADX-14": 41.7,
-    "Vol Z-Score": -0.48,
-    "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0022,
-    "Bollinger %B": 0.668,
-    "Avg Volume (20D)": 341641,
+    "RSI-14": 54.3,
+    "ADX-14": 38.8,
+    "Vol Z-Score": 1.52,
+    "MACD Signal": "🔴 Bearish Cross",
+    "MACD Histogram": -0.0001,
+    "Bollinger %B": 0.557,
+    "Avg Volume (20D)": 343529,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       0.459,
@@ -115,7 +121,8 @@
       0.53,
       0.548,
       0.538,
-      0.534
+      0.534,
+      0.52
     ],
     "open": [
       0.447,
@@ -152,7 +159,8 @@
       0.566,
       0.53,
       0.539,
-      0.545
+      0.545,
+      0.534
     ],
     "high": [
       0.46,
@@ -189,7 +197,8 @@
       0.566,
       0.55,
       0.548,
-      0.55
+      0.55,
+      0.547
     ],
     "low": [
       0.446,
@@ -226,7 +235,8 @@
       0.508,
       0.524,
       0.532,
-      0.533
+      0.533,
+      0.516
     ],
     "volume": [
       375810,
@@ -263,7 +273,8 @@
       933054,
       204568,
       445502,
-      224611
+      224611,
+      722958
     ],
     "vwap": [
       0.455,
@@ -300,7 +311,8 @@
       0.5072,
       0.5101,
       0.5156,
-      0.5187
+      0.5187,
+      0.5242
     ],
     "resistance": 0.579,
     "support": 0.436,

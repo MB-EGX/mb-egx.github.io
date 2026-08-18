@@ -1,15 +1,21 @@
 {
   "ticker": "WCDF.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "WCDF.CA",
-    "Action": "🚫 ILLIQUID - 📈 ACCUMULATE",
-    "Rank Score": -11.3,
-    "Current Price": 634.3,
-    "Target Entry (VWAP)": 605.7653,
-    "Suggested Stop-Loss": 587.18,
-    "Take-Profit Target": 697.6401,
+    "Sector": "Food, Beverages & Tobacco",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
+    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 4.7,
+    "Current Price": 644.63,
+    "Target Entry (VWAP)": 607.6378,
+    "Suggested Stop-Loss": 598.81,
+    "Take-Profit Target": 662.035,
     "Resistance (52W High)": 700.0,
     "Support (52W Low)": 504.0,
     "Pivot Point": 641.5433,
@@ -19,27 +25,27 @@
     "S1": 583.0867,
     "S2": 524.4633,
     "S3": 466.0067,
-    "Projected Gain (%)": "N/A",
-    "Pattern Conf (%)": "N/A",
-    "Projected Range 95%": "N/A",
-    "Kelly %": 2.04,
-    "Signal Reason": "🚫 ILLIQUID - 📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Projected Gain (%)": -1.37,
+    "Pattern Conf (%)": 58.47,
+    "Projected Range 95%": "-1.37% to -1.37%",
+    "Kelly %": 0.0,
+    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 0.0,
-      "projected": 0.0,
-      "range": 3.32,
-      "trend_bonus": -25.0,
+      "pattern": 17.54,
+      "projected": -2.06,
+      "range": 3.59,
+      "trend_bonus": -10.2,
       "confidence_weight": 0.52
     },
-    "Regime": "N/A",
+    "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 68.4,
-    "ADX-14": 49.8,
-    "Vol Z-Score": -0.72,
+    "RSI-14": 70.7,
+    "ADX-14": 51.5,
+    "Vol Z-Score": -0.29,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 4.3196,
-    "Bollinger %B": 0.913,
-    "Avg Volume (20D)": 8108,
+    "MACD Histogram": 4.2674,
+    "Bollinger %B": 0.945,
+    "Avg Volume (20D)": 7539,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       531.95,
@@ -115,7 +122,8 @@
       643.25,
       630.79,
       641.71,
-      634.3
+      634.3,
+      644.63
     ],
     "open": [
       534.0,
@@ -152,7 +160,8 @@
       619.99,
       643.25,
       638.0,
-      641.71
+      641.71,
+      634.3
     ],
     "high": [
       534.0,
@@ -189,7 +198,8 @@
       700.0,
       668.0,
       643.5,
-      642.0
+      642.0,
+      650.0
     ],
     "low": [
       525.07,
@@ -226,7 +236,8 @@
       619.99,
       625.0,
       630.03,
-      631.2
+      631.2,
+      630.0
     ],
     "volume": [
       337,
@@ -263,7 +274,8 @@
       28687,
       7463,
       4031,
-      2749
+      2749,
+      5446
     ],
     "vwap": [
       530.34,
@@ -300,7 +312,8 @@
       601.1222,
       603.008,
       604.0295,
-      605.7653
+      605.7653,
+      607.6378
     ],
     "resistance": 700.0,
     "support": 504.0,

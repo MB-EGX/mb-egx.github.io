@@ -1,15 +1,20 @@
 {
   "ticker": "GBCO.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Industrial Goods, Services & Automobiles",
   "matrix": {
     "Ticker": "GBCO.CA",
-    "Action": "⏳ BUY ON DIP [💥 SQUEEZE]",
-    "Rank Score": 29.2,
-    "Current Price": 30.45,
-    "Target Entry (VWAP)": 30.45,
-    "Suggested Stop-Loss": 28.0771,
-    "Take-Profit Target": 33.6292,
+    "Sector": "Industrial Goods, Services & Automobiles",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⏳ BUY ON DIP [💥 SQUEEZE] (Unconfirmed: weekly trend not aligned, CMF below accumulation floor)",
+    "Rank Score": 10.6,
+    "Current Price": 30.4,
+    "Target Entry (VWAP)": 30.4,
+    "Suggested Stop-Loss": 28.14,
+    "Take-Profit Target": 33.4378,
     "Resistance (52W High)": 34.2,
     "Support (52W Low)": 29.5,
     "Pivot Point": 31.05,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.97,
-    "Signal Reason": "⏳ BUY ON DIP [💥 SQUEEZE] | trend=Weak Bullish | awaiting confirmation | volatility squeeze",
+    "Kelly %": 2.04,
+    "Signal Reason": "⏳ BUY ON DIP [💥 SQUEEZE] (Unconfirmed: weekly trend not aligned, CMF below accumulation floor) | trend=Weak Bullish | awaiting confirmation | volatility squeeze",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 1.01,
-      "trend_bonus": 55.0,
+      "range": 0.96,
+      "trend_bonus": 19.25,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Weak Bullish",
-    "RSI-14": 43.4,
-    "ADX-14": 24.6,
-    "Vol Z-Score": -0.17,
-    "MACD Signal": "🔴 Bearish Cross",
-    "MACD Histogram": -0.034,
-    "Bollinger %B": 0.274,
-    "Avg Volume (20D)": 1779021,
+    "RSI-14": 43.1,
+    "ADX-14": 23.9,
+    "Vol Z-Score": -1.15,
+    "MACD Signal": "Bearish",
+    "MACD Histogram": -0.0766,
+    "Bollinger %B": 0.281,
+    "Avg Volume (20D)": 1650857,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       31.5,
@@ -115,7 +121,8 @@
       32.2,
       31.5,
       30.7,
-      30.45
+      30.45,
+      30.4
     ],
     "open": [
       31.5,
@@ -152,7 +159,8 @@
       32.01,
       32.2,
       31.51,
-      30.7
+      30.7,
+      30.45
     ],
     "high": [
       31.5,
@@ -189,7 +197,8 @@
       32.42,
       32.45,
       31.79,
-      30.8
+      30.8,
+      30.68
     ],
     "low": [
       30.7,
@@ -226,7 +235,8 @@
       31.77,
       31.5,
       30.0,
-      30.0
+      30.0,
+      30.21
     ],
     "volume": [
       2263553,
@@ -263,7 +273,8 @@
       738035,
       674832,
       3891302,
-      1611383
+      1611383,
+      552730
     ],
     "vwap": [
       31.2333,
@@ -300,7 +311,8 @@
       31.8324,
       31.6045,
       31.4607,
-      31.3606
+      31.3606,
+      31.2752
     ],
     "resistance": 34.2,
     "support": 29.5,

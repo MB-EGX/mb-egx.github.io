@@ -1,15 +1,20 @@
 {
   "ticker": "APSW.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Textiles & Durables",
   "matrix": {
     "Ticker": "APSW.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 25.5,
-    "Current Price": 9.12,
-    "Target Entry (VWAP)": 8.9625,
-    "Suggested Stop-Loss": 8.5471,
-    "Take-Profit Target": 9.8999,
+    "Sector": "Textiles & Durables",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE [💥 SQUEEZE]",
+    "Rank Score": 14.5,
+    "Current Price": 8.74,
+    "Target Entry (VWAP)": 8.74,
+    "Suggested Stop-Loss": 8.1429,
+    "Take-Profit Target": 9.5476,
     "Resistance (52W High)": 9.39,
     "Support (52W Low)": 8.0,
     "Pivot Point": 8.9667,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.3,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Kelly %": 2.17,
+    "Signal Reason": "📈 ACCUMULATE [💥 SQUEEZE] | trend=Strong Bullish | awaiting confirmation | volatility squeeze | positive money flow | vol x1.86",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 4.03,
-      "trend_bonus": 44.8,
+      "range": 2.66,
+      "trend_bonus": 25.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 62.3,
-    "ADX-14": 27.8,
-    "Vol Z-Score": -0.16,
-    "MACD Signal": "🟢 Bullish Cross",
-    "MACD Histogram": 0.0105,
-    "Bollinger %B": 0.805,
-    "Avg Volume (20D)": 222632,
+    "RSI-14": 48.7,
+    "ADX-14": 26.0,
+    "Vol Z-Score": 1.22,
+    "MACD Signal": "🔴 Bearish Cross",
+    "MACD Histogram": -0.0046,
+    "Bollinger %B": 0.308,
+    "Avg Volume (20D)": 216990,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       8.46,
@@ -115,7 +121,8 @@
       8.72,
       8.7,
       9.13,
-      9.12
+      9.12,
+      8.74
     ],
     "open": [
       8.47,
@@ -152,7 +159,8 @@
       8.82,
       8.72,
       8.73,
-      9.17
+      9.17,
+      9.12
     ],
     "high": [
       8.64,
@@ -189,7 +197,8 @@
       8.83,
       8.78,
       9.13,
-      9.39
+      9.39,
+      9.11
     ],
     "low": [
       8.42,
@@ -226,7 +235,8 @@
       8.7,
       8.64,
       8.65,
-      9.01
+      9.01,
+      8.7
     ],
     "volume": [
       117779,
@@ -263,7 +273,8 @@
       80328,
       97088,
       662746,
-      196774
+      196774,
+      402803
     ],
     "vwap": [
       8.5067,
@@ -300,7 +311,8 @@
       8.8975,
       8.9104,
       8.9372,
-      8.9625
+      8.9625,
+      8.9226
     ],
     "resistance": 9.39,
     "support": 8.0,

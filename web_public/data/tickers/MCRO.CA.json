@@ -1,15 +1,20 @@
 {
   "ticker": "MCRO.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "MCRO.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 9.4,
-    "Current Price": 1.52,
-    "Target Entry (VWAP)": 1.52,
-    "Suggested Stop-Loss": 1.35,
-    "Take-Profit Target": 1.7431,
+    "Sector": "Health Care & Pharmaceuticals",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 17.2,
+    "Current Price": 1.51,
+    "Target Entry (VWAP)": 1.51,
+    "Suggested Stop-Loss": 1.3486,
+    "Take-Profit Target": 1.7224,
     "Resistance (52W High)": 1.74,
     "Support (52W Low)": 1.17,
     "Pivot Point": 1.6033,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.55,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Kelly %": 1.6,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 3.07,
-      "trend_bonus": 15.0,
+      "range": 2.98,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 56.0,
-    "ADX-14": 56.7,
-    "Vol Z-Score": -0.93,
+    "RSI-14": 54.6,
+    "ADX-14": 55.3,
+    "Vol Z-Score": -1.35,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0087,
-    "Bollinger %B": 0.512,
-    "Avg Volume (20D)": 127714094,
+    "MACD Histogram": -0.0119,
+    "Bollinger %B": 0.434,
+    "Avg Volume (20D)": 122758482,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       1.22,
@@ -115,7 +121,8 @@
       1.58,
       1.55,
       1.54,
-      1.52
+      1.52,
+      1.51
     ],
     "open": [
       1.22,
@@ -152,7 +159,8 @@
       1.6,
       1.58,
       1.56,
-      1.55
+      1.55,
+      1.52
     ],
     "high": [
       1.24,
@@ -189,7 +197,8 @@
       1.61,
       1.6,
       1.59,
-      1.57
+      1.57,
+      1.54
     ],
     "low": [
       1.21,
@@ -226,7 +235,8 @@
       1.55,
       1.54,
       1.53,
-      1.49
+      1.49,
+      1.5
     ],
     "volume": [
       18806631,
@@ -263,7 +273,8 @@
       66925294,
       42615936,
       37832774,
-      69465046
+      69465046,
+      33881467
     ],
     "vwap": [
       1.2233,
@@ -300,7 +311,8 @@
       1.5077,
       1.5142,
       1.5171,
-      1.5208
+      1.5208,
+      1.5281
     ],
     "resistance": 1.74,
     "support": 1.17,

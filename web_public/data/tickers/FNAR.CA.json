@@ -1,15 +1,20 @@
 {
   "ticker": "FNAR.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Construction & Engineering",
   "matrix": {
     "Ticker": "FNAR.CA",
+    "Sector": "Construction & Engineering",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
-    "Rank Score": 22.1,
-    "Current Price": 13.15,
-    "Target Entry (VWAP)": 13.15,
-    "Suggested Stop-Loss": 12.3014,
-    "Take-Profit Target": 14.3028,
+    "Rank Score": 22.4,
+    "Current Price": 13.36,
+    "Target Entry (VWAP)": 13.213,
+    "Suggested Stop-Loss": 12.4657,
+    "Take-Profit Target": 14.5714,
     "Resistance (52W High)": 14.82,
     "Support (52W Low)": 11.32,
     "Pivot Point": 13.3233,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.26,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze",
+    "Kelly %": 2.2,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze | vol x1.33",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.61,
+      "range": 2.91,
       "trend_bonus": 39.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 54.8,
-    "ADX-14": 60.2,
-    "Vol Z-Score": -0.06,
+    "RSI-14": 59.2,
+    "ADX-14": 60.5,
+    "Vol Z-Score": 0.65,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0668,
-    "Bollinger %B": 0.5,
-    "Avg Volume (20D)": 232282,
+    "MACD Histogram": -0.0479,
+    "Bollinger %B": 0.753,
+    "Avg Volume (20D)": 232474,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       11.67,
@@ -115,7 +121,8 @@
       12.97,
       13.08,
       13.08,
-      13.15
+      13.15,
+      13.36
     ],
     "open": [
       11.64,
@@ -152,7 +159,8 @@
       13.08,
       12.97,
       13.08,
-      13.1
+      13.1,
+      13.15
     ],
     "high": [
       12.0,
@@ -189,7 +197,8 @@
       13.19,
       13.99,
       13.15,
-      13.2
+      13.2,
+      13.48
     ],
     "low": [
       11.35,
@@ -226,7 +235,8 @@
       12.96,
       12.9,
       12.93,
-      13.05
+      13.05,
+      13.0
     ],
     "volume": [
       377067,
@@ -263,7 +273,8 @@
       211775,
       599854,
       184516,
-      225289
+      225289,
+      309470
     ],
     "vwap": [
       11.6733,
@@ -300,7 +311,8 @@
       13.3541,
       13.253,
       13.2013,
-      13.1954
+      13.1954,
+      13.213
     ],
     "resistance": 14.82,
     "support": 11.32,

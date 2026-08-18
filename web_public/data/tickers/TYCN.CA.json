@@ -1,15 +1,20 @@
 {
   "ticker": "TYCN.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "TYCN.CA",
-    "Action": "⏳ BUY ON DIP",
-    "Rank Score": 28.2,
-    "Current Price": 15.25,
-    "Target Entry (VWAP)": 15.25,
-    "Suggested Stop-Loss": 11.6343,
-    "Take-Profit Target": 15.6617,
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor)",
+    "Rank Score": 16.7,
+    "Current Price": 14.73,
+    "Target Entry (VWAP)": 14.73,
+    "Suggested Stop-Loss": 11.39,
+    "Take-Profit Target": 15.1277,
     "Resistance (52W High)": 36.4,
     "Support (52W Low)": 13.4,
     "Pivot Point": 14.2733,
@@ -19,27 +24,27 @@
     "S1": 13.3467,
     "S2": 12.8733,
     "S3": 11.9467,
-    "Projected Gain (%)": -4.32,
-    "Pattern Conf (%)": 50.55,
-    "Projected Range 95%": "-4.32% to -4.32%",
+    "Projected Gain (%)": -2.71,
+    "Pattern Conf (%)": 66.5,
+    "Projected Range 95%": "-2.71% to -2.71%",
     "Kelly %": 0.0,
-    "Signal Reason": "⏳ BUY ON DIP | trend=Strong Bearish | confirmed | vol x2.18",
+    "Signal Reason": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor) | trend=Strong Bearish | awaiting confirmation",
     "Score Breakdown": {
-      "pattern": 15.16,
-      "projected": -6.48,
-      "range": 0.4,
-      "trend_bonus": 45.0,
+      "pattern": 19.95,
+      "projected": -4.06,
+      "range": 0.29,
+      "trend_bonus": 15.75,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bearish",
-    "RSI-14": 34.7,
-    "ADX-14": 42.4,
-    "Vol Z-Score": 1.72,
-    "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0131,
-    "Bollinger %B": 0.338,
-    "Avg Volume (20D)": 1775395,
+    "RSI-14": 32.8,
+    "ADX-14": 40.8,
+    "Vol Z-Score": -0.41,
+    "MACD Signal": "🟢 Bullish Cross",
+    "MACD Histogram": 0.0793,
+    "Bollinger %B": 0.316,
+    "Avg Volume (20D)": 1773420,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       25.44,
@@ -115,7 +121,8 @@
       14.02,
       13.86,
       13.82,
-      15.25
+      15.25,
+      14.73
     ],
     "open": [
       22.11,
@@ -152,7 +159,8 @@
       14.59,
       14.02,
       13.9,
-      13.94
+      13.94,
+      15.25
     ],
     "high": [
       25.44,
@@ -189,7 +197,8 @@
       14.6,
       14.15,
       14.05,
-      16.48
+      16.48,
+      15.48
     ],
     "low": [
       21.21,
@@ -226,7 +235,8 @@
       13.99,
       13.8,
       13.81,
-      13.8
+      13.8,
+      14.52
     ],
     "volume": [
       5290826,
@@ -263,7 +273,8 @@
       1140532,
       763788,
       592719,
-      3876433
+      3876433,
+      1272896
     ],
     "vwap": [
       24.03,
@@ -300,7 +311,8 @@
       17.963,
       17.5959,
       17.1699,
-      16.8217
+      16.8217,
+      16.577
     ],
     "resistance": 36.4,
     "support": 13.4,

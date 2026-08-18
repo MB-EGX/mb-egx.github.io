@@ -1,15 +1,20 @@
 {
   "ticker": "UBEE.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Banks",
   "matrix": {
     "Ticker": "UBEE.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 9.3,
+    "Sector": "Banks",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 17.0,
     "Current Price": 14.78,
-    "Target Entry (VWAP)": 14.2326,
-    "Suggested Stop-Loss": 14.0714,
-    "Take-Profit Target": 15.7692,
+    "Target Entry (VWAP)": 14.268,
+    "Suggested Stop-Loss": 14.0771,
+    "Take-Profit Target": 15.762,
     "Resistance (52W High)": 15.78,
     "Support (52W Low)": 13.28,
     "Pivot Point": 14.87,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.8,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Kelly %": 2.82,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
       "range": 3.0,
-      "trend_bonus": 15.0,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
     "RSI-14": 72.5,
-    "ADX-14": 57.8,
-    "Vol Z-Score": -0.27,
+    "ADX-14": 58.5,
+    "Vol Z-Score": -0.04,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0966,
-    "Bollinger %B": 0.932,
-    "Avg Volume (20D)": 351346,
+    "MACD Histogram": 0.0863,
+    "Bollinger %B": 0.88,
+    "Avg Volume (20D)": 363358,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -75,7 +80,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       13.3,
@@ -109,6 +115,7 @@
       14.66,
       14.82,
       14.93,
+      14.78,
       14.78
     ],
     "open": [
@@ -143,7 +150,8 @@
       13.96,
       14.66,
       14.84,
-      14.82
+      14.82,
+      14.78
     ],
     "high": [
       13.4,
@@ -177,7 +185,8 @@
       14.76,
       15.78,
       15.0,
-      14.94
+      14.94,
+      14.9
     ],
     "low": [
       13.28,
@@ -211,6 +220,7 @@
       13.96,
       14.7,
       14.8,
+      14.7,
       14.7
     ],
     "volume": [
@@ -245,7 +255,8 @@
       987271,
       1107756,
       348359,
-      274393
+      274393,
+      352246
     ],
     "vwap": [
       13.3267,
@@ -279,7 +290,8 @@
       13.9583,
       14.1536,
       14.1975,
-      14.2326
+      14.2326,
+      14.268
     ],
     "resistance": 15.78,
     "support": 13.28,

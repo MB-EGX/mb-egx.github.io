@@ -1,15 +1,21 @@
 {
   "ticker": "ICLE.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "ICLE.CA",
-    "Action": "🚫 ILLIQUID - ⏳ BUY ON DIP [💥 SQUEEZE]",
-    "Rank Score": 7.8,
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
+    "Action": "🚫 ILLIQUID - ⏳ BUY ON DIP [💥 SQUEEZE] (Unconfirmed: weekly trend not aligned, CMF below accumulation floor)",
+    "Rank Score": -10.9,
     "Current Price": 15.76,
     "Target Entry (VWAP)": 15.76,
-    "Suggested Stop-Loss": 12.61,
-    "Take-Profit Target": 19.8078,
+    "Suggested Stop-Loss": 13.06,
+    "Take-Profit Target": 19.2453,
     "Resistance (52W High)": 18.91,
     "Support (52W Low)": 15.76,
     "Pivot Point": 15.76,
@@ -22,19 +28,19 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.1,
-    "Signal Reason": "🚫 ILLIQUID - ⏳ BUY ON DIP [💥 SQUEEZE] | trend=Strong Bullish | awaiting confirmation | volatility squeeze",
+    "Kelly %": 1.2,
+    "Signal Reason": "🚫 ILLIQUID - ⏳ BUY ON DIP [💥 SQUEEZE] (Unconfirmed: weekly trend not aligned, CMF below accumulation floor) | trend=Strong Bullish | awaiting confirmation | volatility squeeze",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
       "range": 0.0,
-      "trend_bonus": 15.0,
+      "trend_bonus": -20.75,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
     "RSI-14": 50.0,
-    "ADX-14": 36.1,
+    "ADX-14": 36.0,
     "Vol Z-Score": -0.23,
     "MACD Signal": "Neutral",
     "MACD Histogram": 0.0,
@@ -78,9 +84,11 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
+      15.76,
       15.76,
       15.76,
       15.76,
@@ -152,6 +160,7 @@
       15.76,
       15.76,
       15.76,
+      15.76,
       15.76
     ],
     "high": [
@@ -189,6 +198,7 @@
       15.76,
       15.76,
       15.76,
+      15.76,
       15.76
     ],
     "low": [
@@ -209,6 +219,7 @@
       15.76,
       15.76,
       18.91,
+      15.76,
       15.76,
       15.76,
       15.76,
@@ -263,6 +274,7 @@
       0,
       0,
       0,
+      0,
       0
     ],
     "vwap": [
@@ -298,6 +310,7 @@
       17.8361,
       17.8361,
       17.8361,
+      17.8356,
       17.8356,
       17.8356,
       17.8356

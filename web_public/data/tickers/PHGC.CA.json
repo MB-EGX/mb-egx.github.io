@@ -1,15 +1,20 @@
 {
   "ticker": "PHGC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "PHGC.CA",
-    "Action": "⚡ BREAKOUT BUY (X-OVER + MOMENTUM) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 53.0,
-    "Current Price": 0.091,
-    "Target Entry (VWAP)": 0.0895,
-    "Suggested Stop-Loss": 0.0853,
-    "Take-Profit Target": 0.0988,
+    "Sector": "Health Care & Pharmaceuticals",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE [💥 SQUEEZE]",
+    "Rank Score": 22.6,
+    "Current Price": 0.09,
+    "Target Entry (VWAP)": 0.0896,
+    "Suggested Stop-Loss": 0.084,
+    "Take-Profit Target": 0.0981,
     "Resistance (52W High)": 0.094,
     "Support (52W Low)": 0.084,
     "Pivot Point": 0.0877,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.35,
-    "Signal Reason": "⚡ BREAKOUT BUY (X-OVER + MOMENTUM) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | positive money flow | vol x6.54",
+    "Kelly %": 2.13,
+    "Signal Reason": "📈 ACCUMULATE [💥 SQUEEZE] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 3.5,
-      "trend_bonus": 98.0,
+      "range": 3.0,
+      "trend_bonus": 40.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 58.7,
-    "ADX-14": 32.2,
-    "Vol Z-Score": 4.03,
+    "RSI-14": 54.8,
+    "ADX-14": 32.0,
+    "Vol Z-Score": -0.25,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0002,
-    "Bollinger %B": 0.728,
-    "Avg Volume (20D)": 247896962,
+    "MACD Histogram": -0.0001,
+    "Bollinger %B": 0.577,
+    "Avg Volume (20D)": 251799135,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       0.087,
@@ -115,7 +121,8 @@
       0.088,
       0.087,
       0.087,
-      0.091
+      0.091,
+      0.09
     ],
     "open": [
       0.088,
@@ -152,7 +159,8 @@
       0.089,
       0.088,
       0.087,
-      0.087
+      0.087,
+      0.091
     ],
     "high": [
       0.089,
@@ -189,7 +197,8 @@
       0.09,
       0.088,
       0.088,
-      0.091
+      0.091,
+      0.093
     ],
     "low": [
       0.086,
@@ -226,7 +235,8 @@
       0.087,
       0.085,
       0.086,
-      0.086
+      0.086,
+      0.089
     ],
     "volume": [
       88011007,
@@ -263,7 +273,8 @@
       181198748,
       255214152,
       153556993,
-      1621232100
+      1621232100,
+      168503724
     ],
     "vwap": [
       0.0873,
@@ -300,7 +311,8 @@
       0.0898,
       0.0896,
       0.0895,
-      0.0895
+      0.0895,
+      0.0896
     ],
     "resistance": 0.094,
     "support": 0.084,

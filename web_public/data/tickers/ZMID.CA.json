@@ -1,15 +1,20 @@
 {
   "ticker": "ZMID.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "ZMID.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 17.7,
-    "Current Price": 7.51,
-    "Target Entry (VWAP)": 7.4722,
-    "Suggested Stop-Loss": 7.0771,
-    "Take-Profit Target": 8.1036,
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 21.5,
+    "Current Price": 7.43,
+    "Target Entry (VWAP)": 7.43,
+    "Suggested Stop-Loss": 7.0286,
+    "Take-Profit Target": 7.67,
     "Resistance (52W High)": 7.8,
     "Support (52W Low)": 6.19,
     "Pivot Point": 7.6167,
@@ -19,27 +24,27 @@
     "S1": 7.4333,
     "S2": 7.3067,
     "S3": 7.1233,
-    "Projected Gain (%)": "N/A",
-    "Pattern Conf (%)": "N/A",
-    "Projected Range 95%": "N/A",
-    "Kelly %": 2.45,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Projected Gain (%)": 2.53,
+    "Pattern Conf (%)": 61.08,
+    "Projected Range 95%": "2.53% to 2.53%",
+    "Kelly %": 0.0,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 0.0,
-      "projected": 0.0,
-      "range": 4.1,
-      "trend_bonus": 29.8,
+      "pattern": 18.32,
+      "projected": 3.79,
+      "range": 3.85,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
-    "Regime": "N/A",
+    "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 58.0,
-    "ADX-14": 42.1,
-    "Vol Z-Score": -1.65,
+    "RSI-14": 54.2,
+    "ADX-14": 40.2,
+    "Vol Z-Score": -0.97,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.009,
-    "Bollinger %B": 0.561,
-    "Avg Volume (20D)": 29060245,
+    "MACD Histogram": -0.0206,
+    "Bollinger %B": 0.472,
+    "Avg Volume (20D)": 27799831,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       6.45,
@@ -115,7 +121,8 @@
       7.68,
       7.68,
       7.56,
-      7.51
+      7.51,
+      7.43
     ],
     "open": [
       6.62,
@@ -152,7 +159,8 @@
       7.69,
       7.68,
       7.66,
-      7.57
+      7.57,
+      7.51
     ],
     "high": [
       6.67,
@@ -189,7 +197,8 @@
       7.77,
       7.8,
       7.73,
-      7.62
+      7.62,
+      7.58
     ],
     "low": [
       6.45,
@@ -226,7 +235,8 @@
       7.5,
       7.57,
       7.54,
-      7.48
+      7.48,
+      7.39
     ],
     "volume": [
       26921684,
@@ -263,7 +273,8 @@
       19039372,
       20105709,
       8669036,
-      8422010
+      8422010,
+      15582153
     ],
     "vwap": [
       6.5233,
@@ -300,7 +311,8 @@
       7.454,
       7.4683,
       7.4721,
-      7.4722
+      7.4722,
+      7.4632
     ],
     "resistance": 7.8,
     "support": 6.19,

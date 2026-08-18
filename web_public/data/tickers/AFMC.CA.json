@@ -1,15 +1,20 @@
 {
   "ticker": "AFMC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "AFMC.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 62.5,
-    "Current Price": 247.89,
-    "Target Entry (VWAP)": 174.2199,
-    "Suggested Stop-Loss": 175.0757,
-    "Take-Profit Target": 336.9321,
+    "Sector": "Food, Beverages & Tobacco",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 17.7,
+    "Current Price": 251.5,
+    "Target Entry (VWAP)": 178.9545,
+    "Suggested Stop-Loss": 179.4343,
+    "Take-Profit Target": 343.3426,
     "Resistance (52W High)": 300.0,
     "Support (52W Low)": 66.0,
     "Pivot Point": 248.2,
@@ -19,27 +24,27 @@
     "S1": 196.4,
     "S2": 149.2,
     "S3": 97.4,
-    "Projected Gain (%)": 35.22,
-    "Pattern Conf (%)": 60.4,
-    "Projected Range 95%": "35.22% to 35.22%",
-    "Kelly %": 14.01,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Projected Gain (%)": "N/A",
+    "Pattern Conf (%)": "N/A",
+    "Projected Range 95%": "N/A",
+    "Kelly %": 0.92,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
-      "pattern": 18.12,
-      "projected": 52.83,
-      "range": 3.89,
-      "trend_bonus": 44.8,
+      "pattern": 0.0,
+      "projected": 0.0,
+      "range": 3.96,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
-    "Regime": "Trending / Volatile",
+    "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 72.1,
-    "ADX-14": 86.6,
-    "Vol Z-Score": -1.22,
+    "RSI-14": 72.7,
+    "ADX-14": 86.5,
+    "Vol Z-Score": -0.58,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 2.872,
-    "Bollinger %B": 0.764,
-    "Avg Volume (20D)": 1000504,
+    "MACD Histogram": 1.7967,
+    "Bollinger %B": 0.755,
+    "Avg Volume (20D)": 1005627,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       69.72,
@@ -115,7 +121,8 @@
       247.0,
       239.0,
       243.6,
-      247.89
+      247.89,
+      251.5
     ],
     "open": [
       70.0,
@@ -152,7 +159,8 @@
       257.11,
       247.0,
       240.0,
-      246.0
+      246.0,
+      247.89
     ],
     "high": [
       70.99,
@@ -189,7 +197,8 @@
       300.0,
       254.9,
       269.0,
-      254.98
+      254.98,
+      267.9
     ],
     "low": [
       69.13,
@@ -226,7 +235,8 @@
       245.1,
       230.0,
       231.02,
-      237.0
+      237.0,
+      241.5
     ],
     "volume": [
       6219,
@@ -263,7 +273,8 @@
       977935,
       288565,
       462745,
-      331134
+      331134,
+      691711
     ],
     "vwap": [
       69.9467,
@@ -300,7 +311,8 @@
       166.2227,
       168.272,
       170.5364,
-      174.2199
+      174.2199,
+      178.9545
     ],
     "resistance": 300.0,
     "support": 66.0,

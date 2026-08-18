@@ -1,15 +1,20 @@
 {
   "ticker": "TWSA.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "TWSA.CA",
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "📈 ACCUMULATE [💥 SQUEEZE]",
-    "Rank Score": 13.6,
-    "Current Price": 6.37,
-    "Target Entry (VWAP)": 6.37,
-    "Suggested Stop-Loss": 5.9329,
-    "Take-Profit Target": 6.961,
+    "Rank Score": 13.7,
+    "Current Price": 6.36,
+    "Target Entry (VWAP)": 6.36,
+    "Suggested Stop-Loss": 5.9457,
+    "Take-Profit Target": 6.9224,
     "Resistance (52W High)": 7.8,
     "Support (52W Low)": 5.8,
     "Pivot Point": 6.4433,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.16,
+    "Kelly %": 2.24,
     "Signal Reason": "📈 ACCUMULATE [💥 SQUEEZE] | trend=Weak Bullish | awaiting confirmation | volatility squeeze",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 1.43,
+      "range": 1.4,
       "trend_bonus": 25.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Weak Bullish",
-    "RSI-14": 39.2,
-    "ADX-14": 30.2,
-    "Vol Z-Score": -0.39,
+    "RSI-14": 38.8,
+    "ADX-14": 28.6,
+    "Vol Z-Score": -0.25,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0158,
-    "Bollinger %B": 0.179,
-    "Avg Volume (20D)": 637096,
+    "MACD Histogram": -0.0146,
+    "Bollinger %B": 0.191,
+    "Avg Volume (20D)": 606617,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -75,7 +80,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       6.79,
@@ -109,7 +115,8 @@
       6.45,
       6.41,
       6.37,
-      6.37
+      6.37,
+      6.36
     ],
     "open": [
       6.15,
@@ -143,7 +150,8 @@
       6.51,
       6.45,
       6.42,
-      6.38
+      6.38,
+      6.37
     ],
     "high": [
       7.12,
@@ -177,7 +185,8 @@
       6.53,
       6.55,
       6.45,
-      6.45
+      6.45,
+      6.4
     ],
     "low": [
       5.8,
@@ -211,7 +220,8 @@
       6.45,
       6.4,
       6.37,
-      6.3
+      6.3,
+      6.28
     ],
     "volume": [
       9307319,
@@ -245,7 +255,8 @@
       418567,
       208000,
       460429,
-      471629
+      471629,
+      505507
     ],
     "vwap": [
       6.57,
@@ -279,7 +290,8 @@
       6.7598,
       6.7608,
       6.6519,
-      6.6235
+      6.6235,
+      6.5936
     ],
     "resistance": 7.8,
     "support": 5.8,

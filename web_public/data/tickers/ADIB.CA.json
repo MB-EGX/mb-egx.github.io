@@ -1,15 +1,20 @@
 {
   "ticker": "ADIB.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Banks",
   "matrix": {
     "Ticker": "ADIB.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
+    "Sector": "Banks",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
     "Rank Score": 26.0,
-    "Current Price": 55.4,
-    "Target Entry (VWAP)": 51.1617,
-    "Suggested Stop-Loss": 52.7814,
-    "Take-Profit Target": 59.061,
+    "Current Price": 54.98,
+    "Target Entry (VWAP)": 51.4857,
+    "Suggested Stop-Loss": 52.34,
+    "Take-Profit Target": 58.6649,
     "Resistance (52W High)": 55.65,
     "Support (52W Low)": 44.1,
     "Pivot Point": 54.54,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.83,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Kelly %": 2.8,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 4.89,
+      "range": 4.71,
       "trend_bonus": 44.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 75.7,
-    "ADX-14": 47.0,
-    "Vol Z-Score": -0.59,
+    "RSI-14": 71.7,
+    "ADX-14": 45.6,
+    "Vol Z-Score": -0.57,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.1198,
-    "Bollinger %B": 0.839,
-    "Avg Volume (20D)": 2145015,
+    "MACD Histogram": 0.0626,
+    "Bollinger %B": 0.789,
+    "Avg Volume (20D)": 2067478,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       44.65,
@@ -115,7 +121,8 @@
       54.02,
       54.85,
       55.19,
-      55.4
+      55.4,
+      54.98
     ],
     "open": [
       45.51,
@@ -152,7 +159,8 @@
       54.0,
       54.02,
       55.0,
-      55.22
+      55.22,
+      55.4
     ],
     "high": [
       45.8,
@@ -189,7 +197,8 @@
       54.35,
       55.0,
       55.53,
-      55.65
+      55.65,
+      55.4
     ],
     "low": [
       44.51,
@@ -226,7 +235,8 @@
       53.0,
       53.8,
       54.26,
-      54.55
+      54.55,
+      54.0
     ],
     "volume": [
       1652420,
@@ -263,7 +273,8 @@
       1509909,
       1586634,
       1284395,
-      860815
+      860815,
+      803292
     ],
     "vwap": [
       44.9867,
@@ -300,7 +311,8 @@
       50.2346,
       50.5208,
       50.8107,
-      51.1617
+      51.1617,
+      51.4857
     ],
     "resistance": 55.65,
     "support": 44.1,

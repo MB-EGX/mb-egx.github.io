@@ -1,15 +1,20 @@
 {
   "ticker": "FIRE.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "FIRE.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 8.8,
-    "Current Price": 4.7,
-    "Target Entry (VWAP)": 4.7,
-    "Suggested Stop-Loss": 4.1871,
-    "Take-Profit Target": 5.374,
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (X-OVER + MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 23.4,
+    "Current Price": 4.93,
+    "Target Entry (VWAP)": 4.7533,
+    "Suggested Stop-Loss": 4.4114,
+    "Take-Profit Target": 5.6127,
     "Resistance (52W High)": 5.68,
     "Support (52W Low)": 4.11,
     "Pivot Point": 4.53,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.57,
-    "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | confirmed | vol x1.89",
+    "Kelly %": 1.61,
+    "Signal Reason": "⚡ BREAKOUT BUY (X-OVER + MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x1.25",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 1.88,
-      "trend_bonus": 15.0,
+      "range": 2.61,
+      "trend_bonus": 42.05,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
-    "Trend Class": "Weak Bullish",
-    "RSI-14": 51.4,
-    "ADX-14": 24.9,
-    "Vol Z-Score": 1.08,
-    "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0128,
-    "Bollinger %B": 0.529,
-    "Avg Volume (20D)": 292326,
+    "Trend Class": "Strong Bullish",
+    "RSI-14": 58.4,
+    "ADX-14": 24.6,
+    "Vol Z-Score": 0.31,
+    "MACD Signal": "🟢 Bullish Cross",
+    "MACD Histogram": 0.0151,
+    "Bollinger %B": 0.807,
+    "Avg Volume (20D)": 303895,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       4.49,
@@ -115,7 +121,8 @@
       4.54,
       4.39,
       4.52,
-      4.7
+      4.7,
+      4.93
     ],
     "open": [
       4.53,
@@ -152,7 +159,8 @@
       4.59,
       4.54,
       4.46,
-      4.45
+      4.45,
+      4.7
     ],
     "high": [
       4.53,
@@ -189,7 +197,8 @@
       4.62,
       4.54,
       4.6,
-      4.73
+      4.73,
+      4.93
     ],
     "low": [
       4.32,
@@ -226,7 +235,8 @@
       4.49,
       4.32,
       4.36,
-      4.3
+      4.3,
+      4.6
     ],
     "volume": [
       188634,
@@ -263,7 +273,8 @@
       83154,
       48541,
       34373,
-      552440
+      552440,
+      378932
     ],
     "vwap": [
       4.4467,
@@ -300,7 +311,8 @@
       4.8404,
       4.8215,
       4.8063,
-      4.7546
+      4.7546,
+      4.7533
     ],
     "resistance": 5.68,
     "support": 4.11,

@@ -1,15 +1,21 @@
 {
   "ticker": "EGSA.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "IT, Media & Communication Services",
   "matrix": {
     "Ticker": "EGSA.CA",
-    "Action": "🚫 ILLIQUID - ⏳ BUY ON DIP",
-    "Rank Score": 2.7,
-    "Current Price": 8.67,
-    "Target Entry (VWAP)": 8.67,
-    "Suggested Stop-Loss": 8.4457,
-    "Take-Profit Target": 9.011,
+    "Sector": "IT, Media & Communication Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
+    "Action": "🚫 ILLIQUID - ⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor)",
+    "Rank Score": -12.5,
+    "Current Price": 8.7,
+    "Target Entry (VWAP)": 8.7,
+    "Suggested Stop-Loss": 8.4643,
+    "Take-Profit Target": 9.0555,
     "Resistance (52W High)": 9.21,
     "Support (52W Low)": 8.65,
     "Pivot Point": 8.7267,
@@ -22,24 +28,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 4.41,
-    "Signal Reason": "🚫 ILLIQUID - ⏳ BUY ON DIP | trend=Weak Bullish | awaiting confirmation | vol x1.09",
+    "Kelly %": 4.27,
+    "Signal Reason": "🚫 ILLIQUID - ⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor) | trend=Weak Bullish | awaiting confirmation",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 0.18,
-      "trend_bonus": 5.0,
+      "range": 0.45,
+      "trend_bonus": -24.25,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Weak Bullish",
-    "RSI-14": 32.6,
-    "ADX-14": 52.6,
-    "Vol Z-Score": 0.12,
+    "RSI-14": 37.7,
+    "ADX-14": 51.2,
+    "Vol Z-Score": -0.52,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0244,
-    "Bollinger %B": 0.191,
-    "Avg Volume (20D)": 1985,
+    "MACD Histogram": -0.0187,
+    "Bollinger %B": 0.262,
+    "Avg Volume (20D)": 1772,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       8.75,
@@ -115,7 +122,8 @@
       8.69,
       8.66,
       8.66,
-      8.67
+      8.67,
+      8.7
     ],
     "open": [
       8.77,
@@ -152,7 +160,8 @@
       8.67,
       8.69,
       8.79,
-      8.69
+      8.69,
+      8.67
     ],
     "high": [
       8.77,
@@ -189,7 +198,8 @@
       8.68,
       8.69,
       8.79,
-      8.7
+      8.7,
+      8.9
     ],
     "low": [
       8.7,
@@ -226,7 +236,8 @@
       8.67,
       8.65,
       8.79,
-      8.67
+      8.67,
+      8.7
     ],
     "volume": [
       2000,
@@ -263,7 +274,8 @@
       60,
       895,
       134,
-      2157
+      2157,
+      1170
     ],
     "vwap": [
       8.74,
@@ -300,7 +312,8 @@
       8.9467,
       8.9416,
       8.9409,
-      8.8891
+      8.8891,
+      8.8609
     ],
     "resistance": 9.21,
     "support": 8.65,

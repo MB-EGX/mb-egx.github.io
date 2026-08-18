@@ -1,15 +1,20 @@
 {
   "ticker": "AREH.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "AREH.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 8.9,
-    "Current Price": 1.53,
-    "Target Entry (VWAP)": 1.53,
-    "Suggested Stop-Loss": 1.3914,
-    "Take-Profit Target": 1.7139,
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (X-OVER + MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 23.2,
+    "Current Price": 1.55,
+    "Target Entry (VWAP)": 1.5405,
+    "Suggested Stop-Loss": 1.4086,
+    "Take-Profit Target": 1.7376,
     "Resistance (52W High)": 1.76,
     "Support (52W Low)": 1.38,
     "Pivot Point": 1.52,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.78,
-    "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation | vol x1.20",
+    "Kelly %": 1.77,
+    "Signal Reason": "⚡ BREAKOUT BUY (X-OVER + MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x1.17",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 1.97,
-      "trend_bonus": 15.0,
+      "range": 2.24,
+      "trend_bonus": 42.05,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
-    "Trend Class": "Weak Bullish",
-    "RSI-14": 50.0,
-    "ADX-14": 24.6,
-    "Vol Z-Score": 0.23,
+    "Trend Class": "Strong Bullish",
+    "RSI-14": 52.7,
+    "ADX-14": 24.0,
+    "Vol Z-Score": 0.2,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0031,
-    "Bollinger %B": 0.62,
-    "Avg Volume (20D)": 20482534,
+    "MACD Histogram": 0.005,
+    "Bollinger %B": 0.697,
+    "Avg Volume (20D)": 21216751,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       1.58,
@@ -115,7 +121,8 @@
       1.51,
       1.5,
       1.51,
-      1.53
+      1.53,
+      1.55
     ],
     "open": [
       1.63,
@@ -152,7 +159,8 @@
       1.52,
       1.51,
       1.53,
-      1.52
+      1.52,
+      1.53
     ],
     "high": [
       1.66,
@@ -189,7 +197,8 @@
       1.54,
       1.53,
       1.53,
-      1.57
+      1.57,
+      1.58
     ],
     "low": [
       1.58,
@@ -226,7 +235,8 @@
       1.49,
       1.5,
       1.5,
-      1.5
+      1.5,
+      1.53
     ],
     "volume": [
       27509374,
@@ -263,7 +273,8 @@
       9056693,
       6283791,
       6461097,
-      24571583
+      24571583,
+      24807942
     ],
     "vwap": [
       1.6067,
@@ -300,7 +311,8 @@
       1.5528,
       1.5413,
       1.538,
-      1.5388
+      1.5388,
+      1.5405
     ],
     "resistance": 1.76,
     "support": 1.38,

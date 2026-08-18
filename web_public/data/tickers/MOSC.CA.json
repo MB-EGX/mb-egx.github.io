@@ -1,15 +1,21 @@
 {
   "ticker": "MOSC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "MOSC.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
-    "Rank Score": 31.7,
-    "Current Price": 336.63,
-    "Target Entry (VWAP)": 310.5859,
-    "Suggested Stop-Loss": 288.18,
-    "Take-Profit Target": 345.719,
+    "Sector": "Food, Beverages & Tobacco",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 19.6,
+    "Current Price": 331.52,
+    "Target Entry (VWAP)": 312.0565,
+    "Suggested Stop-Loss": 282.4786,
+    "Take-Profit Target": 340.471,
     "Resistance (52W High)": 380.0,
     "Support (52W Low)": 250.0,
     "Pivot Point": 330.5633,
@@ -19,27 +25,27 @@
     "S1": 290.2267,
     "S2": 254.6633,
     "S3": 214.3267,
-    "Projected Gain (%)": -0.57,
-    "Pattern Conf (%)": 61.23,
-    "Projected Range 95%": "-0.57% to -0.57%",
+    "Projected Gain (%)": -0.02,
+    "Pattern Conf (%)": 63.95,
+    "Projected Range 95%": "-0.52% to 0.47%",
     "Kelly %": 0.0,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze | vol x1.04",
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 18.37,
-      "projected": -0.85,
-      "range": 3.33,
-      "trend_bonus": 39.8,
+      "pattern": 19.18,
+      "projected": -0.03,
+      "range": 3.14,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 83.4,
-    "ADX-14": 79.0,
-    "Vol Z-Score": 0.04,
+    "RSI-14": 76.7,
+    "ADX-14": 79.8,
+    "Vol Z-Score": -0.32,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 3.4428,
-    "Bollinger %B": 1.119,
-    "Avg Volume (20D)": 51365,
+    "MACD Histogram": 3.3256,
+    "Bollinger %B": 0.958,
+    "Avg Volume (20D)": 51688,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       260.65,
@@ -115,7 +122,8 @@
       314.85,
       321.69,
       325.79,
-      336.63
+      336.63,
+      331.52
     ],
     "open": [
       266.25,
@@ -152,7 +160,8 @@
       313.89,
       314.85,
       327.7,
-      380.0
+      380.0,
+      336.63
     ],
     "high": [
       269.85,
@@ -189,7 +198,8 @@
       325.99,
       370.9,
       343.0,
-      380.0
+      380.0,
+      344.5
     ],
     "low": [
       260.02,
@@ -226,7 +236,8 @@
       310.5,
       316.02,
       323.0,
-      300.0
+      300.0,
+      331.02
     ],
     "volume": [
       9487,
@@ -263,7 +274,8 @@
       49996,
       177263,
       53922,
-      53354
+      53354,
+      36139
     ],
     "vwap": [
       263.5067,
@@ -300,7 +312,8 @@
       298.4376,
       305.5317,
       307.4291,
-      310.5859
+      310.5859,
+      312.0565
     ],
     "resistance": 380.0,
     "support": 250.0,

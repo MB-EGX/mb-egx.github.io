@@ -1,15 +1,20 @@
 {
   "ticker": "PRMH.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "PRMH.CA",
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "📈 ACCUMULATE",
-    "Rank Score": 8.9,
-    "Current Price": 2.6,
-    "Target Entry (VWAP)": 2.6,
-    "Suggested Stop-Loss": 2.3886,
-    "Take-Profit Target": 2.8825,
+    "Rank Score": 8.8,
+    "Current Price": 2.56,
+    "Target Entry (VWAP)": 2.56,
+    "Suggested Stop-Loss": 2.3471,
+    "Take-Profit Target": 2.844,
     "Resistance (52W High)": 2.95,
     "Support (52W Low)": 2.34,
     "Pivot Point": 2.73,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.92,
+    "Kelly %": 1.89,
     "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.13,
+      "range": 1.8,
       "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Weak Bullish",
-    "RSI-14": 41.8,
-    "ADX-14": 39.7,
-    "Vol Z-Score": -0.79,
+    "RSI-14": 39.2,
+    "ADX-14": 37.5,
+    "Vol Z-Score": -0.68,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.015,
-    "Bollinger %B": 0.131,
-    "Avg Volume (20D)": 4416579,
+    "MACD Histogram": -0.0234,
+    "Bollinger %B": 0.072,
+    "Avg Volume (20D)": 4403089,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       2.55,
@@ -115,7 +121,8 @@
       2.88,
       2.73,
       2.65,
-      2.6
+      2.6,
+      2.56
     ],
     "open": [
       2.6,
@@ -152,7 +159,8 @@
       2.91,
       2.88,
       2.71,
-      2.65
+      2.65,
+      2.6
     ],
     "high": [
       2.6,
@@ -189,7 +197,8 @@
       2.93,
       2.89,
       2.71,
-      2.68
+      2.68,
+      2.62
     ],
     "low": [
       2.51,
@@ -226,7 +235,8 @@
       2.86,
       2.61,
       2.62,
-      2.6
+      2.6,
+      2.55
     ],
     "volume": [
       5882103,
@@ -263,7 +273,8 @@
       6192469,
       6477684,
       4509048,
-      2811453
+      2811453,
+      3018911
     ],
     "vwap": [
       2.5533,
@@ -300,7 +311,8 @@
       2.75,
       2.7499,
       2.7433,
-      2.7394
+      2.7394,
+      2.7332
     ],
     "resistance": 2.95,
     "support": 2.34,

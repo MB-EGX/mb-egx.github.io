@@ -1,15 +1,20 @@
 {
   "ticker": "OIH.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "IT, Media & Communication Services",
   "matrix": {
     "Ticker": "OIH.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 17.8,
-    "Current Price": 1.77,
-    "Target Entry (VWAP)": 1.6031,
-    "Suggested Stop-Loss": 1.64,
-    "Take-Profit Target": 1.9449,
+    "Sector": "IT, Media & Communication Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 26.0,
+    "Current Price": 1.81,
+    "Target Entry (VWAP)": 1.6206,
+    "Suggested Stop-Loss": 1.6743,
+    "Take-Profit Target": 1.9923,
     "Resistance (52W High)": 1.83,
     "Support (52W Low)": 1.4,
     "Pivot Point": 1.7367,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.06,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Kelly %": 2.03,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 4.3,
-      "trend_bonus": 29.8,
+      "range": 4.77,
+      "trend_bonus": 44.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 76.4,
-    "ADX-14": 61.4,
-    "Vol Z-Score": -0.38,
+    "RSI-14": 78.8,
+    "ADX-14": 62.0,
+    "Vol Z-Score": -0.35,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0244,
-    "Bollinger %B": 0.866,
-    "Avg Volume (20D)": 81047659,
+    "MACD Histogram": 0.0227,
+    "Bollinger %B": 0.892,
+    "Avg Volume (20D)": 78053966,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       1.41,
@@ -115,7 +121,8 @@
       1.78,
       1.83,
       1.77,
-      1.77
+      1.77,
+      1.81
     ],
     "open": [
       1.41,
@@ -152,7 +159,8 @@
       1.74,
       1.78,
       1.8,
-      1.76
+      1.76,
+      1.77
     ],
     "high": [
       1.41,
@@ -189,7 +197,8 @@
       1.78,
       1.83,
       1.81,
-      1.78
+      1.78,
+      1.83
     ],
     "low": [
       1.4,
@@ -226,7 +235,8 @@
       1.71,
       1.71,
       1.76,
-      1.75
+      1.75,
+      1.76
     ],
     "volume": [
       27671518,
@@ -263,7 +273,8 @@
       123582463,
       107798671,
       42551418,
-      61115016
+      61115016,
+      59906587
     ],
     "vwap": [
       1.4067,
@@ -300,7 +311,8 @@
       1.5654,
       1.582,
       1.589,
-      1.6031
+      1.6031,
+      1.6206
     ],
     "resistance": 1.83,
     "support": 1.4,

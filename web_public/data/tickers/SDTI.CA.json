@@ -1,15 +1,20 @@
 {
   "ticker": "SDTI.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Travel & Leisure",
   "matrix": {
     "Ticker": "SDTI.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 45.7,
-    "Current Price": 70.9,
-    "Target Entry (VWAP)": 61.6078,
-    "Suggested Stop-Loss": 60.0086,
-    "Take-Profit Target": 79.805,
+    "Sector": "Travel & Leisure",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 47.3,
+    "Current Price": 71.77,
+    "Target Entry (VWAP)": 62.049,
+    "Suggested Stop-Loss": 61.2071,
+    "Take-Profit Target": 82.8872,
     "Resistance (52W High)": 77.0,
     "Support (52W Low)": 45.55,
     "Pivot Point": 72.3433,
@@ -19,27 +24,27 @@
     "S1": 67.6867,
     "S2": 65.3233,
     "S3": 60.6667,
-    "Projected Gain (%)": 11.86,
-    "Pattern Conf (%)": 69.5,
-    "Projected Range 95%": "11.86% to 11.86%",
-    "Kelly %": 16.1,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Projected Gain (%)": 14.79,
+    "Pattern Conf (%)": 63.76,
+    "Projected Range 95%": "12.16% to 17.42%",
+    "Kelly %": 14.66,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
-      "pattern": 20.85,
-      "projected": 17.79,
-      "range": 4.03,
+      "pattern": 19.13,
+      "projected": 22.18,
+      "range": 4.17,
       "trend_bonus": 44.8,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 72.2,
-    "ADX-14": 78.7,
-    "Vol Z-Score": -0.72,
+    "RSI-14": 73.3,
+    "ADX-14": 78.5,
+    "Vol Z-Score": -0.7,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.4965,
-    "Bollinger %B": 0.732,
-    "Avg Volume (20D)": 534011,
+    "MACD Histogram": 0.2749,
+    "Bollinger %B": 0.737,
+    "Avg Volume (20D)": 534888,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       46.97,
@@ -115,7 +121,8 @@
       72.85,
       72.7,
       70.05,
-      70.9
+      70.9,
+      71.77
     ],
     "open": [
       46.4,
@@ -152,7 +159,8 @@
       74.0,
       72.85,
       72.97,
-      70.13
+      70.13,
+      70.9
     ],
     "high": [
       47.44,
@@ -189,7 +197,8 @@
       74.88,
       73.48,
       73.0,
-      71.7
+      71.7,
+      72.5
     ],
     "low": [
       46.4,
@@ -226,6 +235,7 @@
       70.5,
       71.0,
       70.05,
+      69.9,
       69.9
     ],
     "volume": [
@@ -263,7 +273,8 @@
       257907,
       77329,
       251910,
-      197718
+      197718,
+      210116
     ],
     "vwap": [
       46.9367,
@@ -300,7 +311,8 @@
       60.826,
       61.0555,
       61.3662,
-      61.6078
+      61.6078,
+      62.049
     ],
     "resistance": 77.0,
     "support": 45.55,

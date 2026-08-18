@@ -1,15 +1,20 @@
 {
   "ticker": "ELEC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Industrial Goods, Services & Automobiles",
   "matrix": {
     "Ticker": "ELEC.CA",
+    "Sector": "Industrial Goods, Services & Automobiles",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "📈 ACCUMULATE [💥 SQUEEZE]",
-    "Rank Score": 14.4,
-    "Current Price": 2.18,
-    "Target Entry (VWAP)": 2.18,
-    "Suggested Stop-Loss": 2.08,
-    "Take-Profit Target": 2.3203,
+    "Rank Score": 14.1,
+    "Current Price": 2.15,
+    "Target Entry (VWAP)": 2.15,
+    "Suggested Stop-Loss": 2.05,
+    "Take-Profit Target": 2.29,
     "Resistance (52W High)": 2.32,
     "Support (52W Low)": 2.04,
     "Pivot Point": 2.2,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.9,
-    "Signal Reason": "📈 ACCUMULATE [💥 SQUEEZE] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze",
+    "Kelly %": 2.86,
+    "Signal Reason": "📈 ACCUMULATE [💥 SQUEEZE] | trend=Weak Bullish | awaiting confirmation | volatility squeeze | vol x1.83",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.5,
+      "range": 1.96,
       "trend_bonus": 25.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
-    "Trend Class": "Strong Bullish",
-    "RSI-14": 51.5,
-    "ADX-14": 29.2,
-    "Vol Z-Score": -0.54,
+    "Trend Class": "Weak Bullish",
+    "RSI-14": 45.9,
+    "ADX-14": 27.8,
+    "Vol Z-Score": 1.74,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0036,
-    "Bollinger %B": 0.416,
-    "Avg Volume (20D)": 27717099,
+    "MACD Histogram": -0.0054,
+    "Bollinger %B": 0.159,
+    "Avg Volume (20D)": 26911478,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       2.1,
@@ -115,7 +121,8 @@
       2.18,
       2.17,
       2.19,
-      2.18
+      2.18,
+      2.15
     ],
     "open": [
       2.13,
@@ -152,7 +159,8 @@
       2.18,
       2.18,
       2.18,
-      2.2
+      2.2,
+      2.18
     ],
     "high": [
       2.13,
@@ -189,7 +197,8 @@
       2.18,
       2.19,
       2.24,
-      2.21
+      2.21,
+      2.2
     ],
     "low": [
       2.1,
@@ -226,7 +235,8 @@
       2.16,
       2.16,
       2.16,
-      2.18
+      2.18,
+      2.15
     ],
     "volume": [
       5867438,
@@ -263,7 +273,8 @@
       22375326,
       20053612,
       50897762,
-      19800069
+      19800069,
+      49189912
     ],
     "vwap": [
       2.11,
@@ -300,7 +311,8 @@
       2.2166,
       2.2162,
       2.2144,
-      2.2032
+      2.2032,
+      2.1958
     ],
     "resistance": 2.32,
     "support": 2.04,

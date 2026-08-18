@@ -1,9 +1,15 @@
 {
   "ticker": "GETO.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Travel & Leisure",
   "matrix": {
     "Ticker": "GETO.CA",
+    "Sector": "Travel & Leisure",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
     "Action": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE]",
     "Rank Score": -5.4,
     "Current Price": 15.0,
@@ -78,9 +84,11 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
+      15.0,
       15.0,
       15.0,
       15.0,
@@ -152,9 +160,11 @@
       1.04,
       1.04,
       1.04,
+      1.04,
       1.04
     ],
     "high": [
+      16.0,
       16.0,
       16.0,
       16.0,
@@ -226,6 +236,7 @@
       0.25,
       0.25,
       0.25,
+      0.25,
       0.25
     ],
     "volume": [
@@ -263,9 +274,11 @@
       0,
       0,
       0,
+      0,
       0
     ],
     "vwap": [
+      15.0,
       15.0,
       15.0,
       15.0,

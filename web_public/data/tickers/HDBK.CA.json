@@ -1,15 +1,20 @@
 {
   "ticker": "HDBK.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Banks",
   "matrix": {
     "Ticker": "HDBK.CA",
-    "Action": "⏳ BUY ON DIP",
-    "Rank Score": 31.8,
-    "Current Price": 91.96,
-    "Target Entry (VWAP)": 83.7205,
-    "Suggested Stop-Loss": 88.2086,
-    "Take-Profit Target": 97.293,
+    "Sector": "Banks",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned)",
+    "Rank Score": 11.5,
+    "Current Price": 92.65,
+    "Target Entry (VWAP)": 84.2865,
+    "Suggested Stop-Loss": 88.7014,
+    "Take-Profit Target": 98.2343,
     "Resistance (52W High)": 169.97,
     "Support (52W Low)": 76.9,
     "Pivot Point": 87.2067,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 3.16,
-    "Signal Reason": "⏳ BUY ON DIP | trend=Consolidation / Neutral | confirmed | positive money flow | vol x1.55",
+    "Kelly %": 3.06,
+    "Signal Reason": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned) | trend=Consolidation / Neutral | awaiting confirmation | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 0.81,
-      "trend_bonus": 60.0,
+      "range": 0.85,
+      "trend_bonus": 21.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Consolidation / Neutral",
-    "RSI-14": 45.0,
-    "ADX-14": 49.9,
-    "Vol Z-Score": 0.35,
+    "RSI-14": 46.5,
+    "ADX-14": 46.4,
+    "Vol Z-Score": -0.19,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 3.4301,
-    "Bollinger %B": 1.199,
-    "Avg Volume (20D)": 487235,
+    "MACD Histogram": 3.4806,
+    "Bollinger %B": 1.123,
+    "Avg Volume (20D)": 478467,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       161.92,
@@ -115,7 +121,8 @@
       86.45,
       87.45,
       88.66,
-      91.96
+      91.96,
+      92.65
     ],
     "open": [
       164.0,
@@ -152,7 +159,8 @@
       85.0,
       86.45,
       87.45,
-      89.01
+      89.01,
+      91.96
     ],
     "high": [
       166.0,
@@ -189,7 +197,8 @@
       86.45,
       87.99,
       88.75,
-      91.97
+      91.97,
+      93.88
     ],
     "low": [
       160.15,
@@ -226,7 +235,8 @@
       84.36,
       85.9,
       86.81,
-      88.85
+      88.85,
+      91.5
     ],
     "volume": [
       149336,
@@ -263,7 +273,8 @@
       225448,
       433424,
       344575,
-      755092
+      755092,
+      333920
     ],
     "vwap": [
       162.69,
@@ -300,7 +311,8 @@
       82.3041,
       82.6513,
       83.0034,
-      83.7205
+      83.7205,
+      84.2865
     ],
     "resistance": 169.97,
     "support": 76.9,

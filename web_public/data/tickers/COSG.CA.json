@@ -1,15 +1,20 @@
 {
   "ticker": "COSG.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "COSG.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 21.7,
-    "Current Price": 1.8,
-    "Target Entry (VWAP)": 1.7584,
-    "Suggested Stop-Loss": 1.68,
-    "Take-Profit Target": 1.8486,
+    "Sector": "Food, Beverages & Tobacco",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 30.1,
+    "Current Price": 1.82,
+    "Target Entry (VWAP)": 1.7647,
+    "Suggested Stop-Loss": 1.7,
+    "Take-Profit Target": 1.8691,
     "Resistance (52W High)": 1.93,
     "Support (52W Low)": 1.47,
     "Pivot Point": 1.83,
@@ -19,27 +24,27 @@
     "S1": 1.73,
     "S2": 1.6,
     "S3": 1.5,
-    "Projected Gain (%)": 1.19,
-    "Pattern Conf (%)": 70.48,
-    "Projected Range 95%": "1.19% to 1.19%",
-    "Kelly %": 0.0,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Projected Gain (%)": 0.89,
+    "Pattern Conf (%)": 74.87,
+    "Projected Range 95%": "0.63% to 1.16%",
+    "Kelly %": 6.73,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 21.14,
-      "projected": 1.78,
-      "range": 3.59,
-      "trend_bonus": 15.0,
+      "pattern": 22.46,
+      "projected": 1.33,
+      "range": 3.8,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 64.1,
-    "ADX-14": 41.5,
-    "Vol Z-Score": -0.09,
+    "RSI-14": 66.0,
+    "ADX-14": 41.1,
+    "Vol Z-Score": -0.03,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0104,
-    "Bollinger %B": 0.868,
-    "Avg Volume (20D)": 26877772,
+    "MACD Histogram": 0.01,
+    "Bollinger %B": 0.898,
+    "Avg Volume (20D)": 26808562,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       1.53,
@@ -115,7 +121,8 @@
       1.72,
       1.84,
       1.86,
-      1.8
+      1.8,
+      1.82
     ],
     "open": [
       1.54,
@@ -152,7 +159,8 @@
       1.72,
       1.72,
       1.87,
-      1.87
+      1.87,
+      1.8
     ],
     "high": [
       1.55,
@@ -189,7 +197,8 @@
       1.73,
       1.93,
       1.89,
-      1.88
+      1.88,
+      1.84
     ],
     "low": [
       1.52,
@@ -226,7 +235,8 @@
       1.71,
       1.73,
       1.85,
-      1.78
+      1.78,
+      1.79
     ],
     "volume": [
       8185219,
@@ -263,7 +273,8 @@
       9573061,
       160120852,
       35298124,
-      23826818
+      23826818,
+      25943745
     ],
     "vwap": [
       1.5333,
@@ -300,7 +311,8 @@
       1.6996,
       1.7422,
       1.7528,
-      1.7584
+      1.7584,
+      1.7647
     ],
     "resistance": 1.93,
     "support": 1.47,

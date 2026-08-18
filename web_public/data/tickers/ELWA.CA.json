@@ -1,15 +1,20 @@
 {
   "ticker": "ELWA.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Travel & Leisure",
   "matrix": {
     "Ticker": "ELWA.CA",
-    "Action": "⏳ BUY ON DIP",
-    "Rank Score": 29.1,
-    "Current Price": 1.73,
-    "Target Entry (VWAP)": 1.73,
-    "Suggested Stop-Loss": 1.5871,
-    "Take-Profit Target": 1.7767,
+    "Sector": "Travel & Leisure",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor)",
+    "Rank Score": 10.1,
+    "Current Price": 1.74,
+    "Target Entry (VWAP)": 1.74,
+    "Suggested Stop-Loss": 1.6071,
+    "Take-Profit Target": 1.787,
     "Resistance (52W High)": 2.14,
     "Support (52W Low)": 1.65,
     "Pivot Point": 1.7433,
@@ -19,27 +24,27 @@
     "S1": 1.6767,
     "S2": 1.6333,
     "S3": 1.5667,
-    "Projected Gain (%)": -4.02,
-    "Pattern Conf (%)": 53.11,
-    "Projected Range 95%": "-4.02% to -4.02%",
+    "Projected Gain (%)": -6.63,
+    "Pattern Conf (%)": 41.49,
+    "Projected Range 95%": "-6.63% to -6.63%",
     "Kelly %": 0.0,
-    "Signal Reason": "⏳ BUY ON DIP | trend=Strong Bearish | awaiting confirmation",
+    "Signal Reason": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor) | trend=Strong Bearish | awaiting confirmation",
     "Score Breakdown": {
-      "pattern": 15.93,
-      "projected": -6.03,
-      "range": 0.82,
-      "trend_bonus": 45.0,
+      "pattern": 12.45,
+      "projected": -9.95,
+      "range": 0.92,
+      "trend_bonus": 15.75,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bearish",
-    "RSI-14": 36.6,
-    "ADX-14": 45.5,
-    "Vol Z-Score": -0.67,
+    "RSI-14": 38.5,
+    "ADX-14": 43.9,
+    "Vol Z-Score": -0.21,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0046,
-    "Bollinger %B": 0.342,
-    "Avg Volume (20D)": 775879,
+    "MACD Histogram": 0.0065,
+    "Bollinger %B": 0.389,
+    "Avg Volume (20D)": 790363,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       2.04,
@@ -115,7 +121,8 @@
       1.77,
       1.75,
       1.72,
-      1.73
+      1.73,
+      1.74
     ],
     "open": [
       2.01,
@@ -152,6 +159,7 @@
       1.74,
       1.77,
       1.75,
+      1.73,
       1.73
     ],
     "high": [
@@ -189,7 +197,8 @@
       1.81,
       1.8,
       1.75,
-      1.78
+      1.78,
+      1.76
     ],
     "low": [
       2.01,
@@ -226,6 +235,7 @@
       1.74,
       1.73,
       1.7,
+      1.72,
       1.72
     ],
     "volume": [
@@ -263,7 +273,8 @@
       1484690,
       317551,
       654361,
-      292239
+      292239,
+      642540
     ],
     "vwap": [
       2.0367,
@@ -300,7 +311,8 @@
       1.8394,
       1.8273,
       1.8166,
-      1.7989
+      1.7989,
+      1.7924
     ],
     "resistance": 2.14,
     "support": 1.65,

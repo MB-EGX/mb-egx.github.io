@@ -1,15 +1,21 @@
 {
   "ticker": "GPPL.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Travel & Leisure",
   "matrix": {
     "Ticker": "GPPL.CA",
+    "Sector": "Travel & Leisure",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
     "Action": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE]",
     "Rank Score": -5.2,
     "Current Price": 1.4,
     "Target Entry (VWAP)": 1.3533,
-    "Suggested Stop-Loss": 1.33,
-    "Take-Profit Target": 1.4973,
+    "Suggested Stop-Loss": 1.32,
+    "Take-Profit Target": 1.5098,
     "Resistance (52W High)": 1.4,
     "Support (52W Low)": 1.33,
     "Pivot Point": 1.3767,
@@ -22,7 +28,7 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.72,
+    "Kelly %": 2.46,
     "Signal Reason": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE] | trend=Strong Bullish | awaiting confirmation | volatility squeeze",
     "Score Breakdown": {
       "pattern": 0.0,
@@ -34,7 +40,7 @@
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
     "RSI-14": 50.0,
-    "ADX-14": 68.3,
+    "ADX-14": 64.8,
     "Vol Z-Score": -0.22,
     "MACD Signal": "Neutral",
     "MACD Histogram": 0.0,
@@ -75,9 +81,11 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
+      1.4,
       1.4,
       1.4,
       1.4,
@@ -143,6 +151,7 @@
       1.33,
       1.33,
       1.33,
+      1.33,
       1.33
     ],
     "high": [
@@ -177,6 +186,7 @@
       1.4,
       1.4,
       1.4,
+      1.4,
       1.4
     ],
     "low": [
@@ -205,6 +215,7 @@
       1.4,
       1.4,
       1.4,
+      1.33,
       1.33,
       1.33,
       1.33,
@@ -245,6 +256,7 @@
       0,
       0,
       0,
+      0,
       0
     ],
     "vwap": [
@@ -269,6 +281,7 @@
       1.3652,
       1.3652,
       1.3722,
+      1.3533,
       1.3533,
       1.3533,
       1.3533,

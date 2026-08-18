@@ -1,11 +1,17 @@
 {
   "ticker": "NCIS.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "NCIS.CA",
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
     "Action": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE]",
-    "Rank Score": -6.5,
+    "Rank Score": -6.6,
     "Current Price": 2.0,
     "Target Entry (VWAP)": 2.0,
     "Suggested Stop-Loss": 1.92,
@@ -78,9 +84,11 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
+      2.0,
       2.0,
       2.0,
       2.0,
@@ -152,9 +160,11 @@
       2.0,
       2.0,
       2.0,
+      2.0,
       2.0
     ],
     "high": [
+      2.0,
       2.0,
       2.0,
       2.0,
@@ -226,6 +236,7 @@
       2.0,
       2.0,
       2.0,
+      2.0,
       2.0
     ],
     "volume": [
@@ -263,9 +274,11 @@
       0,
       0,
       0,
+      0,
       0
     ],
     "vwap": [
+      2.0,
       2.0,
       2.0,
       2.0,

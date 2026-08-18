@@ -1,15 +1,20 @@
 {
   "ticker": "ROTO.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Travel & Leisure",
   "matrix": {
     "Ticker": "ROTO.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 10.0,
-    "Current Price": 50.79,
-    "Target Entry (VWAP)": 46.4601,
-    "Suggested Stop-Loss": 46.6014,
-    "Take-Profit Target": 56.3812,
+    "Sector": "Travel & Leisure",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 17.9,
+    "Current Price": 51.22,
+    "Target Entry (VWAP)": 46.7253,
+    "Suggested Stop-Loss": 46.94,
+    "Take-Profit Target": 56.9285,
     "Resistance (52W High)": 53.6,
     "Support (52W Low)": 38.0,
     "Pivot Point": 50.6567,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.9,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x1.12",
+    "Kelly %": 1.88,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 4.1,
-      "trend_bonus": 15.0,
+      "range": 4.24,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 73.8,
-    "ADX-14": 45.9,
-    "Vol Z-Score": 0.28,
+    "RSI-14": 74.8,
+    "ADX-14": 45.6,
+    "Vol Z-Score": -0.77,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.5763,
-    "Bollinger %B": 0.885,
-    "Avg Volume (20D)": 561795,
+    "MACD Histogram": 0.5132,
+    "Bollinger %B": 0.878,
+    "Avg Volume (20D)": 568190,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       41.14,
@@ -115,7 +121,8 @@
       49.28,
       50.9,
       51.51,
-      50.79
+      50.79,
+      51.22
     ],
     "open": [
       42.0,
@@ -152,7 +159,8 @@
       49.7,
       49.28,
       51.84,
-      52.77
+      52.77,
+      50.79
     ],
     "high": [
       43.48,
@@ -189,7 +197,8 @@
       50.75,
       51.8,
       53.6,
-      52.77
+      52.77,
+      52.0
     ],
     "low": [
       41.02,
@@ -226,7 +235,8 @@
       48.1,
       49.5,
       51.27,
-      49.5
+      49.5,
+      49.85
     ],
     "volume": [
       1387082,
@@ -263,7 +273,8 @@
       794086,
       567339,
       580118,
-      631161
+      631161,
+      380507
     ],
     "vwap": [
       41.88,
@@ -300,7 +311,8 @@
       45.1311,
       45.5416,
       46.0673,
-      46.4601
+      46.4601,
+      46.7253
     ],
     "resistance": 53.6,
     "support": 38.0,

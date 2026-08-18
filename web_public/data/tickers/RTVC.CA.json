@@ -1,15 +1,20 @@
 {
   "ticker": "RTVC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Travel & Leisure",
   "matrix": {
     "Ticker": "RTVC.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 8.8,
-    "Current Price": 3.79,
-    "Target Entry (VWAP)": 3.79,
-    "Suggested Stop-Loss": 3.6086,
-    "Take-Profit Target": 4.0433,
+    "Sector": "Travel & Leisure",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (X-OVER + MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 23.7,
+    "Current Price": 3.97,
+    "Target Entry (VWAP)": 3.8688,
+    "Suggested Stop-Loss": 3.7814,
+    "Take-Profit Target": 4.2335,
     "Resistance (52W High)": 4.2,
     "Support (52W Low)": 3.55,
     "Pivot Point": 3.8,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.8,
-    "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation",
+    "Kelly %": 2.82,
+    "Signal Reason": "⚡ BREAKOUT BUY (X-OVER + MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x2.73",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 1.85,
-      "trend_bonus": 15.0,
+      "range": 3.23,
+      "trend_bonus": 42.05,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
-    "Trend Class": "Weak Bullish",
-    "RSI-14": 47.4,
+    "Trend Class": "Strong Bullish",
+    "RSI-14": 61.0,
     "ADX-14": 24.2,
-    "Vol Z-Score": -0.73,
+    "Vol Z-Score": 3.0,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0167,
-    "Bollinger %B": 0.335,
-    "Avg Volume (20D)": 1399339,
+    "MACD Histogram": -0.0022,
+    "Bollinger %B": 0.753,
+    "Avg Volume (20D)": 1392753,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       3.63,
@@ -115,7 +121,8 @@
       3.76,
       3.76,
       3.77,
-      3.79
+      3.79,
+      3.97
     ],
     "open": [
       3.83,
@@ -152,7 +159,8 @@
       3.81,
       3.76,
       3.78,
-      3.81
+      3.81,
+      3.79
     ],
     "high": [
       3.9,
@@ -189,7 +197,8 @@
       3.84,
       3.8,
       3.84,
-      3.82
+      3.82,
+      3.97
     ],
     "low": [
       3.63,
@@ -226,6 +235,7 @@
       3.76,
       3.76,
       3.77,
+      3.78,
       3.78
     ],
     "volume": [
@@ -263,7 +273,8 @@
       1963657,
       622709,
       825950,
-      799376
+      799376,
+      3800695
     ],
     "vwap": [
       3.72,
@@ -300,7 +311,8 @@
       3.8998,
       3.898,
       3.8928,
-      3.8891
+      3.8891,
+      3.8688
     ],
     "resistance": 4.2,
     "support": 3.55,

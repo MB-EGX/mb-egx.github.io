@@ -1,16 +1,21 @@
 {
   "ticker": "AMIA.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "AMIA.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 51.8,
-    "Current Price": 15.24,
-    "Target Entry (VWAP)": 12.3712,
-    "Suggested Stop-Loss": 13.3771,
-    "Take-Profit Target": 16.0523,
-    "Resistance (52W High)": 15.24,
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 42.5,
+    "Current Price": 16.13,
+    "Target Entry (VWAP)": 13.4637,
+    "Suggested Stop-Loss": 13.9714,
+    "Take-Profit Target": 16.8768,
+    "Resistance (52W High)": 17.8,
     "Support (52W Low)": 8.4,
     "Pivot Point": 12.1667,
     "R1": 13.7333,
@@ -19,27 +24,27 @@
     "S1": 11.1333,
     "S2": 9.5667,
     "S3": 8.5333,
-    "Projected Gain (%)": 4.63,
-    "Pattern Conf (%)": 80.51,
-    "Projected Range 95%": "4.63% to 4.63%",
-    "Kelly %": 17.91,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | positive money flow | vol x5.75",
+    "Projected Gain (%)": 3.93,
+    "Pattern Conf (%)": 87.41,
+    "Projected Range 95%": "3.3% to 4.56%",
+    "Kelly %": 25.0,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow | vol x4.61",
     "Score Breakdown": {
-      "pattern": 24.15,
-      "projected": 6.95,
-      "range": 5.0,
-      "trend_bonus": 63.0,
+      "pattern": 26.22,
+      "projected": 5.9,
+      "range": 4.11,
+      "trend_bonus": 44.8,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 82.2,
+    "RSI-14": 84.7,
     "ADX-14": 61.8,
-    "Vol Z-Score": 3.9,
+    "Vol Z-Score": 2.72,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.1249,
-    "Bollinger %B": 1.133,
-    "Avg Volume (20D)": 1783018,
+    "MACD Histogram": 0.2444,
+    "Bollinger %B": 1.131,
+    "Avg Volume (20D)": 2090088,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       8.67,
@@ -115,7 +121,8 @@
       12.85,
       12.99,
       12.7,
-      15.24
+      15.24,
+      16.13
     ],
     "open": [
       8.57,
@@ -152,7 +159,8 @@
       12.8,
       12.85,
       13.0,
-      12.73
+      12.73,
+      15.24
     ],
     "high": [
       8.7,
@@ -189,7 +197,8 @@
       12.85,
       13.19,
       13.17,
-      15.24
+      15.24,
+      17.8
     ],
     "low": [
       8.4,
@@ -226,7 +235,8 @@
       12.12,
       12.62,
       12.7,
-      12.71
+      12.71,
+      15.44
     ],
     "volume": [
       1134373,
@@ -263,7 +273,8 @@
       747154,
       824094,
       482808,
-      10251100
+      10251100,
+      9643218
     ],
     "vwap": [
       8.59,
@@ -300,9 +311,10 @@
       10.9604,
       11.0935,
       11.4471,
-      12.3712
+      12.3712,
+      13.4637
     ],
-    "resistance": 15.24,
+    "resistance": 17.8,
     "support": 8.4,
     "pivots": {
       "pp": 12.1667,

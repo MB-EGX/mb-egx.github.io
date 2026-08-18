@@ -1,15 +1,20 @@
 {
   "ticker": "EASB.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "EASB.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 26.1,
-    "Current Price": 7.47,
-    "Target Entry (VWAP)": 7.47,
-    "Suggested Stop-Loss": 6.84,
-    "Take-Profit Target": 8.3098,
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 8.8,
+    "Current Price": 7.42,
+    "Target Entry (VWAP)": 7.42,
+    "Suggested Stop-Loss": 6.7929,
+    "Take-Profit Target": 8.2559,
     "Resistance (52W High)": 8.61,
     "Support (52W Low)": 6.71,
     "Pivot Point": 7.37,
@@ -23,23 +28,23 @@
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
     "Kelly %": 1.87,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | vol x1.45",
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.0,
-      "trend_bonus": 48.0,
+      "range": 1.87,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 53.3,
-    "ADX-14": 23.8,
-    "Vol Z-Score": 0.56,
+    "RSI-14": 51.2,
+    "ADX-14": 23.7,
+    "Vol Z-Score": -0.49,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0337,
-    "Bollinger %B": 0.548,
-    "Avg Volume (20D)": 1280202,
+    "MACD Histogram": 0.0376,
+    "Bollinger %B": 0.507,
+    "Avg Volume (20D)": 1190705,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       8.11,
@@ -115,7 +121,8 @@
       7.22,
       7.22,
       7.46,
-      7.47
+      7.47,
+      7.42
     ],
     "open": [
       8.15,
@@ -152,7 +159,8 @@
       7.23,
       7.22,
       7.3,
-      7.52
+      7.52,
+      7.47
     ],
     "high": [
       8.61,
@@ -189,7 +197,8 @@
       7.35,
       7.6,
       7.6,
-      8.0
+      8.0,
+      7.69
     ],
     "low": [
       7.52,
@@ -226,7 +235,8 @@
       7.05,
       7.15,
       7.25,
-      7.43
+      7.43,
+      7.41
     ],
     "volume": [
       3990514,
@@ -263,7 +273,8 @@
       434461,
       1282832,
       1233603,
-      1858767
+      1858767,
+      702144
     ],
     "vwap": [
       8.08,
@@ -300,7 +311,8 @@
       7.5836,
       7.5936,
       7.6132,
-      7.6265
+      7.6265,
+      7.6446
     ],
     "resistance": 8.61,
     "support": 6.71,

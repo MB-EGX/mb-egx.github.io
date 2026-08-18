@@ -1,15 +1,20 @@
 {
   "ticker": "MFSC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Trade & Distributors",
   "matrix": {
     "Ticker": "MFSC.CA",
-    "Action": "⏳ BUY ON DIP [💥 SQUEEZE]",
-    "Rank Score": 29.3,
-    "Current Price": 49.53,
-    "Target Entry (VWAP)": 49.53,
-    "Suggested Stop-Loss": 40.9757,
-    "Take-Profit Target": 60.5696,
+    "Sector": "Trade & Distributors",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⏳ BUY ON DIP [💥 SQUEEZE] (Unconfirmed: CMF below accumulation floor)",
+    "Rank Score": 10.7,
+    "Current Price": 49.49,
+    "Target Entry (VWAP)": 49.49,
+    "Suggested Stop-Loss": 40.9314,
+    "Take-Profit Target": 60.5346,
     "Resistance (52W High)": 65.0,
     "Support (52W Low)": 45.05,
     "Pivot Point": 50.34,
@@ -23,23 +28,23 @@
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
     "Kelly %": 1.19,
-    "Signal Reason": "⏳ BUY ON DIP [💥 SQUEEZE] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze",
+    "Signal Reason": "⏳ BUY ON DIP [💥 SQUEEZE] (Unconfirmed: CMF below accumulation floor) | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 1.12,
-      "trend_bonus": 55.0,
+      "range": 1.11,
+      "trend_bonus": 19.25,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 51.5,
-    "ADX-14": 64.9,
+    "RSI-14": 51.3,
+    "ADX-14": 65.0,
     "Vol Z-Score": -0.61,
-    "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0081,
-    "Bollinger %B": 0.552,
-    "Avg Volume (20D)": 240457,
+    "MACD Signal": "🔴 Bearish Cross",
+    "MACD Histogram": -0.0299,
+    "Bollinger %B": 0.533,
+    "Avg Volume (20D)": 238945,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       49.96,
@@ -115,7 +121,8 @@
       50.15,
       49.4,
       50.02,
-      49.53
+      49.53,
+      49.49
     ],
     "open": [
       49.16,
@@ -152,7 +159,8 @@
       48.65,
       50.15,
       49.81,
-      50.03
+      50.03,
+      49.53
     ],
     "high": [
       51.49,
@@ -189,7 +197,8 @@
       53.0,
       50.85,
       52.0,
-      51.0
+      51.0,
+      50.2
     ],
     "low": [
       48.25,
@@ -226,7 +235,8 @@
       48.06,
       49.06,
       49.5,
-      49.5
+      49.5,
+      49.0
     ],
     "volume": [
       117814,
@@ -263,7 +273,8 @@
       321428,
       87608,
       102866,
-      61300
+      61300,
+      60289
     ],
     "vwap": [
       49.9,
@@ -300,7 +311,8 @@
       51.2796,
       51.4431,
       51.5969,
-      51.6299
+      51.6299,
+      51.7041
     ],
     "resistance": 65.0,
     "support": 45.05,

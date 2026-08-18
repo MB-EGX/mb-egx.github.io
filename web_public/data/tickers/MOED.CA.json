@@ -1,15 +1,20 @@
 {
   "ticker": "MOED.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Education Services",
   "matrix": {
     "Ticker": "MOED.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 8.8,
-    "Current Price": 0.692,
-    "Target Entry (VWAP)": 0.692,
-    "Suggested Stop-Loss": 0.658,
-    "Take-Profit Target": 0.7393,
+    "Sector": "Education Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (X-OVER + MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 24.0,
+    "Current Price": 0.733,
+    "Target Entry (VWAP)": 0.7019,
+    "Suggested Stop-Loss": 0.6941,
+    "Take-Profit Target": 0.7867,
     "Resistance (52W High)": 0.76,
     "Support (52W Low)": 0.65,
     "Pivot Point": 0.6927,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.73,
-    "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation",
+    "Kelly %": 2.6,
+    "Signal Reason": "⚡ BREAKOUT BUY (X-OVER + MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x4.28",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 1.91,
-      "trend_bonus": 15.0,
+      "range": 3.77,
+      "trend_bonus": 42.05,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
-    "Trend Class": "Weak Bullish",
-    "RSI-14": 51.2,
-    "ADX-14": 26.5,
-    "Vol Z-Score": -0.21,
-    "MACD Signal": "🟢 Bullish Cross",
-    "MACD Histogram": 0.0001,
-    "Bollinger %B": 0.498,
-    "Avg Volume (20D)": 52387445,
+    "Trend Class": "Strong Bullish",
+    "RSI-14": 68.4,
+    "ADX-14": 27.6,
+    "Vol Z-Score": 3.47,
+    "MACD Signal": "Bullish",
+    "MACD Histogram": 0.0031,
+    "Bollinger %B": 1.057,
+    "Avg Volume (20D)": 65601451,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       0.672,
@@ -115,7 +121,8 @@
       0.684,
       0.683,
       0.694,
-      0.692
+      0.692,
+      0.733
     ],
     "open": [
       0.68,
@@ -152,7 +159,8 @@
       0.698,
       0.684,
       0.687,
-      0.7
+      0.7,
+      0.692
     ],
     "high": [
       0.684,
@@ -189,7 +197,8 @@
       0.706,
       0.69,
       0.696,
-      0.703
+      0.703,
+      0.744
     ],
     "low": [
       0.671,
@@ -226,7 +235,8 @@
       0.678,
       0.681,
       0.683,
-      0.686
+      0.686,
+      0.692
     ],
     "volume": [
       3624497,
@@ -263,7 +273,8 @@
       146957252,
       33078551,
       50712133,
-      44821906
+      44821906,
+      280713274
     ],
     "vwap": [
       0.6757,
@@ -300,7 +311,8 @@
       0.6995,
       0.6981,
       0.6973,
-      0.6966
+      0.6966,
+      0.7019
     ],
     "resistance": 0.76,
     "support": 0.65,

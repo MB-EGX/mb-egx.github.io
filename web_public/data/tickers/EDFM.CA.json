@@ -1,15 +1,21 @@
 {
   "ticker": "EDFM.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "EDFM.CA",
-    "Action": "🚫 ILLIQUID - 📈 ACCUMULATE",
-    "Rank Score": -6.4,
-    "Current Price": 411.42,
-    "Target Entry (VWAP)": 395.4539,
-    "Suggested Stop-Loss": 379.3957,
-    "Take-Profit Target": 422.5283,
+    "Sector": "Food, Beverages & Tobacco",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
+    "Action": "🚫 ILLIQUID - 🔥 STRONG BUY [👑 WEEKLY ALIGNED]",
+    "Rank Score": 24.2,
+    "Current Price": 415.23,
+    "Target Entry (VWAP)": 397.1073,
+    "Suggested Stop-Loss": 387.2057,
+    "Take-Profit Target": 426.4412,
     "Resistance (52W High)": 430.0,
     "Support (52W Low)": 320.29,
     "Pivot Point": 412.41,
@@ -19,27 +25,27 @@
     "S1": 399.82,
     "S2": 379.41,
     "S3": 366.82,
-    "Projected Gain (%)": -5.62,
-    "Pattern Conf (%)": 56.51,
-    "Projected Range 95%": "-5.62% to -5.62%",
+    "Projected Gain (%)": -3.72,
+    "Pattern Conf (%)": 57.86,
+    "Projected Range 95%": "-5.43% to -2.01%",
     "Kelly %": 0.0,
-    "Signal Reason": "🚫 ILLIQUID - 📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Signal Reason": "🚫 ILLIQUID - 🔥 STRONG BUY [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | vol x1.77",
     "Score Breakdown": {
-      "pattern": 16.95,
-      "projected": -8.43,
-      "range": 4.15,
-      "trend_bonus": -25.0,
+      "pattern": 17.36,
+      "projected": -5.58,
+      "range": 4.33,
+      "trend_bonus": 30.0,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 66.7,
-    "ADX-14": 52.3,
-    "Vol Z-Score": -0.72,
+    "RSI-14": 68.4,
+    "ADX-14": 51.7,
+    "Vol Z-Score": 0.99,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.5926,
-    "Bollinger %B": 0.834,
-    "Avg Volume (20D)": 9511,
+    "MACD Histogram": 0.4054,
+    "Bollinger %B": 0.866,
+    "Avg Volume (20D)": 8431,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       330.59,
@@ -115,7 +122,8 @@
       418.02,
       410.59,
       420.23,
-      411.42
+      411.42,
+      415.23
     ],
     "open": [
       331.0,
@@ -152,7 +160,8 @@
       402.0,
       418.02,
       409.0,
-      420.0
+      420.0,
+      411.42
     ],
     "high": [
       333.89,
@@ -189,6 +198,7 @@
       425.0,
       424.0,
       422.0,
+      420.0,
       420.0
     ],
     "low": [
@@ -226,6 +236,7 @@
       402.0,
       406.0,
       409.0,
+      405.0,
       405.0
     ],
     "volume": [
@@ -263,7 +274,8 @@
       14974,
       1249,
       3696,
-      3008
+      3008,
+      14883
     ],
     "vwap": [
       330.9133,
@@ -300,7 +312,8 @@
       394.9689,
       395.8879,
       396.7783,
-      395.4539
+      395.4539,
+      397.1073
     ],
     "resistance": 430.0,
     "support": 320.29,

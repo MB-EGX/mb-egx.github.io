@@ -1,15 +1,20 @@
 {
   "ticker": "ORAS.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Construction & Engineering",
   "matrix": {
     "Ticker": "ORAS.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 17.5,
-    "Current Price": 764.01,
-    "Target Entry (VWAP)": 725.6678,
-    "Suggested Stop-Loss": 719.3943,
-    "Take-Profit Target": 825.1277,
+    "Sector": "Construction & Engineering",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 25.2,
+    "Current Price": 757.11,
+    "Target Entry (VWAP)": 727.5564,
+    "Suggested Stop-Loss": 710.9957,
+    "Take-Profit Target": 820.0526,
     "Resistance (52W High)": 799.99,
     "Support (52W Low)": 680.0,
     "Pivot Point": 768.6367,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.43,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow | vol x1.09",
+    "Kelly %": 2.35,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 3.5,
-      "trend_bonus": 30.0,
+      "range": 3.21,
+      "trend_bonus": 44.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 62.3,
-    "ADX-14": 32.0,
-    "Vol Z-Score": 0.21,
+    "RSI-14": 59.7,
+    "ADX-14": 32.9,
+    "Vol Z-Score": -0.64,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 7.2751,
-    "Bollinger %B": 0.966,
-    "Avg Volume (20D)": 217411,
+    "MACD Histogram": 6.4314,
+    "Bollinger %B": 0.847,
+    "Avg Volume (20D)": 213702,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       734.0,
@@ -115,7 +121,8 @@
       727.0,
       742.5,
       794.9,
-      764.01
+      764.01,
+      757.11
     ],
     "open": [
       790.0,
@@ -152,7 +159,8 @@
       717.02,
       727.0,
       761.1,
-      793.0
+      793.0,
+      764.01
     ],
     "high": [
       795.0,
@@ -189,7 +197,8 @@
       729.0,
       761.4,
       799.99,
-      794.9
+      794.9,
+      768.0
     ],
     "low": [
       733.52,
@@ -226,7 +235,8 @@
       713.0,
       727.0,
       751.5,
-      751.5
+      751.5,
+      750.01
     ],
     "volume": [
       770819,
@@ -263,7 +273,8 @@
       319015,
       387502,
       449317,
-      237324
+      237324,
+      152205
     ],
     "vwap": [
       754.1733,
@@ -300,7 +311,8 @@
       711.7399,
       715.4238,
       722.6796,
-      725.6678
+      725.6678,
+      727.5564
     ],
     "resistance": 799.99,
     "support": 680.0,

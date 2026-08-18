@@ -1,15 +1,20 @@
 {
   "ticker": "LCSW.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Building Materials",
   "matrix": {
     "Ticker": "LCSW.CA",
-    "Action": "📈 ACCUMULATE [💥 SQUEEZE]",
-    "Rank Score": 14.5,
-    "Current Price": 32.8,
-    "Target Entry (VWAP)": 32.8,
-    "Suggested Stop-Loss": 28.2786,
-    "Take-Profit Target": 38.6814,
+    "Sector": "Building Materials",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (X-OVER + MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
+    "Rank Score": 29.1,
+    "Current Price": 34.39,
+    "Target Entry (VWAP)": 34.39,
+    "Suggested Stop-Loss": 30.5314,
+    "Take-Profit Target": 39.4539,
     "Resistance (52W High)": 37.79,
     "Support (52W Low)": 27.01,
     "Pivot Point": 34.0,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.36,
-    "Signal Reason": "📈 ACCUMULATE [💥 SQUEEZE] | trend=Weak Bullish | awaiting confirmation | volatility squeeze | positive money flow",
+    "Kelly %": 1.55,
+    "Signal Reason": "⚡ BREAKOUT BUY (X-OVER + MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze | positive money flow | vol x1.28",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.69,
-      "trend_bonus": 25.0,
+      "range": 3.42,
+      "trend_bonus": 52.05,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
-    "Trend Class": "Weak Bullish",
-    "RSI-14": 46.4,
-    "ADX-14": 35.3,
-    "Vol Z-Score": -0.61,
+    "Trend Class": "Strong Bullish",
+    "RSI-14": 53.4,
+    "ADX-14": 33.2,
+    "Vol Z-Score": 0.45,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.4206,
-    "Bollinger %B": 0.048,
-    "Avg Volume (20D)": 1217376,
+    "MACD Histogram": -0.341,
+    "Bollinger %B": 0.438,
+    "Avg Volume (20D)": 1078155,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       29.72,
@@ -115,7 +121,8 @@
       34.45,
       33.48,
       33.38,
-      32.8
+      32.8,
+      34.39
     ],
     "open": [
       27.34,
@@ -152,7 +159,8 @@
       35.3,
       34.45,
       33.48,
-      33.38
+      33.38,
+      32.8
     ],
     "high": [
       31.33,
@@ -189,7 +197,8 @@
       36.5,
       34.5,
       34.2,
-      33.49
+      33.49,
+      34.4
     ],
     "low": [
       27.34,
@@ -226,7 +235,8 @@
       33.8,
       32.12,
       32.4,
-      32.61
+      32.61,
+      32.83
     ],
     "volume": [
       6392666,
@@ -263,7 +273,8 @@
       1404935,
       1268394,
       994658,
-      632077
+      632077,
+      1378149
     ],
     "vwap": [
       29.4633,
@@ -300,7 +311,8 @@
       34.3955,
       34.608,
       34.6307,
-      34.6437
+      34.6437,
+      34.6814
     ],
     "resistance": 37.79,
     "support": 27.01,

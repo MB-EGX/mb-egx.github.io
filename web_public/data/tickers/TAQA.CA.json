@@ -1,15 +1,20 @@
 {
   "ticker": "TAQA.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Utilities",
   "matrix": {
     "Ticker": "TAQA.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 17.1,
-    "Current Price": 15.3,
-    "Target Entry (VWAP)": 15.1449,
-    "Suggested Stop-Loss": 14.4514,
-    "Take-Profit Target": 16.4678,
+    "Sector": "Utilities",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 17.4,
+    "Current Price": 15.45,
+    "Target Entry (VWAP)": 15.1777,
+    "Suggested Stop-Loss": 14.6186,
+    "Take-Profit Target": 16.5974,
     "Resistance (52W High)": 16.09,
     "Support (52W Low)": 14.14,
     "Pivot Point": 15.56,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.52,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Kelly %": 2.57,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.97,
+      "range": 3.36,
       "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 57.8,
+    "RSI-14": 61.6,
     "ADX-14": 43.4,
-    "Vol Z-Score": -0.39,
+    "Vol Z-Score": -0.1,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0283,
-    "Bollinger %B": 0.667,
-    "Avg Volume (20D)": 3483017,
+    "MACD Histogram": 0.0225,
+    "Bollinger %B": 0.736,
+    "Avg Volume (20D)": 3555947,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       14.81,
@@ -115,7 +121,8 @@
       15.6,
       15.42,
       15.34,
-      15.3
+      15.3,
+      15.45
     ],
     "open": [
       14.9,
@@ -152,7 +159,8 @@
       15.6,
       15.6,
       15.6,
-      15.37
+      15.37,
+      15.3
     ],
     "high": [
       15.15,
@@ -189,7 +197,8 @@
       16.09,
       15.83,
       15.71,
-      15.57
+      15.57,
+      15.73
     ],
     "low": [
       14.67,
@@ -226,7 +235,8 @@
       15.51,
       15.38,
       15.34,
-      15.25
+      15.25,
+      15.4
     ],
     "volume": [
       1602948,
@@ -263,7 +273,8 @@
       7001715,
       3030930,
       2324325,
-      2653799
+      2653799,
+      3347990
     ],
     "vwap": [
       14.8767,
@@ -300,7 +311,8 @@
       15.0559,
       15.0862,
       15.121,
-      15.1449
+      15.1449,
+      15.1777
     ],
     "resistance": 16.09,
     "support": 14.14,

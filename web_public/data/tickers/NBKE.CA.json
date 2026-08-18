@@ -1,15 +1,21 @@
 {
   "ticker": "NBKE.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Banks",
   "matrix": {
     "Ticker": "NBKE.CA",
+    "Sector": "Banks",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
     "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
-    "Rank Score": 8.2,
+    "Rank Score": 8.3,
     "Current Price": 38.45,
-    "Target Entry (VWAP)": 34.4062,
-    "Suggested Stop-Loss": 15.7371,
-    "Take-Profit Target": 67.1102,
+    "Target Entry (VWAP)": 35.2201,
+    "Suggested Stop-Loss": 15.2171,
+    "Take-Profit Target": 67.7602,
     "Resistance (52W High)": 85.99,
     "Support (52W Low)": 27.0,
     "Pivot Point": 51.4267,
@@ -22,7 +28,7 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 0.71,
+    "Kelly %": 0.7,
     "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
@@ -34,12 +40,12 @@
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
     "RSI-14": 81.5,
-    "ADX-14": 77.1,
-    "Vol Z-Score": -0.44,
+    "ADX-14": 78.1,
+    "Vol Z-Score": -0.65,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.7507,
-    "Bollinger %B": 0.949,
-    "Avg Volume (20D)": 859,
+    "MACD Histogram": 0.7009,
+    "Bollinger %B": 0.894,
+    "Avg Volume (20D)": 647,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       31.0,
@@ -115,6 +122,7 @@
       38.49,
       38.49,
       38.49,
+      38.45,
       38.45
     ],
     "open": [
@@ -149,6 +157,7 @@
       32.89,
       31.15,
       31.15,
+      38.53,
       38.53,
       38.53,
       38.53,
@@ -189,6 +198,7 @@
       38.53,
       38.53,
       38.53,
+      38.53,
       38.53
     ],
     "low": [
@@ -226,6 +236,7 @@
       31.16,
       31.16,
       31.16,
+      32.0,
       32.0
     ],
     "volume": [
@@ -263,7 +274,8 @@
       1166,
       0,
       1166,
-      308
+      308,
+      0
     ],
     "vwap": [
       30.7,
@@ -300,7 +312,8 @@
       34.0748,
       34.129,
       34.3124,
-      34.4062
+      34.4062,
+      35.2201
     ],
     "resistance": 85.99,
     "support": 27.0,

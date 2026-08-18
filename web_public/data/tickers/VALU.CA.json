@@ -1,15 +1,20 @@
 {
   "ticker": "VALU.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "VALU.CA",
-    "Action": "⏳ BUY ON DIP",
-    "Rank Score": 23.6,
-    "Current Price": 11.35,
-    "Target Entry (VWAP)": 11.35,
-    "Suggested Stop-Loss": 10.6771,
-    "Take-Profit Target": 12.2705,
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor)",
+    "Rank Score": 8.4,
+    "Current Price": 11.18,
+    "Target Entry (VWAP)": 11.18,
+    "Suggested Stop-Loss": 10.5371,
+    "Take-Profit Target": 12.0618,
     "Resistance (52W High)": 13.0,
     "Support (52W Low)": 11.02,
     "Pivot Point": 11.3567,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.4,
-    "Signal Reason": "⏳ BUY ON DIP | trend=Strong Bearish | confirmed | vol x1.57",
+    "Kelly %": 2.45,
+    "Signal Reason": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor) | trend=Strong Bearish | awaiting confirmation",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 0.83,
-      "trend_bonus": 45.0,
+      "range": 0.4,
+      "trend_bonus": 15.75,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bearish",
-    "RSI-14": 38.4,
-    "ADX-14": 36.4,
-    "Vol Z-Score": 0.96,
+    "RSI-14": 35.2,
+    "ADX-14": 36.0,
+    "Vol Z-Score": -0.01,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0473,
-    "Bollinger %B": 0.268,
-    "Avg Volume (20D)": 3022181,
+    "MACD Histogram": -0.041,
+    "Bollinger %B": 0.192,
+    "Avg Volume (20D)": 3016007,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -75,7 +80,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       12.3,
@@ -109,7 +115,8 @@
       11.15,
       11.1,
       11.2,
-      11.35
+      11.35,
+      11.18
     ],
     "open": [
       11.66,
@@ -143,7 +150,8 @@
       11.3,
       11.15,
       11.12,
-      11.27
+      11.27,
+      11.35
     ],
     "high": [
       12.3,
@@ -177,7 +185,8 @@
       11.38,
       11.4,
       11.3,
-      11.5
+      11.5,
+      11.45
     ],
     "low": [
       11.5,
@@ -211,7 +220,8 @@
       11.15,
       11.02,
       11.09,
-      11.21
+      11.21,
+      11.17
     ],
     "volume": [
       4240429,
@@ -245,7 +255,8 @@
       3363802,
       3803153,
       4378503,
-      4742093
+      4742093,
+      2996143
     ],
     "vwap": [
       12.0333,
@@ -279,7 +290,8 @@
       11.9037,
       11.8321,
       11.7669,
-      11.7297
+      11.7297,
+      11.6761
     ],
     "resistance": 13.0,
     "support": 11.02,

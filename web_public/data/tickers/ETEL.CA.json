@@ -1,15 +1,20 @@
 {
   "ticker": "ETEL.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "IT, Media & Communication Services",
   "matrix": {
     "Ticker": "ETEL.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 23.9,
-    "Current Price": 116.0,
-    "Target Entry (VWAP)": 109.7524,
-    "Suggested Stop-Loss": 105.5943,
-    "Take-Profit Target": 122.322,
+    "Sector": "IT, Media & Communication Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "🔥 STRONG BUY (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 37.0,
+    "Current Price": 118.97,
+    "Target Entry (VWAP)": 110.2199,
+    "Suggested Stop-Loss": 108.6086,
+    "Take-Profit Target": 126.251,
     "Resistance (52W High)": 120.0,
     "Support (52W Low)": 89.01,
     "Pivot Point": 115.0333,
@@ -19,27 +24,27 @@
     "S1": 110.0667,
     "S2": 102.0333,
     "S3": 97.0667,
-    "Projected Gain (%)": 4.75,
-    "Pattern Conf (%)": 64.09,
-    "Projected Range 95%": "4.75% to 4.75%",
-    "Kelly %": 2.49,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x1.23",
+    "Projected Gain (%)": 5.42,
+    "Pattern Conf (%)": 66.95,
+    "Projected Range 95%": "5.42% to 5.42%",
+    "Kelly %": 9.96,
+    "Signal Reason": "🔥 STRONG BUY (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 19.23,
-      "projected": 7.12,
-      "range": 4.35,
-      "trend_bonus": 15.0,
+      "pattern": 20.09,
+      "projected": 8.13,
+      "range": 4.83,
+      "trend_bonus": 37.5,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 66.3,
-    "ADX-14": 66.3,
-    "Vol Z-Score": 0.38,
+    "RSI-14": 69.4,
+    "ADX-14": 66.6,
+    "Vol Z-Score": -0.83,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.5398,
-    "Bollinger %B": 0.905,
-    "Avg Volume (20D)": 1375538,
+    "MACD Histogram": 0.6727,
+    "Bollinger %B": 0.995,
+    "Avg Volume (20D)": 1372387,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       93.65,
@@ -115,7 +121,8 @@
       108.49,
       114.0,
       118.1,
-      116.0
+      116.0,
+      118.97
     ],
     "open": [
       94.66,
@@ -152,7 +159,8 @@
       111.0,
       108.49,
       115.0,
-      120.0
+      120.0,
+      116.0
     ],
     "high": [
       95.0,
@@ -189,7 +197,8 @@
       111.0,
       116.25,
       120.0,
-      120.0
+      120.0,
+      118.98
     ],
     "low": [
       93.05,
@@ -226,7 +235,8 @@
       107.0,
       109.5,
       114.7,
-      115.02
+      115.02,
+      115.8
     ],
     "volume": [
       382716,
@@ -263,7 +273,8 @@
       1052479,
       3377208,
       3489467,
-      1696323
+      1696323,
+      664829
     ],
     "vwap": [
       93.9,
@@ -300,7 +311,8 @@
       106.3259,
       107.5053,
       109.0281,
-      109.7524
+      109.7524,
+      110.2199
     ],
     "resistance": 120.0,
     "support": 89.01,

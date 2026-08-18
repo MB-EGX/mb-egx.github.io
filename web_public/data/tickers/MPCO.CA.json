@@ -1,15 +1,20 @@
 {
   "ticker": "MPCO.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "MPCO.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 23.3,
-    "Current Price": 2.12,
-    "Target Entry (VWAP)": 2.0358,
-    "Suggested Stop-Loss": 1.93,
-    "Take-Profit Target": 2.1815,
+    "Sector": "Food, Beverages & Tobacco",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "🔥 STRONG BUY (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 34.7,
+    "Current Price": 2.27,
+    "Target Entry (VWAP)": 2.0542,
+    "Suggested Stop-Loss": 2.0743,
+    "Take-Profit Target": 2.3535,
     "Resistance (52W High)": 2.3,
     "Support (52W Low)": 1.7,
     "Pivot Point": 2.1867,
@@ -19,27 +24,27 @@
     "S1": 2.0733,
     "S2": 1.9667,
     "S3": 1.8533,
-    "Projected Gain (%)": 2.2,
-    "Pattern Conf (%)": 76.2,
-    "Projected Range 95%": "2.2% to 2.2%",
-    "Kelly %": 1.34,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Projected Gain (%)": 2.98,
+    "Pattern Conf (%)": 65.13,
+    "Projected Range 95%": "2.28% to 3.69%",
+    "Kelly %": 0.0,
+    "Signal Reason": "🔥 STRONG BUY (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x1.50",
     "Score Breakdown": {
-      "pattern": 22.86,
-      "projected": 3.3,
-      "range": 3.5,
-      "trend_bonus": 15.0,
+      "pattern": 19.54,
+      "projected": 4.47,
+      "range": 4.75,
+      "trend_bonus": 37.5,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 62.2,
-    "ADX-14": 39.7,
-    "Vol Z-Score": -0.64,
+    "RSI-14": 71.4,
+    "ADX-14": 40.3,
+    "Vol Z-Score": 0.6,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0167,
-    "Bollinger %B": 0.722,
-    "Avg Volume (20D)": 59551795,
+    "MACD Histogram": 0.0198,
+    "Bollinger %B": 0.941,
+    "Avg Volume (20D)": 62723377,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       1.84,
@@ -115,7 +121,8 @@
       2.21,
       2.17,
       2.18,
-      2.12
+      2.12,
+      2.27
     ],
     "open": [
       1.87,
@@ -152,7 +159,8 @@
       2.25,
       2.21,
       2.18,
-      2.2
+      2.2,
+      2.12
     ],
     "high": [
       1.88,
@@ -189,7 +197,8 @@
       2.3,
       2.26,
       2.24,
-      2.2
+      2.2,
+      2.29
     ],
     "low": [
       1.8,
@@ -226,7 +235,8 @@
       2.18,
       2.14,
       2.16,
-      2.12
+      2.12,
+      2.11
     ],
     "volume": [
       23523977,
@@ -263,7 +273,8 @@
       75254548,
       36436664,
       30215785,
-      26081831
+      26081831,
+      94281778
     ],
     "vwap": [
       1.84,
@@ -300,7 +311,8 @@
       2.0117,
       2.0205,
       2.0283,
-      2.0358
+      2.0358,
+      2.0542
     ],
     "resistance": 2.3,
     "support": 1.7,

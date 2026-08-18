@@ -1,15 +1,20 @@
 {
   "ticker": "RAYA.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "RAYA.CA",
-    "Action": "⏳ BUY ON DIP",
-    "Rank Score": 23.9,
-    "Current Price": 7.23,
-    "Target Entry (VWAP)": 7.23,
-    "Suggested Stop-Loss": 6.85,
-    "Take-Profit Target": 7.7556,
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor)",
+    "Rank Score": 8.6,
+    "Current Price": 7.14,
+    "Target Entry (VWAP)": 7.14,
+    "Suggested Stop-Loss": 6.7771,
+    "Take-Profit Target": 7.6436,
     "Resistance (52W High)": 8.49,
     "Support (52W Low)": 6.97,
     "Pivot Point": 7.2133,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.62,
-    "Signal Reason": "⏳ BUY ON DIP | trend=Consolidation / Neutral | awaiting confirmation | vol x1.04",
+    "Kelly %": 2.69,
+    "Signal Reason": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor) | trend=Strong Bearish | awaiting confirmation",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 0.86,
-      "trend_bonus": 45.0,
+      "range": 0.56,
+      "trend_bonus": 15.75,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
-    "Trend Class": "Consolidation / Neutral",
-    "RSI-14": 40.2,
-    "ADX-14": 36.4,
-    "Vol Z-Score": 0.08,
+    "Trend Class": "Strong Bearish",
+    "RSI-14": 37.4,
+    "ADX-14": 35.6,
+    "Vol Z-Score": -1.12,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0366,
-    "Bollinger %B": 0.209,
-    "Avg Volume (20D)": 12471571,
+    "MACD Histogram": -0.0343,
+    "Bollinger %B": 0.112,
+    "Avg Volume (20D)": 11838164,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       7.4,
@@ -115,7 +121,8 @@
       7.2,
       7.07,
       7.23,
-      7.23
+      7.23,
+      7.14
     ],
     "open": [
       7.4,
@@ -152,7 +159,8 @@
       7.28,
       7.2,
       7.1,
-      7.4
+      7.4,
+      7.23
     ],
     "high": [
       7.54,
@@ -189,7 +197,8 @@
       7.38,
       7.33,
       7.23,
-      7.48
+      7.48,
+      7.27
     ],
     "low": [
       7.21,
@@ -226,7 +235,8 @@
       7.13,
       6.97,
       7.04,
-      7.2
+      7.2,
+      7.12
     ],
     "volume": [
       7550445,
@@ -263,7 +273,8 @@
       7396106,
       15180443,
       29251685,
-      12917163
+      12917163,
+      5516769
     ],
     "vwap": [
       7.3833,
@@ -300,7 +311,8 @@
       7.6143,
       7.5602,
       7.4983,
-      7.4653
+      7.4653,
+      7.4331
     ],
     "resistance": 8.49,
     "support": 6.97,

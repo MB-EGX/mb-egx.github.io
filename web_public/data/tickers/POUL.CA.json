@@ -1,15 +1,20 @@
 {
   "ticker": "POUL.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "POUL.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 16.5,
-    "Current Price": 38.1,
-    "Target Entry (VWAP)": 38.1,
-    "Suggested Stop-Loss": 35.8657,
-    "Take-Profit Target": 41.1596,
+    "Sector": "Food, Beverages & Tobacco",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned)",
+    "Rank Score": 19.0,
+    "Current Price": 37.59,
+    "Target Entry (VWAP)": 37.59,
+    "Suggested Stop-Loss": 35.3871,
+    "Take-Profit Target": 38.6049,
     "Resistance (52W High)": 41.47,
     "Support (52W Low)": 36.5,
     "Pivot Point": 39.2533,
@@ -19,27 +24,27 @@
     "S1": 38.2667,
     "S2": 37.7133,
     "S3": 36.7267,
-    "Projected Gain (%)": "N/A",
-    "Pattern Conf (%)": "N/A",
-    "Projected Range 95%": "N/A",
-    "Kelly %": 2.42,
-    "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation | positive money flow",
+    "Projected Gain (%)": -2.41,
+    "Pattern Conf (%)": 59.42,
+    "Projected Range 95%": "-2.41% to -2.41%",
+    "Kelly %": 0.0,
+    "Signal Reason": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned) | trend=Weak Bullish | awaiting confirmation | positive money flow",
     "Score Breakdown": {
-      "pattern": 0.0,
-      "projected": 0.0,
-      "range": 1.61,
-      "trend_bonus": 30.0,
+      "pattern": 17.83,
+      "projected": -3.62,
+      "range": 1.1,
+      "trend_bonus": 21.0,
       "confidence_weight": 0.52
     },
-    "Regime": "N/A",
+    "Regime": "Range / Consolidation",
     "Trend Class": "Weak Bullish",
-    "RSI-14": 44.1,
-    "ADX-14": 23.2,
-    "Vol Z-Score": -0.48,
-    "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0317,
-    "Bollinger %B": 0.346,
-    "Avg Volume (20D)": 742648,
+    "RSI-14": 40.3,
+    "ADX-14": 22.7,
+    "Vol Z-Score": -0.52,
+    "MACD Signal": "🔴 Bearish Cross",
+    "MACD Histogram": -0.0578,
+    "Bollinger %B": 0.212,
+    "Avg Volume (20D)": 760044,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       38.6,
@@ -115,7 +121,8 @@
       39.6,
       39.3,
       38.82,
-      38.1
+      38.1,
+      37.59
     ],
     "open": [
       40.0,
@@ -152,7 +159,8 @@
       40.24,
       39.6,
       39.3,
-      39.0
+      39.0,
+      38.1
     ],
     "high": [
       40.2,
@@ -189,7 +197,8 @@
       40.24,
       39.89,
       39.39,
-      39.0
+      39.0,
+      38.1
     ],
     "low": [
       38.02,
@@ -226,7 +235,8 @@
       38.75,
       38.8,
       38.7,
-      37.7
+      37.7,
+      37.56
     ],
     "volume": [
       369569,
@@ -263,7 +273,8 @@
       497002,
       322681,
       312456,
-      503237
+      503237,
+      508644
     ],
     "vwap": [
       38.94,
@@ -300,7 +311,8 @@
       38.509,
       38.5168,
       38.5047,
-      38.4847
+      38.4847,
+      38.4533
     ],
     "resistance": 41.47,
     "support": 36.5,

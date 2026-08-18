@@ -1,15 +1,20 @@
 {
   "ticker": "RKAZ.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "RKAZ.CA",
-    "Action": "⏳ BUY ON DIP",
-    "Rank Score": 23.7,
-    "Current Price": 4.41,
-    "Target Entry (VWAP)": 4.41,
-    "Suggested Stop-Loss": 3.9814,
-    "Take-Profit Target": 4.9766,
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor)",
+    "Rank Score": 13.0,
+    "Current Price": 4.42,
+    "Target Entry (VWAP)": 4.42,
+    "Suggested Stop-Loss": 4.0129,
+    "Take-Profit Target": 4.5393,
     "Resistance (52W High)": 6.14,
     "Support (52W Low)": 4.3,
     "Pivot Point": 4.5167,
@@ -19,27 +24,27 @@
     "S1": 4.3533,
     "S2": 4.2367,
     "S3": 4.0733,
-    "Projected Gain (%)": "N/A",
-    "Pattern Conf (%)": "N/A",
-    "Projected Range 95%": "N/A",
-    "Kelly %": 1.7,
-    "Signal Reason": "⏳ BUY ON DIP | trend=Strong Bearish | awaiting confirmation",
+    "Projected Gain (%)": -4.08,
+    "Pattern Conf (%)": 49.44,
+    "Projected Range 95%": "-4.08% to -4.08%",
+    "Kelly %": 0.0,
+    "Signal Reason": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor) | trend=Strong Bearish | awaiting confirmation",
     "Score Breakdown": {
-      "pattern": 0.0,
-      "projected": 0.0,
-      "range": 0.3,
-      "trend_bonus": 45.0,
+      "pattern": 14.83,
+      "projected": -6.12,
+      "range": 0.33,
+      "trend_bonus": 15.75,
       "confidence_weight": 0.52
     },
-    "Regime": "N/A",
+    "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bearish",
-    "RSI-14": 36.5,
-    "ADX-14": 43.0,
-    "Vol Z-Score": -0.77,
+    "RSI-14": 37.1,
+    "ADX-14": 42.0,
+    "Vol Z-Score": -1.06,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0043,
-    "Bollinger %B": 0.18,
-    "Avg Volume (20D)": 170814,
+    "MACD Histogram": 0.0027,
+    "Bollinger %B": 0.228,
+    "Avg Volume (20D)": 159569,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       5.48,
@@ -115,7 +121,8 @@
       4.52,
       4.51,
       4.47,
-      4.41
+      4.41,
+      4.42
     ],
     "open": [
       5.97,
@@ -152,6 +159,7 @@
       4.54,
       4.52,
       4.5,
+      4.41,
       4.41
     ],
     "high": [
@@ -189,7 +197,8 @@
       4.68,
       4.6,
       4.53,
-      4.5
+      4.5,
+      4.48
     ],
     "low": [
       5.34,
@@ -226,7 +235,8 @@
       4.5,
       4.5,
       4.4,
-      4.4
+      4.4,
+      4.39
     ],
     "volume": [
       485147,
@@ -263,7 +273,8 @@
       125236,
       37839,
       59612,
-      89965
+      89965,
+      46955
     ],
     "vwap": [
       5.6533,
@@ -300,7 +311,8 @@
       4.6588,
       4.6492,
       4.6278,
-      4.6173
+      4.6173,
+      4.6106
     ],
     "resistance": 6.14,
     "support": 4.3,

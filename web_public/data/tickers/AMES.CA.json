@@ -1,15 +1,20 @@
 {
   "ticker": "AMES.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "AMES.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 17.5,
-    "Current Price": 120.37,
-    "Target Entry (VWAP)": 120.37,
-    "Suggested Stop-Loss": 105.3171,
-    "Take-Profit Target": 140.0287,
+    "Sector": "Health Care & Pharmaceuticals",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 17.8,
+    "Current Price": 129.01,
+    "Target Entry (VWAP)": 123.688,
+    "Suggested Stop-Loss": 112.2014,
+    "Take-Profit Target": 150.9238,
     "Resistance (52W High)": 144.94,
     "Support (52W Low)": 45.15,
     "Pivot Point": 123.4267,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.44,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Kelly %": 1.41,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x3.75",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 3.77,
+      "range": 4.2,
       "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 59.3,
+    "RSI-14": 65.0,
     "ADX-14": 54.0,
-    "Vol Z-Score": -0.84,
+    "Vol Z-Score": 2.78,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -2.4122,
-    "Bollinger %B": 0.524,
-    "Avg Volume (20D)": 344732,
+    "MACD Histogram": -1.8404,
+    "Bollinger %B": 0.952,
+    "Avg Volume (20D)": 401089,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       48.2,
@@ -115,7 +121,8 @@
       120.19,
       120.78,
       121.28,
-      120.37
+      120.37,
+      129.01
     ],
     "open": [
       48.5,
@@ -152,7 +159,8 @@
       123.49,
       120.19,
       121.98,
-      122.0
+      122.0,
+      120.37
     ],
     "high": [
       49.8,
@@ -189,7 +197,8 @@
       123.49,
       124.9,
       122.84,
-      122.35
+      122.35,
+      141.4
     ],
     "low": [
       48.1,
@@ -226,7 +235,8 @@
       120.0,
       120.0,
       120.2,
-      118.0
+      118.0,
+      121.0
     ],
     "volume": [
       44278,
@@ -263,7 +273,8 @@
       154013,
       129971,
       63093,
-      93040
+      93040,
+      1503443
     ],
     "vwap": [
       48.7,
@@ -300,7 +311,8 @@
       125.2069,
       122.7461,
       122.1959,
-      121.9374
+      121.9374,
+      123.688
     ],
     "resistance": 144.94,
     "support": 45.15,

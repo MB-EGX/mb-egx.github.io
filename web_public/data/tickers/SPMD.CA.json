@@ -1,15 +1,20 @@
 {
   "ticker": "SPMD.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "SPMD.CA",
+    "Sector": "Health Care & Pharmaceuticals",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "📈 ACCUMULATE",
-    "Rank Score": 20.7,
-    "Current Price": 0.48,
-    "Target Entry (VWAP)": 0.472,
-    "Suggested Stop-Loss": 0.4513,
-    "Take-Profit Target": 0.493,
+    "Rank Score": 23.2,
+    "Current Price": 0.474,
+    "Target Entry (VWAP)": 0.4726,
+    "Suggested Stop-Loss": 0.4453,
+    "Take-Profit Target": 0.492,
     "Resistance (52W High)": 0.5,
     "Support (52W Low)": 0.412,
     "Pivot Point": 0.4863,
@@ -19,27 +24,27 @@
     "S1": 0.4767,
     "S2": 0.4683,
     "S3": 0.4587,
-    "Projected Gain (%)": -0.88,
-    "Pattern Conf (%)": 73.91,
-    "Projected Range 95%": "-0.88% to -0.88%",
-    "Kelly %": 8.14,
+    "Projected Gain (%)": 3.09,
+    "Pattern Conf (%)": 69.96,
+    "Projected Range 95%": "3.09% to 3.09%",
+    "Kelly %": 11.02,
     "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 22.17,
-      "projected": -1.32,
-      "range": 3.86,
+      "pattern": 20.99,
+      "projected": 4.63,
+      "range": 3.52,
       "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 59.5,
-    "ADX-14": 56.9,
-    "Vol Z-Score": -0.43,
-    "MACD Signal": "🔴 Bearish Cross",
-    "MACD Histogram": -0.0002,
-    "Bollinger %B": 0.672,
-    "Avg Volume (20D)": 65039832,
+    "RSI-14": 55.2,
+    "ADX-14": 55.4,
+    "Vol Z-Score": -0.52,
+    "MACD Signal": "Bearish",
+    "MACD Histogram": -0.001,
+    "Bollinger %B": 0.558,
+    "Avg Volume (20D)": 64140426,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       0.425,
@@ -115,7 +121,8 @@
       0.48,
       0.479,
       0.485,
-      0.48
+      0.48,
+      0.474
     ],
     "open": [
       0.437,
@@ -152,7 +159,8 @@
       0.483,
       0.48,
       0.485,
-      0.485
+      0.485,
+      0.48
     ],
     "high": [
       0.439,
@@ -189,7 +197,8 @@
       0.487,
       0.486,
       0.489,
-      0.486
+      0.486,
+      0.485
     ],
     "low": [
       0.422,
@@ -226,7 +235,8 @@
       0.479,
       0.478,
       0.48,
-      0.48
+      0.48,
+      0.471
     ],
     "volume": [
       19599640,
@@ -263,7 +273,8 @@
       39127703,
       34168947,
       38703155,
-      33292203
+      33292203,
+      25502263
     ],
     "vwap": [
       0.4287,
@@ -300,7 +311,8 @@
       0.4675,
       0.4684,
       0.4693,
-      0.472
+      0.472,
+      0.4726
     ],
     "resistance": 0.5,
     "support": 0.412,

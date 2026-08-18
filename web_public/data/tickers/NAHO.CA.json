@@ -1,15 +1,20 @@
 {
   "ticker": "NAHO.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "NAHO.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 26.7,
-    "Current Price": 0.136,
-    "Target Entry (VWAP)": 0.124,
-    "Suggested Stop-Loss": 0.126,
-    "Take-Profit Target": 0.1495,
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 25.6,
+    "Current Price": 0.147,
+    "Target Entry (VWAP)": 0.1268,
+    "Suggested Stop-Loss": 0.1354,
+    "Take-Profit Target": 0.1625,
     "Resistance (52W High)": 0.158,
     "Support (52W Low)": 0.101,
     "Pivot Point": 0.1227,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.13,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | positive money flow | vol x5.81",
+    "Kelly %": 1.97,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow | vol x2.59",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 3.07,
-      "trend_bonus": 48.0,
+      "range": 4.04,
+      "trend_bonus": 44.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 94.8,
-    "ADX-14": 39.2,
-    "Vol Z-Score": 2.32,
+    "RSI-14": 96.1,
+    "ADX-14": 42.9,
+    "Vol Z-Score": 0.85,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0034,
-    "Bollinger %B": 1.253,
-    "Avg Volume (20D)": 708423,
+    "MACD Histogram": 0.0046,
+    "Bollinger %B": 1.219,
+    "Avg Volume (20D)": 801627,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       0.104,
@@ -115,7 +121,8 @@
       0.103,
       0.111,
       0.133,
-      0.136
+      0.136,
+      0.147
     ],
     "open": [
       0.103,
@@ -152,7 +159,8 @@
       0.103,
       0.103,
       0.112,
-      0.137
+      0.137,
+      0.136
     ],
     "high": [
       0.104,
@@ -189,7 +197,8 @@
       0.103,
       0.112,
       0.133,
-      0.158
+      0.158,
+      0.148
     ],
     "low": [
       0.102,
@@ -226,6 +235,7 @@
       0.103,
       0.102,
       0.112,
+      0.135,
       0.135
     ],
     "volume": [
@@ -263,7 +273,8 @@
       108660,
       1514613,
       5516774,
-      4114105
+      4114105,
+      2073704
     ],
     "vwap": [
       0.1033,
@@ -300,7 +311,8 @@
       0.1025,
       0.1042,
       0.1159,
-      0.124
+      0.124,
+      0.1268
     ],
     "resistance": 0.158,
     "support": 0.101,

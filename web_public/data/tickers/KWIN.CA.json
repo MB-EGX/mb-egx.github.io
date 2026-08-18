@@ -1,15 +1,20 @@
 {
   "ticker": "KWIN.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "KWIN.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 9.0,
-    "Current Price": 85.65,
-    "Target Entry (VWAP)": 85.65,
-    "Suggested Stop-Loss": 73.5371,
-    "Take-Profit Target": 101.3906,
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 16.9,
+    "Current Price": 88.05,
+    "Target Entry (VWAP)": 88.05,
+    "Suggested Stop-Loss": 75.3971,
+    "Take-Profit Target": 104.4824,
     "Resistance (52W High)": 111.95,
     "Support (52W Low)": 65.0,
     "Pivot Point": 88.4567,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.34,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation",
+    "Kelly %": 1.33,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x1.08",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.2,
-      "trend_bonus": 15.0,
+      "range": 2.45,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 48.4,
-    "ADX-14": 47.4,
-    "Vol Z-Score": -0.82,
+    "RSI-14": 52.3,
+    "ADX-14": 46.3,
+    "Vol Z-Score": 0.09,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -1.7803,
-    "Bollinger %B": 0.167,
-    "Avg Volume (20D)": 505843,
+    "MACD Histogram": -1.5683,
+    "Bollinger %B": 0.293,
+    "Avg Volume (20D)": 447690,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       70.13,
@@ -115,7 +121,8 @@
       87.05,
       86.8,
       85.79,
-      85.65
+      85.65,
+      88.05
     ],
     "open": [
       68.25,
@@ -152,7 +159,8 @@
       90.1,
       87.05,
       87.09,
-      85.81
+      85.81,
+      85.65
     ],
     "high": [
       75.9,
@@ -189,7 +197,8 @@
       92.8,
       90.0,
       87.45,
-      88.14
+      88.14,
+      94.18
     ],
     "low": [
       68.25,
@@ -226,7 +235,8 @@
       87.05,
       84.08,
       85.12,
-      85.01
+      85.01,
+      86.0
     ],
     "volume": [
       887303,
@@ -263,7 +273,8 @@
       148695,
       101106,
       97203,
-      109379
+      109379,
+      482550
     ],
     "vwap": [
       71.4267,
@@ -300,7 +311,8 @@
       92.9861,
       93.3713,
       96.1077,
-      97.1636
+      97.1636,
+      97.6991
     ],
     "resistance": 111.95,
     "support": 65.0,

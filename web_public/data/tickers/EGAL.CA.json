@@ -1,15 +1,20 @@
 {
   "ticker": "EGAL.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Basic Resources",
   "matrix": {
     "Ticker": "EGAL.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 15.5,
-    "Current Price": 340.01,
-    "Target Entry (VWAP)": 324.1061,
-    "Suggested Stop-Loss": 314.7386,
-    "Take-Profit Target": 349.1903,
+    "Sector": "Basic Resources",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 24.2,
+    "Current Price": 342.0,
+    "Target Entry (VWAP)": 325.682,
+    "Suggested Stop-Loss": 315.2629,
+    "Take-Profit Target": 351.234,
     "Resistance (52W High)": 359.85,
     "Support (52W Low)": 272.28,
     "Pivot Point": 336.02,
@@ -19,27 +24,27 @@
     "S1": 314.04,
     "S2": 280.02,
     "S3": 258.04,
-    "Projected Gain (%)": -3.76,
-    "Pattern Conf (%)": 54.61,
-    "Projected Range 95%": "-3.76% to -3.76%",
+    "Projected Gain (%)": -2.95,
+    "Pattern Conf (%)": 55.86,
+    "Projected Range 95%": "-3.68% to -2.22%",
     "Kelly %": 0.0,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | confirmed | weekly aligned | vol x1.73",
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 16.38,
-      "projected": -5.64,
-      "range": 3.87,
-      "trend_bonus": 15.0,
+      "pattern": 16.76,
+      "projected": -4.43,
+      "range": 3.98,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 72.6,
-    "ADX-14": 49.1,
-    "Vol Z-Score": 0.57,
+    "RSI-14": 73.3,
+    "ADX-14": 51.3,
+    "Vol Z-Score": -0.02,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 4.4108,
-    "Bollinger %B": 0.951,
-    "Avg Volume (20D)": 337011,
+    "MACD Histogram": 4.1595,
+    "Bollinger %B": 0.917,
+    "Avg Volume (20D)": 343292,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       281.82,
@@ -115,7 +121,8 @@
       335.25,
       332.52,
       348.06,
-      340.01
+      340.01,
+      342.0
     ],
     "open": [
       283.0,
@@ -152,7 +159,8 @@
       333.01,
       335.25,
       333.0,
-      348.5
+      348.5,
+      340.01
     ],
     "high": [
       284.3,
@@ -189,7 +197,8 @@
       358.0,
       339.0,
       354.0,
-      359.85
+      359.85,
+      353.0
     ],
     "low": [
       280.0,
@@ -226,7 +235,8 @@
       325.2,
       327.0,
       327.5,
-      340.01
+      340.01,
+      342.0
     ],
     "volume": [
       134337,
@@ -263,7 +273,8 @@
       1594113,
       358530,
       573121,
-      583540
+      583540,
+      333718
     ],
     "vwap": [
       282.04,
@@ -300,7 +311,8 @@
       317.1917,
       318.9215,
       321.3584,
-      324.1061
+      324.1061,
+      325.682
     ],
     "resistance": 359.85,
     "support": 272.28,

@@ -1,15 +1,21 @@
 {
   "ticker": "GTHE.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "IT, Media & Communication Services",
   "matrix": {
     "Ticker": "GTHE.CA",
+    "Sector": "IT, Media & Communication Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
     "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
     "Rank Score": 1.7,
     "Current Price": 4.3,
-    "Target Entry (VWAP)": 4.1173,
-    "Suggested Stop-Loss": 3.1286,
-    "Take-Profit Target": 5.7944,
+    "Target Entry (VWAP)": 4.1158,
+    "Suggested Stop-Loss": 3.1829,
+    "Take-Profit Target": 5.7265,
     "Resistance (52W High)": 4.89,
     "Support (52W Low)": 2.94,
     "Pivot Point": 4.3167,
@@ -22,8 +28,8 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 0.94,
-    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze | positive money flow",
+    "Kelly %": 0.96,
+    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
@@ -34,12 +40,12 @@
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
     "RSI-14": 67.4,
-    "ADX-14": 74.0,
-    "Vol Z-Score": -0.36,
+    "ADX-14": 73.8,
+    "Vol Z-Score": -0.63,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0064,
-    "Bollinger %B": 0.814,
-    "Avg Volume (20D)": 15852,
+    "MACD Histogram": -0.0037,
+    "Bollinger %B": 0.812,
+    "Avg Volume (20D)": 14882,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       3.01,
@@ -115,6 +122,7 @@
       4.16,
       4.16,
       4.16,
+      4.3,
       4.3
     ],
     "open": [
@@ -152,6 +160,7 @@
       4.79,
       4.79,
       4.79,
+      4.3,
       4.3
     ],
     "high": [
@@ -189,6 +198,7 @@
       4.79,
       4.79,
       4.79,
+      4.3,
       4.3
     ],
     "low": [
@@ -226,6 +236,7 @@
       4.15,
       4.15,
       4.15,
+      4.11,
       4.11
     ],
     "volume": [
@@ -263,7 +274,8 @@
       7207,
       0,
       7207,
-      7329
+      7329,
+      0
     ],
     "vwap": [
       3.0533,
@@ -300,7 +312,8 @@
       4.0556,
       4.0696,
       4.0926,
-      4.1173
+      4.1173,
+      4.1158
     ],
     "resistance": 4.89,
     "support": 2.94,

@@ -1,15 +1,20 @@
 {
   "ticker": "RREI.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "RREI.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 17.6,
-    "Current Price": 4.63,
-    "Target Entry (VWAP)": 4.5558,
-    "Suggested Stop-Loss": 4.1071,
-    "Take-Profit Target": 5.316,
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "🔥 STRONG BUY (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 30.1,
+    "Current Price": 4.94,
+    "Target Entry (VWAP)": 4.5834,
+    "Suggested Stop-Loss": 4.4386,
+    "Take-Profit Target": 5.6014,
     "Resistance (52W High)": 4.98,
     "Support (52W Low)": 3.34,
     "Pivot Point": 4.6633,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.54,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Kelly %": 1.65,
+    "Signal Reason": "🔥 STRONG BUY (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow | vol x1.02",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 3.93,
-      "trend_bonus": 29.8,
+      "range": 4.88,
+      "trend_bonus": 52.5,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 59.8,
-    "ADX-14": 58.1,
-    "Vol Z-Score": -0.35,
+    "RSI-14": 66.5,
+    "ADX-14": 57.0,
+    "Vol Z-Score": 0.03,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0247,
-    "Bollinger %B": 0.626,
-    "Avg Volume (20D)": 14327468,
+    "MACD Histogram": -0.0083,
+    "Bollinger %B": 0.813,
+    "Avg Volume (20D)": 14829539,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       3.45,
@@ -115,7 +121,8 @@
       4.62,
       4.43,
       4.65,
-      4.63
+      4.63,
+      4.94
     ],
     "open": [
       3.55,
@@ -152,7 +159,8 @@
       4.67,
       4.62,
       4.47,
-      4.67
+      4.67,
+      4.63
     ],
     "high": [
       3.58,
@@ -189,7 +197,8 @@
       4.69,
       4.64,
       4.68,
-      4.8
+      4.8,
+      4.94
     ],
     "low": [
       3.45,
@@ -226,6 +235,7 @@
       4.5,
       4.41,
       4.42,
+      4.63,
       4.63
     ],
     "volume": [
@@ -263,7 +273,8 @@
       5440936,
       4850373,
       8537460,
-      9380426
+      9380426,
+      15184613
     ],
     "vwap": [
       3.4933,
@@ -300,7 +311,8 @@
       4.4704,
       4.511,
       4.525,
-      4.5558
+      4.5558,
+      4.5834
     ],
     "resistance": 4.98,
     "support": 3.34,

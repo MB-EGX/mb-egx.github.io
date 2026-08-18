@@ -1,15 +1,20 @@
 {
   "ticker": "EFIC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Basic Resources",
   "matrix": {
     "Ticker": "EFIC.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 26.9,
-    "Current Price": 234.9,
-    "Target Entry (VWAP)": 216.6535,
-    "Suggested Stop-Loss": 203.7029,
-    "Take-Profit Target": 275.5407,
+    "Sector": "Basic Resources",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 9.4,
+    "Current Price": 227.0,
+    "Target Entry (VWAP)": 218.8893,
+    "Suggested Stop-Loss": 196.8043,
+    "Take-Profit Target": 266.3336,
     "Resistance (52W High)": 260.0,
     "Support (52W Low)": 180.02,
     "Pivot Point": 224.7367,
@@ -23,23 +28,23 @@
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
     "Kelly %": 1.39,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | vol x2.79",
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | confirmed | weekly aligned | vol x2.07",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 3.43,
-      "trend_bonus": 48.0,
+      "range": 2.94,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 77.4,
-    "ADX-14": 61.9,
-    "Vol Z-Score": 1.54,
+    "RSI-14": 68.1,
+    "ADX-14": 62.3,
+    "Vol Z-Score": 0.97,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 3.9214,
-    "Bollinger %B": 1.048,
-    "Avg Volume (20D)": 219655,
+    "MACD Histogram": 3.4698,
+    "Bollinger %B": 0.872,
+    "Avg Volume (20D)": 236780,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       195.08,
@@ -115,7 +121,8 @@
       208.17,
       225.3,
       229.0,
-      234.9
+      234.9,
+      227.0
     ],
     "open": [
       198.25,
@@ -152,7 +159,8 @@
       213.49,
       208.17,
       235.99,
-      235.0
+      235.0,
+      234.9
     ],
     "high": [
       200.17,
@@ -189,7 +197,8 @@
       219.5,
       239.0,
       239.7,
-      260.0
+      260.0,
+      236.99
     ],
     "low": [
       194.51,
@@ -226,7 +235,8 @@
       208.0,
       208.0,
       226.51,
-      230.0
+      230.0,
+      224.0
     ],
     "volume": [
       7547,
@@ -263,7 +273,8 @@
       100090,
       771499,
       784004,
-      613232
+      613232,
+      490445
     ],
     "vwap": [
       196.5867,
@@ -300,7 +311,8 @@
       200.0447,
       205.9445,
       211.0949,
-      216.6535
+      216.6535,
+      218.8893
     ],
     "resistance": 260.0,
     "support": 180.02,

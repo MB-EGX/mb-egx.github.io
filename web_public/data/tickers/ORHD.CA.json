@@ -1,15 +1,20 @@
 {
   "ticker": "ORHD.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "ORHD.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 33.8,
-    "Current Price": 42.59,
-    "Target Entry (VWAP)": 41.0579,
-    "Suggested Stop-Loss": 39.8671,
-    "Take-Profit Target": 45.09,
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 24.7,
+    "Current Price": 41.2,
+    "Target Entry (VWAP)": 41.1901,
+    "Suggested Stop-Loss": 38.3329,
+    "Take-Profit Target": 43.5772,
     "Resistance (52W High)": 44.0,
     "Support (52W Low)": 37.0,
     "Pivot Point": 42.5,
@@ -19,27 +24,27 @@
     "S1": 41.23,
     "S2": 40.15,
     "S3": 38.88,
-    "Projected Gain (%)": 5.17,
-    "Pattern Conf (%)": 77.07,
-    "Projected Range 95%": "5.17% to 5.17%",
-    "Kelly %": 25.0,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Projected Gain (%)": 5.07,
+    "Pattern Conf (%)": 71.38,
+    "Projected Range 95%": "4.98% to 5.16%",
+    "Kelly %": 18.43,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x1.36",
     "Score Breakdown": {
-      "pattern": 23.12,
-      "projected": 7.75,
-      "range": 3.99,
-      "trend_bonus": 29.8,
+      "pattern": 21.41,
+      "projected": 7.61,
+      "range": 3.0,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 61.2,
-    "ADX-14": 38.1,
-    "Vol Z-Score": -1.04,
-    "MACD Signal": "Bullish",
-    "MACD Histogram": 0.1021,
-    "Bollinger %B": 0.754,
-    "Avg Volume (20D)": 3623809,
+    "RSI-14": 51.3,
+    "ADX-14": 36.3,
+    "Vol Z-Score": 0.54,
+    "MACD Signal": "🔴 Bearish Cross",
+    "MACD Histogram": -0.0203,
+    "Bollinger %B": 0.493,
+    "Avg Volume (20D)": 3742500,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       38.82,
@@ -115,7 +121,8 @@
       41.95,
       42.89,
       42.31,
-      42.59
+      42.59,
+      41.2
     ],
     "open": [
       39.4,
@@ -152,7 +159,8 @@
       42.41,
       41.95,
       43.03,
-      42.35
+      42.35,
+      42.59
     ],
     "high": [
       39.57,
@@ -189,7 +197,8 @@
       42.83,
       43.47,
       43.49,
-      42.89
+      42.89,
+      42.83
     ],
     "low": [
       38.7,
@@ -226,7 +235,8 @@
       41.42,
       42.0,
       42.31,
-      42.21
+      42.21,
+      41.1
     ],
     "volume": [
       1874327,
@@ -263,7 +273,8 @@
       2972262,
       3175569,
       2498280,
-      1070369
+      1070369,
+      5079554
     ],
     "vwap": [
       39.03,
@@ -300,7 +311,8 @@
       40.5942,
       40.765,
       40.9718,
-      41.0579
+      41.0579,
+      41.1901
     ],
     "resistance": 44.0,
     "support": 37.0,

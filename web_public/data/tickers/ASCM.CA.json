@@ -1,15 +1,20 @@
 {
   "ticker": "ASCM.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Basic Resources",
   "matrix": {
     "Ticker": "ASCM.CA",
+    "Sector": "Basic Resources",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "📈 ACCUMULATE",
-    "Rank Score": 9.3,
-    "Current Price": 63.95,
-    "Target Entry (VWAP)": 63.95,
-    "Suggested Stop-Loss": 58.4171,
-    "Take-Profit Target": 71.3137,
+    "Rank Score": 9.2,
+    "Current Price": 63.2,
+    "Target Entry (VWAP)": 63.2,
+    "Suggested Stop-Loss": 57.5286,
+    "Take-Profit Target": 70.7317,
     "Resistance (52W High)": 69.95,
     "Support (52W Low)": 56.29,
     "Pivot Point": 66.33,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.84,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Kelly %": 1.79,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.8,
+      "range": 2.53,
       "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 50.2,
-    "ADX-14": 41.5,
-    "Vol Z-Score": -0.66,
+    "RSI-14": 47.2,
+    "ADX-14": 39.8,
+    "Vol Z-Score": -0.9,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.2452,
-    "Bollinger %B": 0.446,
-    "Avg Volume (20D)": 927800,
+    "MACD Histogram": -0.3803,
+    "Bollinger %B": 0.332,
+    "Avg Volume (20D)": 907631,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       60.31,
@@ -115,7 +121,8 @@
       65.28,
       65.4,
       64.91,
-      63.95
+      63.95,
+      63.2
     ],
     "open": [
       62.0,
@@ -152,7 +159,8 @@
       66.41,
       65.28,
       65.99,
-      65.35
+      65.35,
+      63.95
     ],
     "high": [
       62.48,
@@ -189,7 +197,8 @@
       69.34,
       67.15,
       66.01,
-      65.6
+      65.6,
+      65.46
     ],
     "low": [
       60.01,
@@ -226,7 +235,8 @@
       65.28,
       65.2,
       64.74,
-      62.85
+      62.85,
+      63.0
     ],
     "volume": [
       990198,
@@ -263,7 +273,8 @@
       1293723,
       730288,
       456691,
-      605584
+      605584,
+      456163
     ],
     "vwap": [
       60.9333,
@@ -300,7 +311,8 @@
       64.5407,
       64.6769,
       64.7346,
-      64.8661
+      64.8661,
+      65.0358
     ],
     "resistance": 69.95,
     "support": 56.29,

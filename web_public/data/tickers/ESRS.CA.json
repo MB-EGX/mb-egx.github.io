@@ -1,15 +1,21 @@
 {
   "ticker": "ESRS.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Basic Resources",
   "matrix": {
     "Ticker": "ESRS.CA",
-    "Action": "🚫 ILLIQUID - 🔥 STRONG BUY [👑 WEEKLY ALIGNED]",
-    "Rank Score": 18.2,
+    "Sector": "Basic Resources",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
+    "Action": "🚫 ILLIQUID - 🔥 STRONG BUY (Unconfirmed: low ADX/volume, below VWAP) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 1.2,
     "Current Price": 141.0,
     "Target Entry (VWAP)": 141.0,
-    "Suggested Stop-Loss": 140.2343,
-    "Take-Profit Target": 142.9441,
+    "Suggested Stop-Loss": 140.1771,
+    "Take-Profit Target": 143.0156,
     "Resistance (52W High)": 142.99,
     "Support (52W Low)": 102.2,
     "Pivot Point": 141.1667,
@@ -22,24 +28,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 11.67,
-    "Signal Reason": "🚫 ILLIQUID - 🔥 STRONG BUY [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | vol x2.13",
+    "Kelly %": 11.27,
+    "Signal Reason": "🚫 ILLIQUID - 🔥 STRONG BUY (Unconfirmed: low ADX/volume, below VWAP) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
       "range": 4.76,
-      "trend_bonus": 30.0,
+      "trend_bonus": -2.5,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
     "RSI-14": 62.1,
-    "ADX-14": 48.6,
-    "Vol Z-Score": 1.31,
+    "ADX-14": 48.5,
+    "Vol Z-Score": -1.1,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.4803,
+    "MACD Histogram": -0.4836,
     "Bollinger %B": 0.419,
-    "Avg Volume (20D)": 2541,
+    "Avg Volume (20D)": 2480,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       129.99,
@@ -100,6 +107,7 @@
       141.0,
       141.4,
       141.4,
+      141.0,
       141.0,
       141.0,
       141.0,
@@ -152,6 +160,7 @@
       141.0,
       141.0,
       141.0,
+      141.0,
       141.0
     ],
     "high": [
@@ -189,6 +198,7 @@
       141.0,
       141.0,
       141.0,
+      141.89,
       141.89
     ],
     "low": [
@@ -213,6 +223,7 @@
       141.0,
       138.15,
       138.15,
+      141.0,
       141.0,
       141.0,
       141.0,
@@ -263,7 +274,8 @@
       1751,
       0,
       1751,
-      5422
+      5422,
+      0
     ],
     "vwap": [
       122.0633,
@@ -300,7 +312,8 @@
       141.0645,
       141.0567,
       141.0468,
-      141.0663
+      141.0663,
+      141.0602
     ],
     "resistance": 142.99,
     "support": 102.2,

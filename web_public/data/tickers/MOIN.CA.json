@@ -1,15 +1,20 @@
 {
   "ticker": "MOIN.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "MOIN.CA",
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "📈 ACCUMULATE",
-    "Rank Score": 10.1,
-    "Current Price": 38.3,
-    "Target Entry (VWAP)": 35.4982,
-    "Suggested Stop-Loss": 31.9429,
-    "Take-Profit Target": 46.5145,
+    "Rank Score": 17.4,
+    "Current Price": 36.51,
+    "Target Entry (VWAP)": 35.5556,
+    "Suggested Stop-Loss": 29.8686,
+    "Take-Profit Target": 37.4958,
     "Resistance (52W High)": 40.8,
     "Support (52W Low)": 22.6,
     "Pivot Point": 37.7367,
@@ -19,27 +24,27 @@
     "S1": 34.9733,
     "S2": 31.1467,
     "S3": 28.3833,
-    "Projected Gain (%)": "N/A",
-    "Pattern Conf (%)": "N/A",
-    "Projected Range 95%": "N/A",
-    "Kelly %": 1.22,
+    "Projected Gain (%)": -1.83,
+    "Pattern Conf (%)": 56.71,
+    "Projected Range 95%": "-1.83% to -1.83%",
+    "Kelly %": 0.0,
     "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
-      "pattern": 0.0,
-      "projected": 0.0,
-      "range": 4.31,
+      "pattern": 17.01,
+      "projected": -2.75,
+      "range": 3.82,
       "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
-    "Regime": "N/A",
+    "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 77.2,
-    "ADX-14": 60.0,
-    "Vol Z-Score": -0.01,
+    "RSI-14": 68.9,
+    "ADX-14": 59.3,
+    "Vol Z-Score": -0.25,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.816,
-    "Bollinger %B": 0.837,
-    "Avg Volume (20D)": 1069218,
+    "MACD Histogram": 0.5992,
+    "Bollinger %B": 0.741,
+    "Avg Volume (20D)": 1104276,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       23.03,
@@ -115,7 +121,8 @@
       35.02,
       34.0,
       38.8,
-      38.3
+      38.3,
+      36.51
     ],
     "open": [
       23.2,
@@ -152,7 +159,8 @@
       35.47,
       35.02,
       34.51,
-      39.4
+      39.4,
+      38.3
     ],
     "high": [
       23.5,
@@ -189,7 +197,8 @@
       36.99,
       35.32,
       40.5,
-      40.1
+      40.1,
+      38.6
     ],
     "low": [
       22.61,
@@ -226,7 +235,8 @@
       34.92,
       33.91,
       34.2,
-      38.0
+      38.0,
+      36.26
     ],
     "volume": [
       23239,
@@ -263,7 +273,8 @@
       952950,
       384333,
       3038592,
-      1048008
+      1048008,
+      710828
     ],
     "vwap": [
       23.0467,
@@ -300,7 +311,8 @@
       34.8809,
       34.8822,
       35.3263,
-      35.4982
+      35.4982,
+      35.5556
     ],
     "resistance": 40.8,
     "support": 22.6,

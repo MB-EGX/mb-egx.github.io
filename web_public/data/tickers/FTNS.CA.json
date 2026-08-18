@@ -1,15 +1,20 @@
 {
   "ticker": "FTNS.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "FTNS.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 28.9,
-    "Current Price": 1.37,
-    "Target Entry (VWAP)": 1.3309,
-    "Suggested Stop-Loss": 1.23,
-    "Take-Profit Target": 1.407,
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 36.3,
+    "Current Price": 1.42,
+    "Target Entry (VWAP)": 1.3348,
+    "Suggested Stop-Loss": 1.2771,
+    "Take-Profit Target": 1.4583,
     "Resistance (52W High)": 1.48,
     "Support (52W Low)": 1.14,
     "Pivot Point": 1.4133,
@@ -19,27 +24,27 @@
     "S1": 1.3467,
     "S2": 1.2633,
     "S3": 1.1967,
-    "Projected Gain (%)": 0.0,
-    "Pattern Conf (%)": 73.5,
-    "Projected Range 95%": "0.0% to 0.0%",
+    "Projected Gain (%)": -0.76,
+    "Pattern Conf (%)": 71.35,
+    "Projected Range 95%": "-0.76% to -0.76%",
     "Kelly %": 0.0,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow | vol x1.03",
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
-      "pattern": 22.05,
-      "projected": 0.0,
-      "range": 3.38,
-      "trend_bonus": 30.0,
+      "pattern": 21.4,
+      "projected": -1.14,
+      "range": 4.12,
+      "trend_bonus": 44.8,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 55.1,
-    "ADX-14": 43.8,
-    "Vol Z-Score": 0.05,
+    "RSI-14": 60.5,
+    "ADX-14": 42.5,
+    "Vol Z-Score": -0.7,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0022,
-    "Bollinger %B": 0.601,
-    "Avg Volume (20D)": 2022091,
+    "MACD Histogram": 0.0014,
+    "Bollinger %B": 0.788,
+    "Avg Volume (20D)": 1905124,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       1.16,
@@ -115,7 +121,8 @@
       1.43,
       1.46,
       1.43,
-      1.37
+      1.37,
+      1.42
     ],
     "open": [
       1.16,
@@ -152,7 +159,8 @@
       1.43,
       1.43,
       1.45,
-      1.4
+      1.4,
+      1.37
     ],
     "high": [
       1.17,
@@ -189,7 +197,8 @@
       1.44,
       1.48,
       1.48,
-      1.44
+      1.44,
+      1.43
     ],
     "low": [
       1.15,
@@ -226,7 +235,8 @@
       1.37,
       1.37,
       1.4,
-      1.36
+      1.36,
+      1.35
     ],
     "volume": [
       300205,
@@ -263,7 +273,8 @@
       1470202,
       1959211,
       759955,
-      2087114
+      2087114,
+      989048
     ],
     "vwap": [
       1.16,
@@ -300,7 +311,8 @@
       1.3363,
       1.3407,
       1.338,
-      1.3309
+      1.3309,
+      1.3348
     ],
     "resistance": 1.48,
     "support": 1.14,

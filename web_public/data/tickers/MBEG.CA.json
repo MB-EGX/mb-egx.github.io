@@ -1,16 +1,21 @@
 {
   "ticker": "MBEG.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Industrial Goods, Services & Automobiles",
   "matrix": {
     "Ticker": "MBEG.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 33.8,
-    "Current Price": 6.8,
-    "Target Entry (VWAP)": 5.0719,
-    "Suggested Stop-Loss": 5.9429,
-    "Take-Profit Target": 7.0047,
-    "Resistance (52W High)": 6.81,
+    "Sector": "Industrial Goods, Services & Automobiles",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 25.4,
+    "Current Price": 6.4,
+    "Target Entry (VWAP)": 5.1322,
+    "Suggested Stop-Loss": 5.4757,
+    "Take-Profit Target": 6.5869,
+    "Resistance (52W High)": 7.0,
     "Support (52W Low)": 3.68,
     "Pivot Point": 6.0367,
     "R1": 6.5533,
@@ -19,27 +24,27 @@
     "S1": 5.6833,
     "S2": 5.1667,
     "S3": 4.8133,
-    "Projected Gain (%)": 2.31,
-    "Pattern Conf (%)": 88.23,
-    "Projected Range 95%": "2.31% to 2.31%",
-    "Kelly %": 19.47,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Projected Gain (%)": 2.22,
+    "Pattern Conf (%)": 86.96,
+    "Projected Range 95%": "2.13% to 2.3%",
+    "Kelly %": 11.24,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
-      "pattern": 26.47,
-      "projected": 3.46,
-      "range": 4.98,
-      "trend_bonus": 29.8,
+      "pattern": 26.09,
+      "projected": 3.33,
+      "range": 4.1,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 85.7,
-    "ADX-14": 62.8,
-    "Vol Z-Score": -0.02,
+    "RSI-14": 73.9,
+    "ADX-14": 64.4,
+    "Vol Z-Score": -0.48,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.1804,
-    "Bollinger %B": 1.036,
-    "Avg Volume (20D)": 4474925,
+    "MACD Histogram": 0.1577,
+    "Bollinger %B": 0.869,
+    "Avg Volume (20D)": 4557842,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       3.84,
@@ -115,7 +121,8 @@
       5.93,
       6.14,
       6.2,
-      6.8
+      6.8,
+      6.4
     ],
     "open": [
       3.89,
@@ -152,7 +159,8 @@
       5.58,
       5.93,
       6.14,
-      6.2
+      6.2,
+      6.8
     ],
     "high": [
       3.9,
@@ -189,7 +197,8 @@
       6.17,
       6.39,
       6.22,
-      6.81
+      6.81,
+      7.0
     ],
     "low": [
       3.82,
@@ -226,7 +235,8 @@
       5.58,
       6.0,
       5.98,
-      6.12
+      6.12,
+      6.3
     ],
     "volume": [
       756826,
@@ -263,7 +273,8 @@
       5394663,
       4406963,
       1655671,
-      4423314
+      4423314,
+      2977418
     ],
     "vwap": [
       3.8533,
@@ -300,9 +311,10 @@
       4.833,
       4.9146,
       4.9809,
-      5.0719
+      5.0719,
+      5.1322
     ],
-    "resistance": 6.81,
+    "resistance": 7.0,
     "support": 3.68,
     "pivots": {
       "pp": 6.0367,

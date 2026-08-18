@@ -1,15 +1,20 @@
 {
   "ticker": "HRHO.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "HRHO.CA",
-    "Action": "⏳ BUY ON DIP",
-    "Rank Score": 24.1,
-    "Current Price": 26.46,
-    "Target Entry (VWAP)": 26.46,
-    "Suggested Stop-Loss": 25.3786,
-    "Take-Profit Target": 27.997,
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 8.5,
+    "Current Price": 26.51,
+    "Target Entry (VWAP)": 26.51,
+    "Suggested Stop-Loss": 25.4229,
+    "Take-Profit Target": 28.0545,
     "Resistance (52W High)": 28.1,
     "Support (52W Low)": 25.95,
     "Pivot Point": 26.72,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 3.15,
-    "Signal Reason": "⏳ BUY ON DIP | trend=Weak Bullish | awaiting confirmation",
+    "Kelly %": 3.14,
+    "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 1.19,
-      "trend_bonus": 45.0,
+      "range": 1.3,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Weak Bullish",
-    "RSI-14": 42.4,
-    "ADX-14": 24.6,
-    "Vol Z-Score": -0.24,
+    "RSI-14": 43.4,
+    "ADX-14": 23.8,
+    "Vol Z-Score": -0.46,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0714,
-    "Bollinger %B": 0.254,
-    "Avg Volume (20D)": 3772973,
+    "MACD Histogram": -0.0801,
+    "Bollinger %B": 0.294,
+    "Avg Volume (20D)": 3653793,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       26.86,
@@ -115,7 +121,8 @@
       27.25,
       26.66,
       26.31,
-      26.46
+      26.46,
+      26.51
     ],
     "open": [
       27.18,
@@ -152,7 +159,8 @@
       27.3,
       27.25,
       26.8,
-      26.4
+      26.4,
+      26.46
     ],
     "high": [
       27.55,
@@ -189,7 +197,8 @@
       27.6,
       27.45,
       26.9,
-      26.66
+      26.66,
+      26.72
     ],
     "low": [
       26.84,
@@ -226,7 +235,8 @@
       27.06,
       26.57,
       26.25,
-      26.25
+      26.25,
+      26.45
     ],
     "volume": [
       14170567,
@@ -263,7 +273,8 @@
       2473205,
       4278887,
       5834058,
-      3134273
+      3134273,
+      2404090
     ],
     "vwap": [
       27.0833,
@@ -300,7 +311,8 @@
       27.1184,
       27.1327,
       27.105,
-      27.0895
+      27.0895,
+      27.088
     ],
     "resistance": 28.1,
     "support": 25.95,

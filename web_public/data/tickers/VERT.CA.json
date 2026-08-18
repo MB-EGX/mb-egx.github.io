@@ -1,17 +1,22 @@
 {
   "ticker": "VERT.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "VERT.CA",
-    "Action": "⏳ BUY ON DIP [💥 SQUEEZE]",
-    "Rank Score": 28.8,
-    "Current Price": 7.28,
-    "Target Entry (VWAP)": 7.28,
-    "Suggested Stop-Loss": 6.5886,
-    "Take-Profit Target": 8.1952,
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor)",
+    "Rank Score": 8.3,
+    "Current Price": 6.98,
+    "Target Entry (VWAP)": 6.98,
+    "Suggested Stop-Loss": 6.28,
+    "Take-Profit Target": 7.9039,
     "Resistance (52W High)": 9.77,
-    "Support (52W Low)": 7.16,
+    "Support (52W Low)": 6.9,
     "Pivot Point": 7.4733,
     "R1": 7.7167,
     "R2": 8.0133,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.72,
-    "Signal Reason": "⏳ BUY ON DIP [💥 SQUEEZE] | trend=Strong Bearish | awaiting confirmation | volatility squeeze",
+    "Kelly %": 1.66,
+    "Signal Reason": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor) | trend=Strong Bearish | awaiting confirmation | vol x2.72",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 0.23,
-      "trend_bonus": 55.0,
+      "range": 0.14,
+      "trend_bonus": 15.75,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bearish",
-    "RSI-14": 33.0,
-    "ADX-14": 34.3,
-    "Vol Z-Score": -0.61,
-    "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0044,
-    "Bollinger %B": 0.1,
-    "Avg Volume (20D)": 299257,
+    "RSI-14": 27.5,
+    "ADX-14": 34.7,
+    "Vol Z-Score": 2.24,
+    "MACD Signal": "🔴 Bearish Cross",
+    "MACD Histogram": -0.0168,
+    "Bollinger %B": -0.071,
+    "Avg Volume (20D)": 332025,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       9.39,
@@ -115,7 +121,8 @@
       7.42,
       7.5,
       7.42,
-      7.28
+      7.28,
+      6.98
     ],
     "open": [
       8.01,
@@ -152,7 +159,8 @@
       7.51,
       7.42,
       7.5,
-      7.42
+      7.42,
+      7.28
     ],
     "high": [
       9.77,
@@ -189,7 +197,8 @@
       7.51,
       7.58,
       7.54,
-      7.47
+      7.47,
+      7.3
     ],
     "low": [
       8.01,
@@ -226,7 +235,8 @@
       7.4,
       7.44,
       7.39,
-      7.24
+      7.24,
+      6.9
     ],
     "volume": [
       1003710,
@@ -263,7 +273,8 @@
       129047,
       243182,
       109145,
-      167504
+      167504,
+      901968
     ],
     "vwap": [
       9.0567,
@@ -300,10 +311,11 @@
       7.8342,
       7.8009,
       7.783,
-      7.7674
+      7.7674,
+      7.6651
     ],
     "resistance": 9.77,
-    "support": 7.16,
+    "support": 6.9,
     "pivots": {
       "pp": 7.4733,
       "r1": 7.7167,

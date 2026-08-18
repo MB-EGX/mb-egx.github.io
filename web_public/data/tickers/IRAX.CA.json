@@ -1,11 +1,17 @@
 {
   "ticker": "IRAX.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Basic Resources",
   "matrix": {
     "Ticker": "IRAX.CA",
-    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 6.7,
+    "Sector": "Basic Resources",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
+    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": -2.8,
     "Current Price": 1250.0,
     "Target Entry (VWAP)": 1249.3062,
     "Suggested Stop-Loss": 1244.2857,
@@ -23,22 +29,22 @@
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
     "Kelly %": 12.61,
-    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | vol x17.10",
+    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
       "range": 4.9,
-      "trend_bonus": 8.0,
+      "trend_bonus": -10.2,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
     "RSI-14": 54.2,
-    "ADX-14": 37.2,
-    "Vol Z-Score": 4.24,
+    "ADX-14": 35.2,
+    "Vol Z-Score": -0.26,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 2.4857,
-    "Bollinger %B": 0.583,
+    "MACD Histogram": 1.9314,
+    "Bollinger %B": 0.582,
     "Avg Volume (20D)": 33,
     "Data Confidence": "Low (<3 Months)"
   },
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       1245.0,
@@ -100,6 +107,7 @@
       1245.0,
       1000.0,
       1000.0,
+      1250.0,
       1250.0,
       1250.0,
       1250.0,
@@ -152,6 +160,7 @@
       1255.0,
       1255.0,
       1255.0,
+      1250.0,
       1250.0
     ],
     "high": [
@@ -189,6 +198,7 @@
       1255.0,
       1255.0,
       1255.0,
+      1250.0,
       1250.0
     ],
     "low": [
@@ -213,6 +223,7 @@
       1000.0,
       1245.0,
       1245.0,
+      1250.0,
       1250.0,
       1250.0,
       1250.0,
@@ -263,7 +274,8 @@
       0,
       0,
       0,
-      567
+      567,
+      0
     ],
     "vwap": [
       1245.0,
@@ -300,6 +312,7 @@
       1245.2083,
       1245.2083,
       1245.2083,
+      1249.3062,
       1249.3062
     ],
     "resistance": 1255.0,

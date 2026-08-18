@@ -1,16 +1,21 @@
 {
   "ticker": "FAIT.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Banks",
   "matrix": {
     "Ticker": "FAIT.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 45.6,
-    "Current Price": 42.91,
-    "Target Entry (VWAP)": 38.9752,
-    "Suggested Stop-Loss": 40.4571,
-    "Take-Profit Target": 44.0686,
-    "Resistance (52W High)": 42.91,
+    "Sector": "Banks",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 35.7,
+    "Current Price": 42.56,
+    "Target Entry (VWAP)": 39.1746,
+    "Suggested Stop-Loss": 40.0786,
+    "Take-Profit Target": 43.7091,
+    "Resistance (52W High)": 43.0,
     "Support (52W Low)": 35.06,
     "Pivot Point": 40.07,
     "R1": 43.13,
@@ -19,27 +24,27 @@
     "S1": 38.46,
     "S2": 35.4,
     "S3": 33.79,
-    "Projected Gain (%)": -0.54,
-    "Pattern Conf (%)": 67.07,
-    "Projected Range 95%": "-0.54% to -0.54%",
+    "Projected Gain (%)": -0.62,
+    "Pattern Conf (%)": 65.17,
+    "Projected Range 95%": "-0.69% to -0.54%",
     "Kelly %": 0.0,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | positive money flow | vol x1.91",
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow | vol x1.01",
     "Score Breakdown": {
-      "pattern": 20.12,
-      "projected": -0.81,
-      "range": 5.0,
-      "trend_bonus": 63.0,
+      "pattern": 19.55,
+      "projected": -0.93,
+      "range": 4.72,
+      "trend_bonus": 44.8,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 81.7,
-    "ADX-14": 36.0,
-    "Vol Z-Score": 1.39,
+    "RSI-14": 77.8,
+    "ADX-14": 37.0,
+    "Vol Z-Score": 0.02,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.4803,
-    "Bollinger %B": 1.152,
-    "Avg Volume (20D)": 105050,
+    "MACD Histogram": 0.4971,
+    "Bollinger %B": 1.002,
+    "Avg Volume (20D)": 109292,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       36.15,
@@ -115,7 +121,8 @@
       39.45,
       40.81,
       41.52,
-      42.91
+      42.91,
+      42.56
     ],
     "open": [
       36.4,
@@ -152,7 +159,8 @@
       38.83,
       39.45,
       41.0,
-      41.53
+      41.53,
+      42.91
     ],
     "high": [
       36.74,
@@ -189,7 +197,8 @@
       39.45,
       40.99,
       41.68,
-      42.91
+      42.91,
+      43.0
     ],
     "low": [
       36.0,
@@ -226,7 +235,8 @@
       38.83,
       39.1,
       40.5,
-      41.21
+      41.21,
+      42.0
     ],
     "volume": [
       21626,
@@ -263,7 +273,8 @@
       169743,
       281193,
       129371,
-      200207
+      200207,
+      110614
     ],
     "vwap": [
       36.2967,
@@ -300,9 +311,10 @@
       37.9432,
       38.3059,
       38.5575,
-      38.9752
+      38.9752,
+      39.1746
     ],
-    "resistance": 42.91,
+    "resistance": 43.0,
     "support": 35.06,
     "pivots": {
       "pp": 40.07,

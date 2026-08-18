@@ -1,15 +1,20 @@
 {
   "ticker": "MPRC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "IT, Media & Communication Services",
   "matrix": {
     "Ticker": "MPRC.CA",
+    "Sector": "IT, Media & Communication Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "📈 ACCUMULATE",
-    "Rank Score": 9.2,
-    "Current Price": 44.96,
-    "Target Entry (VWAP)": 44.96,
-    "Suggested Stop-Loss": 40.5914,
-    "Take-Profit Target": 50.7354,
+    "Rank Score": 9.1,
+    "Current Price": 43.97,
+    "Target Entry (VWAP)": 43.97,
+    "Suggested Stop-Loss": 39.5686,
+    "Take-Profit Target": 49.7796,
     "Resistance (52W High)": 52.49,
     "Support (52W Low)": 36.7,
     "Pivot Point": 48.0633,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.7,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Kelly %": 1.67,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | vol x1.15",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.62,
+      "range": 2.3,
       "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 50.5,
-    "ADX-14": 54.4,
-    "Vol Z-Score": -0.36,
+    "RSI-14": 47.3,
+    "ADX-14": 51.8,
+    "Vol Z-Score": 0.23,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.2277,
-    "Bollinger %B": 0.387,
-    "Avg Volume (20D)": 528683,
+    "MACD Histogram": -0.4033,
+    "Bollinger %B": 0.257,
+    "Avg Volume (20D)": 533575,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       38.41,
@@ -115,7 +121,8 @@
       48.0,
       46.1,
       46.46,
-      44.96
+      44.96,
+      43.97
     ],
     "open": [
       37.5,
@@ -152,7 +159,8 @@
       51.0,
       48.0,
       46.35,
-      46.74
+      46.74,
+      44.96
     ],
     "high": [
       38.41,
@@ -189,7 +197,8 @@
       51.99,
       48.03,
       47.68,
-      46.88
+      46.88,
+      45.5
     ],
     "low": [
       36.7,
@@ -226,7 +235,8 @@
       47.52,
       45.4,
       45.51,
-      44.81
+      44.81,
+      43.25
     ],
     "volume": [
       1955100,
@@ -263,7 +273,8 @@
       1206470,
       785774,
       842871,
-      402733
+      402733,
+      614834
     ],
     "vwap": [
       37.84,
@@ -300,7 +311,8 @@
       46.0117,
       46.2547,
       46.3933,
-      46.4663
+      46.4663,
+      46.4494
     ],
     "resistance": 52.49,
     "support": 36.7,

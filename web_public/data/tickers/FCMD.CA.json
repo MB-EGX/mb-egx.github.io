@@ -1,16 +1,21 @@
 {
   "ticker": "FCMD.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "FCMD.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
-    "Rank Score": 32.2,
-    "Current Price": 6.88,
-    "Target Entry (VWAP)": 6.7846,
-    "Suggested Stop-Loss": 6.3843,
-    "Take-Profit Target": 7.5478,
-    "Resistance (52W High)": 7.35,
+    "Sector": "Health Care & Pharmaceuticals",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "🔥 STRONG BUY [👑 WEEKLY ALIGNED]",
+    "Rank Score": 39.3,
+    "Current Price": 7.54,
+    "Target Entry (VWAP)": 6.8929,
+    "Suggested Stop-Loss": 7.0414,
+    "Take-Profit Target": 8.216,
+    "Resistance (52W High)": 7.56,
     "Support (52W Low)": 5.71,
     "Pivot Point": 6.65,
     "R1": 6.79,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.09,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | volatility squeeze | vol x1.57",
+    "Kelly %": 2.22,
+    "Signal Reason": "🔥 STRONG BUY [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | positive money flow | vol x3.23",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 3.57,
-      "trend_bonus": 58.0,
+      "range": 4.95,
+      "trend_bonus": 70.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 57.9,
-    "ADX-14": 27.1,
-    "Vol Z-Score": 0.75,
-    "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0116,
-    "Bollinger %B": 0.779,
-    "Avg Volume (20D)": 1513401,
+    "RSI-14": 71.9,
+    "ADX-14": 29.3,
+    "Vol Z-Score": 2.64,
+    "MACD Signal": "🟢 Bullish Cross",
+    "MACD Histogram": 0.0395,
+    "Bollinger %B": 1.333,
+    "Avg Volume (20D)": 1746635,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       6.38,
@@ -115,7 +121,8 @@
       6.68,
       6.61,
       6.65,
-      6.88
+      6.88,
+      7.54
     ],
     "open": [
       6.46,
@@ -152,7 +159,8 @@
       6.7,
       6.68,
       6.61,
-      6.65
+      6.65,
+      6.88
     ],
     "high": [
       6.5,
@@ -189,7 +197,8 @@
       6.75,
       6.73,
       6.68,
-      6.97
+      6.97,
+      7.56
     ],
     "low": [
       6.19,
@@ -226,7 +235,8 @@
       6.51,
       6.56,
       6.61,
-      6.62
+      6.62,
+      7.18
     ],
     "volume": [
       2116204,
@@ -263,7 +273,8 @@
       1129424,
       813261,
       790827,
-      2381178
+      2381178,
+      5633393
     ],
     "vwap": [
       6.3567,
@@ -300,9 +311,10 @@
       6.7738,
       6.7744,
       6.7747,
-      6.7846
+      6.7846,
+      6.8929
     ],
-    "resistance": 7.35,
+    "resistance": 7.56,
     "support": 5.71,
     "pivots": {
       "pp": 6.65,

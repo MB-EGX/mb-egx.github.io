@@ -1,11 +1,17 @@
 {
   "ticker": "DEIN.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "DEIN.CA",
-    "Action": "🚫 ILLIQUID - ⏳ BUY ON DIP",
-    "Rank Score": 2.6,
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
+    "Action": "🚫 ILLIQUID - ⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor)",
+    "Rank Score": -12.7,
     "Current Price": 10.35,
     "Target Entry (VWAP)": 10.35,
     "Suggested Stop-Loss": 9.936,
@@ -23,12 +29,12 @@
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
     "Kelly %": 3.2,
-    "Signal Reason": "🚫 ILLIQUID - ⏳ BUY ON DIP | trend=Weak Bullish | awaiting confirmation | vol x1.00",
+    "Signal Reason": "🚫 ILLIQUID - ⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor) | trend=Weak Bullish | awaiting confirmation | vol x1.00",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
       "range": 0.0,
-      "trend_bonus": 5.0,
+      "trend_bonus": -24.25,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
@@ -37,7 +43,7 @@
     "ADX-14": 100.0,
     "Vol Z-Score": 0.0,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.035,
+    "MACD Histogram": 0.0339,
     "Bollinger %B": 0.5,
     "Avg Volume (20D)": 0,
     "Data Confidence": "Low (<3 Months)"
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       11.38,
@@ -88,6 +95,7 @@
       11.38,
       11.38,
       11.38,
+      10.35,
       10.35,
       10.35,
       10.35,
@@ -152,6 +160,7 @@
       10.35,
       10.35,
       10.35,
+      10.35,
       10.35
     ],
     "high": [
@@ -189,6 +198,7 @@
       10.35,
       10.35,
       10.35,
+      10.35,
       10.35
     ],
     "low": [
@@ -199,6 +209,7 @@
       11.38,
       11.38,
       11.38,
+      10.35,
       10.35,
       10.35,
       10.35,
@@ -263,6 +274,7 @@
       0,
       0,
       0,
+      0,
       0
     ],
     "vwap": [
@@ -286,6 +298,7 @@
       12.8933,
       12.8933,
       12.8933,
+      10.35,
       10.35,
       10.35,
       10.35,

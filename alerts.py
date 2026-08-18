@@ -129,6 +129,25 @@ def send_telegram_pre_breakout_high_confidence(event_type: str, payload: dict) -
     _post_telegram_message(text)
 
 
+def send_telegram_usd_divergence(event_type: str, payload: dict) -> None:
+    """session_picks.py ALERT_CHANNELS callback signature: (event_type,
+    payload). Handles 'usd_divergence_detected' - fired from
+    decision_matrix.py the moment usd_divergence.py's live snapshot
+    flips to a real "bearish" or "bullish" verdict between EGX30 (EGP)
+    and EGX30 (USD) (see that module's docstring for what each means).
+    Deduped by session_picks.emit_alert per DIRECTION (see the emit_alert
+    call site in decision_matrix.py) so an unresolved divergence doesn't
+    re-push every run, but a flip to the opposite direction does.
+    """
+    if event_type != "usd_divergence_detected":
+        return
+    divergence = payload.get("divergence", "?")
+    note = payload.get("note", "")
+    icon = "⚠️" if divergence == "bearish" else "💡"
+    text = f"{icon} <b>EGX30 EGP/USD Divergence — {divergence.title()}</b>\n{note}"
+    _post_telegram_message(text)
+
+
 def register_default_channels() -> None:
     """Idempotent — safe to call from multiple import sites."""
     if not SESSION_PICKS_TELEGRAM_WEBHOOK:
@@ -139,6 +158,7 @@ def register_default_channels() -> None:
     session_picks.register_alert_channel(send_telegram_pick_achieved)
     session_picks.register_alert_channel(send_telegram_concentration_breach)
     session_picks.register_alert_channel(send_telegram_pre_breakout_high_confidence)
+    session_picks.register_alert_channel(send_telegram_usd_divergence)
 
 
 register_default_channels()

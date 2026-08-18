@@ -1,15 +1,20 @@
 {
   "ticker": "ISPH.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "ISPH.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 16.6,
-    "Current Price": 13.49,
-    "Target Entry (VWAP)": 13.49,
-    "Suggested Stop-Loss": 11.3657,
-    "Take-Profit Target": 16.2398,
+    "Sector": "Health Care & Pharmaceuticals",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 8.8,
+    "Current Price": 13.21,
+    "Target Entry (VWAP)": 13.21,
+    "Suggested Stop-Loss": 11.0114,
+    "Take-Profit Target": 16.0507,
     "Resistance (52W High)": 16.93,
     "Support (52W Low)": 11.2,
     "Pivot Point": 14.0433,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.26,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Kelly %": 1.22,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.0,
-      "trend_bonus": 29.8,
+      "range": 1.75,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 58.2,
-    "ADX-14": 61.4,
-    "Vol Z-Score": -0.24,
+    "RSI-14": 54.8,
+    "ADX-14": 61.3,
+    "Vol Z-Score": -0.52,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0443,
-    "Bollinger %B": 0.672,
-    "Avg Volume (20D)": 15561013,
+    "MACD Histogram": 0.0009,
+    "Bollinger %B": 0.592,
+    "Avg Volume (20D)": 15685374,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       12.05,
@@ -115,7 +121,8 @@
       13.65,
       13.55,
       13.08,
-      13.49
+      13.49,
+      13.21
     ],
     "open": [
       12.21,
@@ -152,7 +159,8 @@
       14.01,
       13.65,
       13.58,
-      13.1
+      13.1,
+      13.49
     ],
     "high": [
       12.3,
@@ -189,6 +197,7 @@
       14.11,
       13.98,
       13.74,
+      13.8,
       13.8
     ],
     "low": [
@@ -226,7 +235,8 @@
       13.65,
       13.38,
       13.05,
-      13.08
+      13.08,
+      13.11
     ],
     "volume": [
       4871528,
@@ -263,7 +273,8 @@
       7723539,
       8318950,
       8719401,
-      10928535
+      10928535,
+      5609800
     ],
     "vwap": [
       12.0833,
@@ -300,7 +311,8 @@
       13.4847,
       13.5178,
       13.5579,
-      13.5896
+      13.5896,
+      13.6066
     ],
     "resistance": 16.93,
     "support": 11.2,

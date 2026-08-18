@@ -1,15 +1,21 @@
 {
   "ticker": "ELNA.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "ELNA.CA",
+    "Sector": "Food, Beverages & Tobacco",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
     "Action": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE]",
     "Rank Score": -6.7,
     "Current Price": 37.67,
     "Target Entry (VWAP)": 37.67,
-    "Suggested Stop-Loss": 35.6143,
-    "Take-Profit Target": 40.5033,
+    "Suggested Stop-Loss": 35.6129,
+    "Take-Profit Target": 40.5051,
     "Resistance (52W High)": 40.5,
     "Support (52W Low)": 35.55,
     "Pivot Point": 37.6267,
@@ -23,7 +29,7 @@
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
     "Kelly %": 2.55,
-    "Signal Reason": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE] | trend=Weak Bullish | awaiting confirmation | volatility squeeze | positive money flow",
+    "Signal Reason": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE] | trend=Weak Bullish | awaiting confirmation | volatility squeeze",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
@@ -34,12 +40,12 @@
     "Regime": "N/A",
     "Trend Class": "Weak Bullish",
     "RSI-14": 47.9,
-    "ADX-14": 32.9,
-    "Vol Z-Score": -0.91,
+    "ADX-14": 31.4,
+    "Vol Z-Score": -0.82,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0691,
-    "Bollinger %B": 0.358,
-    "Avg Volume (20D)": 11517,
+    "MACD Histogram": -0.0625,
+    "Bollinger %B": 0.376,
+    "Avg Volume (20D)": 10333,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       36.1,
@@ -114,6 +121,7 @@
       37.88,
       37.88,
       37.88,
+      37.67,
       37.67,
       37.67
     ],
@@ -152,7 +160,8 @@
       37.24,
       37.88,
       37.7,
-      37.5
+      37.5,
+      37.67
     ],
     "high": [
       38.0,
@@ -189,7 +198,8 @@
       37.83,
       37.88,
       38.0,
-      38.18
+      38.18,
+      38.4
     ],
     "low": [
       36.0,
@@ -226,7 +236,8 @@
       37.2,
       37.01,
       37.22,
-      37.4
+      37.4,
+      37.51
     ],
     "volume": [
       17624,
@@ -263,7 +274,8 @@
       5866,
       6700,
       8231,
-      3347
+      3347,
+      3502
     ],
     "vwap": [
       36.7,
@@ -300,7 +312,8 @@
       38.2096,
       38.1739,
       38.1279,
-      38.1054
+      38.1054,
+      38.0603
     ],
     "resistance": 40.5,
     "support": 35.55,

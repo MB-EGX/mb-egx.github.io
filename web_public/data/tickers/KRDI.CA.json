@@ -1,16 +1,21 @@
 {
   "ticker": "KRDI.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "KRDI.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 47.6,
-    "Current Price": 0.472,
-    "Target Entry (VWAP)": 0.4183,
-    "Suggested Stop-Loss": 0.4314,
-    "Take-Profit Target": 0.5193,
-    "Resistance (52W High)": 0.485,
+    "Sector": "Food, Beverages & Tobacco",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 34.1,
+    "Current Price": 0.484,
+    "Target Entry (VWAP)": 0.4256,
+    "Suggested Stop-Loss": 0.4416,
+    "Take-Profit Target": 0.5167,
+    "Resistance (52W High)": 0.499,
     "Support (52W Low)": 0.335,
     "Pivot Point": 0.446,
     "R1": 0.484,
@@ -19,27 +24,27 @@
     "S1": 0.418,
     "S2": 0.38,
     "S3": 0.352,
-    "Projected Gain (%)": 9.33,
-    "Pattern Conf (%)": 81.64,
-    "Projected Range 95%": "9.33% to 9.33%",
-    "Kelly %": 25.0,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | vol x1.62",
+    "Projected Gain (%)": 6.06,
+    "Pattern Conf (%)": 72.17,
+    "Projected Range 95%": "3.11% to 9.01%",
+    "Kelly %": 18.03,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x1.55",
     "Score Breakdown": {
-      "pattern": 24.49,
-      "projected": 14.0,
-      "range": 4.57,
-      "trend_bonus": 48.0,
+      "pattern": 21.65,
+      "projected": 9.09,
+      "range": 4.54,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 77.4,
-    "ADX-14": 53.0,
-    "Vol Z-Score": 1.16,
+    "RSI-14": 79.4,
+    "ADX-14": 53.9,
+    "Vol Z-Score": 1.02,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0058,
-    "Bollinger %B": 1.061,
-    "Avg Volume (20D)": 352242786,
+    "MACD Histogram": 0.0067,
+    "Bollinger %B": 1.048,
+    "Avg Volume (20D)": 351043230,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       0.342,
@@ -115,7 +121,8 @@
       0.448,
       0.457,
       0.456,
-      0.472
+      0.472,
+      0.484
     ],
     "open": [
       0.346,
@@ -152,7 +159,8 @@
       0.414,
       0.448,
       0.461,
-      0.461
+      0.461,
+      0.472
     ],
     "high": [
       0.346,
@@ -189,7 +197,8 @@
       0.45,
       0.474,
       0.467,
-      0.485
+      0.485,
+      0.499
     ],
     "low": [
       0.342,
@@ -226,7 +235,8 @@
       0.409,
       0.452,
       0.447,
-      0.451
+      0.451,
+      0.473
     ],
     "volume": [
       12110153,
@@ -263,7 +273,8 @@
       837319688,
       555342808,
       246474362,
-      571728890
+      571728890,
+      542400135
     ],
     "vwap": [
       0.3433,
@@ -300,9 +311,10 @@
       0.4026,
       0.408,
       0.4118,
-      0.4183
+      0.4183,
+      0.4256
     ],
-    "resistance": 0.485,
+    "resistance": 0.499,
     "support": 0.335,
     "pivots": {
       "pp": 0.446,

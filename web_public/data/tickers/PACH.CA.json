@@ -1,15 +1,21 @@
 {
   "ticker": "PACH.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Chemicals",
   "matrix": {
     "Ticker": "PACH.CA",
+    "Sector": "Chemicals",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
     "Action": "🚫 ILLIQUID - 📈 ACCUMULATE",
-    "Rank Score": -11.2,
+    "Rank Score": -11.3,
     "Current Price": 81.03,
     "Target Entry (VWAP)": 81.03,
-    "Suggested Stop-Loss": 78.73,
-    "Take-Profit Target": 84.4722,
+    "Suggested Stop-Loss": 79.3014,
+    "Take-Profit Target": 83.7579,
     "Resistance (52W High)": 85.0,
     "Support (52W Low)": 72.0,
     "Pivot Point": 81.0033,
@@ -22,8 +28,8 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 4.13,
-    "Signal Reason": "🚫 ILLIQUID - 📈 ACCUMULATE | trend=Weak Bullish | confirmed | vol x1.91",
+    "Kelly %": 5.07,
+    "Signal Reason": "🚫 ILLIQUID - 📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
@@ -34,11 +40,11 @@
     "Regime": "N/A",
     "Trend Class": "Weak Bullish",
     "RSI-14": 43.9,
-    "ADX-14": 24.2,
-    "Vol Z-Score": 0.58,
+    "ADX-14": 22.9,
+    "Vol Z-Score": -0.64,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.2113,
-    "Bollinger %B": 0.327,
+    "MACD Histogram": -0.1843,
+    "Bollinger %B": 0.345,
     "Avg Volume (20D)": 97,
     "Data Confidence": "Low (<3 Months)"
   },
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       85.0,
@@ -115,6 +122,7 @@
       81.0,
       81.0,
       81.0,
+      81.03,
       81.03
     ],
     "open": [
@@ -152,6 +160,7 @@
       81.0,
       81.0,
       81.0,
+      81.03,
       81.03
     ],
     "high": [
@@ -189,6 +198,7 @@
       81.01,
       81.01,
       81.01,
+      81.03,
       81.03
     ],
     "low": [
@@ -226,6 +236,7 @@
       81.0,
       81.0,
       81.0,
+      81.03,
       81.03
     ],
     "volume": [
@@ -263,7 +274,8 @@
       375,
       0,
       375,
-      187
+      187,
+      0
     ],
     "vwap": [
       83.3333,
@@ -300,7 +312,8 @@
       82.3974,
       82.3104,
       81.9688,
-      81.7908
+      81.7908,
+      81.7884
     ],
     "resistance": 85.0,
     "support": 72.0,

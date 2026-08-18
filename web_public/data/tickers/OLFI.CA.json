@@ -1,15 +1,20 @@
 {
   "ticker": "OLFI.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "OLFI.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 32.3,
-    "Current Price": 25.0,
-    "Target Entry (VWAP)": 24.5165,
-    "Suggested Stop-Loss": 22.7671,
-    "Take-Profit Target": 25.9875,
+    "Sector": "Food, Beverages & Tobacco",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 23.8,
+    "Current Price": 24.53,
+    "Target Entry (VWAP)": 24.53,
+    "Suggested Stop-Loss": 22.2814,
+    "Take-Profit Target": 25.337,
     "Resistance (52W High)": 26.52,
     "Support (52W Low)": 21.0,
     "Pivot Point": 24.95,
@@ -19,27 +24,27 @@
     "S1": 23.9,
     "S2": 22.6,
     "S3": 21.55,
-    "Projected Gain (%)": 3.25,
-    "Pattern Conf (%)": 78.2,
-    "Projected Range 95%": "3.25% to 3.25%",
-    "Kelly %": 14.45,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Projected Gain (%)": 2.59,
+    "Pattern Conf (%)": 77.36,
+    "Projected Range 95%": "2.0% to 3.19%",
+    "Kelly %": 7.14,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
-      "pattern": 23.46,
-      "projected": 4.88,
-      "range": 3.62,
-      "trend_bonus": 29.8,
+      "pattern": 23.21,
+      "projected": 3.88,
+      "range": 3.2,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 60.8,
-    "ADX-14": 53.0,
-    "Vol Z-Score": -0.38,
+    "RSI-14": 55.7,
+    "ADX-14": 51.5,
+    "Vol Z-Score": -0.43,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0715,
-    "Bollinger %B": 0.753,
-    "Avg Volume (20D)": 2585886,
+    "MACD Histogram": 0.0128,
+    "Bollinger %B": 0.613,
+    "Avg Volume (20D)": 2549548,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       21.67,
@@ -115,7 +121,8 @@
       25.8,
       25.1,
       25.2,
-      25.0
+      25.0,
+      24.53
     ],
     "open": [
       21.98,
@@ -152,7 +159,8 @@
       24.0,
       25.8,
       25.4,
-      25.1
+      25.1,
+      25.0
     ],
     "high": [
       21.98,
@@ -189,7 +197,8 @@
       26.0,
       25.8,
       25.5,
-      25.2
+      25.2,
+      25.1
     ],
     "low": [
       21.5,
@@ -226,7 +235,8 @@
       23.81,
       24.0,
       24.75,
-      24.75
+      24.75,
+      24.4
     ],
     "volume": [
       801301,
@@ -263,7 +273,8 @@
       3483079,
       21267254,
       780629,
-      836806
+      836806,
+      555520
     ],
     "vwap": [
       21.7167,
@@ -300,7 +311,8 @@
       23.9958,
       24.4091,
       24.4899,
-      24.5165
+      24.5165,
+      24.5606
     ],
     "resistance": 26.52,
     "support": 21.0,

@@ -1,16 +1,21 @@
 {
   "ticker": "SAUD.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Banks",
   "matrix": {
     "Ticker": "SAUD.CA",
-    "Action": "🔥 STRONG BUY (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 29.9,
-    "Current Price": 23.47,
-    "Target Entry (VWAP)": 22.4509,
-    "Suggested Stop-Loss": 22.4586,
-    "Take-Profit Target": 24.8986,
-    "Resistance (52W High)": 23.62,
+    "Sector": "Banks",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "🔥 STRONG BUY [👑 WEEKLY ALIGNED]",
+    "Rank Score": 60.6,
+    "Current Price": 23.72,
+    "Target Entry (VWAP)": 22.6154,
+    "Suggested Stop-Loss": 22.64,
+    "Take-Profit Target": 24.9748,
+    "Resistance (52W High)": 24.28,
     "Support (52W Low)": 19.99,
     "Pivot Point": 23.02,
     "R1": 23.91,
@@ -19,27 +24,27 @@
     "S1": 22.42,
     "S2": 21.53,
     "S3": 20.93,
-    "Projected Gain (%)": "N/A",
-    "Pattern Conf (%)": "N/A",
-    "Projected Range 95%": "N/A",
-    "Kelly %": 3.03,
-    "Signal Reason": "🔥 STRONG BUY (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow | vol x1.01",
+    "Projected Gain (%)": 4.59,
+    "Pattern Conf (%)": 64.31,
+    "Projected Range 95%": "4.59% to 4.59%",
+    "Kelly %": 16.8,
+    "Signal Reason": "🔥 STRONG BUY [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | positive money flow | vol x2.23",
     "Score Breakdown": {
-      "pattern": 0.0,
-      "projected": 0.0,
-      "range": 4.79,
-      "trend_bonus": 52.5,
+      "pattern": 19.29,
+      "projected": 6.88,
+      "range": 4.35,
+      "trend_bonus": 85.0,
       "confidence_weight": 0.52
     },
-    "Regime": "N/A",
+    "Regime": "Trending",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 68.3,
-    "ADX-14": 33.3,
-    "Vol Z-Score": 0.01,
+    "RSI-14": 70.7,
+    "ADX-14": 35.0,
+    "Vol Z-Score": 2.32,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.1104,
-    "Bollinger %B": 0.937,
-    "Avg Volume (20D)": 794209,
+    "MACD Histogram": 0.1189,
+    "Bollinger %B": 0.973,
+    "Avg Volume (20D)": 880133,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       21.1,
@@ -115,7 +121,8 @@
       23.25,
       23.51,
       23.31,
-      23.47
+      23.47,
+      23.72
     ],
     "open": [
       21.15,
@@ -152,7 +159,8 @@
       22.8,
       23.25,
       23.51,
-      23.55
+      23.55,
+      23.47
     ],
     "high": [
       21.3,
@@ -189,7 +197,8 @@
       23.25,
       23.62,
       23.58,
-      23.6
+      23.6,
+      24.28
     ],
     "low": [
       20.97,
@@ -226,7 +235,8 @@
       22.8,
       23.05,
       23.2,
-      23.35
+      23.35,
+      23.44
     ],
     "volume": [
       312183,
@@ -263,7 +273,8 @@
       1140907,
       1074772,
       418607,
-      799083
+      799083,
+      1966443
     ],
     "vwap": [
       21.1233,
@@ -300,9 +311,10 @@
       22.2398,
       22.33,
       22.3723,
-      22.4509
+      22.4509,
+      22.6154
     ],
-    "resistance": 23.62,
+    "resistance": 24.28,
     "support": 19.99,
     "pivots": {
       "pp": 23.02,

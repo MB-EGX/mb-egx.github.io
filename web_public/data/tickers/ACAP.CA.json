@@ -1,15 +1,20 @@
 {
   "ticker": "ACAP.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "ACAP.CA",
-    "Action": "📈 ACCUMULATE [💥 SQUEEZE]",
-    "Rank Score": 14.3,
-    "Current Price": 8.99,
-    "Target Entry (VWAP)": 8.99,
-    "Suggested Stop-Loss": 8.24,
-    "Take-Profit Target": 9.9904,
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: below VWAP) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
+    "Rank Score": 22.3,
+    "Current Price": 9.15,
+    "Target Entry (VWAP)": 9.13,
+    "Suggested Stop-Loss": 8.3614,
+    "Take-Profit Target": 10.1998,
     "Resistance (52W High)": 9.99,
     "Support (52W Low)": 8.12,
     "Pivot Point": 9.0667,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.88,
-    "Signal Reason": "📈 ACCUMULATE [💥 SQUEEZE] | trend=Strong Bullish | confirmed | weekly aligned | volatility squeeze | vol x1.67",
+    "Kelly %": 1.84,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: below VWAP) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze | vol x2.22",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.33,
-      "trend_bonus": 25.0,
+      "range": 2.75,
+      "trend_bonus": 39.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 50.3,
-    "ADX-14": 48.1,
-    "Vol Z-Score": 1.04,
+    "RSI-14": 55.2,
+    "ADX-14": 47.4,
+    "Vol Z-Score": 1.86,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0246,
-    "Bollinger %B": 0.468,
-    "Avg Volume (20D)": 1173682,
+    "MACD Histogram": -0.0167,
+    "Bollinger %B": 0.66,
+    "Avg Volume (20D)": 1272112,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       8.65,
@@ -115,7 +121,8 @@
       8.97,
       9.01,
       9.04,
-      8.99
+      8.99,
+      9.15
     ],
     "open": [
       8.88,
@@ -152,7 +159,8 @@
       9.0,
       8.97,
       9.0,
-      9.06
+      9.06,
+      8.99
     ],
     "high": [
       8.91,
@@ -189,7 +197,8 @@
       9.07,
       9.3,
       9.25,
-      9.44
+      9.44,
+      9.29
     ],
     "low": [
       8.6,
@@ -226,7 +235,8 @@
       8.91,
       8.98,
       8.98,
-      8.98
+      8.98,
+      8.9
     ],
     "volume": [
       653887,
@@ -263,7 +273,8 @@
       580585,
       982717,
       1027542,
-      1958180
+      1958180,
+      2820885
     ],
     "vwap": [
       8.72,
@@ -300,7 +311,8 @@
       9.1262,
       9.1238,
       9.1225,
-      9.1269
+      9.1269,
+      9.13
     ],
     "resistance": 9.99,
     "support": 8.12,

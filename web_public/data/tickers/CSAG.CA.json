@@ -1,15 +1,20 @@
 {
   "ticker": "CSAG.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Shipping & Transportation Services",
   "matrix": {
     "Ticker": "CSAG.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 25.5,
-    "Current Price": 41.62,
-    "Target Entry (VWAP)": 36.7417,
-    "Suggested Stop-Loss": 38.1671,
-    "Take-Profit Target": 46.2274,
+    "Sector": "Shipping & Transportation Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 17.5,
+    "Current Price": 39.74,
+    "Target Entry (VWAP)": 36.9391,
+    "Suggested Stop-Loss": 35.99,
+    "Take-Profit Target": 44.7057,
     "Resistance (52W High)": 43.86,
     "Support (52W Low)": 31.3,
     "Pivot Point": 41.1867,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.89,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Kelly %": 1.73,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 4.11,
-      "trend_bonus": 44.8,
+      "range": 3.36,
+      "trend_bonus": 30.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 79.4,
-    "ADX-14": 54.6,
-    "Vol Z-Score": -0.82,
+    "RSI-14": 65.4,
+    "ADX-14": 54.0,
+    "Vol Z-Score": -0.4,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.7185,
-    "Bollinger %B": 0.857,
-    "Avg Volume (20D)": 688041,
+    "MACD Histogram": 0.478,
+    "Bollinger %B": 0.712,
+    "Avg Volume (20D)": 697217,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       31.8,
@@ -115,7 +121,8 @@
       42.48,
       41.95,
       41.7,
-      41.62
+      41.62,
+      39.74
     ],
     "open": [
       31.32,
@@ -152,7 +159,8 @@
       40.25,
       42.48,
       41.9,
-      41.7
+      41.7,
+      41.62
     ],
     "high": [
       32.36,
@@ -189,7 +197,8 @@
       42.6,
       43.86,
       42.65,
-      42.6
+      42.6,
+      41.97
     ],
     "low": [
       31.3,
@@ -226,7 +235,8 @@
       40.25,
       40.51,
       41.0,
-      40.94
+      40.94,
+      39.12
     ],
     "volume": [
       851433,
@@ -263,7 +273,8 @@
       1128554,
       954686,
       193866,
-      279657
+      279657,
+      498098
     ],
     "vwap": [
       31.82,
@@ -300,7 +311,8 @@
       35.659,
       36.1153,
       36.545,
-      36.7417
+      36.7417,
+      36.9391
     ],
     "resistance": 43.86,
     "support": 31.3,

@@ -1,15 +1,20 @@
 {
   "ticker": "NEDA.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "NEDA.CA",
-    "Action": "⚡ BREAKOUT BUY (X-OVER + MOMENTUM) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 44.5,
-    "Current Price": 2.83,
-    "Target Entry (VWAP)": 2.7587,
-    "Suggested Stop-Loss": 2.6957,
-    "Take-Profit Target": 3.0177,
+    "Sector": "Food, Beverages & Tobacco",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 17.7,
+    "Current Price": 2.95,
+    "Target Entry (VWAP)": 2.7843,
+    "Suggested Stop-Loss": 2.81,
+    "Take-Profit Target": 3.1456,
     "Resistance (52W High)": 3.02,
     "Support (52W Low)": 2.69,
     "Pivot Point": 2.7167,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.83,
-    "Signal Reason": "⚡ BREAKOUT BUY (X-OVER + MOMENTUM) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | vol x2.33",
+    "Kelly %": 2.82,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x3.82",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.12,
-      "trend_bonus": 83.0,
+      "range": 3.94,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 63.4,
-    "ADX-14": 28.6,
-    "Vol Z-Score": 1.56,
-    "MACD Signal": "🟢 Bullish Cross",
-    "MACD Histogram": 0.0038,
-    "Bollinger %B": 0.882,
-    "Avg Volume (20D)": 274634,
+    "RSI-14": 73.9,
+    "ADX-14": 30.0,
+    "Vol Z-Score": 2.87,
+    "MACD Signal": "Bullish",
+    "MACD Histogram": 0.017,
+    "Bollinger %B": 1.256,
+    "Avg Volume (20D)": 323446,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       2.74,
@@ -115,7 +121,8 @@
       2.71,
       2.71,
       2.7,
-      2.83
+      2.83,
+      2.95
     ],
     "open": [
       2.73,
@@ -152,7 +159,8 @@
       2.73,
       2.71,
       2.74,
-      2.74
+      2.74,
+      2.83
     ],
     "high": [
       2.79,
@@ -189,7 +197,8 @@
       2.76,
       2.75,
       2.74,
-      2.83
+      2.83,
+      2.97
     ],
     "low": [
       2.73,
@@ -226,7 +235,8 @@
       2.7,
       2.7,
       2.69,
-      2.73
+      2.73,
+      2.83
     ],
     "volume": [
       42995,
@@ -263,7 +273,8 @@
       305863,
       126165,
       1070386,
-      639336
+      639336,
+      1234613
     ],
     "vwap": [
       2.7533,
@@ -300,7 +311,8 @@
       2.8101,
       2.7923,
       2.7576,
-      2.7587
+      2.7587,
+      2.7843
     ],
     "resistance": 3.02,
     "support": 2.69,

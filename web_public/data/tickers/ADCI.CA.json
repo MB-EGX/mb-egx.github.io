@@ -1,15 +1,21 @@
 {
   "ticker": "ADCI.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "ADCI.CA",
+    "Sector": "Health Care & Pharmaceuticals",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
     "Action": "📈 ACCUMULATE",
-    "Rank Score": 9.0,
-    "Current Price": 299.14,
-    "Target Entry (VWAP)": 295.7052,
-    "Suggested Stop-Loss": 240.5314,
-    "Take-Profit Target": 374.4947,
+    "Rank Score": 8.9,
+    "Current Price": 293.3,
+    "Target Entry (VWAP)": 293.3,
+    "Suggested Stop-Loss": 233.4729,
+    "Take-Profit Target": 370.137,
     "Resistance (52W High)": 389.99,
     "Support (52W Low)": 230.0,
     "Pivot Point": 328.9467,
@@ -22,24 +28,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.11,
+    "Kelly %": 1.09,
     "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.16,
+      "range": 1.98,
       "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 57.3,
-    "ADX-14": 61.4,
-    "Vol Z-Score": -0.38,
-    "MACD Signal": "Bullish",
-    "MACD Histogram": 1.2452,
-    "Bollinger %B": 0.653,
-    "Avg Volume (20D)": 84625,
+    "RSI-14": 55.0,
+    "ADX-14": 60.6,
+    "Vol Z-Score": -0.63,
+    "MACD Signal": "🔴 Bearish Cross",
+    "MACD Histogram": -0.2308,
+    "Bollinger %B": 0.582,
+    "Avg Volume (20D)": 80655,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       238.94,
@@ -115,7 +122,8 @@
       305.04,
       309.84,
       305.85,
-      299.14
+      299.14,
+      293.3
     ],
     "open": [
       244.01,
@@ -152,7 +160,8 @@
       320.02,
       305.04,
       314.0,
-      305.86
+      305.86,
+      299.14
     ],
     "high": [
       244.5,
@@ -189,7 +198,8 @@
       328.5,
       326.0,
       314.0,
-      319.99
+      319.99,
+      305.0
     ],
     "low": [
       237.4,
@@ -226,7 +236,8 @@
       302.0,
       305.04,
       305.0,
-      292.11
+      292.11,
+      289.5
     ],
     "volume": [
       25933,
@@ -263,7 +274,8 @@
       51732,
       46987,
       26782,
-      52510
+      52510,
+      27287
     ],
     "vwap": [
       240.28,
@@ -300,7 +312,8 @@
       289.021,
       293.1618,
       294.2051,
-      295.7052
+      295.7052,
+      298.7542
     ],
     "resistance": 389.99,
     "support": 230.0,

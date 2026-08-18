@@ -1,15 +1,20 @@
 {
   "ticker": "DGTZ.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "IT, Media & Communication Services",
   "matrix": {
     "Ticker": "DGTZ.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
+    "Sector": "IT, Media & Communication Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) [👑 WEEKLY ALIGNED]",
     "Rank Score": 25.0,
-    "Current Price": 2.7,
-    "Target Entry (VWAP)": 2.6895,
-    "Suggested Stop-Loss": 2.5257,
-    "Take-Profit Target": 2.9368,
+    "Current Price": 2.68,
+    "Target Entry (VWAP)": 2.68,
+    "Suggested Stop-Loss": 2.5143,
+    "Take-Profit Target": 2.9059,
     "Resistance (52W High)": 2.9,
     "Support (52W Low)": 2.4,
     "Pivot Point": 2.67,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.26,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Kelly %": 2.33,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 3.0,
+      "range": 2.8,
       "trend_bonus": 44.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 55.1,
-    "ADX-14": 42.3,
-    "Vol Z-Score": -0.06,
+    "RSI-14": 52.7,
+    "ADX-14": 41.3,
+    "Vol Z-Score": -0.85,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0052,
-    "Bollinger %B": 0.596,
-    "Avg Volume (20D)": 1935832,
+    "MACD Histogram": -0.0047,
+    "Bollinger %B": 0.498,
+    "Avg Volume (20D)": 1932429,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       2.55,
@@ -115,7 +121,8 @@
       2.67,
       2.64,
       2.67,
-      2.7
+      2.7,
+      2.68
     ],
     "open": [
       2.48,
@@ -152,7 +159,8 @@
       2.7,
       2.67,
       2.65,
-      2.67
+      2.67,
+      2.7
     ],
     "high": [
       2.59,
@@ -189,7 +197,8 @@
       2.73,
       2.68,
       2.68,
-      2.72
+      2.72,
+      2.71
     ],
     "low": [
       2.4,
@@ -226,7 +235,8 @@
       2.65,
       2.64,
       2.63,
-      2.64
+      2.64,
+      2.67
     ],
     "volume": [
       2144168,
@@ -263,7 +273,8 @@
       1096258,
       934660,
       924201,
-      1859246
+      1859246,
+      816363
     ],
     "vwap": [
       2.5133,
@@ -300,7 +311,8 @@
       2.6796,
       2.683,
       2.687,
-      2.6895
+      2.6895,
+      2.6917
     ],
     "resistance": 2.9,
     "support": 2.4,

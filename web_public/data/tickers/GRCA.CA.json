@@ -1,15 +1,20 @@
 {
   "ticker": "GRCA.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "GRCA.CA",
-    "Action": "⚡ BREAKOUT BUY (X-OVER + MOMENTUM) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 44.7,
-    "Current Price": 58.67,
-    "Target Entry (VWAP)": 58.67,
-    "Suggested Stop-Loss": 52.7143,
-    "Take-Profit Target": 66.5253,
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 8.9,
+    "Current Price": 56.59,
+    "Target Entry (VWAP)": 56.59,
+    "Suggested Stop-Loss": 50.2043,
+    "Take-Profit Target": 64.9683,
     "Resistance (52W High)": 68.95,
     "Support (52W Low)": 48.0,
     "Pivot Point": 56.5667,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.65,
-    "Signal Reason": "⚡ BREAKOUT BUY (X-OVER + MOMENTUM) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | vol x1.32",
+    "Kelly %": 1.54,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.55,
-      "trend_bonus": 83.0,
+      "range": 2.05,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 54.4,
-    "ADX-14": 30.3,
-    "Vol Z-Score": 0.36,
+    "RSI-14": 48.6,
+    "ADX-14": 28.8,
+    "Vol Z-Score": -0.23,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.5053,
-    "Bollinger %B": 0.449,
-    "Avg Volume (20D)": 308743,
+    "MACD Histogram": -0.478,
+    "Bollinger %B": 0.268,
+    "Avg Volume (20D)": 267512,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       53.16,
@@ -115,7 +121,8 @@
       55.97,
       55.46,
       55.0,
-      58.67
+      58.67,
+      56.59
     ],
     "open": [
       53.75,
@@ -152,7 +159,8 @@
       57.67,
       55.97,
       56.0,
-      55.31
+      55.31,
+      58.67
     ],
     "high": [
       53.75,
@@ -189,7 +197,8 @@
       58.49,
       57.57,
       57.0,
-      59.9
+      59.9,
+      61.0
     ],
     "low": [
       51.4,
@@ -226,7 +235,8 @@
       55.8,
       55.21,
       54.7,
-      54.7
+      54.7,
+      56.25
     ],
     "volume": [
       53130,
@@ -263,7 +273,8 @@
       137063,
       106064,
       109262,
-      408389
+      408389,
+      218733
     ],
     "vwap": [
       52.77,
@@ -300,7 +311,8 @@
       61.6375,
       61.6953,
       61.7275,
-      61.5884
+      61.5884,
+      60.7794
     ],
     "resistance": 68.95,
     "support": 48.0,

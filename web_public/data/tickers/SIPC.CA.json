@@ -1,15 +1,20 @@
 {
   "ticker": "SIPC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "SIPC.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 43.1,
-    "Current Price": 5.09,
-    "Target Entry (VWAP)": 4.6317,
-    "Suggested Stop-Loss": 4.2129,
-    "Take-Profit Target": 5.5272,
+    "Sector": "Health Care & Pharmaceuticals",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 31.9,
+    "Current Price": 5.05,
+    "Target Entry (VWAP)": 4.6615,
+    "Suggested Stop-Loss": 4.1729,
+    "Take-Profit Target": 5.3091,
     "Resistance (52W High)": 5.5,
     "Support (52W Low)": 3.25,
     "Pivot Point": 4.9733,
@@ -19,27 +24,27 @@
     "S1": 4.6067,
     "S2": 4.1433,
     "S3": 3.7767,
-    "Projected Gain (%)": 7.89,
-    "Pattern Conf (%)": 62.14,
-    "Projected Range 95%": "7.89% to 7.89%",
+    "Projected Gain (%)": 4.43,
+    "Pattern Conf (%)": 67.79,
+    "Projected Range 95%": "4.43% to 4.43%",
     "Kelly %": 0.0,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | positive money flow | vol x2.15",
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
-      "pattern": 18.64,
-      "projected": 11.83,
-      "range": 4.09,
-      "trend_bonus": 48.0,
+      "pattern": 20.34,
+      "projected": 6.64,
+      "range": 4.0,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 69.4,
-    "ADX-14": 57.5,
-    "Vol Z-Score": 1.36,
+    "RSI-14": 67.9,
+    "ADX-14": 57.9,
+    "Vol Z-Score": -0.47,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0247,
-    "Bollinger %B": 0.815,
-    "Avg Volume (20D)": 14258280,
+    "MACD Histogram": 0.0184,
+    "Bollinger %B": 0.768,
+    "Avg Volume (20D)": 14425688,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       3.44,
@@ -115,7 +121,8 @@
       4.75,
       4.68,
       5.07,
-      5.09
+      5.09,
+      5.05
     ],
     "open": [
       3.43,
@@ -152,7 +159,8 @@
       4.84,
       4.75,
       4.79,
-      5.2
+      5.2,
+      5.09
     ],
     "high": [
       3.47,
@@ -189,7 +197,8 @@
       4.84,
       4.78,
       5.07,
-      5.5
+      5.5,
+      5.25
     ],
     "low": [
       3.43,
@@ -226,7 +235,8 @@
       4.51,
       4.56,
       4.61,
-      4.99
+      4.99,
+      5.05
     ],
     "volume": [
       1390880,
@@ -263,7 +273,8 @@
       4428000,
       4256876,
       10012527,
-      30616225
+      30616225,
+      8788219
     ],
     "vwap": [
       3.4467,
@@ -300,7 +311,8 @@
       4.4462,
       4.4727,
       4.5504,
-      4.6317
+      4.6317,
+      4.6615
     ],
     "resistance": 5.5,
     "support": 3.25,

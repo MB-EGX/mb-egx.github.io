@@ -1,15 +1,20 @@
 {
   "ticker": "PRCL.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Building Materials",
   "matrix": {
     "Ticker": "PRCL.CA",
-    "Action": "⚡ BREAKOUT BUY (X-OVER + MOMENTUM) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
-    "Rank Score": 50.7,
-    "Current Price": 36.46,
-    "Target Entry (VWAP)": 35.9611,
-    "Suggested Stop-Loss": 33.2186,
-    "Take-Profit Target": 40.767,
+    "Sector": "Building Materials",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE [💥 SQUEEZE]",
+    "Rank Score": 14.9,
+    "Current Price": 35.39,
+    "Target Entry (VWAP)": 35.39,
+    "Suggested Stop-Loss": 32.01,
+    "Take-Profit Target": 39.8627,
     "Resistance (52W High)": 38.25,
     "Support (52W Low)": 29.15,
     "Pivot Point": 34.3167,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.8,
-    "Signal Reason": "⚡ BREAKOUT BUY (X-OVER + MOMENTUM) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | volatility squeeze | vol x1.97",
+    "Kelly %": 1.72,
+    "Signal Reason": "📈 ACCUMULATE [💥 SQUEEZE] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 4.02,
-      "trend_bonus": 93.0,
+      "range": 3.43,
+      "trend_bonus": 25.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 56.8,
-    "ADX-14": 35.3,
-    "Vol Z-Score": 1.56,
+    "RSI-14": 51.9,
+    "ADX-14": 33.0,
+    "Vol Z-Score": -0.68,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.2181,
-    "Bollinger %B": 0.716,
-    "Avg Volume (20D)": 903950,
+    "MACD Histogram": -0.1773,
+    "Bollinger %B": 0.448,
+    "Avg Volume (20D)": 849695,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       30.5,
@@ -115,7 +121,8 @@
       34.9,
       33.05,
       34.65,
-      36.46
+      36.46,
+      35.39
     ],
     "open": [
       29.7,
@@ -152,7 +159,8 @@
       35.0,
       34.9,
       33.05,
-      34.82
+      34.82,
+      36.46
     ],
     "high": [
       31.0,
@@ -189,7 +197,8 @@
       35.35,
       34.89,
       34.67,
-      36.46
+      36.46,
+      36.49
     ],
     "low": [
       29.15,
@@ -226,7 +235,8 @@
       34.27,
       32.82,
       32.85,
-      34.41
+      34.41,
+      34.85
     ],
     "volume": [
       2344744,
@@ -263,7 +273,8 @@
       393390,
       611974,
       543550,
-      1784343
+      1784343,
+      475230
     ],
     "vwap": [
       30.2167,
@@ -300,7 +311,8 @@
       36.2237,
       36.2364,
       36.2053,
-      35.9611
+      35.9611,
+      35.8978
     ],
     "resistance": 38.25,
     "support": 29.15,

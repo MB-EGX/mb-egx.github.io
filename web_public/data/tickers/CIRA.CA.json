@@ -1,15 +1,20 @@
 {
   "ticker": "CIRA.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Education Services",
   "matrix": {
     "Ticker": "CIRA.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 29.2,
-    "Current Price": 37.3,
-    "Target Entry (VWAP)": 35.8712,
-    "Suggested Stop-Loss": 34.0043,
-    "Take-Profit Target": 40.9069,
+    "Sector": "Education Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 36.4,
+    "Current Price": 37.45,
+    "Target Entry (VWAP)": 36.0567,
+    "Suggested Stop-Loss": 34.1443,
+    "Take-Profit Target": 41.9403,
     "Resistance (52W High)": 40.8,
     "Support (52W Low)": 27.45,
     "Pivot Point": 38.9967,
@@ -19,27 +24,27 @@
     "S1": 37.1933,
     "S2": 35.8967,
     "S3": 34.0933,
-    "Projected Gain (%)": 8.97,
-    "Pattern Conf (%)": 79.53,
-    "Projected Range 95%": "8.97% to 8.97%",
-    "Kelly %": 25.0,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Projected Gain (%)": 11.29,
+    "Pattern Conf (%)": 63.17,
+    "Projected Range 95%": "9.21% to 13.38%",
+    "Kelly %": 18.03,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 23.86,
-      "projected": 13.46,
-      "range": 3.69,
-      "trend_bonus": 15.0,
+      "pattern": 18.95,
+      "projected": 16.93,
+      "range": 3.75,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 62.7,
-    "ADX-14": 61.7,
-    "Vol Z-Score": -0.16,
-    "MACD Signal": "🔴 Bearish Cross",
-    "MACD Histogram": -0.0271,
-    "Bollinger %B": 0.643,
-    "Avg Volume (20D)": 1616492,
+    "RSI-14": 63.3,
+    "ADX-14": 60.0,
+    "Vol Z-Score": -0.33,
+    "MACD Signal": "Bearish",
+    "MACD Histogram": -0.1221,
+    "Bollinger %B": 0.64,
+    "Avg Volume (20D)": 1637850,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       28.03,
@@ -115,7 +121,8 @@
       38.5,
       38.23,
       38.49,
-      37.3
+      37.3,
+      37.45
     ],
     "open": [
       29.0,
@@ -152,7 +159,8 @@
       38.98,
       38.5,
       38.34,
-      38.99
+      38.99,
+      37.3
     ],
     "high": [
       29.46,
@@ -189,7 +197,8 @@
       40.8,
       39.0,
       39.7,
-      38.99
+      38.99,
+      38.66
     ],
     "low": [
       27.6,
@@ -226,7 +235,8 @@
       38.5,
       37.7,
       38.24,
-      36.9
+      36.9,
+      37.33
     ],
     "volume": [
       559831,
@@ -263,7 +273,8 @@
       2458125,
       1419935,
       1560055,
-      1417541
+      1417541,
+      1241474
     ],
     "vwap": [
       28.3633,
@@ -300,7 +311,8 @@
       34.9747,
       35.3243,
       35.6444,
-      35.8712
+      35.8712,
+      36.0567
     ],
     "resistance": 40.8,
     "support": 27.45,

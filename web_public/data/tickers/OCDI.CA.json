@@ -1,14 +1,19 @@
 {
   "ticker": "OCDI.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "OCDI.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 28.5,
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 36.6,
     "Current Price": 33.48,
-    "Target Entry (VWAP)": 30.3865,
-    "Suggested Stop-Loss": 29.9757,
+    "Target Entry (VWAP)": 30.4855,
+    "Suggested Stop-Loss": 29.9886,
     "Take-Profit Target": 34.384,
     "Resistance (52W High)": 36.97,
     "Support (52W Low)": 23.75,
@@ -19,27 +24,27 @@
     "S1": 30.61,
     "S2": 27.22,
     "S3": 24.04,
-    "Projected Gain (%)": -0.43,
-    "Pattern Conf (%)": 71.48,
-    "Projected Range 95%": "-0.43% to -0.43%",
+    "Projected Gain (%)": 1.05,
+    "Pattern Conf (%)": 65.61,
+    "Projected Range 95%": "-0.28% to 2.39%",
     "Kelly %": 0.0,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
-      "pattern": 21.44,
-      "projected": -0.65,
+      "pattern": 19.68,
+      "projected": 1.58,
       "range": 3.68,
-      "trend_bonus": 30.0,
+      "trend_bonus": 44.8,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
     "RSI-14": 66.8,
-    "ADX-14": 57.7,
-    "Vol Z-Score": -0.86,
+    "ADX-14": 57.9,
+    "Vol Z-Score": -1.06,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.4238,
-    "Bollinger %B": 0.782,
-    "Avg Volume (20D)": 4562661,
+    "MACD Histogram": 0.296,
+    "Bollinger %B": 0.755,
+    "Avg Volume (20D)": 4620773,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       25.39,
@@ -115,6 +121,7 @@
       34.99,
       35.95,
       34.0,
+      33.48,
       33.48
     ],
     "open": [
@@ -152,7 +159,8 @@
       34.4,
       34.99,
       36.7,
-      34.04
+      34.04,
+      33.48
     ],
     "high": [
       25.89,
@@ -189,7 +197,8 @@
       34.99,
       36.97,
       36.7,
-      34.7
+      34.7,
+      34.1
     ],
     "low": [
       24.3,
@@ -226,7 +235,8 @@
       33.07,
       34.05,
       34.0,
-      32.8
+      32.8,
+      33.0
     ],
     "volume": [
       11254751,
@@ -263,7 +273,8 @@
       5787707,
       3872999,
       2724153,
-      2469346
+      2469346,
+      2121422
     ],
     "vwap": [
       25.1933,
@@ -300,7 +311,8 @@
       29.6518,
       30.0104,
       30.2771,
-      30.3865
+      30.3865,
+      30.4855
     ],
     "resistance": 36.97,
     "support": 23.75,

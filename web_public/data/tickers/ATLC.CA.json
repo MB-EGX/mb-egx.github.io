@@ -1,15 +1,20 @@
 {
   "ticker": "ATLC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "ATLC.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 26.7,
-    "Current Price": 5.55,
-    "Target Entry (VWAP)": 5.4045,
-    "Suggested Stop-Loss": 5.0943,
-    "Take-Profit Target": 6.1585,
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 9.3,
+    "Current Price": 5.48,
+    "Target Entry (VWAP)": 5.4148,
+    "Suggested Stop-Loss": 4.9857,
+    "Take-Profit Target": 6.1362,
     "Resistance (52W High)": 5.95,
     "Support (52W Low)": 4.92,
     "Pivot Point": 5.5933,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.9,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | positive money flow | vol x1.44",
+    "Kelly %": 1.79,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 3.06,
-      "trend_bonus": 48.0,
+      "range": 2.72,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 58.3,
-    "ADX-14": 49.1,
-    "Vol Z-Score": 0.46,
+    "RSI-14": 54.9,
+    "ADX-14": 47.6,
+    "Vol Z-Score": -0.02,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0277,
-    "Bollinger %B": 0.796,
-    "Avg Volume (20D)": 3607806,
+    "MACD Histogram": 0.0184,
+    "Bollinger %B": 0.676,
+    "Avg Volume (20D)": 3686719,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       5.25,
@@ -115,7 +121,8 @@
       5.63,
       5.6,
       5.45,
-      5.55
+      5.55,
+      5.48
     ],
     "open": [
       5.11,
@@ -152,7 +159,8 @@
       5.9,
       5.63,
       5.66,
-      5.5
+      5.5,
+      5.55
     ],
     "high": [
       5.25,
@@ -189,7 +197,8 @@
       5.95,
       5.69,
       5.68,
-      5.66
+      5.66,
+      5.65
     ],
     "low": [
       5.02,
@@ -226,7 +235,8 @@
       5.53,
       5.45,
       5.42,
-      5.47
+      5.47,
+      5.3
     ],
     "volume": [
       1999214,
@@ -263,7 +273,8 @@
       6949318,
       1751080,
       2862710,
-      5194749
+      5194749,
+      3621536
     ],
     "vwap": [
       5.1733,
@@ -300,7 +311,8 @@
       5.3659,
       5.372,
       5.3892,
-      5.4045
+      5.4045,
+      5.4148
     ],
     "resistance": 5.95,
     "support": 4.92,

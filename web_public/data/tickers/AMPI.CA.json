@@ -1,15 +1,20 @@
 {
   "ticker": "AMPI.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "IT, Media & Communication Services",
   "matrix": {
     "Ticker": "AMPI.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 17.2,
-    "Current Price": 2.91,
-    "Target Entry (VWAP)": 2.91,
-    "Suggested Stop-Loss": 2.7071,
-    "Take-Profit Target": 3.1839,
+    "Sector": "IT, Media & Communication Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 9.3,
+    "Current Price": 2.86,
+    "Target Entry (VWAP)": 2.86,
+    "Suggested Stop-Loss": 2.6686,
+    "Take-Profit Target": 3.1193,
     "Resistance (52W High)": 3.17,
     "Support (52W Low)": 2.47,
     "Pivot Point": 2.8633,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.13,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Kelly %": 2.2,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 3.14,
-      "trend_bonus": 29.8,
+      "range": 2.79,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 53.6,
-    "ADX-14": 24.9,
-    "Vol Z-Score": -0.1,
+    "RSI-14": 50.0,
+    "ADX-14": 23.6,
+    "Vol Z-Score": -1.12,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0196,
-    "Bollinger %B": 0.485,
-    "Avg Volume (20D)": 572613,
+    "MACD Histogram": -0.0192,
+    "Bollinger %B": 0.336,
+    "Avg Volume (20D)": 567348,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       2.53,
@@ -115,7 +121,8 @@
       2.86,
       2.84,
       2.84,
-      2.91
+      2.91,
+      2.86
     ],
     "open": [
       2.57,
@@ -152,7 +159,8 @@
       2.9,
       2.86,
       2.84,
-      2.85
+      2.85,
+      2.91
     ],
     "high": [
       2.6,
@@ -189,6 +197,7 @@
       2.92,
       2.88,
       2.87,
+      2.91,
       2.91
     ],
     "low": [
@@ -226,7 +235,8 @@
       2.81,
       2.84,
       2.82,
-      2.82
+      2.82,
+      2.84
     ],
     "volume": [
       169091,
@@ -263,7 +273,8 @@
       457837,
       351409,
       195735,
-      536846
+      536846,
+      146263
     ],
     "vwap": [
       2.55,
@@ -300,7 +311,8 @@
       2.9529,
       2.9413,
       2.9378,
-      2.9344
+      2.9344,
+      2.9333
     ],
     "resistance": 3.17,
     "support": 2.47,

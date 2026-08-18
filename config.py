@@ -100,8 +100,19 @@ ACTION_THRESHOLDS = {
     "buy_on_dip_rsi_max": 38.0,
     # Confirmation gates
     "strong_trend_adx_min": 20.0,
-    "volume_ratio_threshold": 1.3,
+    "volume_ratio_threshold": 1.6,   # tightened from 1.3 - demand real institutional-size RVOL before confirming a short-term signal
     "volume_z_score_threshold": 1.5,
+    # VWAP acceptance gate (short-term confirmation): close must sit at least
+    # this multiple above the 20-day VWAP for STRONG BUY / BREAKOUT BUY to
+    # confirm. A close below its own VWAP still carries intraday selling
+    # pressure that frequently stalls a breakout attempt the next session.
+    "vwap_acceptance_ratio": 1.01,
+    # Medium-term (BUY ON DIP) confirmation floor - same CMF value already
+    # used for the additive score bonus (SCORE_WEIGHTS["cmf_bonus_threshold"]),
+    # but enforced here as a hard gate for medium-term entries specifically:
+    # a dip with net distribution (CMF below this) is not a low-risk pullback
+    # in an established trend, it's a stock still being sold.
+    "medium_term_cmf_min": 0.15,
     # Trailing stop and take-profit
     "atr_trailing_multiplier": 2.0,
     "cut_loss_pnl_pct": -8.0,
@@ -132,9 +143,9 @@ ACTION_THRESHOLDS = {
     "breakout_watch_rsi_max": 65.0,   # RSI ceiling: full credit zone ends here
     "breakout_watch_rsi_soft_min": 42.0,  # graduated taper floor
     "breakout_watch_rsi_soft_max": 73.0,  # graduated taper ceiling
-    "breakout_watch_range_pos_min": 80.0,  # % of 250-day range: full credit from here
+    "breakout_watch_range_pos_min": 87.0,  # % of 250-day range: full credit from here (tightened from 80 - knock directly on resistance, not mid-range)
     "breakout_watch_range_pos_soft_min": 62.0,  # graduated taper floor
-    "breakout_watch_volume_build_ratio": 1.1,  # last 5D avg vol vs prior 5D avg vol: full credit from here
+    "breakout_watch_volume_build_ratio": 1.25,  # last 5D avg vol vs prior 5D avg vol: full credit from here (tightened from 1.1)
     "breakout_watch_volume_build_soft_ratio": 0.9,  # graduated taper floor
     # NEW factors (v2 scoring — see decision_matrix._score_breakout_watch)
     "breakout_watch_sector_rs_bonus_max": 12.0,   # ticker's 5D return vs its own sector's 5D avg
@@ -162,7 +173,7 @@ ACTION_THRESHOLDS = {
     "breakout_watch_updown_vol_ratio_min": 1.3,     # up-day vol / down-day vol >= this = full credit
     "breakout_watch_updown_vol_ratio_soft_min": 0.9,  # graduated taper floor
     "breakout_watch_updown_vol_bonus_max": 10.0,
-    "breakout_watch_min_score": 45.0,  # minimum composite score for the confirmed list
+    "breakout_watch_min_score": 60.0,  # minimum composite score for the confirmed list (tightened from 45 - eliminates marginal setups)
     "breakout_watch_fallback_min_score": 30.0,  # secondary "Watching" tier (see fallback_top_n)
     "breakout_watch_fallback_top_n": 15,   # always surface the top N by score even under min_score,
                                             # tagged as lower-confidence, so near-miss setups are
@@ -200,7 +211,29 @@ PATTERN_DETECTION = {
     "epsilon": 0.03,
     "order": 5,
     "min_bars_required": 40,   # don't bother scanning very short histories
-    "min_quality": 0.5,
+    "min_quality": 0.75,   # tightened from 0.5 - also now the gate value long-term Session Picks require (see LONG_TERM_SETUP below)
+}
+
+# --- Long-term Session Picks setup gate (decision_matrix's long-horizon
+# quality check, feeding session_picks.py's "long" bucket) ---
+# A long-term pick must clear a HIGHER liquidity bar than the base
+# MIN_AVG_VOLUME above (exit liquidity matters more over a 2-6 month hold,
+# during which a larger drawdown is more likely to need an orderly exit),
+# AND show real geometric structure: an active PATTERN_DETECTION match
+# (Cup & Handle / Ascending Triangle / Double Bottom - the bullish,
+# continuation/reversal patterns) at/above PATTERN_DETECTION["min_quality"],
+# AND a validated higher-low swing structure (the last two swing troughs
+# must show a strictly ascending low, not just "not falling").
+MIN_AVG_VOLUME_LONG_TERM = 100_000
+LONG_TERM_SETUP = {
+    "swing_ascending_low_min_pct": 3.0,   # T2 (more recent trough) must be >= T1 * (1 + this/100)
+    # Gate on chart_patterns.PatternDetector's own "direction" field
+    # (bullish/bearish/neutral - see that module's _result()) rather than a
+    # hardcoded pattern-name whitelist, so any bullish geometric match
+    # (Cup & Handle, Ascending Triangle, Double Bottom, Inverse H&S,
+    # Bull Flag, a bullish Pennant/Symmetrical Triangle breakout, ...)
+    # qualifies uniformly at/above PATTERN_DETECTION["min_quality"].
+    "required_pattern_direction": "bullish",
 }
 
 # --- Decision matrix data pull (used by decision_matrix.analyze_market) ---
@@ -360,9 +393,19 @@ BENCHMARK_TICKERS = [
     ".EGTRVL",      # EGX Travel & Leisure
     ".EGHLTH",      # EGX Health Care / Health Index
     ".EGIGSA",      # EGX Industrial Goods & Services
-    # NOT currently requested/mapped, but also present in your feed
-    # under the same dotted convention if you ever want it added:
-    # ".EGX35LV" - EGX35 Lv Index.
+    # --- Added: 5 more instruments confirmed present in the daily feed
+    # under the same dotted convention (grep'd directly against ingested
+    # market_data.json Symbol values, not assumed - see SECTOR_ROTATION_*
+    # and USD_DIVERGENCE_* blocks below for what EGIMCS/EGTEDU/EGX30USD
+    # are actually used for; EGXTBONDS and EGX35LV are registered so
+    # they're excluded from the tradeable universe and get a regime
+    # badge like any other benchmark, but nothing here computes a
+    # T-Bond yield/risk-free-rate or an EGX35LV-based strategy yet):
+    ".EGIMCS",      # EGX IMCS - Information/Media/Communication Services (tech-sector index)
+    ".EGTEDU",      # EGX Text Double - Textiles, Spinning & Clothing sector index
+    ".EGX35LV",     # EGX 35 LV - 35-stock low-volatility index (13 sectors)
+    ".EGXTBONDS",   # EGX Treasury Bond Index
+    ".EGX30USD",    # EGX 30 USD - dollar-denominated EGX30 (see USD_DIVERGENCE_* below)
 ]
 
 # Human-readable labels for the tickers above - used anywhere a benchmark
@@ -391,6 +434,11 @@ BENCHMARK_LABELS = {
     ".EGHLTH": "EGX Health Care",
     ".EGIGSA": "EGX Industrial Goods & Services",
     "EGX30ETF.CA": "EGX 30 Index ETF",
+    ".EGIMCS": "EGX IMCS",
+    ".EGTEDU": "EGX Text Double",
+    ".EGX35LV": "EGX 35 LV",
+    ".EGXTBONDS": "EGX Treasury Bonds",
+    ".EGX30USD": "EGX 30 (USD)",
 }
 
 # Which of BENCHMARK_TICKERS is used as the single default/broad-market
@@ -426,6 +474,15 @@ SECTOR_BENCHMARK_MAP = {
     "Travel & Leisure": ".EGTRVL",
     "Health Care & Pharmaceuticals": ".EGHLTH",
     "Industrial Goods, Services & Automobiles": ".EGIGSA",
+    # Added alongside the 5 new BENCHMARK_TICKERS above - these two EGX
+    # sub-indices track sectors db_manager.get_sector_map() already
+    # produces (see db_manager.py's own name-normalization for "Textiles
+    # & Durables" / "IT, Media & Communication Services"), so Sector
+    # Index RS on individual stocks in those sectors now compares
+    # against the REAL sector index instead of silently falling back to
+    # PRIMARY_BENCHMARK_TICKER (EGX30) the way it did before.
+    "Textiles & Durables": ".EGTEDU",
+    "IT, Media & Communication Services": ".EGIMCS",
 }
 
 # --- Market regime classification (market_regime.py) ---
@@ -461,6 +518,43 @@ BREAKOUT_WATCH_BEAR_REGIME_PENALTY = -6.0
 # bonus_max" / "breakout_watch_sector_index_rs_span_pct" - same convention
 # as every other breakout_watch_* knob (read via the `at` dict at the call
 # site) rather than a separate top-level pair here.
+
+# --- Sector rotation engine (sector_rotation.py) ---
+# Relative-strength rotation between two EGX sector sub-indices already
+# in BENCHMARK_TICKERS: EGX IMCS (tech/telecom/fintech - ".EGIMCS") vs
+# EGX Text Double (textiles/export manufacturing - ".EGTEDU"). These two
+# were picked (over any other sub-index pair) because they track a real,
+# distinct macro divergence in this market - domestic digital demand vs
+# EGP-devaluation-driven export competitiveness - not an arbitrary pair.
+# RS_t = Price(Text Double, t) / Price(IMCS, t): RS rising -> IMCS
+# outperforming (rotate toward tech); RS falling -> Text Double
+# outperforming (rotate toward export manufacturers). See
+# sector_rotation.compute_rotation_signal's docstring for the exact
+# fast/slow SMA crossover rule this drives.
+SECTOR_ROTATION_PAIR = (".EGIMCS", ".EGTEDU")
+SECTOR_ROTATION_FAST_SMA = 20
+SECTOR_ROTATION_SLOW_SMA = 50
+# Minimum bars of history required (both legs) before a rotation signal
+# is trusted at all - below this, sector_rotation returns "insufficient
+# history" rather than a guessed/noisy signal (same "missing means
+# unknown" contract as market_regime.py's BENCHMARK_REGIME_* gates).
+SECTOR_ROTATION_MIN_BARS = SECTOR_ROTATION_SLOW_SMA + 5
+
+# --- EGX 30 EGP-vs-USD divergence detector (usd_divergence.py) ---
+# Compares structural peaks in PRIMARY_BENCHMARK_TICKER (".EGX30", EGP)
+# against ".EGX30USD" (the dollar-denominated version of the same
+# index). A rising EGP index whose USD twin is NOT confirming (lower
+# high while EGP prints a higher high) means the local-currency gain is
+# devaluation-driven, not real equity appreciation - see
+# usd_divergence.detect_divergence's docstring for the exact peak-slope
+# comparison rule. ``order`` mirrors chart_patterns.py's own use of
+# scipy.signal.argrelextrema (already a project dependency) - how many
+# bars on each side must be lower for a bar to count as a local peak.
+USD_DIVERGENCE_PEAK_ORDER = 10
+# Minimum bars of history required (both legs) before divergence
+# detection is attempted at all - too short a window means "peaks" are
+# just noise, not real structural highs.
+USD_DIVERGENCE_MIN_BARS = 60
 
 # --- Factor-backtest reliability gate (factor_analysis.py) ---
 # A factor bucket (an action type, an ADX band, a market regime, ...)

@@ -1,15 +1,20 @@
 {
   "ticker": "RMDA.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "RMDA.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 17.2,
-    "Current Price": 6.47,
-    "Target Entry (VWAP)": 6.0355,
-    "Suggested Stop-Loss": 5.54,
-    "Take-Profit Target": 7.6778,
+    "Sector": "Health Care & Pharmaceuticals",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 9.3,
+    "Current Price": 6.2,
+    "Target Entry (VWAP)": 6.0477,
+    "Suggested Stop-Loss": 5.2357,
+    "Take-Profit Target": 7.4488,
     "Resistance (52W High)": 7.39,
     "Support (52W Low)": 4.81,
     "Pivot Point": 6.6233,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.33,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Kelly %": 1.27,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 3.22,
-      "trend_bonus": 29.8,
+      "range": 2.69,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 64.0,
-    "ADX-14": 63.9,
-    "Vol Z-Score": -0.52,
+    "RSI-14": 57.5,
+    "ADX-14": 62.9,
+    "Vol Z-Score": -0.75,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0456,
-    "Bollinger %B": 0.747,
-    "Avg Volume (20D)": 21941571,
+    "MACD Histogram": 0.0123,
+    "Bollinger %B": 0.626,
+    "Avg Volume (20D)": 22115730,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       4.94,
@@ -115,7 +121,8 @@
       6.5,
       6.49,
       6.25,
-      6.47
+      6.47,
+      6.2
     ],
     "open": [
       5.01,
@@ -152,7 +159,8 @@
       6.74,
       6.5,
       6.51,
-      6.29
+      6.29,
+      6.47
     ],
     "high": [
       5.03,
@@ -189,7 +197,8 @@
       6.75,
       6.77,
       6.58,
-      6.66
+      6.66,
+      6.57
     ],
     "low": [
       4.94,
@@ -226,7 +235,8 @@
       6.44,
       6.45,
       6.23,
-      6.27
+      6.27,
+      6.11
     ],
     "volume": [
       4546397,
@@ -263,7 +273,8 @@
       16172889,
       13431401,
       8350788,
-      11360070
+      11360070,
+      6897679
     ],
     "vwap": [
       4.97,
@@ -300,7 +311,8 @@
       5.9749,
       6.0015,
       6.0202,
-      6.0355
+      6.0355,
+      6.0477
     ],
     "resistance": 7.39,
     "support": 4.81,

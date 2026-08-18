@@ -1,13 +1,19 @@
 {
   "ticker": "BIDI.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Building Materials",
   "matrix": {
     "Ticker": "BIDI.CA",
-    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
-    "Rank Score": 10.3,
+    "Sector": "Building Materials",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
+    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
+    "Rank Score": 2.5,
     "Current Price": 2.12,
-    "Target Entry (VWAP)": 2.0867,
+    "Target Entry (VWAP)": 2.12,
     "Suggested Stop-Loss": 1.92,
     "Take-Profit Target": 2.3848,
     "Resistance (52W High)": 2.12,
@@ -23,23 +29,23 @@
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
     "Kelly %": 1.73,
-    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze | positive money flow",
+    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze | vol x1.00",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
       "range": 5.0,
-      "trend_bonus": 14.8,
+      "trend_bonus": -0.2,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
     "RSI-14": 100.0,
     "ADX-14": 100.0,
-    "Vol Z-Score": -0.22,
+    "Vol Z-Score": 0.0,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0123,
+    "MACD Histogram": -0.0127,
     "Bollinger %B": 0.5,
-    "Avg Volume (20D)": 26527,
+    "Avg Volume (20D)": 0,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       1.76,
@@ -96,6 +103,7 @@
       1.84,
       1.93,
       2.02,
+      2.12,
       2.12,
       2.12,
       2.12,
@@ -152,6 +160,7 @@
       2.12,
       2.12,
       2.12,
+      2.12,
       2.12
     ],
     "high": [
@@ -189,6 +198,7 @@
       2.12,
       2.12,
       2.12,
+      2.12,
       2.12
     ],
     "low": [
@@ -206,6 +216,7 @@
       1.69,
       1.68,
       1.89,
+      2.02,
       2.02,
       2.02,
       2.02,
@@ -263,6 +274,7 @@
       0,
       0,
       0,
+      0,
       0
     ],
     "vwap": [
@@ -300,7 +312,8 @@
       1.8192,
       2.0314,
       2.0765,
-      2.0867
+      2.0867,
+      2.12
     ],
     "resistance": 2.12,
     "support": 1.68,

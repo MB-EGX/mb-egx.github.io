@@ -1,15 +1,20 @@
 {
   "ticker": "AIDC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "AIDC.CA",
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "📈 ACCUMULATE",
-    "Rank Score": 9.0,
+    "Rank Score": 9.1,
     "Current Price": 0.69,
     "Target Entry (VWAP)": 0.69,
-    "Suggested Stop-Loss": 0.6486,
-    "Take-Profit Target": 0.7466,
+    "Suggested Stop-Loss": 0.6514,
+    "Take-Profit Target": 0.743,
     "Resistance (52W High)": 0.78,
     "Support (52W Low)": 0.6,
     "Pivot Point": 0.7033,
@@ -22,7 +27,7 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.37,
+    "Kelly %": 2.49,
     "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation",
     "Score Breakdown": {
       "pattern": 0.0,
@@ -35,11 +40,11 @@
     "Trend Class": "Weak Bullish",
     "RSI-14": 43.6,
     "ADX-14": 37.9,
-    "Vol Z-Score": -0.5,
+    "Vol Z-Score": -0.66,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0038,
-    "Bollinger %B": 0.14,
-    "Avg Volume (20D)": 36559900,
+    "MACD Histogram": -0.0041,
+    "Bollinger %B": 0.171,
+    "Avg Volume (20D)": 36460017,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -75,7 +80,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       0.67,
@@ -109,6 +115,7 @@
       0.71,
       0.7,
       0.7,
+      0.69,
       0.69
     ],
     "open": [
@@ -143,7 +150,8 @@
       0.71,
       0.71,
       0.7,
-      0.7
+      0.7,
+      0.69
     ],
     "high": [
       0.7,
@@ -177,7 +185,8 @@
       0.71,
       0.71,
       0.71,
-      0.71
+      0.71,
+      0.7
     ],
     "low": [
       0.6,
@@ -210,6 +219,7 @@
       0.69,
       0.7,
       0.7,
+      0.69,
       0.69,
       0.69
     ],
@@ -245,7 +255,8 @@
       12132935,
       13120523,
       11321774,
-      15862558
+      15862558,
+      9390302
     ],
     "vwap": [
       0.6567,
@@ -279,7 +290,8 @@
       0.7206,
       0.7208,
       0.7202,
-      0.7194
+      0.7194,
+      0.7187
     ],
     "resistance": 0.78,
     "support": 0.6,

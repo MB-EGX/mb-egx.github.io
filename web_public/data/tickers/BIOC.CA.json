@@ -1,15 +1,20 @@
 {
   "ticker": "BIOC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "BIOC.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 25.5,
-    "Current Price": 507.0,
-    "Target Entry (VWAP)": 301.6902,
-    "Suggested Stop-Loss": 318.4071,
-    "Take-Profit Target": 746.2901,
+    "Sector": "Health Care & Pharmaceuticals",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 17.8,
+    "Current Price": 495.0,
+    "Target Entry (VWAP)": 311.9084,
+    "Suggested Stop-Loss": 304.8829,
+    "Take-Profit Target": 736.1114,
     "Resistance (52W High)": 609.0,
     "Support (52W Low)": 66.75,
     "Pivot Point": 498.8333,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 0.83,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Kelly %": 0.82,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 4.06,
-      "trend_bonus": 44.8,
+      "range": 3.95,
+      "trend_bonus": 30.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 73.6,
-    "ADX-14": 70.7,
-    "Vol Z-Score": -0.18,
+    "RSI-14": 71.4,
+    "ADX-14": 68.6,
+    "Vol Z-Score": -1.06,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 14.1846,
-    "Bollinger %B": 0.771,
-    "Avg Volume (20D)": 852594,
+    "MACD Histogram": 8.7007,
+    "Bollinger %B": 0.73,
+    "Avg Volume (20D)": 827140,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       71.44,
@@ -115,7 +121,8 @@
       514.0,
       521.01,
       485.5,
-      507.0
+      507.0,
+      495.0
     ],
     "open": [
       71.3,
@@ -152,7 +159,8 @@
       551.01,
       514.0,
       535.0,
-      477.0
+      477.0,
+      507.0
     ],
     "high": [
       73.1,
@@ -189,7 +197,8 @@
       560.0,
       563.99,
       535.0,
-      555.0
+      555.0,
+      535.0
     ],
     "low": [
       71.27,
@@ -226,7 +235,8 @@
       440.0,
       463.0,
       480.0,
-      451.67
+      451.67,
+      491.03
     ],
     "volume": [
       40539,
@@ -263,7 +273,8 @@
       540079,
       210500,
       206211,
-      748452
+      748452,
+      205592
     ],
     "vwap": [
       71.9367,
@@ -300,7 +311,8 @@
       263.0548,
       271.719,
       277.3217,
-      301.6902
+      301.6902,
+      311.9084
     ],
     "resistance": 609.0,
     "support": 66.75,

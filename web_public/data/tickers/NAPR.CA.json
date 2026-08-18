@@ -1,15 +1,20 @@
 {
   "ticker": "NAPR.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Paper & Packaging",
   "matrix": {
     "Ticker": "NAPR.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
-    "Rank Score": 22.0,
-    "Current Price": 30.14,
-    "Target Entry (VWAP)": 30.14,
-    "Suggested Stop-Loss": 27.33,
-    "Take-Profit Target": 33.8635,
+    "Sector": "Paper & Packaging",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
+    "Rank Score": 22.1,
+    "Current Price": 30.11,
+    "Target Entry (VWAP)": 30.11,
+    "Suggested Stop-Loss": 27.1729,
+    "Take-Profit Target": 33.9922,
     "Resistance (52W High)": 33.0,
     "Support (52W Low)": 26.0,
     "Pivot Point": 30.49,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.75,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze",
+    "Kelly %": 1.69,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.96,
+      "range": 2.94,
       "trend_bonus": 39.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 63.0,
-    "ADX-14": 75.8,
-    "Vol Z-Score": -0.55,
+    "RSI-14": 62.6,
+    "ADX-14": 76.0,
+    "Vol Z-Score": -0.42,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.028,
-    "Bollinger %B": 0.726,
-    "Avg Volume (20D)": 212698,
+    "MACD Histogram": 0.0005,
+    "Bollinger %B": 0.698,
+    "Avg Volume (20D)": 195958,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -75,7 +80,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       26.75,
@@ -109,7 +115,8 @@
       30.05,
       29.99,
       29.99,
-      30.14
+      30.14,
+      30.11
     ],
     "open": [
       26.9,
@@ -143,7 +150,8 @@
       30.4,
       30.05,
       30.0,
-      30.0
+      30.0,
+      30.14
     ],
     "high": [
       28.87,
@@ -177,7 +185,8 @@
       31.97,
       30.44,
       30.3,
-      30.49
+      30.49,
+      31.89
     ],
     "low": [
       26.0,
@@ -211,7 +220,8 @@
       29.85,
       29.52,
       29.6,
-      30.0
+      30.0,
+      30.02
     ],
     "volume": [
       1068729,
@@ -245,7 +255,8 @@
       159188,
       120482,
       68523,
-      31783
+      31783,
+      56281
     ],
     "vwap": [
       27.2067,
@@ -279,7 +290,8 @@
       29.5442,
       29.57,
       29.9965,
-      30.1644
+      30.1644,
+      30.3049
     ],
     "resistance": 33.0,
     "support": 26.0,

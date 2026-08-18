@@ -1,15 +1,20 @@
 {
   "ticker": "DTPP.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Industrial Goods, Services & Automobiles",
   "matrix": {
     "Ticker": "DTPP.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 17.6,
-    "Current Price": 294.66,
-    "Target Entry (VWAP)": 266.1012,
-    "Suggested Stop-Loss": 254.3214,
-    "Take-Profit Target": 347.1458,
+    "Sector": "Industrial Goods, Services & Automobiles",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 21.0,
+    "Current Price": 290.25,
+    "Target Entry (VWAP)": 268.1653,
+    "Suggested Stop-Loss": 250.2743,
+    "Take-Profit Target": 298.0868,
     "Resistance (52W High)": 340.0,
     "Support (52W Low)": 114.67,
     "Pivot Point": 304.3367,
@@ -19,27 +24,27 @@
     "S1": 268.6733,
     "S2": 244.3467,
     "S3": 208.6833,
-    "Projected Gain (%)": "N/A",
-    "Pattern Conf (%)": "N/A",
-    "Projected Range 95%": "N/A",
-    "Kelly %": 1.36,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Projected Gain (%)": 1.28,
+    "Pattern Conf (%)": 64.4,
+    "Projected Range 95%": "1.28% to 1.28%",
+    "Kelly %": 0.0,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 0.0,
-      "projected": 0.0,
-      "range": 3.99,
-      "trend_bonus": 29.8,
+      "pattern": 19.32,
+      "projected": 1.92,
+      "range": 3.9,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
-    "Regime": "N/A",
+    "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 69.1,
-    "ADX-14": 74.8,
-    "Vol Z-Score": -0.62,
-    "MACD Signal": "Bullish",
-    "MACD Histogram": 0.9166,
-    "Bollinger %B": 0.779,
-    "Avg Volume (20D)": 258914,
+    "RSI-14": 66.6,
+    "ADX-14": 74.1,
+    "Vol Z-Score": -0.75,
+    "MACD Signal": "🔴 Bearish Cross",
+    "MACD Histogram": -0.3525,
+    "Bollinger %B": 0.719,
+    "Avg Volume (20D)": 249802,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       116.0,
@@ -115,7 +121,8 @@
       316.1,
       299.93,
       293.0,
-      294.66
+      294.66,
+      290.25
     ],
     "open": [
       118.9,
@@ -152,7 +159,8 @@
       339.99,
       316.1,
       297.49,
-      295.0
+      295.0,
+      294.66
     ],
     "high": [
       118.9,
@@ -189,7 +197,8 @@
       340.0,
       324.99,
       298.95,
-      310.0
+      310.0,
+      297.95
     ],
     "low": [
       115.5,
@@ -226,7 +235,8 @@
       303.0,
       290.0,
       291.0,
-      293.01
+      293.01,
+      290.1
     ],
     "volume": [
       8537,
@@ -263,7 +273,8 @@
       260367,
       173296,
       102487,
-      114403
+      114403,
+      70477
     ],
     "vwap": [
       116.8,
@@ -300,7 +311,8 @@
       258.4365,
       260.5954,
       263.6831,
-      266.1012
+      266.1012,
+      268.1653
     ],
     "resistance": 340.0,
     "support": 114.67,

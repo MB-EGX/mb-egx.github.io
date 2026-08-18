@@ -1,15 +1,20 @@
 {
   "ticker": "INEG.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Construction & Engineering",
   "matrix": {
     "Ticker": "INEG.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 17.0,
-    "Current Price": 0.522,
-    "Target Entry (VWAP)": 0.522,
-    "Suggested Stop-Loss": 0.4806,
-    "Take-Profit Target": 0.5774,
+    "Sector": "Construction & Engineering",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 9.2,
+    "Current Price": 0.515,
+    "Target Entry (VWAP)": 0.515,
+    "Suggested Stop-Loss": 0.4801,
+    "Take-Profit Target": 0.5622,
     "Resistance (52W High)": 0.644,
     "Support (52W Low)": 0.372,
     "Pivot Point": 0.5267,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.94,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Kelly %": 2.19,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.76,
-      "trend_bonus": 29.8,
+      "range": 2.63,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 57.6,
-    "ADX-14": 59.1,
-    "Vol Z-Score": -0.91,
+    "RSI-14": 54.5,
+    "ADX-14": 58.2,
+    "Vol Z-Score": -0.86,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.004,
-    "Bollinger %B": 0.472,
-    "Avg Volume (20D)": 59740457,
+    "MACD Histogram": -0.0046,
+    "Bollinger %B": 0.344,
+    "Avg Volume (20D)": 57303472,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       0.412,
@@ -115,7 +121,8 @@
       0.526,
       0.525,
       0.524,
-      0.522
+      0.522,
+      0.515
     ],
     "open": [
       0.421,
@@ -152,7 +159,8 @@
       0.536,
       0.526,
       0.53,
-      0.527
+      0.527,
+      0.522
     ],
     "high": [
       0.424,
@@ -189,7 +197,8 @@
       0.538,
       0.541,
       0.534,
-      0.529
+      0.529,
+      0.525
     ],
     "low": [
       0.41,
@@ -226,7 +235,8 @@
       0.526,
       0.525,
       0.521,
-      0.52
+      0.52,
+      0.515
     ],
     "volume": [
       8399369,
@@ -263,7 +273,8 @@
       34166668,
       18896843,
       11873530,
-      11413563
+      11413563,
+      10626771
     ],
     "vwap": [
       0.4153,
@@ -300,7 +311,8 @@
       0.5284,
       0.5308,
       0.5331,
-      0.5347
+      0.5347,
+      0.5382
     ],
     "resistance": 0.644,
     "support": 0.372,

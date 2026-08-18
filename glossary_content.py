@@ -605,6 +605,18 @@ EXTRA_TERMS = [
         "definition": {"en": "A broad market state such as trending, ranging, or volatile.", "ar": "حالة عامة للسوق مثل الاتجاه الواضح أو التذبذب الجانبي أو التقلب العالي."},
         "why_it_matters": {"en": "A pattern that works in a trend can fail in a choppy regime; labeling the regime improves interpretation.", "ar": "النمط الذي ينجح في سوق اتجاهي قد يفشل في سوق متذبذب؛ لذا فإن تصنيف النظام يحسن التفسير."},
     },
+    {
+        "term": {"en": "Sector Rotation (IMCS vs Text Double)", "ar": "دوران القطاعات (الاتصالات مقابل النسيج)"},
+        "bias": None,
+        "definition": {"en": "A relative-strength signal comparing EGX IMCS (tech/telecom/fintech) against EGX Text Double (textiles/export manufacturing). A rising ratio favors IMCS; a falling ratio favors Text Double.", "ar": "إشارة قوة نسبية تقارن مؤشر EGX IMCS (تكنولوجيا/اتصالات/تكنولوجيا مالية) بمؤشر EGX Text Double (نسيج وتصنيع تصديري). ارتفاع النسبة يفضّل IMCS، وانخفاضها يفضّل Text Double."},
+        "why_it_matters": {"en": "These two sectors track a real Egyptian macro divergence: domestic digital demand vs EGP-devaluation-driven export competitiveness, so the rotation signal can point to which theme currently has the wind at its back.", "ar": "يتتبع هذان القطاعان انقسامًا اقتصاديًا حقيقيًا في مصر: الطلب الرقمي المحلي مقابل تنافسية التصدير المدفوعة بتراجع الجنيه، لذا يمكن أن تشير إشارة الدوران إلى القطاع الأقوى حاليًا."},
+    },
+    {
+        "term": {"en": "EGP/USD Divergence (EGX30)", "ar": "تباعد الجنيه/الدولار (EGX30)"},
+        "bias": None,
+        "definition": {"en": "Compares structural peaks of EGX30 in EGP against its dollar-denominated twin, EGX30 (USD). A higher high in EGP with a lower high in USD is bearish divergence — the local-currency gain may be devaluation-driven rather than real appreciation.", "ar": "يقارن القمم الهيكلية لمؤشر EGX30 بالجنيه مع نظيره بالدولار EGX30 (USD). ارتفاع القمة بالجنيه مع انخفاضها بالدولار يمثل تباعدًا هبوطيًا — أي أن المكسب بالعملة المحلية قد يكون ناتجًا عن تراجع قيمة الجنيه وليس ارتفاعًا حقيقيًا."},
+        "why_it_matters": {"en": "An EGP-only trader can be misled by nominal gains that are purely currency-driven; the USD twin strips out devaluation so real equity performance can be judged separately.", "ar": "قد يُضلَّل المتداول بالجنيه فقط بمكاسب اسمية ناتجة فقط عن تغير العملة؛ يزيل النظير بالدولار أثر التراجع لتقييم الأداء الحقيقي للأسهم بمعزل عن ذلك."},
+    },
 ]
 
 TERMS.extend(EXTRA_TERMS)

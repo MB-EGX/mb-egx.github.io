@@ -1,15 +1,20 @@
 {
   "ticker": "SKPC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Basic Resources",
   "matrix": {
     "Ticker": "SKPC.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 10.0,
-    "Current Price": 16.81,
-    "Target Entry (VWAP)": 16.3741,
-    "Suggested Stop-Loss": 16.0514,
-    "Take-Profit Target": 17.8759,
+    "Sector": "Basic Resources",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 17.8,
+    "Current Price": 16.8,
+    "Target Entry (VWAP)": 16.408,
+    "Suggested Stop-Loss": 16.0229,
+    "Take-Profit Target": 17.889,
     "Resistance (52W High)": 17.19,
     "Support (52W Low)": 14.8,
     "Pivot Point": 16.76,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.93,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | confirmed | weekly aligned | vol x1.96",
+    "Kelly %": 2.88,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 4.21,
-      "trend_bonus": 15.0,
+      "range": 4.18,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 59.8,
-    "ADX-14": 32.1,
-    "Vol Z-Score": 1.77,
+    "RSI-14": 59.6,
+    "ADX-14": 31.6,
+    "Vol Z-Score": -0.46,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0794,
-    "Bollinger %B": 0.854,
-    "Avg Volume (20D)": 3010060,
+    "MACD Histogram": 0.0685,
+    "Bollinger %B": 0.811,
+    "Avg Volume (20D)": 2996341,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       15.9,
@@ -115,7 +121,8 @@
       16.75,
       16.6,
       16.98,
-      16.81
+      16.81,
+      16.8
     ],
     "open": [
       16.11,
@@ -152,7 +159,8 @@
       16.65,
       16.75,
       16.83,
-      17.04
+      17.04,
+      16.81
     ],
     "high": [
       16.24,
@@ -189,7 +197,8 @@
       16.93,
       16.9,
       17.0,
-      17.19
+      17.19,
+      17.06
     ],
     "low": [
       15.9,
@@ -226,7 +235,8 @@
       16.5,
       16.55,
       16.73,
-      16.81
+      16.81,
+      16.8
     ],
     "volume": [
       1911076,
@@ -263,7 +273,8 @@
       3971473,
       3352513,
       5155687,
-      5892136
+      5892136,
+      2247645
     ],
     "vwap": [
       16.0133,
@@ -300,7 +311,8 @@
       16.1806,
       16.2381,
       16.2983,
-      16.3741
+      16.3741,
+      16.408
     ],
     "resistance": 17.19,
     "support": 14.8,

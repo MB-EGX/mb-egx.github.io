@@ -1,15 +1,20 @@
 {
   "ticker": "FERC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Basic Resources",
   "matrix": {
     "Ticker": "FERC.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 19.6,
-    "Current Price": 78.87,
-    "Target Entry (VWAP)": 78.87,
-    "Suggested Stop-Loss": 72.1229,
-    "Take-Profit Target": 80.9995,
+    "Sector": "Basic Resources",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE [💥 SQUEEZE]",
+    "Rank Score": 24.8,
+    "Current Price": 77.5,
+    "Target Entry (VWAP)": 77.5,
+    "Suggested Stop-Loss": 70.4829,
+    "Take-Profit Target": 79.5925,
     "Resistance (52W High)": 87.97,
     "Support (52W Low)": 72.75,
     "Pivot Point": 83.2667,
@@ -20,26 +25,26 @@
     "S2": 75.7467,
     "S3": 71.0433,
     "Projected Gain (%)": 0.73,
-    "Pattern Conf (%)": 64.64,
+    "Pattern Conf (%)": 65.61,
     "Projected Range 95%": "0.73% to 0.73%",
     "Kelly %": 0.0,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Signal Reason": "📈 ACCUMULATE [💥 SQUEEZE] | trend=Strong Bullish | awaiting confirmation | volatility squeeze | vol x1.06",
     "Score Breakdown": {
-      "pattern": 19.39,
+      "pattern": 19.68,
       "projected": 1.09,
-      "range": 2.01,
-      "trend_bonus": 15.0,
+      "range": 1.56,
+      "trend_bonus": 25.0,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 50.8,
-    "ADX-14": 48.9,
-    "Vol Z-Score": -0.31,
-    "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0934,
-    "Bollinger %B": 0.481,
-    "Avg Volume (20D)": 340137,
+    "RSI-14": 46.8,
+    "ADX-14": 46.2,
+    "Vol Z-Score": 0.06,
+    "MACD Signal": "🔴 Bearish Cross",
+    "MACD Histogram": -0.1578,
+    "Bollinger %B": 0.37,
+    "Avg Volume (20D)": 311773,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       75.24,
@@ -115,7 +121,8 @@
       81.11,
       81.02,
       81.38,
-      78.87
+      78.87,
+      77.5
     ],
     "open": [
       76.0,
@@ -152,7 +159,8 @@
       83.0,
       81.11,
       82.1,
-      81.79
+      81.79,
+      78.87
     ],
     "high": [
       76.35,
@@ -189,7 +197,8 @@
       84.88,
       83.9,
       83.55,
-      82.0
+      82.0,
+      79.89
     ],
     "low": [
       75.1,
@@ -226,7 +235,8 @@
       81.1,
       80.75,
       80.45,
-      78.61
+      78.61,
+      76.7
     ],
     "volume": [
       40360,
@@ -263,7 +273,8 @@
       411104,
       160932,
       159844,
-      229820
+      229820,
+      331810
     ],
     "vwap": [
       75.5633,
@@ -300,7 +311,8 @@
       81.6456,
       81.7187,
       81.7366,
-      81.7524
+      81.7524,
+      81.6729
     ],
     "resistance": 87.97,
     "support": 72.75,

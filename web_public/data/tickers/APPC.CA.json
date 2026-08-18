@@ -1,15 +1,21 @@
 {
   "ticker": "APPC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "APPC.CA",
-    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
-    "Rank Score": 10.9,
+    "Sector": "Health Care & Pharmaceuticals",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
+    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
+    "Rank Score": 1.4,
     "Current Price": 1.4,
-    "Target Entry (VWAP)": 1.399,
-    "Suggested Stop-Loss": 1.23,
-    "Take-Profit Target": 1.6223,
+    "Target Entry (VWAP)": 1.4,
+    "Suggested Stop-Loss": 1.2343,
+    "Take-Profit Target": 1.6169,
     "Resistance (52W High)": 1.5,
     "Support (52W Low)": 1.27,
     "Pivot Point": 1.4267,
@@ -22,24 +28,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.47,
-    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | volatility squeeze | vol x1.91",
+    "Kelly %": 1.49,
+    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
       "range": 2.83,
-      "trend_bonus": 18.0,
+      "trend_bonus": -0.2,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
     "RSI-14": 54.7,
-    "ADX-14": 70.5,
-    "Vol Z-Score": 0.83,
+    "ADX-14": 67.6,
+    "Vol Z-Score": -0.86,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0054,
-    "Bollinger %B": 0.484,
-    "Avg Volume (20D)": 21213,
+    "MACD Histogram": -0.0052,
+    "Bollinger %B": 0.446,
+    "Avg Volume (20D)": 17559,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       1.29,
@@ -107,6 +114,7 @@
       1.4,
       1.44,
       1.44,
+      1.4,
       1.4,
       1.4,
       1.4,
@@ -152,6 +160,7 @@
       1.41,
       1.41,
       1.41,
+      1.4,
       1.4
     ],
     "high": [
@@ -186,6 +195,7 @@
       1.5,
       1.48,
       1.48,
+      1.45,
       1.45,
       1.45,
       1.45,
@@ -226,6 +236,7 @@
       1.4,
       1.4,
       1.4,
+      1.39,
       1.39
     ],
     "volume": [
@@ -263,7 +274,8 @@
       5503,
       0,
       5503,
-      40560
+      40560,
+      0
     ],
     "vwap": [
       1.31,
@@ -300,7 +312,8 @@
       1.3971,
       1.3971,
       1.3974,
-      1.399
+      1.399,
+      1.4057
     ],
     "resistance": 1.5,
     "support": 1.27,

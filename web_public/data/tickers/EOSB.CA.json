@@ -1,10 +1,16 @@
 {
   "ticker": "EOSB.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "EOSB.CA",
-    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
+    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
     "Rank Score": 1.2,
     "Current Price": 1.55,
     "Target Entry (VWAP)": 1.55,
@@ -23,7 +29,7 @@
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
     "Kelly %": 1.78,
-    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze",
+    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
@@ -34,12 +40,12 @@
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
     "RSI-14": 100.0,
-    "ADX-14": 72.8,
-    "Vol Z-Score": -0.38,
+    "ADX-14": 73.2,
+    "Vol Z-Score": -0.46,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0007,
-    "Bollinger %B": 0.679,
-    "Avg Volume (20D)": 31568,
+    "MACD Histogram": 0.0,
+    "Bollinger %B": 0.66,
+    "Avg Volume (20D)": 29926,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       1.48,
@@ -103,6 +110,7 @@
       1.48,
       1.48,
       1.48,
+      1.55,
       1.55,
       1.55,
       1.55,
@@ -152,7 +160,8 @@
       1.62,
       1.55,
       1.55,
-      1.62
+      1.62,
+      1.55
     ],
     "high": [
       1.55,
@@ -178,6 +187,7 @@
       1.55,
       1.55,
       1.55,
+      1.62,
       1.62,
       1.62,
       1.62,
@@ -226,7 +236,8 @@
       1.62,
       1.55,
       1.55,
-      1.62
+      1.62,
+      1.55
     ],
     "volume": [
       34268,
@@ -263,7 +274,8 @@
       18326,
       19981,
       733,
-      7307
+      7307,
+      321
     ],
     "vwap": [
       1.5167,
@@ -300,7 +312,8 @@
       1.5529,
       1.5546,
       1.5556,
-      1.5571
+      1.5571,
+      1.5601
     ],
     "resistance": 1.62,
     "support": 1.48,

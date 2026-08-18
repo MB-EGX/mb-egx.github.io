@@ -1,15 +1,20 @@
 {
   "ticker": "BTFH.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "BTFH.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
-    "Rank Score": 22.4,
-    "Current Price": 3.12,
-    "Target Entry (VWAP)": 3.12,
-    "Suggested Stop-Loss": 2.9843,
-    "Take-Profit Target": 3.3115,
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE [💥 SQUEEZE]",
+    "Rank Score": 14.4,
+    "Current Price": 3.08,
+    "Target Entry (VWAP)": 3.08,
+    "Suggested Stop-Loss": 2.9443,
+    "Take-Profit Target": 3.2712,
     "Resistance (52W High)": 3.26,
     "Support (52W Low)": 2.91,
     "Pivot Point": 3.12,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 3.01,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze",
+    "Kelly %": 2.98,
+    "Signal Reason": "📈 ACCUMULATE [💥 SQUEEZE] | trend=Weak Bullish | awaiting confirmation | volatility squeeze",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 3.0,
-      "trend_bonus": 39.8,
+      "range": 2.43,
+      "trend_bonus": 25.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
-    "Trend Class": "Strong Bullish",
-    "RSI-14": 53.3,
-    "ADX-14": 42.3,
-    "Vol Z-Score": -0.69,
+    "Trend Class": "Weak Bullish",
+    "RSI-14": 47.4,
+    "ADX-14": 40.5,
+    "Vol Z-Score": -0.56,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0055,
-    "Bollinger %B": 0.554,
-    "Avg Volume (20D)": 70036318,
+    "MACD Histogram": -0.0071,
+    "Bollinger %B": 0.277,
+    "Avg Volume (20D)": 68165969,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       3.03,
@@ -115,7 +121,8 @@
       3.09,
       3.08,
       3.11,
-      3.12
+      3.12,
+      3.08
     ],
     "open": [
       3.04,
@@ -152,6 +159,7 @@
       3.1,
       3.09,
       3.09,
+      3.12,
       3.12
     ],
     "high": [
@@ -189,6 +197,7 @@
       3.12,
       3.11,
       3.12,
+      3.14,
       3.14
     ],
     "low": [
@@ -226,7 +235,8 @@
       3.08,
       3.07,
       3.08,
-      3.1
+      3.1,
+      3.08
     ],
     "volume": [
       86453307,
@@ -263,7 +273,8 @@
       32267282,
       22253229,
       37302071,
-      42347756
+      42347756,
+      45413238
     ],
     "vwap": [
       3.0167,
@@ -300,7 +311,8 @@
       3.1285,
       3.13,
       3.1318,
-      3.1292
+      3.1292,
+      3.128
     ],
     "resistance": 3.26,
     "support": 2.91,

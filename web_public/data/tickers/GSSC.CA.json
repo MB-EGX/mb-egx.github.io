@@ -1,16 +1,22 @@
 {
   "ticker": "GSSC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "GSSC.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
-    "Rank Score": 22.6,
-    "Current Price": 281.17,
-    "Target Entry (VWAP)": 281.17,
-    "Suggested Stop-Loss": 259.94,
-    "Take-Profit Target": 309.6757,
-    "Resistance (52W High)": 300.0,
+    "Sector": "Food, Beverages & Tobacco",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 17.8,
+    "Current Price": 290.0,
+    "Target Entry (VWAP)": 284.7602,
+    "Suggested Stop-Loss": 270.7857,
+    "Take-Profit Target": 316.0479,
+    "Resistance (52W High)": 301.0,
     "Support (52W Low)": 240.0,
     "Pivot Point": 280.3367,
     "R1": 287.6733,
@@ -22,24 +28,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.02,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze",
+    "Kelly %": 2.21,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x4.71",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 3.43,
-      "trend_bonus": 39.8,
+      "range": 4.1,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 61.7,
-    "ADX-14": 62.6,
-    "Vol Z-Score": -0.44,
+    "RSI-14": 69.1,
+    "ADX-14": 62.1,
+    "Vol Z-Score": 2.82,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.7911,
-    "Bollinger %B": 0.668,
-    "Avg Volume (20D)": 50500,
+    "MACD Histogram": -0.1996,
+    "Bollinger %B": 0.946,
+    "Avg Volume (20D)": 60986,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       245.91,
@@ -115,7 +122,8 @@
       282.03,
       280.66,
       279.01,
-      281.17
+      281.17,
+      290.0
     ],
     "open": [
       248.5,
@@ -152,7 +160,8 @@
       276.0,
       282.03,
       278.6,
-      279.01
+      279.01,
+      281.17
     ],
     "high": [
       249.5,
@@ -189,7 +198,8 @@
       289.0,
       287.8,
       281.5,
-      286.25
+      286.25,
+      301.0
     ],
     "low": [
       240.0,
@@ -226,7 +236,8 @@
       275.5,
       278.57,
       278.05,
-      279.01
+      279.01,
+      282.0
     ],
     "volume": [
       7953,
@@ -263,7 +274,8 @@
       54812,
       19041,
       9524,
-      24162
+      24162,
+      287063
     ],
     "vwap": [
       245.1367,
@@ -300,9 +312,10 @@
       280.0755,
       280.5067,
       281.0096,
-      282.201
+      282.201,
+      284.7602
     ],
-    "resistance": 300.0,
+    "resistance": 301.0,
     "support": 240.0,
     "pivots": {
       "pp": 280.3367,

@@ -1,15 +1,20 @@
 {
   "ticker": "GTWL.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Textiles & Durables",
   "matrix": {
     "Ticker": "GTWL.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 27.3,
-    "Current Price": 168.25,
-    "Target Entry (VWAP)": 126.404,
-    "Suggested Stop-Loss": 143.3657,
-    "Take-Profit Target": 200.5331,
+    "Sector": "Textiles & Durables",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 18.0,
+    "Current Price": 173.0,
+    "Target Entry (VWAP)": 130.8403,
+    "Suggested Stop-Loss": 147.2614,
+    "Take-Profit Target": 206.3842,
     "Resistance (52W High)": 184.48,
     "Support (52W Low)": 60.0,
     "Pivot Point": 147.1967,
@@ -23,23 +28,23 @@
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
     "Kelly %": 1.3,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | vol x2.96",
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x1.29",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 4.35,
-      "trend_bonus": 48.0,
+      "range": 4.54,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 84.8,
-    "ADX-14": 57.7,
-    "Vol Z-Score": 2.3,
+    "RSI-14": 85.6,
+    "ADX-14": 58.7,
+    "Vol Z-Score": 0.34,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 5.3716,
-    "Bollinger %B": 1.154,
-    "Avg Volume (20D)": 1189688,
+    "MACD Histogram": 6.1606,
+    "Bollinger %B": 1.07,
+    "Avg Volume (20D)": 1199108,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       63.05,
@@ -115,7 +121,8 @@
       124.3,
       133.35,
       160.02,
-      168.25
+      168.25,
+      173.0
     ],
     "open": [
       62.0,
@@ -152,7 +159,8 @@
       128.9,
       124.3,
       149.0,
-      168.8
+      168.8,
+      168.25
     ],
     "high": [
       68.5,
@@ -189,7 +197,8 @@
       129.98,
       136.7,
       160.02,
-      184.48
+      184.48,
+      178.89
     ],
     "low": [
       60.5,
@@ -226,7 +235,8 @@
       121.55,
       125.1,
       133.35,
-      161.03
+      161.03,
+      165.0
     ],
     "volume": [
       2213607,
@@ -263,7 +273,8 @@
       524652,
       1724289,
       2217377,
-      3520677
+      3520677,
+      1547005
     ],
     "vwap": [
       64.0167,
@@ -300,7 +311,8 @@
       110.6096,
       112.5357,
       117.4328,
-      126.404
+      126.404,
+      130.8403
     ],
     "resistance": 184.48,
     "support": 60.0,

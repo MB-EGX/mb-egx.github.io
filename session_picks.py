@@ -193,22 +193,51 @@ def _candidate_pool(horizon: str, top10: dict, buys: list, sectors: list, by_tic
         return pool
 
     if horizon == "medium":
-        pool = list(top10.get("📈 ACCUMULATE", [])) + list(top10.get("⏳ BUY ON DIP", []))
+        # Sector distribution veto: never fill a medium-term (2-6 week
+        # pullback-entry) slot with a ticker whose own sector is under
+        # HEAVY DISTRIBUTION (see analytics.compute_sector_analytics /
+        # config.ACTION_THRESHOLDS["sector_heavy_dist_1d"]) - a rising tide
+        # lifts individual stocks significantly faster than a stock fights
+        # its own sector's outflow. Rows missing a "Sector" (shouldn't
+        # happen post-decision_matrix, but never treat unknown as unsafe by
+        # excluding it) are kept.
+        distressed_sectors = {
+            s.get("Sector") for s in sectors if "HEAVY DISTRIBUTION" in s.get("Sector Status", "")
+        }
+        pool = [
+            r for r in (list(top10.get("📈 ACCUMULATE", [])) + list(top10.get("⏳ BUY ON DIP", [])))
+            if r.get("Sector") not in distressed_sectors
+        ]
         pool.sort(key=lambda r: r.get("Rank Score", 0), reverse=True)
         return pool
 
     # long-term: strongest-inflow sectors' leaders first (breadth-backed,
-    # not a single-bar signal), then fall back to the next-highest overall
-    # score so the bucket still fills even with no qualifying sector.
+    # not a single-bar signal), THEN the rest of the overall-score fallback
+    # - but within each tier, a ticker that cleared decision_matrix.py's
+    # long-term setup gate (higher-low swing structure + a bullish
+    # geometric pattern at required quality + the higher long-term
+    # liquidity floor - see config.LONG_TERM_SETUP / MIN_AVG_VOLUME_
+    # LONG_TERM) is placed ahead of one that didn't, rather than either
+    # hard-excluding unconfirmed setups (which could starve the bucket
+    # entirely on a quiet day) or ignoring the gate outright.
+    def _setup_confirmed(row: dict) -> bool:
+        return bool(row.get("Long-Term Setup Confirmed"))
+
     pool = []
     strong_sectors = [s for s in sectors if "STRONG INFLOW" in s.get("Sector Status", "")]
     strong_sectors.sort(key=lambda s: s.get("Bullish Breadth (%)", 0), reverse=True)
+    sector_leaders = []
     for s in strong_sectors:
         leader = s.get("Sector Leader")
         if leader in by_ticker:
-            pool.append(by_ticker[leader])
+            sector_leaders.append(by_ticker[leader])
     fallback = sorted(buys, key=lambda r: r.get("Rank Score", 0), reverse=True)
-    pool.extend(fallback)
+
+    for candidates in (sector_leaders, fallback):
+        confirmed = [r for r in candidates if _setup_confirmed(r)]
+        unconfirmed = [r for r in candidates if not _setup_confirmed(r)]
+        pool.extend(confirmed)
+        pool.extend(unconfirmed)
     return pool
 
 

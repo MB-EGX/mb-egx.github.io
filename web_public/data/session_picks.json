@@ -1,5 +1,5 @@
 {
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "session_picks": {
     "short": [
       {
@@ -12,8 +12,8 @@
         "expected_from": "2026-08-18",
         "expected_by": "2026-08-20",
         "expected_pct": 3.0,
-        "benchmark_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
+        "benchmark_pct": -0.25,
+        "alpha_vs_benchmark_pct": 1.71
       },
       {
         "id": 16,
@@ -25,8 +25,8 @@
         "expected_from": "2026-08-17",
         "expected_by": "2026-08-19",
         "expected_pct": 3.0,
-        "benchmark_pct": -0.787,
-        "alpha_vs_benchmark_pct": -1.71
+        "benchmark_pct": -1.035,
+        "alpha_vs_benchmark_pct": -2.72
       },
       {
         "id": 14,
@@ -111,6 +111,19 @@
     ],
     "long": [
       {
+        "id": 18,
+        "ticker": "AMOC.CA",
+        "horizon": "long",
+        "pick_date": "2026-08-18",
+        "ref_price": 11.85,
+        "source": "signal",
+        "expected_from": "2026-10-17",
+        "expected_by": "2027-02-14",
+        "expected_pct": 15.0,
+        "benchmark_pct": 0.0,
+        "alpha_vs_benchmark_pct": 0.0
+      },
+      {
         "id": 11,
         "ticker": "RACC.CA",
         "horizon": "long",
@@ -135,37 +148,35 @@
         "expected_pct": 15.0,
         "benchmark_pct": null,
         "alpha_vs_benchmark_pct": null
-      },
+      }
+    ],
+    "achieved_today": [
       {
         "id": 9,
         "ticker": "AMOC.CA",
         "horizon": "long",
         "pick_date": "2026-08-13",
         "ref_price": 10.3,
-        "source": "signal",
-        "expected_from": "2026-10-12",
-        "expected_by": "2027-02-09",
-        "expected_pct": 15.0,
-        "benchmark_pct": null,
-        "alpha_vs_benchmark_pct": null
-      }
-    ],
-    "achieved_today": [
-      {
-        "id": 2,
-        "ticker": "FAIT.CA",
-        "horizon": "short",
-        "pick_date": "2026-08-13",
-        "ref_price": 40.81,
-        "achieved_date": "2026-08-17",
-        "achieved_price": 42.91,
-        "achieved_pct": 5.15,
+        "achieved_date": "2026-08-18",
+        "achieved_price": 11.85,
+        "achieved_pct": 15.05,
         "source": "signal"
       }
     ],
-    "session_date": "2026-08-17",
+    "session_date": "2026-08-18",
     "benchmark_label": "EGX 30",
     "achieved_history": [
+      {
+        "id": 9,
+        "ticker": "AMOC.CA",
+        "horizon": "long",
+        "pick_date": "2026-08-13",
+        "ref_price": 10.3,
+        "achieved_date": "2026-08-18",
+        "achieved_price": 11.85,
+        "achieved_pct": 15.05,
+        "source": "signal"
+      },
       {
         "id": 2,
         "ticker": "FAIT.CA",

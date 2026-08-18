@@ -1,16 +1,21 @@
 {
   "ticker": "GPIM.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Construction & Engineering",
   "matrix": {
     "Ticker": "GPIM.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 35.5,
-    "Current Price": 1.34,
-    "Target Entry (VWAP)": 1.2035,
-    "Suggested Stop-Loss": 1.2443,
-    "Take-Profit Target": 1.469,
-    "Resistance (52W High)": 1.34,
+    "Sector": "Construction & Engineering",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 25.9,
+    "Current Price": 1.35,
+    "Target Entry (VWAP)": 1.2148,
+    "Suggested Stop-Loss": 1.2557,
+    "Take-Profit Target": 1.4773,
+    "Resistance (52W High)": 1.37,
     "Support (52W Low)": 1.06,
     "Pivot Point": 1.2367,
     "R1": 1.2733,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.1,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | positive money flow | vol x1.81",
+    "Kelly %": 2.13,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow | vol x1.30",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 5.0,
-      "trend_bonus": 63.0,
+      "range": 4.68,
+      "trend_bonus": 44.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 77.6,
-    "ADX-14": 42.8,
-    "Vol Z-Score": 1.6,
+    "RSI-14": 78.4,
+    "ADX-14": 44.0,
+    "Vol Z-Score": 0.63,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0085,
-    "Bollinger %B": 1.148,
-    "Avg Volume (20D)": 15898963,
+    "MACD Histogram": 0.0116,
+    "Bollinger %B": 1.067,
+    "Avg Volume (20D)": 16593517,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       1.08,
@@ -115,7 +121,8 @@
       1.24,
       1.24,
       1.25,
-      1.34
+      1.34,
+      1.35
     ],
     "open": [
       1.1,
@@ -152,7 +159,8 @@
       1.24,
       1.24,
       1.24,
-      1.26
+      1.26,
+      1.34
     ],
     "high": [
       1.11,
@@ -189,7 +197,8 @@
       1.25,
       1.25,
       1.25,
-      1.34
+      1.34,
+      1.37
     ],
     "low": [
       1.08,
@@ -226,7 +235,8 @@
       1.22,
       1.21,
       1.23,
-      1.25
+      1.25,
+      1.33
     ],
     "volume": [
       7439036,
@@ -263,7 +273,8 @@
       7274914,
       6768962,
       16180560,
-      28826513
+      28826513,
+      21628626
     ],
     "vwap": [
       1.09,
@@ -300,9 +311,10 @@
       1.1815,
       1.1862,
       1.1909,
-      1.2035
+      1.2035,
+      1.2148
     ],
-    "resistance": 1.34,
+    "resistance": 1.37,
     "support": 1.06,
     "pivots": {
       "pp": 1.2367,

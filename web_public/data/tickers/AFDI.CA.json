@@ -1,15 +1,20 @@
 {
   "ticker": "AFDI.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "AFDI.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 37.4,
-    "Current Price": 62.5,
-    "Target Entry (VWAP)": 55.8828,
-    "Suggested Stop-Loss": 54.2971,
-    "Take-Profit Target": 67.4438,
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 43.8,
+    "Current Price": 62.85,
+    "Target Entry (VWAP)": 56.1852,
+    "Suggested Stop-Loss": 54.7786,
+    "Take-Profit Target": 67.4066,
     "Resistance (52W High)": 69.89,
     "Support (52W Low)": 41.84,
     "Pivot Point": 65.4267,
@@ -19,27 +24,27 @@
     "S1": 60.9633,
     "S2": 55.5367,
     "S3": 51.0733,
-    "Projected Gain (%)": 7.21,
-    "Pattern Conf (%)": 90.41,
-    "Projected Range 95%": "7.21% to 7.21%",
+    "Projected Gain (%)": 6.55,
+    "Pattern Conf (%)": 83.72,
+    "Projected Range 95%": "5.96% to 7.15%",
     "Kelly %": 25.0,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
-      "pattern": 27.12,
-      "projected": 10.81,
-      "range": 3.68,
-      "trend_bonus": 30.0,
+      "pattern": 25.12,
+      "projected": 9.82,
+      "range": 3.75,
+      "trend_bonus": 44.8,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 63.8,
-    "ADX-14": 68.1,
-    "Vol Z-Score": -0.46,
+    "RSI-14": 64.5,
+    "ADX-14": 64.3,
+    "Vol Z-Score": -0.85,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.5478,
-    "Bollinger %B": 0.675,
-    "Avg Volume (20D)": 436340,
+    "MACD Histogram": 0.1899,
+    "Bollinger %B": 0.668,
+    "Avg Volume (20D)": 444808,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       44.41,
@@ -115,7 +121,8 @@
       67.74,
       66.99,
       66.39,
-      62.5
+      62.5,
+      62.85
     ],
     "open": [
       46.9,
@@ -152,7 +159,8 @@
       68.0,
       67.74,
       67.01,
-      66.0
+      66.0,
+      62.5
     ],
     "high": [
       47.0,
@@ -189,7 +197,8 @@
       69.89,
       67.84,
       67.6,
-      66.03
+      66.03,
+      63.74
     ],
     "low": [
       44.1,
@@ -226,7 +235,8 @@
       66.1,
       65.11,
       65.5,
-      57.6
+      57.6,
+      62.0
     ],
     "volume": [
       342137,
@@ -263,7 +273,8 @@
       368775,
       212521,
       185395,
-      335430
+      335430,
+      267318
     ],
     "vwap": [
       45.17,
@@ -300,7 +311,8 @@
       54.3419,
       54.8342,
       55.4918,
-      55.8828
+      55.8828,
+      56.1852
     ],
     "resistance": 69.89,
     "support": 41.84,

@@ -1,15 +1,20 @@
 {
   "ticker": "EAST.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "EAST.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 16.3,
-    "Current Price": 36.66,
-    "Target Entry (VWAP)": 36.66,
-    "Suggested Stop-Loss": 35.5671,
-    "Take-Profit Target": 38.2827,
+    "Sector": "Food, Beverages & Tobacco",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned)",
+    "Rank Score": 11.4,
+    "Current Price": 36.4,
+    "Target Entry (VWAP)": 36.4,
+    "Suggested Stop-Loss": 35.3457,
+    "Take-Profit Target": 37.9727,
     "Resistance (52W High)": 38.5,
     "Support (52W Low)": 36.01,
     "Pivot Point": 36.6633,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 3.98,
-    "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation | positive money flow",
+    "Kelly %": 4.06,
+    "Signal Reason": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned) | trend=Weak Bullish | awaiting confirmation | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 1.31,
-      "trend_bonus": 30.0,
+      "range": 0.78,
+      "trend_bonus": 21.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Weak Bullish",
-    "RSI-14": 48.6,
-    "ADX-14": 31.0,
-    "Vol Z-Score": -0.21,
+    "RSI-14": 45.0,
+    "ADX-14": 28.9,
+    "Vol Z-Score": -0.41,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0672,
-    "Bollinger %B": 0.54,
-    "Avg Volume (20D)": 1671546,
+    "MACD Histogram": 0.0582,
+    "Bollinger %B": 0.393,
+    "Avg Volume (20D)": 1680096,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       38.5,
@@ -115,7 +121,8 @@
       36.3,
       36.26,
       36.69,
-      36.66
+      36.66,
+      36.4
     ],
     "open": [
       38.44,
@@ -152,7 +159,8 @@
       36.25,
       36.3,
       36.39,
-      36.69
+      36.69,
+      36.66
     ],
     "high": [
       38.5,
@@ -189,7 +197,8 @@
       36.54,
       36.63,
       36.7,
-      37.1
+      37.1,
+      36.78
     ],
     "low": [
       37.9,
@@ -226,7 +235,8 @@
       36.2,
       36.18,
       36.26,
-      36.57
+      36.57,
+      36.35
     ],
     "volume": [
       558947,
@@ -263,7 +273,8 @@
       555252,
       966546,
       532724,
-      1196808
+      1196808,
+      761656
     ],
     "vwap": [
       38.3,
@@ -300,7 +311,8 @@
       36.7085,
       36.7078,
       36.703,
-      36.7007
+      36.7007,
+      36.6904
     ],
     "resistance": 38.5,
     "support": 36.01,

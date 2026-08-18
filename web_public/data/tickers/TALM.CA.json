@@ -1,15 +1,20 @@
 {
   "ticker": "TALM.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Education Services",
   "matrix": {
     "Ticker": "TALM.CA",
-    "Action": "🔥 STRONG BUY (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 21.9,
-    "Current Price": 19.97,
-    "Target Entry (VWAP)": 18.0824,
-    "Suggested Stop-Loss": 17.69,
-    "Take-Profit Target": 22.9598,
+    "Sector": "Education Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 17.9,
+    "Current Price": 19.88,
+    "Target Entry (VWAP)": 18.1486,
+    "Suggested Stop-Loss": 17.9314,
+    "Take-Profit Target": 22.4549,
     "Resistance (52W High)": 20.55,
     "Support (52W Low)": 15.27,
     "Pivot Point": 19.55,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.53,
-    "Signal Reason": "🔥 STRONG BUY (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Kelly %": 1.69,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 4.45,
-      "trend_bonus": 37.5,
+      "range": 4.37,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 74.9,
-    "ADX-14": 65.7,
-    "Vol Z-Score": -0.54,
+    "RSI-14": 73.4,
+    "ADX-14": 66.8,
+    "Vol Z-Score": -0.43,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.1585,
-    "Bollinger %B": 0.867,
-    "Avg Volume (20D)": 2529448,
+    "MACD Histogram": 0.1464,
+    "Bollinger %B": 0.821,
+    "Avg Volume (20D)": 2582006,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       15.89,
@@ -115,7 +121,8 @@
       18.89,
       19.0,
       19.78,
-      19.97
+      19.97,
+      19.88
     ],
     "open": [
       16.01,
@@ -152,7 +159,8 @@
       18.7,
       18.89,
       19.11,
-      19.86
+      19.86,
+      19.97
     ],
     "high": [
       16.25,
@@ -189,7 +197,8 @@
       19.8,
       19.32,
       20.55,
-      20.0
+      20.0,
+      20.49
     ],
     "low": [
       15.86,
@@ -226,7 +235,8 @@
       18.53,
       18.75,
       19.0,
-      19.12
+      19.12,
+      19.55
     ],
     "volume": [
       417176,
@@ -263,7 +273,8 @@
       2534010,
       996811,
       2496959,
-      1025535
+      1025535,
+      1385934
     ],
     "vwap": [
       16.0,
@@ -300,7 +311,8 @@
       17.8199,
       17.8995,
       18.0288,
-      18.0824
+      18.0824,
+      18.1486
     ],
     "resistance": 20.55,
     "support": 15.27,

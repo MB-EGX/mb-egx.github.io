@@ -1,15 +1,20 @@
 {
   "ticker": "NCCW.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Construction & Engineering",
   "matrix": {
     "Ticker": "NCCW.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 8.5,
-    "Current Price": 6.15,
-    "Target Entry (VWAP)": 6.15,
-    "Suggested Stop-Loss": 5.6014,
-    "Take-Profit Target": 6.8788,
+    "Sector": "Construction & Engineering",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor)",
+    "Rank Score": 8.8,
+    "Current Price": 6.06,
+    "Target Entry (VWAP)": 6.06,
+    "Suggested Stop-Loss": 5.5243,
+    "Take-Profit Target": 6.7721,
     "Resistance (52W High)": 7.3,
     "Support (52W Low)": 5.76,
     "Pivot Point": 5.9833,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.8,
-    "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation",
+    "Kelly %": 1.81,
+    "Signal Reason": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor) | trend=Consolidation / Neutral | awaiting confirmation",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 1.27,
-      "trend_bonus": 15.0,
+      "range": 0.97,
+      "trend_bonus": 15.75,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
-    "Trend Class": "Weak Bullish",
-    "RSI-14": 42.3,
-    "ADX-14": 34.5,
-    "Vol Z-Score": -0.46,
+    "Trend Class": "Consolidation / Neutral",
+    "RSI-14": 40.1,
+    "ADX-14": 32.7,
+    "Vol Z-Score": -0.08,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0997,
-    "Bollinger %B": 0.271,
-    "Avg Volume (20D)": 5045980,
+    "MACD Histogram": -0.0865,
+    "Bollinger %B": 0.247,
+    "Avg Volume (20D)": 5145512,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       6.21,
@@ -115,7 +121,8 @@
       5.97,
       5.99,
       6.05,
-      6.15
+      6.15,
+      6.06
     ],
     "open": [
       6.4,
@@ -152,7 +159,8 @@
       5.89,
       5.97,
       6.09,
-      6.07
+      6.07,
+      6.15
     ],
     "high": [
       6.4,
@@ -189,7 +197,8 @@
       5.99,
       6.1,
       6.09,
-      6.16
+      6.16,
+      6.23
     ],
     "low": [
       6.1,
@@ -226,6 +235,7 @@
       5.82,
       5.92,
       6.01,
+      6.05,
       6.05
     ],
     "volume": [
@@ -263,7 +273,8 @@
       3026761,
       2857584,
       2058810,
-      3329431
+      3329431,
+      4865195
     ],
     "vwap": [
       6.2367,
@@ -300,7 +311,8 @@
       6.6851,
       6.6736,
       6.6657,
-      6.641
+      6.641,
+      6.6139
     ],
     "resistance": 7.3,
     "support": 5.76,

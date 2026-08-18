@@ -1,15 +1,20 @@
 {
   "ticker": "EALR.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Construction & Engineering",
   "matrix": {
     "Ticker": "EALR.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 27.4,
-    "Current Price": 456.01,
-    "Target Entry (VWAP)": 400.794,
-    "Suggested Stop-Loss": 397.8629,
-    "Take-Profit Target": 531.886,
+    "Sector": "Construction & Engineering",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 9.5,
+    "Current Price": 417.1,
+    "Target Entry (VWAP)": 404.1342,
+    "Suggested Stop-Loss": 353.5686,
+    "Take-Profit Target": 499.434,
     "Resistance (52W High)": 471.18,
     "Support (52W Low)": 332.0,
     "Pivot Point": 395.9,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.43,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | vol x4.37",
+    "Kelly %": 1.28,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | confirmed | weekly aligned | vol x1.63",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 4.46,
-      "trend_bonus": 48.0,
+      "range": 3.06,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 77.5,
-    "ADX-14": 59.6,
-    "Vol Z-Score": 2.88,
+    "RSI-14": 60.2,
+    "ADX-14": 60.5,
+    "Vol Z-Score": 0.55,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 4.674,
-    "Bollinger %B": 1.407,
-    "Avg Volume (20D)": 111752,
+    "MACD Histogram": 4.4853,
+    "Bollinger %B": 0.877,
+    "Avg Volume (20D)": 114625,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       351.42,
@@ -115,7 +121,8 @@
       384.31,
       387.55,
       392.65,
-      456.01
+      456.01,
+      417.1
     ],
     "open": [
       354.7,
@@ -152,7 +159,8 @@
       391.0,
       384.31,
       392.49,
-      396.0
+      396.0,
+      456.01
     ],
     "high": [
       356.89,
@@ -189,7 +197,8 @@
       398.5,
       407.0,
       399.9,
-      471.18
+      471.18,
+      456.2
     ],
     "low": [
       350.0,
@@ -226,7 +235,8 @@
       383.01,
       385.12,
       388.5,
-      390.25
+      390.25,
+      411.51
     ],
     "volume": [
       6057,
@@ -263,7 +273,8 @@
       49311,
       89753,
       44109,
-      488121
+      488121,
+      187070
     ],
     "vwap": [
       352.77,
@@ -300,7 +311,8 @@
       388.609,
       389.3987,
       389.8327,
-      400.794
+      400.794,
+      404.1342
     ],
     "resistance": 471.18,
     "support": 332.0,

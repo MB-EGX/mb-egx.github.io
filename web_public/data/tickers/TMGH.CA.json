@@ -1,15 +1,20 @@
 {
   "ticker": "TMGH.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "TMGH.CA",
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "📈 ACCUMULATE",
-    "Rank Score": 8.8,
-    "Current Price": 96.5,
-    "Target Entry (VWAP)": 96.5,
-    "Suggested Stop-Loss": 92.4014,
-    "Take-Profit Target": 102.2987,
+    "Rank Score": 8.9,
+    "Current Price": 96.8,
+    "Target Entry (VWAP)": 96.8,
+    "Suggested Stop-Loss": 92.9157,
+    "Take-Profit Target": 102.333,
     "Resistance (52W High)": 103.87,
     "Support (52W Low)": 92.1,
     "Pivot Point": 97.9667,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 3.06,
+    "Kelly %": 3.19,
     "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 1.87,
+      "range": 2.0,
       "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Weak Bullish",
-    "RSI-14": 42.6,
-    "ADX-14": 25.2,
-    "Vol Z-Score": -0.15,
+    "RSI-14": 44.1,
+    "ADX-14": 24.8,
+    "Vol Z-Score": -1.05,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.3212,
-    "Bollinger %B": 0.08,
-    "Avg Volume (20D)": 2902072,
+    "MACD Histogram": -0.3357,
+    "Bollinger %B": 0.148,
+    "Avg Volume (20D)": 2775460,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       95.86,
@@ -115,7 +121,8 @@
       98.35,
       97.8,
       97.88,
-      96.5
+      96.5,
+      96.8
     ],
     "open": [
       95.98,
@@ -152,7 +159,8 @@
       97.9,
       98.35,
       97.81,
-      97.97
+      97.97,
+      96.5
     ],
     "high": [
       96.3,
@@ -189,7 +197,8 @@
       98.4,
       98.99,
       98.49,
-      98.54
+      98.54,
+      97.4
     ],
     "low": [
       94.2,
@@ -226,7 +235,8 @@
       97.01,
       96.9,
       97.02,
-      96.36
+      96.36,
+      96.39
     ],
     "volume": [
       3787322,
@@ -263,7 +273,8 @@
       1129738,
       2833400,
       2053059,
-      2745901
+      2745901,
+      1696246
     ],
     "vwap": [
       95.4533,
@@ -300,7 +311,8 @@
       99.7143,
       99.5729,
       99.1878,
-      99.0682
+      99.0682,
+      98.8326
     ],
     "resistance": 103.87,
     "support": 92.1,

@@ -1,15 +1,20 @@
 {
   "ticker": "NHPS.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "NHPS.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 28.6,
-    "Current Price": 91.8,
-    "Target Entry (VWAP)": 90.8988,
-    "Suggested Stop-Loss": 82.7257,
-    "Take-Profit Target": 94.2786,
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 20.8,
+    "Current Price": 89.84,
+    "Target Entry (VWAP)": 89.84,
+    "Suggested Stop-Loss": 80.4657,
+    "Take-Profit Target": 92.2657,
     "Resistance (52W High)": 104.0,
     "Support (52W Low)": 61.55,
     "Pivot Point": 94.18,
@@ -19,27 +24,27 @@
     "S1": 84.36,
     "S2": 78.28,
     "S3": 68.46,
-    "Projected Gain (%)": 0.16,
-    "Pattern Conf (%)": 70.23,
-    "Projected Range 95%": "0.16% to 0.16%",
+    "Projected Gain (%)": 1.26,
+    "Pattern Conf (%)": 64.48,
+    "Projected Range 95%": "0.27% to 2.25%",
     "Kelly %": 0.0,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 21.07,
-      "projected": 0.24,
-      "range": 3.56,
-      "trend_bonus": 29.8,
+      "pattern": 19.34,
+      "projected": 1.89,
+      "range": 3.33,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 62.4,
-    "ADX-14": 57.0,
-    "Vol Z-Score": -0.1,
+    "RSI-14": 58.3,
+    "ADX-14": 55.9,
+    "Vol Z-Score": -0.5,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.2047,
-    "Bollinger %B": 0.759,
-    "Avg Volume (20D)": 615692,
+    "MACD Histogram": -0.3273,
+    "Bollinger %B": 0.619,
+    "Avg Volume (20D)": 600948,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       64.09,
@@ -115,7 +121,8 @@
       89.12,
       89.06,
       90.44,
-      91.8
+      91.8,
+      89.84
     ],
     "open": [
       63.4,
@@ -152,7 +159,8 @@
       94.4,
       89.12,
       90.0,
-      93.01
+      93.01,
+      91.8
     ],
     "high": [
       65.4,
@@ -189,7 +197,8 @@
       94.77,
       92.8,
       92.0,
-      95.5
+      95.5,
+      93.6
     ],
     "low": [
       63.4,
@@ -226,7 +235,8 @@
       89.0,
       88.1,
       89.28,
-      91.52
+      91.52,
+      89.5
     ],
     "volume": [
       59728,
@@ -263,7 +273,8 @@
       477157,
       442424,
       350523,
-      550819
+      550819,
+      278664
     ],
     "vwap": [
       64.2967,
@@ -300,7 +311,8 @@
       90.2717,
       90.546,
       90.6381,
-      90.8988
+      90.8988,
+      91.0879
     ],
     "resistance": 104.0,
     "support": 61.55,

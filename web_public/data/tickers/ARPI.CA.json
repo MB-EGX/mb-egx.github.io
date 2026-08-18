@@ -1,9 +1,15 @@
 {
   "ticker": "ARPI.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Building Materials",
   "matrix": {
     "Ticker": "ARPI.CA",
+    "Sector": "Building Materials",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
     "Action": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE]",
     "Rank Score": -6.8,
     "Current Price": 0.08,
@@ -78,9 +84,11 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
+      0.08,
       0.08,
       0.08,
       0.08,
@@ -152,9 +160,11 @@
       0.11,
       0.11,
       0.11,
+      0.11,
       0.11
     ],
     "high": [
+      0.11,
       0.11,
       0.11,
       0.11,
@@ -226,6 +236,7 @@
       0.06,
       0.06,
       0.06,
+      0.06,
       0.06
     ],
     "volume": [
@@ -263,9 +274,11 @@
       0,
       0,
       0,
+      0,
       0
     ],
     "vwap": [
+      0.08,
       0.08,
       0.08,
       0.08,

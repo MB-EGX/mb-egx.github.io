@@ -1,15 +1,20 @@
 {
   "ticker": "GIHD.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "GIHD.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 46.4,
-    "Current Price": 67.7,
-    "Target Entry (VWAP)": 60.9558,
-    "Suggested Stop-Loss": 56.5943,
-    "Take-Profit Target": 82.3367,
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 39.9,
+    "Current Price": 65.53,
+    "Target Entry (VWAP)": 61.5241,
+    "Suggested Stop-Loss": 54.5029,
+    "Take-Profit Target": 79.6779,
     "Resistance (52W High)": 76.5,
     "Support (52W Low)": 40.66,
     "Pivot Point": 67.1167,
@@ -19,27 +24,27 @@
     "S1": 57.7333,
     "S2": 50.1467,
     "S3": 40.7633,
-    "Projected Gain (%)": 20.92,
-    "Pattern Conf (%)": 79.69,
-    "Projected Range 95%": "20.92% to 20.92%",
+    "Projected Gain (%)": 20.89,
+    "Pattern Conf (%)": 87.57,
+    "Projected Range 95%": "20.86% to 20.92%",
     "Kelly %": 25.0,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 23.91,
-      "projected": 31.38,
-      "range": 3.77,
-      "trend_bonus": 29.8,
+      "pattern": 26.27,
+      "projected": 31.34,
+      "range": 3.47,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 70.0,
-    "ADX-14": 67.4,
-    "Vol Z-Score": -0.48,
+    "RSI-14": 63.7,
+    "ADX-14": 67.9,
+    "Vol Z-Score": -0.67,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.307,
-    "Bollinger %B": 0.849,
-    "Avg Volume (20D)": 765539,
+    "MACD Histogram": 0.0799,
+    "Bollinger %B": 0.72,
+    "Avg Volume (20D)": 736652,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       43.47,
@@ -115,7 +121,8 @@
       68.5,
       67.1,
       65.32,
-      67.7
+      67.7,
+      65.53
     ],
     "open": [
       44.45,
@@ -152,7 +159,8 @@
       69.39,
       68.5,
       65.2,
-      65.32
+      65.32,
+      67.7
     ],
     "high": [
       45.5,
@@ -189,7 +197,8 @@
       76.5,
       71.0,
       68.75,
-      70.98
+      70.98,
+      69.7
     ],
     "low": [
       43.3,
@@ -226,7 +235,8 @@
       63.0,
       65.7,
       65.2,
-      64.42
+      64.42,
+      65.5
     ],
     "volume": [
       354843,
@@ -263,7 +273,8 @@
       738843,
       252892,
       432314,
-      387446
+      387446,
+      206848
     ],
     "vwap": [
       44.09,
@@ -300,7 +311,8 @@
       58.951,
       60.0171,
       60.5338,
-      60.9558
+      60.9558,
+      61.5241
     ],
     "resistance": 76.5,
     "support": 40.66,

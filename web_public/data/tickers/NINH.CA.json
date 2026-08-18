@@ -1,15 +1,20 @@
 {
   "ticker": "NINH.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "NINH.CA",
+    "Sector": "Health Care & Pharmaceuticals",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "📈 ACCUMULATE",
     "Rank Score": 9.2,
-    "Current Price": 21.78,
-    "Target Entry (VWAP)": 21.78,
-    "Suggested Stop-Loss": 19.2343,
-    "Take-Profit Target": 25.1146,
+    "Current Price": 21.64,
+    "Target Entry (VWAP)": 21.64,
+    "Suggested Stop-Loss": 19.0657,
+    "Take-Profit Target": 25.0093,
     "Resistance (52W High)": 25.99,
     "Support (52W Low)": 17.4,
     "Pivot Point": 22.3133,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.51,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Kelly %": 1.49,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.55,
+      "range": 2.47,
       "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 50.6,
-    "ADX-14": 47.5,
-    "Vol Z-Score": -0.43,
+    "RSI-14": 49.6,
+    "ADX-14": 45.6,
+    "Vol Z-Score": -0.58,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.3423,
-    "Bollinger %B": 0.3,
-    "Avg Volume (20D)": 1528345,
+    "MACD Histogram": -0.3572,
+    "Bollinger %B": 0.281,
+    "Avg Volume (20D)": 1392066,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       17.99,
@@ -115,7 +121,8 @@
       22.5,
       21.99,
       21.53,
-      21.78
+      21.78,
+      21.64
     ],
     "open": [
       18.12,
@@ -152,7 +159,8 @@
       22.75,
       22.5,
       22.0,
-      21.6
+      21.6,
+      21.78
     ],
     "high": [
       18.37,
@@ -189,7 +197,8 @@
       22.95,
       22.75,
       22.27,
-      22.85
+      22.85,
+      22.28
     ],
     "low": [
       17.5,
@@ -226,7 +235,8 @@
       22.47,
       21.93,
       21.51,
-      21.56
+      21.56,
+      21.53
     ],
     "volume": [
       408516,
@@ -263,7 +273,8 @@
       511967,
       435445,
       543404,
-      921397
+      921397,
+      602559
     ],
     "vwap": [
       17.9533,
@@ -300,7 +311,8 @@
       22.2449,
       22.6104,
       23.0317,
-      23.1317
+      23.1317,
+      23.1473
     ],
     "resistance": 25.99,
     "support": 17.4,

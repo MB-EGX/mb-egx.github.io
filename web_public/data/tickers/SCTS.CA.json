@@ -1,15 +1,21 @@
 {
   "ticker": "SCTS.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Education Services",
   "matrix": {
     "Ticker": "SCTS.CA",
-    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
+    "Sector": "Education Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
+    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: below VWAP) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
     "Rank Score": 1.3,
-    "Current Price": 616.67,
-    "Target Entry (VWAP)": 616.67,
-    "Suggested Stop-Loss": 587.1329,
-    "Take-Profit Target": 657.9081,
+    "Current Price": 617.0,
+    "Target Entry (VWAP)": 617.0,
+    "Suggested Stop-Loss": 582.6986,
+    "Take-Profit Target": 664.1958,
     "Resistance (52W High)": 685.0,
     "Support (52W Low)": 540.0,
     "Pivot Point": 619.1333,
@@ -22,24 +28,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.8,
-    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze",
+    "Kelly %": 2.51,
+    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: below VWAP) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze | vol x3.58",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.64,
+      "range": 2.66,
       "trend_bonus": -0.2,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 57.2,
-    "ADX-14": 55.0,
-    "Vol Z-Score": -0.37,
+    "RSI-14": 57.5,
+    "ADX-14": 56.3,
+    "Vol Z-Score": 1.49,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.3648,
-    "Bollinger %B": 0.699,
-    "Avg Volume (20D)": 15714,
+    "MACD Histogram": -0.3874,
+    "Bollinger %B": 0.7,
+    "Avg Volume (20D)": 17092,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       575.73,
@@ -115,7 +122,8 @@
       617.01,
       617.71,
       616.35,
-      616.67
+      616.67,
+      617.0
     ],
     "open": [
       590.0,
@@ -152,7 +160,8 @@
       617.01,
       617.01,
       620.0,
-      618.0
+      618.0,
+      616.67
     ],
     "high": [
       590.0,
@@ -189,7 +198,8 @@
       627.0,
       621.95,
       620.0,
-      620.0
+      620.0,
+      660.0
     ],
     "low": [
       575.0,
@@ -226,7 +236,8 @@
       617.0,
       617.0,
       616.0,
-      616.5
+      616.5,
+      617.0
     ],
     "volume": [
       2463,
@@ -263,7 +274,8 @@
       11283,
       4647,
       11401,
-      5228
+      5228,
+      61176
     ],
     "vwap": [
       580.2433,
@@ -300,7 +312,8 @@
       623.7597,
       623.881,
       623.7778,
-      624.3374
+      624.3374,
+      625.9411
     ],
     "resistance": 685.0,
     "support": 540.0,

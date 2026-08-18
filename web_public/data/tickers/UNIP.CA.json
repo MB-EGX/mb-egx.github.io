@@ -1,15 +1,20 @@
 {
   "ticker": "UNIP.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Paper & Packaging",
   "matrix": {
     "Ticker": "UNIP.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 17.6,
-    "Current Price": 0.403,
-    "Target Entry (VWAP)": 0.4014,
-    "Suggested Stop-Loss": 0.3703,
-    "Take-Profit Target": 0.4467,
+    "Sector": "Paper & Packaging",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: below VWAP, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 36.5,
+    "Current Price": 0.4,
+    "Target Entry (VWAP)": 0.4,
+    "Suggested Stop-Loss": 0.3691,
+    "Take-Profit Target": 0.4493,
     "Resistance (52W High)": 0.436,
     "Support (52W Low)": 0.296,
     "Pivot Point": 0.4123,
@@ -19,27 +24,27 @@
     "S1": 0.3887,
     "S2": 0.3723,
     "S3": 0.3487,
-    "Projected Gain (%)": "N/A",
-    "Pattern Conf (%)": "N/A",
-    "Projected Range 95%": "N/A",
-    "Kelly %": 1.91,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Projected Gain (%)": 11.62,
+    "Pattern Conf (%)": 62.22,
+    "Projected Range 95%": "11.62% to 11.62%",
+    "Kelly %": 19.29,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: below VWAP, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x2.09",
     "Score Breakdown": {
-      "pattern": 0.0,
-      "projected": 0.0,
-      "range": 3.82,
+      "pattern": 18.67,
+      "projected": 17.43,
+      "range": 3.71,
       "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
-    "Regime": "N/A",
+    "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 60.5,
-    "ADX-14": 40.7,
-    "Vol Z-Score": -0.49,
+    "RSI-14": 58.4,
+    "ADX-14": 41.4,
+    "Vol Z-Score": 1.55,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0016,
-    "Bollinger %B": 0.548,
-    "Avg Volume (20D)": 76793090,
+    "MACD Histogram": -0.0021,
+    "Bollinger %B": 0.493,
+    "Avg Volume (20D)": 72510203,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       0.315,
@@ -115,7 +121,8 @@
       0.414,
       0.404,
       0.405,
-      0.403
+      0.403,
+      0.4
     ],
     "open": [
       0.315,
@@ -152,7 +159,8 @@
       0.415,
       0.414,
       0.406,
-      0.406
+      0.406,
+      0.403
     ],
     "high": [
       0.323,
@@ -189,7 +197,8 @@
       0.42,
       0.436,
       0.41,
-      0.407
+      0.407,
+      0.425
     ],
     "low": [
       0.313,
@@ -226,7 +235,8 @@
       0.412,
       0.396,
       0.401,
-      0.398
+      0.398,
+      0.4
     ],
     "volume": [
       22226736,
@@ -263,7 +273,8 @@
       31177386,
       148571951,
       27672250,
-      46787838
+      46787838,
+      151604781
     ],
     "vwap": [
       0.317,
@@ -300,7 +311,8 @@
       0.3938,
       0.3988,
       0.4005,
-      0.4014
+      0.4014,
+      0.4034
     ],
     "resistance": 0.436,
     "support": 0.296,

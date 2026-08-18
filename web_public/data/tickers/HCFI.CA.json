@@ -1,14 +1,19 @@
 {
   "ticker": "HCFI.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "HCFI.CA",
-    "Action": "⏳ BUY ON DIP [💥 SQUEEZE]",
-    "Rank Score": 48.4,
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⏳ BUY ON DIP [💥 SQUEEZE] (Unconfirmed: weekly trend not aligned)",
+    "Rank Score": 25.0,
     "Current Price": 3.38,
     "Target Entry (VWAP)": 3.38,
-    "Suggested Stop-Loss": 3.0343,
+    "Suggested Stop-Loss": 3.0257,
     "Take-Profit Target": 3.4811,
     "Resistance (52W High)": 3.78,
     "Support (52W Low)": 3.3,
@@ -20,26 +25,26 @@
     "S2": 3.2167,
     "S3": 3.1333,
     "Projected Gain (%)": 2.29,
-    "Pattern Conf (%)": 61.37,
+    "Pattern Conf (%)": 63.27,
     "Projected Range 95%": "2.29% to 2.29%",
     "Kelly %": 0.0,
-    "Signal Reason": "⏳ BUY ON DIP [💥 SQUEEZE] | trend=Weak Bullish | awaiting confirmation | volatility squeeze | positive money flow",
+    "Signal Reason": "⏳ BUY ON DIP [💥 SQUEEZE] (Unconfirmed: weekly trend not aligned) | trend=Weak Bullish | awaiting confirmation | volatility squeeze | positive money flow",
     "Score Breakdown": {
-      "pattern": 18.41,
+      "pattern": 18.98,
       "projected": 3.44,
       "range": 0.83,
-      "trend_bonus": 70.0,
+      "trend_bonus": 24.5,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Weak Bullish",
     "RSI-14": 27.5,
-    "ADX-14": 59.6,
-    "Vol Z-Score": -0.03,
+    "ADX-14": 60.5,
+    "Vol Z-Score": -1.34,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0047,
-    "Bollinger %B": 0.126,
-    "Avg Volume (20D)": 143361,
+    "MACD Histogram": -0.0057,
+    "Bollinger %B": 0.167,
+    "Avg Volume (20D)": 134348,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       3.62,
@@ -115,6 +121,7 @@
       3.45,
       3.45,
       3.45,
+      3.38,
       3.38
     ],
     "open": [
@@ -152,6 +159,7 @@
       3.4,
       3.4,
       3.4,
+      3.45,
       3.45
     ],
     "high": [
@@ -189,6 +197,7 @@
       3.48,
       3.48,
       3.48,
+      3.45,
       3.45
     ],
     "low": [
@@ -226,6 +235,7 @@
       3.3,
       3.3,
       3.3,
+      3.32,
       3.32
     ],
     "volume": [
@@ -263,7 +273,8 @@
       224090,
       0,
       224090,
-      140432
+      140432,
+      0
     ],
     "vwap": [
       3.6333,
@@ -300,7 +311,8 @@
       3.491,
       3.4896,
       3.4821,
-      3.4752
+      3.4752,
+      3.4731
     ],
     "resistance": 3.78,
     "support": 3.3,

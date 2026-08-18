@@ -1,15 +1,20 @@
 {
   "ticker": "DAPH.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "DAPH.CA",
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "📈 ACCUMULATE",
-    "Rank Score": 31.4,
-    "Current Price": 130.4,
-    "Target Entry (VWAP)": 111.4363,
-    "Suggested Stop-Loss": 113.1357,
-    "Take-Profit Target": 146.713,
+    "Rank Score": 29.8,
+    "Current Price": 126.28,
+    "Target Entry (VWAP)": 111.9071,
+    "Suggested Stop-Loss": 108.3257,
+    "Take-Profit Target": 140.5496,
     "Resistance (52W High)": 147.0,
     "Support (52W Low)": 78.52,
     "Pivot Point": 129.0,
@@ -19,27 +24,27 @@
     "S1": 111.0,
     "S2": 90.0,
     "S3": 72.0,
-    "Projected Gain (%)": 11.81,
-    "Pattern Conf (%)": 78.5,
-    "Projected Range 95%": "11.81% to 11.81%",
-    "Kelly %": 25.0,
+    "Projected Gain (%)": 10.6,
+    "Pattern Conf (%)": 74.94,
+    "Projected Range 95%": "9.51% to 11.69%",
+    "Kelly %": 21.7,
     "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 23.55,
-      "projected": 17.71,
-      "range": 3.79,
+      "pattern": 22.48,
+      "projected": 15.9,
+      "range": 3.49,
       "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 79.6,
-    "ADX-14": 63.2,
-    "Vol Z-Score": -0.59,
+    "RSI-14": 72.3,
+    "ADX-14": 63.1,
+    "Vol Z-Score": -0.78,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 2.6125,
-    "Bollinger %B": 0.885,
-    "Avg Volume (20D)": 422756,
+    "MACD Histogram": 1.9566,
+    "Bollinger %B": 0.788,
+    "Avg Volume (20D)": 422997,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       82.48,
@@ -115,7 +121,8 @@
       125.0,
       124.45,
       132.0,
-      130.4
+      130.4,
+      126.28
     ],
     "open": [
       83.5,
@@ -152,7 +159,8 @@
       132.0,
       125.0,
       124.7,
-      134.98
+      134.98,
+      130.4
     ],
     "high": [
       87.9,
@@ -189,7 +197,8 @@
       136.25,
       127.5,
       135.5,
-      136.01
+      136.01,
+      134.7
     ],
     "low": [
       82.05,
@@ -226,7 +235,8 @@
       123.68,
       122.55,
       124.7,
-      127.9
+      127.9,
+      125.16
     ],
     "volume": [
       723580,
@@ -263,7 +273,8 @@
       531171,
       212023,
       295467,
-      175542
+      175542,
+      98059
     ],
     "vwap": [
       84.1433,
@@ -300,7 +311,8 @@
       108.4548,
       109.6767,
       110.7394,
-      111.4363
+      111.4363,
+      111.9071
     ],
     "resistance": 147.0,
     "support": 78.52,

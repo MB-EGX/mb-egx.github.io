@@ -1,16 +1,21 @@
 {
   "ticker": "AMOC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Energy & Support Services",
   "matrix": {
     "Ticker": "AMOC.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 46.4,
-    "Current Price": 11.59,
-    "Target Entry (VWAP)": 9.4667,
-    "Suggested Stop-Loss": 10.6843,
-    "Take-Profit Target": 11.9029,
-    "Resistance (52W High)": 11.67,
+    "Sector": "Energy & Support Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 36.6,
+    "Current Price": 11.85,
+    "Target Entry (VWAP)": 9.679,
+    "Suggested Stop-Loss": 10.8557,
+    "Take-Profit Target": 12.1699,
+    "Resistance (52W High)": 12.25,
     "Support (52W Low)": 7.42,
     "Pivot Point": 10.3833,
     "R1": 11.6867,
@@ -19,27 +24,27 @@
     "S1": 9.6267,
     "S2": 8.3233,
     "S3": 7.5667,
-    "Projected Gain (%)": -0.72,
-    "Pattern Conf (%)": 73.48,
-    "Projected Range 95%": "-0.72% to -0.72%",
+    "Projected Gain (%)": -0.66,
+    "Pattern Conf (%)": 71.58,
+    "Projected Range 95%": "-0.71% to -0.61%",
     "Kelly %": 0.0,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | positive money flow | vol x1.84",
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow | vol x1.52",
     "Score Breakdown": {
-      "pattern": 22.04,
-      "projected": -1.08,
-      "range": 4.91,
-      "trend_bonus": 63.0,
+      "pattern": 21.47,
+      "projected": -0.99,
+      "range": 4.59,
+      "trend_bonus": 44.8,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 87.4,
-    "ADX-14": 68.3,
-    "Vol Z-Score": 1.02,
+    "RSI-14": 88.4,
+    "ADX-14": 69.7,
+    "Vol Z-Score": 0.65,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.2244,
-    "Bollinger %B": 1.163,
-    "Avg Volume (20D)": 12800709,
+    "MACD Histogram": 0.268,
+    "Bollinger %B": 1.086,
+    "Avg Volume (20D)": 13471262,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       7.6,
@@ -115,7 +121,8 @@
       9.55,
       10.3,
       10.93,
-      11.59
+      11.59,
+      11.85
     ],
     "open": [
       7.71,
@@ -152,7 +159,8 @@
       9.5,
       9.55,
       10.88,
-      11.19
+      11.19,
+      11.59
     ],
     "high": [
       7.71,
@@ -189,7 +197,8 @@
       9.66,
       10.3,
       11.14,
-      11.67
+      11.67,
+      12.25
     ],
     "low": [
       7.53,
@@ -226,7 +235,8 @@
       9.47,
       9.59,
       10.61,
-      10.91
+      10.91,
+      11.53
     ],
     "volume": [
       3710574,
@@ -263,7 +273,8 @@
       9203379,
       24614641,
       20369565,
-      23587683
+      23587683,
+      20440239
     ],
     "vwap": [
       7.6133,
@@ -300,9 +311,10 @@
       8.9147,
       9.0637,
       9.2407,
-      9.4667
+      9.4667,
+      9.679
     ],
-    "resistance": 11.67,
+    "resistance": 12.25,
     "support": 7.42,
     "pivots": {
       "pp": 10.3833,

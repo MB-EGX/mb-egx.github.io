@@ -3382,12 +3382,25 @@ class QuantDashboard(QMainWindow):
         self.lbl_market_regime = QLabel("")
         self.lbl_market_regime.setStyleSheet("font-weight: bold; font-size: 11px;")
         self.lbl_market_regime.hide()
+        # NEW: sector-rotation (EGX IMCS vs EGX Text Double) and EGX30
+        # EGP-vs-USD divergence badges - see sector_rotation.py /
+        # usd_divergence.py, folded into market_regime.sector_rotation /
+        # market_regime.usd_divergence by decision_matrix.analyze_market().
+        # Same "hidden until available" pattern as lbl_market_regime above.
+        self.lbl_sector_rotation = QLabel("")
+        self.lbl_sector_rotation.setStyleSheet("font-weight: bold; font-size: 11px;")
+        self.lbl_sector_rotation.hide()
+        self.lbl_usd_divergence = QLabel("")
+        self.lbl_usd_divergence.setStyleSheet("font-weight: bold; font-size: 11px;")
+        self.lbl_usd_divergence.hide()
         self.lbl_welcome_user = QLabel("")
         if self.user_info:
             self.lbl_welcome_user.setText(f"👋 {self.user_info['name']}")
             self.lbl_welcome_user.setStyleSheet("font-weight: bold; color: #cbd5e0; font-size: 11px;")
         status_layout.addWidget(self.lbl_last_date, alignment=Qt.AlignmentFlag.AlignRight)
         status_layout.addWidget(self.lbl_market_regime, alignment=Qt.AlignmentFlag.AlignRight)
+        status_layout.addWidget(self.lbl_sector_rotation, alignment=Qt.AlignmentFlag.AlignRight)
+        status_layout.addWidget(self.lbl_usd_divergence, alignment=Qt.AlignmentFlag.AlignRight)
         status_layout.addWidget(self.lbl_welcome_user, alignment=Qt.AlignmentFlag.AlignRight)
         top_row.addLayout(status_layout)
         
@@ -4645,6 +4658,46 @@ class QuantDashboard(QMainWindow):
         self.lbl_market_regime.setStyleSheet(f"font-weight: bold; font-size: 11px; color: {color};")
         self.lbl_market_regime.show()
 
+    def _update_sector_rotation_badge(self, market_regime: dict | None):
+        """Updates self.lbl_sector_rotation from market_regime.sector_rotation
+        (see sector_rotation.py). Hidden if either leg (EGX IMCS / EGX Text
+        Double) isn't ingested yet or there isn't enough shared history -
+        "available: False" from the backend, never a guessed signal here."""
+        rot = (market_regime or {}).get("sector_rotation") or {}
+        if not rot.get("available"):
+            self.lbl_sector_rotation.hide()
+            return
+        favors_imcs = rot.get("signal") == "imcs"
+        icon = "💻" if favors_imcs else "🧵"
+        color = "#4299e1" if favors_imcs else "#d69e2e"
+        label = rot.get("favored_label") or ""
+        rs = rot.get("rs_ratio")
+        self.lbl_sector_rotation.setText(f"{icon} {tr('Sector Rotation')}: {label} (RS {rs})")
+        self.lbl_sector_rotation.setStyleSheet(f"font-weight: bold; font-size: 11px; color: {color};")
+        self.lbl_sector_rotation.setToolTip(
+            f"Fast SMA {rot.get('rs_fast_sma')} vs Slow SMA {rot.get('rs_slow_sma')} — as of {rot.get('as_of')}"
+        )
+        self.lbl_sector_rotation.show()
+
+    def _update_usd_divergence_badge(self, market_regime: dict | None):
+        """Updates self.lbl_usd_divergence from market_regime.usd_divergence
+        (see usd_divergence.py). Only shown for an actual bearish/bullish
+        divergence right now - "none" or "available: False" both stay
+        hidden, since "no divergence" isn't actionable enough for a
+        persistent header badge."""
+        div = (market_regime or {}).get("usd_divergence") or {}
+        if not div.get("available") or div.get("divergence") == "none":
+            self.lbl_usd_divergence.hide()
+            return
+        is_bearish = div.get("divergence") == "bearish"
+        icon = "⚠️" if is_bearish else "💡"
+        color = "#e53e3e" if is_bearish else "#38a169"
+        verdict = tr("Bearish") if is_bearish else tr("Bullish")
+        self.lbl_usd_divergence.setText(f"{icon} {tr('EGP/USD Divergence')}: {verdict}")
+        self.lbl_usd_divergence.setStyleSheet(f"font-weight: bold; font-size: 11px; color: {color};")
+        self.lbl_usd_divergence.setToolTip(div.get("note") or "")
+        self.lbl_usd_divergence.show()
+
     def populate_tables(self, buys, exits, top10, closed_trades, fin_stmt, sector_summary, breakout_watchlist=None, portfolio_risk=None, session_picks=None, market_regime=None, _push_cloud_stats=True):
         breakout_watchlist = breakout_watchlist or []
         session_picks = session_picks or {}
@@ -4653,6 +4706,8 @@ class QuantDashboard(QMainWindow):
         self.refresh_account_header(fin_stmt)
         self.update_last_data_date_display()
         self._update_market_regime_badge(market_regime)
+        self._update_sector_rotation_badge(market_regime)
+        self._update_usd_divergence_badge(market_regime)
         self._raw_buys_data = buys
 
         # Cached so a language switch can re-render every table's already-

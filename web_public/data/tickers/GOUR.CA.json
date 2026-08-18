@@ -1,15 +1,20 @@
 {
   "ticker": "GOUR.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Trade & Distributors",
   "matrix": {
     "Ticker": "GOUR.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 17.4,
-    "Current Price": 16.01,
-    "Target Entry (VWAP)": 15.0098,
-    "Suggested Stop-Loss": 14.4629,
-    "Take-Profit Target": 18.056,
+    "Sector": "Trade & Distributors",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 17.6,
+    "Current Price": 16.21,
+    "Target Entry (VWAP)": 15.0828,
+    "Suggested Stop-Loss": 14.67,
+    "Take-Profit Target": 18.2485,
     "Resistance (52W High)": 16.93,
     "Support (52W Low)": 12.25,
     "Pivot Point": 15.7967,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.71,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow | vol x1.26",
+    "Kelly %": 1.72,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 4.02,
+      "range": 4.23,
       "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 66.2,
-    "ADX-14": 60.6,
-    "Vol Z-Score": 0.29,
+    "RSI-14": 67.8,
+    "ADX-14": 60.7,
+    "Vol Z-Score": -0.44,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0807,
-    "Bollinger %B": 0.963,
-    "Avg Volume (20D)": 1058379,
+    "MACD Histogram": 0.0966,
+    "Bollinger %B": 0.961,
+    "Avg Volume (20D)": 1032257,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -75,7 +80,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       12.8,
@@ -109,7 +115,8 @@
       15.31,
       14.94,
       16.09,
-      16.01
+      16.01,
+      16.21
     ],
     "open": [
       12.3,
@@ -143,7 +150,8 @@
       15.23,
       15.31,
       15.0,
-      16.29
+      16.29,
+      16.01
     ],
     "high": [
       12.8,
@@ -177,7 +185,8 @@
       15.42,
       15.3,
       16.6,
-      16.93
+      16.93,
+      16.65
     ],
     "low": [
       12.25,
@@ -211,7 +220,8 @@
       15.0,
       14.7,
       14.95,
-      15.6
+      15.6,
+      16.11
     ],
     "volume": [
       1940387,
@@ -245,7 +255,8 @@
       630677,
       1111138,
       2309632,
-      1331135
+      1331135,
+      614318
     ],
     "vwap": [
       12.6167,
@@ -279,7 +290,8 @@
       14.7065,
       14.7861,
       14.9206,
-      15.0098
+      15.0098,
+      15.0828
     ],
     "resistance": 16.93,
     "support": 12.25,

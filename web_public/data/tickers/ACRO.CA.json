@@ -1,15 +1,21 @@
 {
   "ticker": "ACRO.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Construction & Engineering",
   "matrix": {
     "Ticker": "ACRO.CA",
+    "Sector": "Construction & Engineering",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
     "Action": "🚫 ILLIQUID - 🔥 STRONG BUY (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
     "Rank Score": 1.1,
     "Current Price": 104.0,
-    "Target Entry (VWAP)": 101.4508,
-    "Suggested Stop-Loss": 99.3371,
-    "Take-Profit Target": 110.5566,
+    "Target Entry (VWAP)": 101.4361,
+    "Suggested Stop-Loss": 98.91,
+    "Take-Profit Target": 111.0905,
     "Resistance (52W High)": 105.2,
     "Support (52W Low)": 87.0,
     "Pivot Point": 102.6667,
@@ -22,7 +28,7 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.94,
+    "Kelly %": 2.76,
     "Signal Reason": "🚫 ILLIQUID - 🔥 STRONG BUY (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
       "pattern": 0.0,
@@ -34,12 +40,12 @@
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
     "RSI-14": 62.7,
-    "ADX-14": 56.7,
-    "Vol Z-Score": -0.73,
+    "ADX-14": 54.6,
+    "Vol Z-Score": -0.71,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.3918,
-    "Bollinger %B": 0.884,
-    "Avg Volume (20D)": 753,
+    "MACD Histogram": 0.3738,
+    "Bollinger %B": 0.842,
+    "Avg Volume (20D)": 580,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       102.0,
@@ -112,6 +119,7 @@
       103.0,
       100.02,
       100.02,
+      104.0,
       104.0,
       104.0,
       104.0,
@@ -152,6 +160,7 @@
       101.01,
       101.01,
       101.01,
+      101.01,
       101.01
     ],
     "high": [
@@ -186,6 +195,7 @@
       104.9,
       103.0,
       103.0,
+      104.0,
       104.0,
       104.0,
       104.0,
@@ -226,6 +236,7 @@
       101.01,
       101.01,
       101.01,
+      101.01,
       101.01
     ],
     "volume": [
@@ -263,6 +274,7 @@
       107,
       0,
       107,
+      0,
       0
     ],
     "vwap": [
@@ -300,7 +312,8 @@
       100.7414,
       100.9251,
       101.1637,
-      101.4508
+      101.4508,
+      101.4361
     ],
     "resistance": 105.2,
     "support": 87.0,

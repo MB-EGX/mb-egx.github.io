@@ -1,15 +1,20 @@
 {
   "ticker": "VLMR.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "VLMR.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 25.5,
-    "Current Price": 0.699,
-    "Target Entry (VWAP)": 0.6788,
-    "Suggested Stop-Loss": 0.6809,
-    "Take-Profit Target": 0.7266,
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 25.6,
+    "Current Price": 0.698,
+    "Target Entry (VWAP)": 0.6795,
+    "Suggested Stop-Loss": 0.68,
+    "Take-Profit Target": 0.7254,
     "Resistance (52W High)": 0.713,
     "Support (52W Low)": 0.642,
     "Pivot Point": 0.696,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 4.42,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Kelly %": 4.43,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 4.01,
+      "range": 3.94,
       "trend_bonus": 44.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 70.1,
-    "ADX-14": 45.7,
-    "Vol Z-Score": -0.3,
+    "RSI-14": 68.9,
+    "ADX-14": 45.0,
+    "Vol Z-Score": -0.65,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0039,
-    "Bollinger %B": 0.848,
-    "Avg Volume (20D)": 444946,
+    "MACD Histogram": 0.0032,
+    "Bollinger %B": 0.8,
+    "Avg Volume (20D)": 442028,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       0.667,
@@ -115,7 +121,8 @@
       0.71,
       0.708,
       0.703,
-      0.699
+      0.699,
+      0.698
     ],
     "open": [
       0.669,
@@ -152,7 +159,8 @@
       0.677,
       0.71,
       0.707,
-      0.701
+      0.701,
+      0.699
     ],
     "high": [
       0.67,
@@ -189,7 +197,8 @@
       0.712,
       0.713,
       0.707,
-      0.703
+      0.703,
+      0.702
     ],
     "low": [
       0.667,
@@ -226,7 +235,8 @@
       0.677,
       0.705,
       0.693,
-      0.695
+      0.695,
+      0.696
     ],
     "volume": [
       62288,
@@ -263,7 +273,8 @@
       2087567,
       326954,
       989800,
-      306082
+      306082,
+      141704
     ],
     "vwap": [
       0.668,
@@ -300,7 +311,8 @@
       0.6728,
       0.6745,
       0.6776,
-      0.6788
+      0.6788,
+      0.6795
     ],
     "resistance": 0.713,
     "support": 0.642,

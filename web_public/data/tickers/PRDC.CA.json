@@ -1,15 +1,20 @@
 {
   "ticker": "PRDC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "PRDC.CA",
-    "Action": "⚡ BREAKOUT BUY (X-OVER) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 18.4,
-    "Current Price": 9.0,
-    "Target Entry (VWAP)": 9.0,
-    "Suggested Stop-Loss": 8.2786,
-    "Take-Profit Target": 9.9648,
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 9.3,
+    "Current Price": 8.81,
+    "Target Entry (VWAP)": 8.81,
+    "Suggested Stop-Loss": 8.0986,
+    "Take-Profit Target": 9.761,
     "Resistance (52W High)": 10.4,
     "Support (52W Low)": 6.8,
     "Pivot Point": 8.9833,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.94,
-    "Signal Reason": "⚡ BREAKOUT BUY (X-OVER) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x1.16",
+    "Kelly %": 1.93,
+    "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 3.06,
-      "trend_bonus": 32.25,
+      "range": 2.79,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
-    "Trend Class": "Strong Bullish",
-    "RSI-14": 51.4,
-    "ADX-14": 31.8,
-    "Vol Z-Score": 0.24,
+    "Trend Class": "Weak Bullish",
+    "RSI-14": 47.9,
+    "ADX-14": 29.9,
+    "Vol Z-Score": -1.32,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.1269,
-    "Bollinger %B": 0.274,
-    "Avg Volume (20D)": 7598271,
+    "MACD Histogram": -0.1242,
+    "Bollinger %B": 0.149,
+    "Avg Volume (20D)": 6505676,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       7.06,
@@ -115,7 +121,8 @@
       8.9,
       8.83,
       8.8,
-      9.0
+      9.0,
+      8.81
     ],
     "open": [
       7.22,
@@ -152,7 +159,8 @@
       9.05,
       8.9,
       8.98,
-      8.9
+      8.9,
+      9.0
     ],
     "high": [
       7.45,
@@ -189,7 +197,8 @@
       9.2,
       9.14,
       8.99,
-      9.19
+      9.19,
+      9.14
     ],
     "low": [
       7.01,
@@ -226,7 +235,8 @@
       8.87,
       8.7,
       8.74,
-      8.8
+      8.8,
+      8.81
     ],
     "volume": [
       10283061,
@@ -263,7 +273,8 @@
       2204554,
       4450466,
       2576172,
-      8787756
+      8787756,
+      2138929
     ],
     "vwap": [
       7.1733,
@@ -300,7 +311,8 @@
       9.5593,
       9.5276,
       9.503,
-      9.3958
+      9.3958,
+      9.3399
     ],
     "resistance": 10.4,
     "support": 6.8,

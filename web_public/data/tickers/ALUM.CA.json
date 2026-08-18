@@ -1,15 +1,20 @@
 {
   "ticker": "ALUM.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Basic Resources",
   "matrix": {
     "Ticker": "ALUM.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 28.5,
-    "Current Price": 28.42,
-    "Target Entry (VWAP)": 26.861,
-    "Suggested Stop-Loss": 25.6757,
-    "Take-Profit Target": 29.1873,
+    "Sector": "Basic Resources",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 28.9,
+    "Current Price": 28.5,
+    "Target Entry (VWAP)": 26.994,
+    "Suggested Stop-Loss": 25.7429,
+    "Take-Profit Target": 29.2695,
     "Resistance (52W High)": 30.6,
     "Support (52W Low)": 20.55,
     "Pivot Point": 28.09,
@@ -19,27 +24,27 @@
     "S1": 25.58,
     "S2": 22.66,
     "S3": 20.15,
-    "Projected Gain (%)": 0.56,
-    "Pattern Conf (%)": 66.85,
-    "Projected Range 95%": "0.56% to 0.56%",
+    "Projected Gain (%)": 0.45,
+    "Pattern Conf (%)": 68.94,
+    "Projected Range 95%": "0.35% to 0.55%",
     "Kelly %": 0.0,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
-      "pattern": 20.05,
-      "projected": 0.84,
-      "range": 3.92,
+      "pattern": 20.68,
+      "projected": 0.68,
+      "range": 3.96,
       "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 75.1,
-    "ADX-14": 54.7,
-    "Vol Z-Score": -0.17,
+    "RSI-14": 75.4,
+    "ADX-14": 56.3,
+    "Vol Z-Score": -0.35,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.4294,
-    "Bollinger %B": 0.879,
-    "Avg Volume (20D)": 889489,
+    "MACD Histogram": 0.368,
+    "Bollinger %B": 0.845,
+    "Avg Volume (20D)": 890979,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       21.62,
@@ -115,7 +121,8 @@
       28.9,
       28.4,
       28.5,
-      28.42
+      28.42,
+      28.5
     ],
     "open": [
       22.69,
@@ -152,7 +159,8 @@
       29.0,
       28.9,
       28.55,
-      28.58
+      28.58,
+      28.42
     ],
     "high": [
       22.8,
@@ -189,7 +197,8 @@
       30.6,
       29.2,
       28.95,
-      29.58
+      29.58,
+      29.24
     ],
     "low": [
       21.5,
@@ -226,7 +235,8 @@
       28.12,
       28.06,
       27.9,
-      28.3
+      28.3,
+      28.41
     ],
     "volume": [
       433272,
@@ -263,7 +273,8 @@
       3493604,
       934773,
       885469,
-      690860
+      690860,
+      485324
     ],
     "vwap": [
       21.9733,
@@ -300,7 +311,8 @@
       26.3899,
       26.5812,
       26.7027,
-      26.861
+      26.861,
+      26.994
     ],
     "resistance": 30.6,
     "support": 20.55,

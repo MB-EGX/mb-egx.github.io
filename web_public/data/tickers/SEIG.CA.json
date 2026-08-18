@@ -1,15 +1,21 @@
 {
   "ticker": "SEIG.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "SEIG.CA",
-    "Action": "🚫 ILLIQUID - 📈 ACCUMULATE",
-    "Rank Score": 1.8,
-    "Current Price": 272.01,
-    "Target Entry (VWAP)": 261.9241,
-    "Suggested Stop-Loss": 235.9329,
-    "Take-Profit Target": 279.3543,
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
+    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
+    "Rank Score": 15.0,
+    "Current Price": 271.73,
+    "Target Entry (VWAP)": 262.7992,
+    "Suggested Stop-Loss": 236.05,
+    "Take-Profit Target": 279.2569,
     "Resistance (52W High)": 295.0,
     "Support (52W Low)": 182.01,
     "Pivot Point": 279.04,
@@ -19,27 +25,27 @@
     "S1": 265.08,
     "S2": 252.05,
     "S3": 238.09,
-    "Projected Gain (%)": 0.83,
-    "Pattern Conf (%)": 77.67,
-    "Projected Range 95%": "0.83% to 0.83%",
+    "Projected Gain (%)": 2.07,
+    "Pattern Conf (%)": 72.69,
+    "Projected Range 95%": "0.96% to 3.19%",
     "Kelly %": 0.0,
-    "Signal Reason": "🚫 ILLIQUID - 📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze",
     "Score Breakdown": {
-      "pattern": 23.3,
-      "projected": 1.24,
-      "range": 3.98,
-      "trend_bonus": -25.0,
+      "pattern": 21.81,
+      "projected": 3.1,
+      "range": 3.97,
+      "trend_bonus": -0.2,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 69.2,
-    "ADX-14": 79.9,
-    "Vol Z-Score": -0.37,
-    "MACD Signal": "🔴 Bearish Cross",
-    "MACD Histogram": -0.4988,
-    "Bollinger %B": 0.725,
-    "Avg Volume (20D)": 40850,
+    "RSI-14": 68.8,
+    "ADX-14": 79.1,
+    "Vol Z-Score": -0.59,
+    "MACD Signal": "Bearish",
+    "MACD Histogram": -0.9904,
+    "Bollinger %B": 0.701,
+    "Avg Volume (20D)": 39805,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       185.27,
@@ -115,7 +122,8 @@
       276.06,
       278.04,
       278.11,
-      272.01
+      272.01,
+      271.73
     ],
     "open": [
       187.89,
@@ -152,7 +160,8 @@
       275.0,
       276.06,
       289.4,
-      285.0
+      285.0,
+      272.01
     ],
     "high": [
       191.9,
@@ -189,7 +198,8 @@
       293.0,
       291.0,
       289.4,
-      285.0
+      285.0,
+      277.45
     ],
     "low": [
       185.25,
@@ -226,7 +236,8 @@
       270.17,
       277.0,
       277.28,
-      270.01
+      270.01,
+      270.21
     ],
     "volume": [
       13815,
@@ -263,7 +274,8 @@
       47692,
       12738,
       8388,
-      20210
+      20210,
+      6822
     ],
     "vwap": [
       187.4733,
@@ -300,7 +312,8 @@
       258.313,
       259.7003,
       261.1221,
-      261.9241
+      261.9241,
+      262.7992
     ],
     "resistance": 295.0,
     "support": 182.01,

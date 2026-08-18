@@ -1,15 +1,21 @@
 {
   "ticker": "DIFC.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Trade & Distributors",
   "matrix": {
     "Ticker": "DIFC.CA",
-    "Action": "🚫 ILLIQUID - ⏳ BUY ON DIP [💥 SQUEEZE]",
-    "Rank Score": 16.2,
+    "Sector": "Trade & Distributors",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
+    "Action": "🚫 ILLIQUID - ⏳ BUY ON DIP [💥 SQUEEZE] (Unconfirmed: weekly trend not aligned)",
+    "Rank Score": -7.6,
     "Current Price": 13.51,
     "Target Entry (VWAP)": 13.51,
-    "Suggested Stop-Loss": 3.3014,
-    "Take-Profit Target": 26.3653,
+    "Suggested Stop-Loss": 3.8857,
+    "Take-Profit Target": 25.6349,
     "Resistance (52W High)": 25.0,
     "Support (52W Low)": 10.9,
     "Pivot Point": 14.4833,
@@ -22,24 +28,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 0.66,
-    "Signal Reason": "🚫 ILLIQUID - ⏳ BUY ON DIP [💥 SQUEEZE] | trend=Weak Bullish | awaiting confirmation | volatility squeeze | positive money flow",
+    "Kelly %": 0.67,
+    "Signal Reason": "🚫 ILLIQUID - ⏳ BUY ON DIP [💥 SQUEEZE] (Unconfirmed: weekly trend not aligned) | trend=Weak Bullish | awaiting confirmation | volatility squeeze | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
       "range": 0.93,
-      "trend_bonus": 30.0,
+      "trend_bonus": -15.5,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Weak Bullish",
     "RSI-14": 40.1,
-    "ADX-14": 82.7,
-    "Vol Z-Score": -0.39,
+    "ADX-14": 81.5,
+    "Vol Z-Score": -0.94,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.7571,
-    "Bollinger %B": 0.235,
-    "Avg Volume (20D)": 4345,
+    "MACD Histogram": -0.7272,
+    "Bollinger %B": 0.223,
+    "Avg Volume (20D)": 4026,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       10.9,
@@ -115,6 +122,7 @@
       13.45,
       13.45,
       13.45,
+      13.51,
       13.51
     ],
     "open": [
@@ -152,6 +160,7 @@
       14.99,
       14.99,
       14.99,
+      14.96,
       14.96
     ],
     "high": [
@@ -189,6 +198,7 @@
       14.99,
       14.99,
       14.99,
+      14.96,
       14.96
     ],
     "low": [
@@ -226,6 +236,7 @@
       13.44,
       13.44,
       13.44,
+      13.45,
       13.45
     ],
     "volume": [
@@ -263,7 +274,8 @@
       467,
       0,
       467,
-      2725
+      2725,
+      0
     ],
     "vwap": [
       10.9033,
@@ -300,7 +312,8 @@
       16.0503,
       16.0968,
       16.1322,
-      16.1109
+      16.1109,
+      16.4392
     ],
     "resistance": 25.0,
     "support": 10.9,

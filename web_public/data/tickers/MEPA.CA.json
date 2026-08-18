@@ -1,15 +1,20 @@
 {
   "ticker": "MEPA.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "MEPA.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 9.2,
-    "Current Price": 1.83,
-    "Target Entry (VWAP)": 1.83,
-    "Suggested Stop-Loss": 1.6714,
-    "Take-Profit Target": 2.041,
+    "Sector": "Health Care & Pharmaceuticals",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
+    "Rank Score": 22.4,
+    "Current Price": 1.88,
+    "Target Entry (VWAP)": 1.88,
+    "Suggested Stop-Loss": 1.7114,
+    "Take-Profit Target": 2.1039,
     "Resistance (52W High)": 2.13,
     "Support (52W Low)": 1.52,
     "Pivot Point": 1.8833,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.83,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Kelly %": 1.8,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.54,
-      "trend_bonus": 15.0,
+      "range": 2.95,
+      "trend_bonus": 39.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 50.8,
-    "ADX-14": 51.6,
-    "Vol Z-Score": -0.5,
+    "RSI-14": 55.8,
+    "ADX-14": 49.9,
+    "Vol Z-Score": -0.24,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0149,
-    "Bollinger %B": 0.235,
-    "Avg Volume (20D)": 31722194,
+    "MACD Histogram": -0.0135,
+    "Bollinger %B": 0.457,
+    "Avg Volume (20D)": 31448605,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       1.59,
@@ -115,7 +121,8 @@
       1.87,
       1.88,
       1.85,
-      1.83
+      1.83,
+      1.88
     ],
     "open": [
       1.61,
@@ -152,7 +159,8 @@
       1.92,
       1.87,
       1.88,
-      1.86
+      1.86,
+      1.83
     ],
     "high": [
       1.64,
@@ -189,7 +197,8 @@
       1.94,
       1.9,
       1.88,
-      1.86
+      1.86,
+      1.95
     ],
     "low": [
       1.58,
@@ -226,6 +235,7 @@
       1.8,
       1.85,
       1.85,
+      1.81,
       1.81
     ],
     "volume": [
@@ -263,7 +273,8 @@
       11212481,
       7676046,
       4220814,
-      9974467
+      9974467,
+      20961336
     ],
     "vwap": [
       1.6033,
@@ -300,7 +311,8 @@
       1.9009,
       1.9076,
       1.9123,
-      1.9199
+      1.9199,
+      1.9245
     ],
     "resistance": 2.13,
     "support": 1.52,

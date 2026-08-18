@@ -1,15 +1,20 @@
 {
   "ticker": "ALCN.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Shipping & Transportation Services",
   "matrix": {
     "Ticker": "ALCN.CA",
+    "Sector": "Shipping & Transportation Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "📈 ACCUMULATE",
-    "Rank Score": 28.9,
-    "Current Price": 31.39,
-    "Target Entry (VWAP)": 30.6376,
-    "Suggested Stop-Loss": 29.6471,
-    "Take-Profit Target": 32.2375,
+    "Rank Score": 27.9,
+    "Current Price": 31.0,
+    "Target Entry (VWAP)": 30.6757,
+    "Suggested Stop-Loss": 29.2057,
+    "Take-Profit Target": 31.837,
     "Resistance (52W High)": 32.5,
     "Support (52W Low)": 27.7,
     "Pivot Point": 31.6933,
@@ -19,27 +24,27 @@
     "S1": 30.8867,
     "S2": 29.8933,
     "S3": 29.0867,
-    "Projected Gain (%)": -1.34,
-    "Pattern Conf (%)": 78.58,
-    "Projected Range 95%": "-1.34% to -1.34%",
-    "Kelly %": 17.27,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow | vol x1.09",
+    "Projected Gain (%)": -1.59,
+    "Pattern Conf (%)": 74.04,
+    "Projected Range 95%": "-1.81% to -1.36%",
+    "Kelly %": 9.19,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
-      "pattern": 23.57,
-      "projected": -2.01,
-      "range": 3.84,
+      "pattern": 22.21,
+      "projected": -2.39,
+      "range": 3.44,
       "trend_bonus": 30.0,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 63.5,
-    "ADX-14": 52.7,
-    "Vol Z-Score": 0.16,
+    "RSI-14": 57.8,
+    "ADX-14": 50.2,
+    "Vol Z-Score": -0.68,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0868,
-    "Bollinger %B": 0.775,
-    "Avg Volume (20D)": 743465,
+    "MACD Histogram": 0.0267,
+    "Bollinger %B": 0.644,
+    "Avg Volume (20D)": 740175,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       27.97,
@@ -115,7 +121,8 @@
       31.5,
       31.9,
       31.88,
-      31.39
+      31.39,
+      31.0
     ],
     "open": [
       28.1,
@@ -152,7 +159,8 @@
       31.1,
       31.5,
       31.91,
-      32.33
+      32.33,
+      31.39
     ],
     "high": [
       28.15,
@@ -189,7 +197,8 @@
       32.09,
       31.96,
       32.5,
-      32.33
+      32.33,
+      31.48
     ],
     "low": [
       27.8,
@@ -226,7 +235,8 @@
       31.01,
       31.3,
       31.77,
-      30.75
+      30.75,
+      30.53
     ],
     "volume": [
       276941,
@@ -263,7 +273,8 @@
       1726762,
       577443,
       820699,
-      811604
+      811604,
+      450058
     ],
     "vwap": [
       27.9733,
@@ -300,7 +311,8 @@
       30.3188,
       30.434,
       30.5521,
-      30.6376
+      30.6376,
+      30.6757
     ],
     "resistance": 32.5,
     "support": 27.7,

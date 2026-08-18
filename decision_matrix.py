@@ -47,12 +47,16 @@ from config import (
     SECTOR_BENCHMARK_MAP,
     BREAKOUT_WATCH_BULL_REGIME_BONUS,
     BREAKOUT_WATCH_BEAR_REGIME_PENALTY,
+    PATTERN_DETECTION,
+    LONG_TERM_SETUP,
+    MIN_AVG_VOLUME_LONG_TERM,
     get_logger,
 )
 
 import pandas as pd
 
 from analytics import QuantitativeEngine
+from chart_patterns import PatternDetector
 from db_manager import DatabaseManager
 from session_picks import refresh_session_picks, emit_alert
 from market_regime import (
@@ -63,6 +67,8 @@ from market_regime import (
     benchmark_label,
     get_sector_benchmark_ticker,
 )
+from sector_rotation import live_rotation_snapshot
+from usd_divergence import live_divergence_snapshot
 
 logger = get_logger("decision_matrix")
 
@@ -88,6 +94,67 @@ def set_language(lang):
 def _t(en, ar):
     return ar if _LANG == "AR" else en
 
+
+
+def _check_long_term_setup(df_ind: pd.DataFrame) -> dict:
+    """Long-term (2-6 month) Session Picks quality gate: real geometric
+    structure, not just a favorable indicator snapshot. Two independent
+    checks, BOTH required:
+
+      1. Ascending-lows swing structure - the last two swing troughs (T1,
+         the older; T2, the more recent) directly from PatternDetector's
+         own swing points must show T2 >= T1 * (1 + LONG_TERM_SETUP[
+         "swing_ascending_low_min_pct"] / 100) - a strictly higher low,
+         not merely "not lower".
+      2. An active bullish geometric pattern match (Cup & Handle, Ascending
+         Triangle, Double Bottom, Inverse H&S, Bull Flag, ...) at/above
+         PATTERN_DETECTION["min_quality"] - reuses chart_patterns.py's own
+         "direction" field (see LONG_TERM_SETUP's docstring in config.py)
+         rather than a hardcoded pattern-name whitelist.
+
+    Returns {"confirmed": bool, "reasons": [...]} - reasons is always
+    populated (why it passed/failed) so the row's Signal Reason can show
+    it, and never raises: any detection failure is treated as "gate not
+    cleared", same fail-closed contract as this app's other feature gates
+    (e.g. sector_rotation.py / usd_divergence.py's "available: False").
+    """
+    reasons = []
+    try:
+        min_bars = PATTERN_DETECTION["min_bars_required"]
+        if df_ind is None or df_ind.empty or len(df_ind) < min_bars:
+            return {"confirmed": False, "reasons": ["Not enough history for a long-term setup check"]}
+
+        detector = PatternDetector(
+            df_ind, epsilon=PATTERN_DETECTION["epsilon"], order=PATTERN_DETECTION["order"],
+        )
+
+        troughs = [s for s in detector.swings if s.kind == "T"]
+        ascending_ok = False
+        if len(troughs) >= 2:
+            t1, t2 = troughs[-2], troughs[-1]
+            min_pct = LONG_TERM_SETUP["swing_ascending_low_min_pct"]
+            ascending_ok = t2.price >= t1.price * (1 + min_pct / 100.0)
+        reasons.append("Higher-low swing structure confirmed" if ascending_ok
+                        else "No confirmed higher-low swing structure yet")
+
+        min_quality = PATTERN_DETECTION["min_quality"]
+        want_direction = LONG_TERM_SETUP["required_pattern_direction"]
+        patterns = detector.detect_all(dedupe=True)
+        best_bullish = max(
+            (p for p in patterns if p.get("direction") == want_direction),
+            key=lambda p: p.get("quality", 0.0),
+            default=None,
+        )
+        pattern_ok = bool(best_bullish) and best_bullish.get("quality", 0.0) >= min_quality
+        reasons.append(
+            f"{best_bullish['pattern']} match (quality {best_bullish.get('quality', 0):.2f})"
+            if pattern_ok else "No bullish pattern match at required quality"
+        )
+
+        return {"confirmed": ascending_ok and pattern_ok, "reasons": reasons}
+    except Exception as e:
+        logger.warning(f"Long-term setup check failed: {e}")
+        return {"confirmed": False, "reasons": ["Setup check failed"]}
 
 
 def _compute_target_fields(qe, df_ind, target_rec, buy_price, shares, curr_price):
@@ -593,6 +660,16 @@ class DecisionMatrix:
         # available - not just the primary one - so a UI can show
         # per-sector-index regimes too (Sectors tab), not only the single
         # broad-market badge.
+        # Sector-rotation (EGX IMCS vs EGX Text Double) and EGX30 EGP-vs-
+        # USD divergence - computed from the SAME benchmark_frames pull
+        # above, no extra DB round trip. Both are "available: False with
+        # a reason" rather than a hard failure whenever either leg isn't
+        # ingested yet or there isn't enough shared history - see each
+        # module's own docstring for the exact rule and config.
+        # SECTOR_ROTATION_* / USD_DIVERGENCE_* for the tunables.
+        sector_rotation_snapshot = live_rotation_snapshot(benchmark_frames, self.dbm)
+        usd_divergence_snapshot = live_divergence_snapshot(benchmark_frames, self.dbm)
+
         market_regime_summary = {
             "primary": {
                 "ticker": PRIMARY_BENCHMARK_TICKER,
@@ -602,6 +679,8 @@ class DecisionMatrix:
                 "as_of": primary_regime_info.get("as_of"),
             },
             "benchmarks": dict(benchmark_regimes),
+            "sector_rotation": sector_rotation_snapshot,
+            "usd_divergence": usd_divergence_snapshot,
         }
 
         owned_dict = self.dbm.get_all_owned_stocks()
@@ -989,10 +1068,31 @@ class DecisionMatrix:
                     vol_ratio >= ACTION_THRESHOLDS["volume_ratio_threshold"]
                     or vol_z >= ACTION_THRESHOLDS["volume_z_score_threshold"]
                 )
+                # VWAP acceptance gate: a close below its own 20D VWAP still
+                # carries intraday selling pressure that frequently stalls a
+                # breakout/strong-buy attempt the next session - require
+                # real VWAP acceptance, not just a raw price/RSI/ADX/volume
+                # match, before a STRONG BUY / BREAKOUT BUY confirms.
+                vwap_ok = curr_price >= vwap * ACTION_THRESHOLDS["vwap_acceptance_ratio"]
+                # Squeeze-release gate: ONLY applied to the reactive BREAKOUT
+                # BUY labels (not STRONG BUY, which is a different, already-
+                # extended setup). A breakout that follows a genuine BB/KC
+                # volatility squeeze has materially better follow-through
+                # than one that doesn't - make it mandatory for a BREAKOUT
+                # BUY to confirm, not just a bonus tacked on afterward.
+                is_breakout_signal = "BREAKOUT BUY" in raw_action
+                squeeze_ok = is_squeezed if is_breakout_signal else True
 
-                confirmed = strong_trend and vol_confirmed
+                confirmed = strong_trend and vol_confirmed and vwap_ok and squeeze_ok
                 if needs_confirmation and not confirmed:
-                    action_cmd = f"{raw_action} (Unconfirmed: low ADX/volume)"
+                    unmet = []
+                    if not (strong_trend and vol_confirmed):
+                        unmet.append("low ADX/volume")
+                    if not vwap_ok:
+                        unmet.append("below VWAP")
+                    if not squeeze_ok:
+                        unmet.append("no squeeze release")
+                    action_cmd = f"{raw_action} (Unconfirmed: {', '.join(unmet)})"
                     trend_bonus *= SCORE_WEIGHTS["unconfirmed_scale"]
                 else:
                     action_cmd = raw_action
@@ -1003,8 +1103,29 @@ class DecisionMatrix:
                     action_cmd = f"{action_cmd} [💥 SQUEEZE]"
                     trend_bonus += SCORE_WEIGHTS["squeeze_bonus"]
 
+                # Medium-term (BUY ON DIP) confirmation: previously this
+                # label carried NO confirmation gate at all (needs_confirmation
+                # was False) and never even checked weekly trend. A "dip" with
+                # no weekly uptrend underneath it and no real accumulation
+                # (CMF) is not a low-risk pullback in an established trend -
+                # it's just a falling stock. Gate it the same way STRONG BUY/
+                # BREAKOUT BUY are gated above, instead of waving every dip
+                # through unconfirmed.
+                dip_confirmed = True
+                if raw_action == "⏳ BUY ON DIP":
+                    dip_confirmed = weekly_aligned and cmf >= ACTION_THRESHOLDS["medium_term_cmf_min"]
+                    if not dip_confirmed:
+                        unmet = []
+                        if not weekly_aligned:
+                            unmet.append("weekly trend not aligned")
+                        if cmf < ACTION_THRESHOLDS["medium_term_cmf_min"]:
+                            unmet.append("CMF below accumulation floor")
+                        action_cmd = f"{action_cmd} (Unconfirmed: {', '.join(unmet)})"
+                        trend_bonus *= SCORE_WEIGHTS["unconfirmed_scale"]
+
                 if weekly_aligned and (
                     "STRONG BUY" in action_cmd or "BREAKOUT BUY" in action_cmd
+                    or (raw_action == "⏳ BUY ON DIP" and dip_confirmed)
                 ):
                     action_cmd = f"{action_cmd} [👑 WEEKLY ALIGNED]"
                     trend_bonus += SCORE_WEIGHTS["weekly_aligned_bonus"]
@@ -1392,9 +1513,23 @@ class DecisionMatrix:
                 )
                 signal_reason = _build_signal_reason(action_cmd, trend_latest, confirmed, weekly_aligned, is_squeezed, cmf, vol_ratio)
 
+                # Long-term Session Picks quality gate (see config.
+                # LONG_TERM_SETUP / MIN_AVG_VOLUME_LONG_TERM): computed for
+                # every ticker (cheap - reuses the geometric detector already
+                # available via chart_patterns.PatternDetector, no extra data
+                # pull) so session_picks.py's "long" bucket can filter on it
+                # without needing its own indicator-frame access.
+                long_term_setup = _check_long_term_setup(df_ind)
+                long_term_liquid = avg_volume_20 >= MIN_AVG_VOLUME_LONG_TERM
+
                 buy_recommendations.append(
                     {
                         "Ticker": norm_ticker,
+                        "Sector": sector_map.get(norm_ticker, sector_map.get(ticker, "General / Diversified")),
+                        "Long-Term Setup Confirmed": bool(long_term_setup["confirmed"] and long_term_liquid),
+                        "Long-Term Setup Reasons": long_term_setup["reasons"] + (
+                            [] if long_term_liquid else [f"Avg volume below {MIN_AVG_VOLUME_LONG_TERM:,} long-term floor"]
+                        ),
                         "Position": "🔁 OWNED - Scale-In Candidate" if is_owned else "New Candidate",
                         "Action": action_cmd,
                         "Rank Score": round(score, 1),
@@ -1601,6 +1736,21 @@ class DecisionMatrix:
             emit_alert(
                 "pre_breakout_high_confidence", dict(row),
                 dbm=self.dbm, dedup_key=f"prebreakout:{row['Ticker']}", session_date=session_date,
+                dedup_days=PRE_BREAKOUT_ALERT_DEDUP_DAYS,
+            )
+
+        # EGX30 EGP-vs-USD divergence push alert - same ALERT_CHANNELS
+        # fan-out as the two alerts above (see usd_divergence.py).
+        # Deduped per divergence DIRECTION (not just "any divergence") so
+        # a bearish divergence that's still unresolved doesn't re-push
+        # every run, but a flip from bearish to bullish (or vice versa)
+        # fires again as a genuinely new event. "none" never alerts.
+        if usd_divergence_snapshot.get("available") and usd_divergence_snapshot.get("divergence") in ("bearish", "bullish"):
+            emit_alert(
+                "usd_divergence_detected", dict(usd_divergence_snapshot),
+                dbm=self.dbm,
+                dedup_key=f"usd_divergence:{usd_divergence_snapshot['divergence']}",
+                session_date=session_date,
                 dedup_days=PRE_BREAKOUT_ALERT_DEDUP_DAYS,
             )
 

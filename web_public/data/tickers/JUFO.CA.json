@@ -1,15 +1,20 @@
 {
   "ticker": "JUFO.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "JUFO.CA",
-    "Action": "⏳ BUY ON DIP",
-    "Rank Score": 23.8,
-    "Current Price": 27.19,
-    "Target Entry (VWAP)": 27.19,
-    "Suggested Stop-Loss": 24.1043,
-    "Take-Profit Target": 31.2375,
+    "Sector": "Food, Beverages & Tobacco",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor)",
+    "Rank Score": 8.5,
+    "Current Price": 27.15,
+    "Target Entry (VWAP)": 27.15,
+    "Suggested Stop-Loss": 24.0514,
+    "Take-Profit Target": 31.2133,
     "Resistance (52W High)": 36.0,
     "Support (52W Low)": 26.07,
     "Pivot Point": 27.1367,
@@ -23,23 +28,23 @@
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
     "Kelly %": 1.53,
-    "Signal Reason": "⏳ BUY ON DIP | trend=Consolidation / Neutral | awaiting confirmation | positive money flow",
+    "Signal Reason": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor) | trend=Consolidation / Neutral | awaiting confirmation | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 0.56,
-      "trend_bonus": 45.0,
+      "range": 0.54,
+      "trend_bonus": 15.75,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Consolidation / Neutral",
-    "RSI-14": 41.5,
-    "ADX-14": 26.0,
-    "Vol Z-Score": -0.24,
+    "RSI-14": 41.3,
+    "ADX-14": 24.2,
+    "Vol Z-Score": -0.54,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.2097,
-    "Bollinger %B": 0.312,
-    "Avg Volume (20D)": 2141024,
+    "MACD Histogram": -0.1772,
+    "Bollinger %B": 0.32,
+    "Avg Volume (20D)": 2105573,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       30.46,
@@ -115,7 +121,8 @@
       27.0,
       27.2,
       27.63,
-      27.19
+      27.19,
+      27.15
     ],
     "open": [
       30.9,
@@ -152,7 +159,8 @@
       26.6,
       27.0,
       27.21,
-      27.8
+      27.8,
+      27.19
     ],
     "high": [
       30.96,
@@ -189,7 +197,8 @@
       27.1,
       27.7,
       27.71,
-      27.8
+      27.8,
+      27.44
     ],
     "low": [
       30.3,
@@ -226,7 +235,8 @@
       26.07,
       27.03,
       27.2,
-      27.0
+      27.0,
+      26.97
     ],
     "volume": [
       183428,
@@ -263,7 +273,8 @@
       2256345,
       2551460,
       1149661,
-      1578047
+      1578047,
+      830898
     ],
     "vwap": [
       30.5733,
@@ -300,7 +311,8 @@
       30.0282,
       29.862,
       29.7968,
-      29.7182
+      29.7182,
+      29.692
     ],
     "resistance": 36.0,
     "support": 26.07,

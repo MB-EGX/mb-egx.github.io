@@ -1,16 +1,21 @@
 {
   "ticker": "CIEB.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Banks",
   "matrix": {
     "Ticker": "CIEB.CA",
-    "Action": "🔥 STRONG BUY (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 21.9,
-    "Current Price": 24.9,
-    "Target Entry (VWAP)": 24.376,
-    "Suggested Stop-Loss": 24.1929,
-    "Take-Profit Target": 25.9582,
-    "Resistance (52W High)": 25.14,
+    "Sector": "Banks",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 17.7,
+    "Current Price": 25.14,
+    "Target Entry (VWAP)": 24.4779,
+    "Suggested Stop-Loss": 24.3329,
+    "Take-Profit Target": 26.3249,
+    "Resistance (52W High)": 25.6,
     "Support (52W Low)": 23.3,
     "Pivot Point": 24.5567,
     "R1": 25.1133,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 4.12,
-    "Signal Reason": "🔥 STRONG BUY (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Kelly %": 3.77,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x2.57",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 4.35,
-      "trend_bonus": 37.5,
+      "range": 4.0,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 65.9,
-    "ADX-14": 26.8,
-    "Vol Z-Score": -0.17,
+    "RSI-14": 69.6,
+    "ADX-14": 28.3,
+    "Vol Z-Score": 2.0,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0446,
-    "Bollinger %B": 1.118,
-    "Avg Volume (20D)": 602968,
+    "MACD Histogram": 0.0742,
+    "Bollinger %B": 1.147,
+    "Avg Volume (20D)": 671954,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       23.93,
@@ -115,7 +121,8 @@
       24.1,
       24.46,
       24.53,
-      24.9
+      24.9,
+      25.14
     ],
     "open": [
       24.01,
@@ -152,7 +159,8 @@
       24.28,
       24.1,
       24.5,
-      24.71
+      24.71,
+      24.9
     ],
     "high": [
       24.08,
@@ -189,7 +197,8 @@
       24.45,
       24.55,
       25.14,
-      24.9
+      24.9,
+      25.6
     ],
     "low": [
       23.89,
@@ -226,7 +235,8 @@
       24.08,
       24.0,
       24.45,
-      24.55
+      24.55,
+      24.65
     ],
     "volume": [
       187423,
@@ -263,7 +273,8 @@
       737847,
       774931,
       2116167,
-      522963
+      522963,
+      1727365
     ],
     "vwap": [
       23.9667,
@@ -300,9 +311,10 @@
       24.2607,
       24.269,
       24.3468,
-      24.376
+      24.376,
+      24.4779
     ],
-    "resistance": 25.14,
+    "resistance": 25.6,
     "support": 23.3,
     "pivots": {
       "pp": 24.5567,

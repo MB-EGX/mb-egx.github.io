@@ -1,15 +1,20 @@
 {
   "ticker": "MTIE.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Trade & Distributors",
   "matrix": {
     "Ticker": "MTIE.CA",
-    "Action": "⏳ BUY ON DIP",
-    "Rank Score": 31.8,
-    "Current Price": 9.4,
-    "Target Entry (VWAP)": 9.4,
-    "Suggested Stop-Loss": 8.07,
-    "Take-Profit Target": 11.1283,
+    "Sector": "Trade & Distributors",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor)",
+    "Rank Score": 8.4,
+    "Current Price": 8.95,
+    "Target Entry (VWAP)": 8.95,
+    "Suggested Stop-Loss": 7.5829,
+    "Take-Profit Target": 10.7216,
     "Resistance (52W High)": 12.48,
     "Support (52W Low)": 8.75,
     "Pivot Point": 10.5167,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.34,
-    "Signal Reason": "⏳ BUY ON DIP | trend=Weak Bullish | awaiting confirmation | positive money flow | vol x1.19",
+    "Kelly %": 1.28,
+    "Signal Reason": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor) | trend=Strong Bearish | awaiting confirmation | positive money flow | vol x2.17",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 0.87,
-      "trend_bonus": 60.0,
+      "range": 0.27,
+      "trend_bonus": 15.75,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
-    "Trend Class": "Weak Bullish",
-    "RSI-14": 43.0,
-    "ADX-14": 45.1,
-    "Vol Z-Score": 0.22,
+    "Trend Class": "Strong Bearish",
+    "RSI-14": 38.9,
+    "ADX-14": 42.1,
+    "Vol Z-Score": 1.44,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.1097,
-    "Bollinger %B": 0.308,
-    "Avg Volume (20D)": 4845527,
+    "MACD Histogram": -0.1843,
+    "Bollinger %B": 0.193,
+    "Avg Volume (20D)": 5349430,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       9.04,
@@ -115,7 +121,8 @@
       11.97,
       9.57,
       9.65,
-      9.4
+      9.4,
+      8.95
     ],
     "open": [
       9.0,
@@ -152,7 +159,8 @@
       11.3,
       9.98,
       9.57,
-      9.65
+      9.65,
+      9.4
     ],
     "high": [
       9.08,
@@ -189,7 +197,8 @@
       12.48,
       10.25,
       9.7,
-      9.69
+      9.69,
+      9.45
     ],
     "low": [
       8.97,
@@ -226,7 +235,8 @@
       10.98,
       9.55,
       9.42,
-      9.2
+      9.2,
+      8.94
     ],
     "volume": [
       1185503,
@@ -263,7 +273,8 @@
       16585716,
       5064492,
       2702635,
-      5743107
+      5743107,
+      11585249
     ],
     "vwap": [
       9.03,
@@ -300,7 +311,8 @@
       10.5172,
       10.503,
       10.4972,
-      10.4685
+      10.4685,
+      10.3364
     ],
     "resistance": 12.48,
     "support": 8.75,

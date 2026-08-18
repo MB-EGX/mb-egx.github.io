@@ -1,15 +1,20 @@
 {
   "ticker": "KABO.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Textiles & Durables",
   "matrix": {
     "Ticker": "KABO.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 52.9,
-    "Current Price": 9.62,
-    "Target Entry (VWAP)": 8.6469,
-    "Suggested Stop-Loss": 8.8443,
-    "Take-Profit Target": 10.4454,
+    "Sector": "Textiles & Durables",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 22.6,
+    "Current Price": 9.14,
+    "Target Entry (VWAP)": 8.75,
+    "Suggested Stop-Loss": 8.3214,
+    "Take-Profit Target": 9.5586,
     "Resistance (52W High)": 9.85,
     "Support (52W Low)": 6.04,
     "Pivot Point": 9.2067,
@@ -19,27 +24,27 @@
     "S1": 8.5633,
     "S2": 7.8167,
     "S3": 7.1733,
-    "Projected Gain (%)": 7.88,
-    "Pattern Conf (%)": 72.5,
-    "Projected Range 95%": "7.88% to 7.88%",
-    "Kelly %": 23.33,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | confirmed | weekly aligned | positive money flow | vol x1.32",
+    "Projected Gain (%)": 3.88,
+    "Pattern Conf (%)": 60.54,
+    "Projected Range 95%": "0.28% to 7.48%",
+    "Kelly %": 0.0,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | confirmed | weekly aligned | positive money flow | vol x1.70",
     "Score Breakdown": {
-      "pattern": 21.75,
-      "projected": 11.82,
-      "range": 4.7,
-      "trend_bonus": 63.0,
+      "pattern": 18.16,
+      "projected": 5.82,
+      "range": 4.07,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 79.0,
-    "ADX-14": 54.6,
-    "Vol Z-Score": 0.36,
+    "RSI-14": 66.0,
+    "ADX-14": 55.0,
+    "Vol Z-Score": 0.79,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0669,
-    "Bollinger %B": 1.169,
-    "Avg Volume (20D)": 5910340,
+    "MACD Histogram": 0.0548,
+    "Bollinger %B": 0.845,
+    "Avg Volume (20D)": 5850284,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       6.19,
@@ -115,7 +121,8 @@
       8.59,
       8.77,
       9.31,
-      9.62
+      9.62,
+      9.14
     ],
     "open": [
       6.19,
@@ -152,7 +159,8 @@
       8.6,
       8.59,
       8.77,
-      9.33
+      9.33,
+      9.62
     ],
     "high": [
       6.21,
@@ -189,7 +197,8 @@
       8.66,
       8.78,
       9.85,
-      9.66
+      9.66,
+      9.75
     ],
     "low": [
       6.11,
@@ -226,7 +235,8 @@
       8.49,
       8.58,
       8.77,
-      9.2
+      9.2,
+      9.1
     ],
     "volume": [
       724457,
@@ -263,7 +273,8 @@
       1080471,
       4148898,
       24651336,
-      7817607
+      7817607,
+      9937670
     ],
     "vwap": [
       6.17,
@@ -300,7 +311,8 @@
       8.2688,
       8.3165,
       8.5414,
-      8.6469
+      8.6469,
+      8.75
     ],
     "resistance": 9.85,
     "support": 6.04,

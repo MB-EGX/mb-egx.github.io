@@ -1,15 +1,20 @@
 {
   "ticker": "ODIN.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "ODIN.CA",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 29.6,
-    "Current Price": 3.32,
-    "Target Entry (VWAP)": 3.1417,
-    "Suggested Stop-Loss": 2.8114,
-    "Take-Profit Target": 3.64,
+    "Sector": "Non-Bank Financial Services",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 34.8,
+    "Current Price": 3.59,
+    "Target Entry (VWAP)": 3.1786,
+    "Suggested Stop-Loss": 3.05,
+    "Take-Profit Target": 3.8779,
     "Resistance (52W High)": 3.92,
     "Support (52W Low)": 2.05,
     "Pivot Point": 3.3667,
@@ -19,27 +24,27 @@
     "S1": 2.8133,
     "S2": 2.2667,
     "S3": 1.7133,
-    "Projected Gain (%)": 8.94,
-    "Pattern Conf (%)": 83.02,
-    "Projected Range 95%": "8.94% to 8.94%",
-    "Kelly %": 25.0,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Projected Gain (%)": 7.32,
+    "Pattern Conf (%)": 71.48,
+    "Projected Range 95%": "5.85% to 8.78%",
+    "Kelly %": 8.99,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x1.34",
     "Score Breakdown": {
-      "pattern": 24.91,
-      "projected": 13.41,
-      "range": 3.4,
-      "trend_bonus": 15.0,
+      "pattern": 21.44,
+      "projected": 10.98,
+      "range": 4.12,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 67.6,
-    "ADX-14": 74.2,
-    "Vol Z-Score": -0.08,
+    "RSI-14": 73.5,
+    "ADX-14": 74.1,
+    "Vol Z-Score": 0.38,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0324,
-    "Bollinger %B": 0.769,
-    "Avg Volume (20D)": 12282519,
+    "MACD Histogram": 0.0368,
+    "Bollinger %B": 0.914,
+    "Avg Volume (20D)": 12978309,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       2.1,
@@ -115,7 +121,8 @@
       3.43,
       3.4,
       3.36,
-      3.32
+      3.32,
+      3.59
     ],
     "open": [
       2.09,
@@ -152,7 +159,8 @@
       3.58,
       3.43,
       3.5,
-      3.4
+      3.4,
+      3.32
     ],
     "high": [
       2.14,
@@ -189,7 +197,8 @@
       3.79,
       3.84,
       3.54,
-      3.47
+      3.47,
+      3.75
     ],
     "low": [
       2.08,
@@ -226,7 +235,8 @@
       3.41,
       3.34,
       3.32,
-      3.29
+      3.29,
+      3.34
     ],
     "volume": [
       3505905,
@@ -263,7 +273,8 @@
       14359534,
       17568834,
       6673266,
-      11347685
+      11347685,
+      17357709
     ],
     "vwap": [
       2.1067,
@@ -300,7 +311,8 @@
       3.038,
       3.0812,
       3.1171,
-      3.1417
+      3.1417,
+      3.1786
     ],
     "resistance": 3.92,
     "support": 2.05,

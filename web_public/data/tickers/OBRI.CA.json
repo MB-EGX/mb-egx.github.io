@@ -1,15 +1,20 @@
 {
   "ticker": "OBRI.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "OBRI.CA",
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume)",
-    "Rank Score": 6.0,
-    "Current Price": 33.88,
-    "Target Entry (VWAP)": 33.4799,
-    "Suggested Stop-Loss": 31.5671,
-    "Take-Profit Target": 37.0082,
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release)",
+    "Rank Score": 6.1,
+    "Current Price": 34.1,
+    "Target Entry (VWAP)": 33.465,
+    "Suggested Stop-Loss": 31.8343,
+    "Take-Profit Target": 37.1708,
     "Resistance (52W High)": 38.9,
     "Support (52W Low)": 31.5,
     "Pivot Point": 33.1833,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 2.17,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) | trend=Weak Bullish | awaiting confirmation | vol x1.20",
+    "Kelly %": 2.21,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) | trend=Weak Bullish | awaiting confirmation | vol x1.57",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 1.61,
+      "range": 1.76,
       "trend_bonus": 9.8,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Weak Bullish",
-    "RSI-14": 52.9,
-    "ADX-14": 26.6,
-    "Vol Z-Score": 0.37,
-    "MACD Signal": "🟢 Bullish Cross",
-    "MACD Histogram": 0.0859,
-    "Bollinger %B": 0.597,
-    "Avg Volume (20D)": 1109409,
+    "RSI-14": 54.4,
+    "ADX-14": 26.7,
+    "Vol Z-Score": 1.07,
+    "MACD Signal": "Bullish",
+    "MACD Histogram": 0.1559,
+    "Bollinger %B": 0.671,
+    "Avg Volume (20D)": 1161072,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       33.55,
@@ -115,7 +121,8 @@
       32.94,
       32.7,
       33.05,
-      33.88
+      33.88,
+      34.1
     ],
     "open": [
       34.42,
@@ -152,7 +159,8 @@
       33.0,
       32.94,
       33.2,
-      33.11
+      33.11,
+      33.88
     ],
     "high": [
       34.99,
@@ -189,7 +197,8 @@
       33.34,
       33.3,
       33.2,
-      34.45
+      34.45,
+      34.97
     ],
     "low": [
       33.55,
@@ -226,7 +235,8 @@
       32.5,
       32.5,
       32.71,
-      32.8
+      32.8,
+      33.86
     ],
     "volume": [
       257057,
@@ -263,7 +273,8 @@
       616798,
       459651,
       449904,
-      1332911
+      1332911,
+      1818438
     ],
     "vwap": [
       34.03,
@@ -300,7 +311,8 @@
       33.7539,
       33.6729,
       33.5608,
-      33.4799
+      33.4799,
+      33.465
     ],
     "resistance": 38.9,
     "support": 31.5,

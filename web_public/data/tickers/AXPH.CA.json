@@ -1,15 +1,21 @@
 {
   "ticker": "AXPH.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "AXPH.CA",
-    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 10.4,
-    "Current Price": 1344.57,
-    "Target Entry (VWAP)": 1303.6,
-    "Suggested Stop-Loss": 1200.0186,
-    "Take-Profit Target": 1380.8734,
+    "Sector": "Health Care & Pharmaceuticals",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check",
+      "Avg volume below 100,000 long-term floor"
+    ],
+    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 7.8,
+    "Current Price": 1348.1,
+    "Target Entry (VWAP)": 1305.9804,
+    "Suggested Stop-Loss": 1205.48,
+    "Take-Profit Target": 1384.4987,
     "Resistance (52W High)": 1460.0,
     "Support (52W Low)": 1075.0,
     "Pivot Point": 1364.2733,
@@ -19,27 +25,27 @@
     "S1": 1268.5467,
     "S2": 1185.2733,
     "S3": 1089.5467,
-    "Projected Gain (%)": -0.49,
-    "Pattern Conf (%)": 91.16,
-    "Projected Range 95%": "-0.49% to -0.49%",
-    "Kelly %": 25.0,
-    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Projected Gain (%)": -1.03,
+    "Pattern Conf (%)": 76.59,
+    "Projected Range 95%": "-1.52% to -0.54%",
+    "Kelly %": 0.0,
+    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 27.35,
-      "projected": -0.73,
-      "range": 3.5,
+      "pattern": 22.98,
+      "projected": -1.54,
+      "range": 3.55,
       "trend_bonus": -10.2,
       "confidence_weight": 0.52
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 66.0,
-    "ADX-14": 60.7,
-    "Vol Z-Score": -0.5,
+    "RSI-14": 66.5,
+    "ADX-14": 60.5,
+    "Vol Z-Score": -0.73,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 4.3714,
-    "Bollinger %B": 0.851,
-    "Avg Volume (20D)": 3782,
+    "MACD Histogram": 3.7003,
+    "Bollinger %B": 0.828,
+    "Avg Volume (20D)": 3764,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +84,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       1100.31,
@@ -115,7 +122,8 @@
       1330.1,
       1305.43,
       1351.82,
-      1344.57
+      1344.57,
+      1348.1
     ],
     "open": [
       1117.8,
@@ -152,7 +160,8 @@
       1340.0,
       1330.1,
       1320.0,
-      1351.01
+      1351.01,
+      1344.57
     ],
     "high": [
       1120.0,
@@ -189,7 +198,8 @@
       1360.0,
       1335.0,
       1400.0,
-      1369.5
+      1369.5,
+      1360.0
     ],
     "low": [
       1096.0,
@@ -226,7 +236,8 @@
       1281.0,
       1301.0,
       1315.01,
-      1340.0
+      1340.0,
+      1345.01
     ],
     "volume": [
       1119,
@@ -263,7 +274,8 @@
       2853,
       2261,
       5824,
-      2129
+      2129,
+      1355
     ],
     "vwap": [
       1105.4367,
@@ -300,7 +312,8 @@
       1287.8565,
       1294.0794,
       1300.4267,
-      1303.6
+      1303.6,
+      1305.9804
     ],
     "resistance": 1460.0,
     "support": 1075.0,

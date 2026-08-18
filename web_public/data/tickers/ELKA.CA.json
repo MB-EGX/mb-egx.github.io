@@ -1,15 +1,20 @@
 {
   "ticker": "ELKA.CA",
-  "last_data_date": "2026-08-17",
+  "last_data_date": "2026-08-18",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "ELKA.CA",
+    "Sector": "Real Estate",
+    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Reasons": [
+      "Not enough history for a long-term setup check"
+    ],
     "Action": "📈 ACCUMULATE",
     "Rank Score": 9.2,
-    "Current Price": 1.74,
-    "Target Entry (VWAP)": 1.74,
-    "Suggested Stop-Loss": 1.5857,
-    "Take-Profit Target": 1.945,
+    "Current Price": 1.72,
+    "Target Entry (VWAP)": 1.72,
+    "Suggested Stop-Loss": 1.5786,
+    "Take-Profit Target": 1.9088,
     "Resistance (52W High)": 2.25,
     "Support (52W Low)": 1.19,
     "Pivot Point": 1.7567,
@@ -22,24 +27,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.8,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Kelly %": 1.9,
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 2.59,
+      "range": 2.5,
       "trend_bonus": 15.0,
       "confidence_weight": 0.52
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 51.5,
-    "ADX-14": 43.0,
-    "Vol Z-Score": -1.2,
+    "RSI-14": 49.7,
+    "ADX-14": 41.0,
+    "Vol Z-Score": -1.32,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0245,
-    "Bollinger %B": 0.345,
-    "Avg Volume (20D)": 37855790,
+    "MACD Histogram": -0.0239,
+    "Bollinger %B": 0.326,
+    "Avg Volume (20D)": 36948671,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -78,7 +83,8 @@
       "2026-08-12 00:00:00",
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
-      "2026-08-17 00:00:00"
+      "2026-08-17 00:00:00",
+      "2026-08-18 00:00:00"
     ],
     "close": [
       1.24,
@@ -115,7 +121,8 @@
       1.79,
       1.77,
       1.75,
-      1.74
+      1.74,
+      1.72
     ],
     "open": [
       1.24,
@@ -152,7 +159,8 @@
       1.74,
       1.79,
       1.8,
-      1.75
+      1.75,
+      1.74
     ],
     "high": [
       1.26,
@@ -189,7 +197,8 @@
       1.84,
       1.8,
       1.8,
-      1.77
+      1.77,
+      1.75
     ],
     "low": [
       1.23,
@@ -226,7 +235,8 @@
       1.74,
       1.76,
       1.74,
-      1.73
+      1.73,
+      1.71
     ],
     "volume": [
       11453573,
@@ -263,7 +273,8 @@
       70178242,
       21356283,
       24046627,
-      18297899
+      18297899,
+      14430909
     ],
     "vwap": [
       1.2433,
@@ -300,7 +311,8 @@
       1.8538,
       1.8527,
       1.8459,
-      1.8217
+      1.8217,
+      1.8085
     ],
     "resistance": 2.25,
     "support": 1.19,
