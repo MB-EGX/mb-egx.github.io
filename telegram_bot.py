@@ -107,6 +107,7 @@ from html import escape as _esc
 import requests
 
 from config import TELEGRAM_BOT_TOKEN, get_logger
+from freshness import is_fresh
 
 logger = get_logger("telegram_bot")
 
@@ -403,7 +404,7 @@ COMMAND_HANDLERS = {
 }
 
 
-def handle_command(text: str, data: dict | None) -> str:
+def handle_command(text: str, data: dict | None, stale_date: str | None = None) -> str:
     """Resolves any incoming message - an English /slash command, a plain
     Arabic phrase, or an Arabic "سهم/سعر SYMBOL" ticker lookup - to a
     handler + arg + reply language, then dispatches.
@@ -440,7 +441,17 @@ def handle_command(text: str, data: dict | None) -> str:
         return LABELS[lang]["unknown"]
     if data is None and cmd not in ("/start", "/help"):
         return LABELS[lang]["no_data"]
-    return handler(data, arg, lang)
+    reply = handler(data, arg, lang)
+    if stale_date and cmd not in ("/start", "/help"):
+        warn = (
+            f"⚠️ Data is from session {stale_date} — today's session isn't published yet "
+            f"(run publish.py after market close).\n\n"
+            if lang == "en" else
+            f"⚠️ البيانات من جلسة {stale_date} — لم تُنشر بيانات جلسة اليوم بعد "
+            f"(شغّل publish.py بعد إغلاق السوق).\n\n"
+        )
+        return warn + reply
+    return reply
 
 
 def _load_market_data() -> dict | None:
@@ -496,6 +507,11 @@ def poll_once() -> int:
     processed (0 is normal - most polls will have nothing new)."""
     state = _load_state()
     data = _load_market_data()
+    # ROOT-CAUSE FIX: never answer with the previous session's numbers.
+    # The bot had no freshness gate - a stale market_data.json was
+    # answered as if it were today's. Flag it loudly instead.
+    _fresh, _last, _today = is_fresh()
+    stale_date = None if _fresh else _last
 
     resp = requests.get(
         _api_url("getUpdates"),
@@ -512,7 +528,7 @@ def poll_once() -> int:
         if not message or "text" not in message:
             continue
         chat_id = message["chat"]["id"]
-        reply = handle_command(message["text"], data)
+        reply = handle_command(message["text"], data, stale_date=stale_date)
         send_message(chat_id, reply)
         processed += 1
 

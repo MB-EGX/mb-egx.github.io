@@ -56,6 +56,7 @@ import os
 import sys
 from datetime import datetime
 from zoneinfo import ZoneInfo
+from freshness import is_fresh, today_cairo
 
 CAIRO = ZoneInfo("Africa/Cairo")
 STATE_PATH = "web_public/social/post_state.json"
@@ -88,7 +89,7 @@ ALL_TYPES = (*DUE_TIMES.keys(), "achievement", "track_record")
 
 
 def _today_str():
-    return datetime.now(CAIRO).strftime("%Y-%m-%d")
+    return today_cairo()
 
 
 def _empty_posted():
@@ -162,13 +163,10 @@ def _data_is_fresh_today(today_str):
     actually answers "is this today's session," which is what matters
     for what gets posted — a same-day git commit is not proof of that.
     """
-    try:
-        with open(DATA_PATH) as f:
-            data = json.load(f)
-        last_data_date = data.get("last_data_date")
-    except (FileNotFoundError, json.JSONDecodeError):
-        last_data_date = None
-    return last_data_date == today_str, last_data_date
+    # Single source of truth now lives in freshness.py (same contract:
+    # data is fresh only when its last_data_date == the target session
+    # date). Keeps the return shape (bool, last_data_date) unchanged.
+    return is_fresh(DATA_PATH, target=today_str)[:2]
 
 
 def cmd_due(args):

@@ -52,6 +52,7 @@ from email.mime.text import MIMEText
 
 from config import EMAIL_DIGEST_RECIPIENTS, get_logger
 from session_picks import build_digest_payload
+from freshness import assert_fresh
 
 logger = get_logger("send_email_digest")
 
@@ -155,6 +156,11 @@ def main():
         return
 
     market_data = load_market_data(args.market_data)
+    # ROOT-CAUSE FIX: never email the previous session's digest. The
+    # email workflow had no freshness gate (unlike the social workflow's
+    # post_state.py) - a stale market_data.json was emailed as if it were
+    # today's. Refuse loudly instead of sending stale picks.
+    assert_fresh(args.market_data, channel="email-digest")
     state = market_data.get("session_picks", {})
     if not state:
         print("⚠️  No session_picks data in market_data.json yet — nothing to send.")
