@@ -1,6 +1,6 @@
 {
   "ticker": "SNFI.CA",
-  "last_data_date": "2026-08-18",
+  "last_data_date": "2026-12-05",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "SNFI.CA",
@@ -24,41 +24,41 @@
     "External Rating Consensus": 0.25,
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - 📈 ACCUMULATE",
-    "Rank Score": -7.1,
-    "Current Price": 11.12,
-    "Target Entry (VWAP)": 10.545,
-    "Suggested Stop-Loss": 9.4714,
-    "Take-Profit Target": 11.4202,
+    "Rank Score": -14.6,
+    "Current Price": 10.79,
+    "Target Entry (VWAP)": 10.4596,
+    "Suggested Stop-Loss": 8.7971,
+    "Take-Profit Target": 13.3566,
     "Resistance (52W High)": 13.0,
     "Support (52W Low)": 9.21,
-    "Pivot Point": 11.4033,
-    "R1": 11.9767,
-    "R2": 12.2733,
-    "R3": 12.8467,
-    "S1": 11.1067,
-    "S2": 10.5333,
-    "S3": 10.2367,
-    "Projected Gain (%)": -4.78,
-    "Pattern Conf (%)": 60.65,
-    "Projected Range 95%": "-4.78% to -4.78%",
-    "Kelly %": 0.0,
-    "Signal Reason": "🚫 ILLIQUID - 📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Pivot Point": 11.63,
+    "R1": 13.22,
+    "R2": 14.44,
+    "R3": 16.03,
+    "S1": 10.41,
+    "S2": 8.82,
+    "S3": 7.6,
+    "Projected Gain (%)": "N/A",
+    "Pattern Conf (%)": "N/A",
+    "Projected Range 95%": "N/A",
+    "Kelly %": 1.15,
+    "Signal Reason": "🚫 ILLIQUID - 📈 ACCUMULATE | trend=Weak Bullish | confirmed | vol x2.26",
     "Score Breakdown": {
-      "pattern": 18.2,
-      "projected": -7.17,
-      "range": 2.52,
+      "pattern": 0.0,
+      "projected": 0.0,
+      "range": 2.08,
       "trend_bonus": -25.0,
-      "confidence_weight": 0.62
+      "confidence_weight": 0.64
     },
-    "Regime": "Trending / Volatile",
-    "Trend Class": "Strong Bullish",
-    "RSI-14": 49.5,
-    "ADX-14": 34.4,
-    "Vol Z-Score": -0.38,
-    "MACD Signal": "🔴 Bearish Cross",
-    "MACD Histogram": -0.0054,
-    "Bollinger %B": 0.504,
-    "Avg Volume (20D)": 5131,
+    "Regime": "N/A",
+    "Trend Class": "Weak Bullish",
+    "RSI-14": 48.6,
+    "ADX-14": 26.0,
+    "Vol Z-Score": 0.71,
+    "MACD Signal": "Bearish",
+    "MACD Histogram": -0.0522,
+    "Bollinger %B": 0.359,
+    "Avg Volume (20D)": 8008,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
@@ -142,7 +142,14 @@
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
-      "2026-08-18 00:00:00"
+      "2026-08-18 00:00:00",
+      "2026-09-02 00:00:00",
+      "2026-09-03 00:00:00",
+      "2026-10-06 00:00:00",
+      "2026-11-02 00:00:00",
+      "2026-11-03 00:00:00",
+      "2026-11-05 00:00:00",
+      "2026-12-01 00:00:00"
     ],
     "close": [
       10.03,
@@ -224,7 +231,14 @@
       11.68,
       11.68,
       11.12,
-      11.12
+      11.12,
+      10.2,
+      10.47,
+      12.05,
+      10.11,
+      10.09,
+      12.0,
+      10.79
     ],
     "open": [
       10.02,
@@ -306,7 +320,14 @@
       10.83,
       10.83,
       11.2,
-      11.2
+      11.2,
+      10.49,
+      10.25,
+      12.79,
+      10.2,
+      10.15,
+      11.68,
+      10.49
     ],
     "high": [
       10.03,
@@ -388,7 +409,14 @@
       11.68,
       11.68,
       11.64,
-      11.64
+      11.64,
+      10.49,
+      10.47,
+      12.79,
+      10.2,
+      10.15,
+      12.85,
+      11.12
     ],
     "low": [
       10.0,
@@ -470,7 +498,14 @@
       10.83,
       10.83,
       11.1,
-      11.1
+      11.1,
+      10.2,
+      10.05,
+      12.05,
+      10.11,
+      10.04,
+      11.5,
+      10.21
     ],
     "volume": [
       69850,
@@ -552,7 +587,14 @@
       0,
       511,
       2426,
-      0
+      0,
+      12510,
+      4990,
+      80,
+      12820,
+      20670,
+      3120,
+      18110
     ],
     "vwap": [
       10.02,
@@ -634,18 +676,25 @@
       10.5295,
       10.5299,
       10.5437,
-      10.545
+      10.545,
+      10.5188,
+      10.5101,
+      10.5106,
+      10.4604,
+      10.3946,
+      10.4281,
+      10.4596
     ],
     "resistance": 13.0,
     "support": 9.21,
     "pivots": {
-      "pp": 11.4033,
-      "r1": 11.9767,
-      "r2": 12.2733,
-      "r3": 12.8467,
-      "s1": 11.1067,
-      "s2": 10.5333,
-      "s3": 10.2367
+      "pp": 11.63,
+      "r1": 13.22,
+      "r2": 14.44,
+      "r3": 16.03,
+      "s1": 10.41,
+      "s2": 8.82,
+      "s3": 7.6
     },
     "patterns": [
       {
@@ -682,14 +731,14 @@
         "pattern": "Price Channel (Flat)",
         "direction": "neutral",
         "start_index": 31,
-        "end_index": 71,
+        "end_index": 84,
         "start_date": "2026-05-01",
-        "end_date": "2026-08-06",
+        "end_date": "2026-11-03",
         "levels": {
           "resistance_start": 12.9303,
-          "resistance_end": 12.7,
-          "support_start": 10.0,
-          "support_end": 10.0421
+          "resistance_end": 12.6252,
+          "support_start": 9.9956,
+          "support_end": 10.079
         },
         "quality": 0.85
       }

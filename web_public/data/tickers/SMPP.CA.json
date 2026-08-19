@@ -1,6 +1,6 @@
 {
   "ticker": "SMPP.CA",
-  "last_data_date": "2026-08-18",
+  "last_data_date": "2026-12-05",
   "sector": "Paper & Packaging",
   "matrix": {
     "Ticker": "SMPP.CA",
@@ -23,42 +23,42 @@
     "3Y Return %": -2.78,
     "External Rating Consensus": -1.625,
     "External Rating Note": "Diverges from external consensus (-1.6/2, bearish)",
-    "Action": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE]",
-    "Rank Score": 1.0,
-    "Current Price": 103.05,
-    "Target Entry (VWAP)": 103.05,
-    "Suggested Stop-Loss": 59.1371,
-    "Take-Profit Target": 158.6624,
+    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (X-OVER + MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE]",
+    "Rank Score": -11.7,
+    "Current Price": 128.0,
+    "Target Entry (VWAP)": 111.083,
+    "Suggested Stop-Loss": 84.1943,
+    "Take-Profit Target": 131.456,
     "Resistance (52W High)": 150.0,
     "Support (52W Low)": 80.1,
-    "Pivot Point": 112.0833,
-    "R1": 122.9667,
-    "R2": 142.8833,
-    "R3": 153.7667,
-    "S1": 92.1667,
-    "S2": 81.2833,
-    "S3": 61.3667,
-    "Projected Gain (%)": "N/A",
-    "Pattern Conf (%)": "N/A",
-    "Projected Range 95%": "N/A",
-    "Kelly %": 0.79,
-    "Signal Reason": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE] | trend=Weak Bearish (Low Trend Strength) | awaiting confirmation | volatility squeeze | positive money flow",
+    "Pivot Point": 114.3667,
+    "R1": 118.7333,
+    "R2": 125.3667,
+    "R3": 129.7333,
+    "S1": 107.7333,
+    "S2": 103.3667,
+    "S3": 96.7333,
+    "Projected Gain (%)": -15.17,
+    "Pattern Conf (%)": 29.06,
+    "Projected Range 95%": "-16.24% to -14.09%",
+    "Kelly %": 0.0,
+    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (X-OVER + MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] | trend=Weak Bullish (Low Trend Strength) | awaiting confirmation | volatility squeeze",
     "Score Breakdown": {
-      "pattern": 0.0,
-      "projected": 0.0,
-      "range": 1.64,
-      "trend_bonus": 0.0,
-      "confidence_weight": 0.62
+      "pattern": 8.72,
+      "projected": -22.75,
+      "range": 3.43,
+      "trend_bonus": -7.95,
+      "confidence_weight": 0.63
     },
-    "Regime": "N/A",
-    "Trend Class": "Weak Bearish (Low Trend Strength)",
-    "RSI-14": 40.0,
-    "ADX-14": 11.7,
-    "Vol Z-Score": -0.7,
-    "MACD Signal": "Bearish",
-    "MACD Histogram": -1.6957,
-    "Bollinger %B": 0.256,
-    "Avg Volume (20D)": 82,
+    "Regime": "Volatile Range",
+    "Trend Class": "Weak Bullish (Low Trend Strength)",
+    "RSI-14": 58.9,
+    "ADX-14": 11.6,
+    "Vol Z-Score": -0.11,
+    "MACD Signal": "Bullish",
+    "MACD Histogram": 1.6383,
+    "Bollinger %B": 1.048,
+    "Avg Volume (20D)": 47,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
@@ -139,7 +139,13 @@
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
-      "2026-08-18 00:00:00"
+      "2026-08-18 00:00:00",
+      "2026-09-02 00:00:00",
+      "2026-10-06 00:00:00",
+      "2026-11-02 00:00:00",
+      "2026-11-03 00:00:00",
+      "2026-11-05 00:00:00",
+      "2026-12-01 00:00:00"
     ],
     "close": [
       110.0,
@@ -218,7 +224,13 @@
       103.05,
       103.05,
       103.05,
-      103.05
+      103.05,
+      121.0,
+      106.95,
+      121.0,
+      110.0,
+      112.1,
+      128.0
     ],
     "open": [
       117.9,
@@ -297,7 +309,13 @@
       132.0,
       132.0,
       132.0,
-      132.0
+      132.0,
+      120.0,
+      107.0,
+      120.0,
+      110.0,
+      112.0,
+      128.6
     ],
     "high": [
       117.9,
@@ -376,7 +394,13 @@
       132.0,
       132.0,
       132.0,
-      132.0
+      132.0,
+      121.0,
+      107.0,
+      121.0,
+      110.0,
+      112.1,
+      134.99
     ],
     "low": [
       109.0,
@@ -455,7 +479,13 @@
       101.2,
       101.2,
       101.2,
-      101.2
+      101.2,
+      121.0,
+      106.95,
+      121.0,
+      110.0,
+      112.0,
+      128.0
     ],
     "volume": [
       100,
@@ -534,7 +564,13 @@
       0,
       0,
       0,
-      0
+      0,
+      0,
+      240,
+      0,
+      70,
+      90,
+      40
     ],
     "vwap": [
       112.3,
@@ -613,18 +649,24 @@
       119.2274,
       119.3023,
       119.379,
-      120.3643
+      120.3643,
+      121.9812,
+      116.8575,
+      112.5317,
+      111.3437,
+      110.335,
+      111.083
     ],
     "resistance": 150.0,
     "support": 80.1,
     "pivots": {
-      "pp": 112.0833,
-      "r1": 122.9667,
-      "r2": 142.8833,
-      "r3": 153.7667,
-      "s1": 92.1667,
-      "s2": 81.2833,
-      "s3": 61.3667
+      "pp": 114.3667,
+      "r1": 118.7333,
+      "r2": 125.3667,
+      "r3": 129.7333,
+      "s1": 107.7333,
+      "s2": 103.3667,
+      "s3": 96.7333
     },
     "patterns": []
   }

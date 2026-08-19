@@ -1786,7 +1786,7 @@ class AnalysisWorker(QThread):
 #
 # The web dashboard's "🧮 Strategy Calculator" tab (index.html) reads a
 # small public JSON shard, web_public/data/strategy_performance.json,
-# written by the standalone export_backtest_summary.py script (see that
+# written by the consolidated backtest_tools.py export-summary command (see that
 # file's own docstring for why it's deliberately NOT part of the nightly
 # publish.py pipeline — a multi-year walk-forward run is too slow to
 # block every publish). The desktop app has direct DuckDB access and its
@@ -1795,7 +1795,7 @@ class AnalysisWorker(QThread):
 # or missing on a machine that's never run publish.py), this dialog can
 # also trigger backtester.run_walk_forward_backtest() itself, off the UI
 # thread, and writes the SAME strategy_performance.json shape via
-# export_backtest_summary.build_summary() — so a desktop-triggered run
+# backtest_tools.build_summary() — so a desktop-triggered run
 # updates the exact file the web dashboard reads next time you publish,
 # same "one code path, no drift" rule the rest of this app already
 # follows for session_picks (see session_picks.py's own docstring).
@@ -1941,11 +1941,11 @@ class StrategyCalculatorDialog(QDialog):
         self.btn_run.setEnabled(True)
         self.btn_load_cached.setEnabled(True)
         try:
-            from export_backtest_summary import build_summary
+            from backtest_tools import build_summary
             summary = build_summary(result, equity_points=200)
             # Persist it so this desktop run also updates the file the
             # web dashboard reads next time publish.py runs — same
-            # shape/location export_backtest_summary.py itself writes.
+            # shape/location backtest_tools.py itself writes.
             out_path = Path(self._summary_file_path())
             out_path.parent.mkdir(parents=True, exist_ok=True)
             with open(out_path, "w", encoding="utf-8") as f:

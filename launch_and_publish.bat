@@ -120,14 +120,14 @@ if not "%PUBLISH_RC%"=="0" (
 )
 
 REM --- Daily walk-forward + factor backtest refresh -------------------
-REM Runs run_backtest.py --save (persists to walk_forward_runs, see
-REM db_manager.save_walkforward_run) and run_factor_backtest.py once per
+REM Runs backtest_tools.py run --save (persists to walk_forward_runs, see
+REM db_manager.save_walkforward_run) and backtest_tools.py factors once per
 REM CALENDAR DAY, right here - after publish.py has released the DuckDB
 REM lock and before app_gui.py grabs it for the rest of the session (see
 REM the "one process at a time" note above; a backtest run mid-app-session
 REM would hit the same IOException publish.py itself guards against).
 REM
-REM Once per day, not every launch: run_factor_backtest.py walks the full
+REM Once per day, not every launch: backtest_tools.py factors walks the full
 REM tradeable universe with a walk-forward split per ticker (263 tickers
 REM in your last run) - genuinely slow, and re-running it on every single
 REM open (including a 3rd/4th launch in the same afternoon) would make
@@ -140,7 +140,7 @@ REM just edit the date inside it) any time you want to force an
 REM out-of-schedule re-run.
 REM
 REM BEFORE running either slow script, a fast readiness check
-REM (check_backtest_readiness.py - one SQL COUNT query, not a full
+REM (backtest_tools.py readiness - one SQL COUNT query, not a full
 REM backtest) confirms at least one ticker actually has enough ingested
 REM history (WALK_FORWARD_BACKTEST_DEFAULTS min_train_bars + test_bars,
 REM 310 bars by default) to produce a fold at all. diagnose_backtest_
@@ -153,7 +153,7 @@ REM true, then the real runs start automatically - no need to remember to
 REM turn this back on yourself.
 REM
 REM Also refreshes the public Strategy Calculator summary
-REM (export_backtest_summary.py) on its OWN 7-day cadence, per that
+REM (backtest_tools.py export-summary) on its OWN 7-day cadence, per that
 REM script's own docstring ("run by hand, or a slow weekly/monthly cron")
 REM - not daily, since it's the same underlying engine and just as
 REM guaranteed-empty while history is short. When it does run, its output
@@ -179,7 +179,7 @@ if not defined TODAY_STR (
     echo ^(Delete backtests\last_backtest_date.txt to force a re-run.^)
 ) else (
     echo Checking backtest data readiness ^(fast - no full backtest run yet^)...
-    "%PY%" check_backtest_readiness.py
+    "%PY%" backtest_tools.py readiness
     if not "!ERRORLEVEL!"=="0" (
         echo Skipping today's backtest refresh - not enough ingested history yet ^(see message above^).
         echo This check re-runs automatically on your next launch - no action needed until it's ready.
@@ -190,16 +190,16 @@ if not defined TODAY_STR (
         echo ============================================
         echo Log: backtests\backtest_%TODAY_STR%.log
 
-        "%PY%" run_backtest.py --save > "backtests\backtest_%TODAY_STR%.log" 2>&1
+        "%PY%" backtest_tools.py run --save > "backtests\backtest_%TODAY_STR%.log" 2>&1
         set "BACKTEST_RC=!ERRORLEVEL!"
-        "%PY%" run_factor_backtest.py --out "backtests\factor_backtest_%TODAY_STR%.json" >> "backtests\backtest_%TODAY_STR%.log" 2>&1
+        "%PY%" backtest_tools.py factors --out "backtests\factor_backtest_%TODAY_STR%.json" >> "backtests\backtest_%TODAY_STR%.log" 2>&1
         set "FACTOR_RC=!ERRORLEVEL!"
 
         if not "!BACKTEST_RC!"=="0" (
-            echo [!] run_backtest.py failed - see backtests\backtest_%TODAY_STR%.log
+            echo [!] backtest_tools.py run failed - see backtests\backtest_%TODAY_STR%.log
         )
         if not "!FACTOR_RC!"=="0" (
-            echo [!] run_factor_backtest.py failed - see backtests\backtest_%TODAY_STR%.log
+            echo [!] backtest_tools.py factors failed - see backtests\backtest_%TODAY_STR%.log
         )
         if "!BACKTEST_RC!"=="0" (
             if "!FACTOR_RC!"=="0" (
@@ -212,7 +212,7 @@ if not defined TODAY_STR (
         )
 
         REM --- Weekly public Strategy Calculator summary (N6) ---------
-        REM export_backtest_summary.py's own docstring explicitly says it's
+        REM backtest_tools.py export-summary's own docstring explicitly says it's
         REM meant for a "hand run, or a slow weekly/monthly cron of your
         REM own" - NOT the daily cadence run_backtest.py/run_factor_
         REM backtest.py get above, so this gets its own 7-day gate rather
@@ -242,9 +242,9 @@ if not defined TODAY_STR (
         if "!SUMMARY_DECISION!"=="RUN" (
             echo ============================================
             echo  Refreshing public Strategy Calculator summary
-            echo  ^(weekly - export_backtest_summary.py^)
+            echo  ^(weekly - backtest_tools.py export-summary^)
             echo ============================================
-            "%PY%" export_backtest_summary.py >> "backtests\backtest_%TODAY_STR%.log" 2>&1
+            "%PY%" backtest_tools.py export-summary >> "backtests\backtest_%TODAY_STR%.log" 2>&1
             set "SUMMARY_RC=!ERRORLEVEL!"
             if "!SUMMARY_RC!"=="0" (
                 REM Push just this file now instead of waiting for tomorrow's
@@ -262,7 +262,7 @@ if not defined TODAY_STR (
                 > "backtests\last_strategy_summary_date.txt" echo %TODAY_STR%
                 echo Strategy summary refreshed and pushed.
             ) else (
-                echo [!] export_backtest_summary.py failed - see backtests\backtest_%TODAY_STR%.log
+                echo [!] backtest_tools.py export-summary failed - see backtests\backtest_%TODAY_STR%.log
             )
         )
     )
