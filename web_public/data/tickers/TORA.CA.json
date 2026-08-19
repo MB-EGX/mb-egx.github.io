@@ -1,6 +1,6 @@
 {
   "ticker": "TORA.CA",
-  "last_data_date": "2026-12-05",
+  "last_data_date": "2026-08-18",
   "sector": "Building Materials",
   "matrix": {
     "Ticker": "TORA.CA",
@@ -24,41 +24,41 @@
     "External Rating Consensus": -1.5,
     "External Rating Note": "Diverges from external consensus (-1.5/2, bearish)",
     "Action": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE]",
-    "Rank Score": -1.6,
-    "Current Price": 69.05,
-    "Target Entry (VWAP)": 69.05,
-    "Suggested Stop-Loss": 56.4129,
-    "Take-Profit Target": 70.9143,
+    "Rank Score": 7.2,
+    "Current Price": 67.5,
+    "Target Entry (VWAP)": 67.5,
+    "Suggested Stop-Loss": 59.8071,
+    "Take-Profit Target": 73.5345,
     "Resistance (52W High)": 85.4,
     "Support (52W Low)": 31.03,
-    "Pivot Point": 76.4667,
-    "R1": 84.4433,
-    "R2": 93.3767,
-    "R3": 101.3533,
-    "S1": 67.5333,
-    "S2": 59.5567,
-    "S3": 50.6233,
-    "Projected Gain (%)": -4.29,
-    "Pattern Conf (%)": 51.54,
-    "Projected Range 95%": "-4.29% to -4.29%",
+    "Pivot Point": 69.0,
+    "R1": 71.0,
+    "R2": 74.0,
+    "R3": 76.0,
+    "S1": 66.0,
+    "S2": 64.0,
+    "S3": 61.0,
+    "Projected Gain (%)": 8.24,
+    "Pattern Conf (%)": 36.15,
+    "Projected Range 95%": "0.56% to 15.92%",
     "Kelly %": 0.0,
-    "Signal Reason": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE] | trend=Weak Bullish | awaiting confirmation | volatility squeeze | vol x1.10",
+    "Signal Reason": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE] | trend=Weak Bullish | awaiting confirmation | volatility squeeze",
     "Score Breakdown": {
-      "pattern": 15.46,
-      "projected": -6.44,
-      "range": 3.5,
+      "pattern": 10.84,
+      "projected": 12.36,
+      "range": 3.35,
       "trend_bonus": -15.0,
-      "confidence_weight": 0.64
+      "confidence_weight": 0.62
     },
-    "Regime": "Trending / Volatile",
+    "Regime": "Volatile Range",
     "Trend Class": "Weak Bullish",
-    "RSI-14": 48.7,
-    "ADX-14": 25.4,
-    "Vol Z-Score": 0.1,
-    "MACD Signal": "Bullish",
-    "MACD Histogram": 0.4289,
-    "Bollinger %B": 0.431,
-    "Avg Volume (20D)": 16897,
+    "RSI-14": 45.9,
+    "ADX-14": 22.8,
+    "Vol Z-Score": -1.15,
+    "MACD Signal": "🔴 Bearish Cross",
+    "MACD Histogram": -0.0185,
+    "Bollinger %B": 0.428,
+    "Avg Volume (20D)": 11408,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
@@ -142,14 +142,7 @@
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
-      "2026-08-18 00:00:00",
-      "2026-09-02 00:00:00",
-      "2026-09-03 00:00:00",
-      "2026-10-06 00:00:00",
-      "2026-11-02 00:00:00",
-      "2026-11-03 00:00:00",
-      "2026-11-05 00:00:00",
-      "2026-12-01 00:00:00"
+      "2026-08-18 00:00:00"
     ],
     "close": [
       65.0,
@@ -231,14 +224,7 @@
       68.0,
       68.0,
       67.5,
-      67.5,
-      70.4,
-      68.5,
-      71.0,
-      82.1,
-      70.0,
-      75.51,
-      69.05
+      67.5
     ],
     "open": [
       65.0,
@@ -320,14 +306,7 @@
       70.0,
       70.0,
       67.5,
-      67.5,
-      64.0,
-      67.0,
-      73.8,
-      72.9,
-      68.49,
-      73.11,
-      69.0
+      67.5
     ],
     "high": [
       65.99,
@@ -409,14 +388,7 @@
       72.0,
       72.0,
       70.0,
-      70.0,
-      72.95,
-      70.2,
-      74.0,
-      85.4,
-      70.01,
-      77.0,
-      74.01
+      70.0
     ],
     "low": [
       65.0,
@@ -498,14 +470,7 @@
       68.0,
       68.0,
       66.4,
-      66.4,
-      64.0,
-      67.0,
-      70.14,
-      72.9,
-      68.49,
-      73.11,
-      69.0
+      66.4
     ],
     "volume": [
       9690,
@@ -587,14 +552,7 @@
       0,
       14214,
       21655,
-      0,
-      16480,
-      22730,
-      22530,
-      78820,
-      10850,
-      2220,
-      18650
+      0
     ],
     "vwap": [
       65.33,
@@ -676,25 +634,18 @@
       68.8307,
       69.0247,
       69.1079,
-      69.1809,
-      69.2504,
-      69.2269,
-      69.4715,
-      72.2079,
-      72.4551,
-      72.5043,
-      72.404
+      69.1809
     ],
     "resistance": 85.4,
     "support": 31.03,
     "pivots": {
-      "pp": 76.4667,
-      "r1": 84.4433,
-      "r2": 93.3767,
-      "r3": 101.3533,
-      "s1": 67.5333,
-      "s2": 59.5567,
-      "s3": 50.6233
+      "pp": 69.0,
+      "r1": 71.0,
+      "r2": 74.0,
+      "r3": 76.0,
+      "s1": 66.0,
+      "s2": 64.0,
+      "s3": 61.0
     },
     "patterns": [
       {
@@ -715,19 +666,19 @@
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 8,
-        "end_index": 40,
-        "start_date": "2026-02-02",
-        "end_date": "2026-06-15",
+        "start_index": 1,
+        "end_index": 71,
+        "start_date": "2026-01-06",
+        "end_date": "2026-08-06",
         "levels": {
-          "resistance_start": 82.5521,
-          "resistance_end": 77.7293,
-          "support_start": 61.3423,
-          "support_end": 67.5197,
-          "apex_price": 73.2531
+          "resistance_start": 78.8091,
+          "resistance_end": 75.352,
+          "support_start": 59.991,
+          "support_end": 73.504,
+          "apex_price": 74.9755
         },
         "quality": 0.75,
-        "apex_index": 69.6999883811732
+        "apex_index": 78.62253772416663
       }
     ]
   }

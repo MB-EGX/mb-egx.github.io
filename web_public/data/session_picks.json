@@ -1,5 +1,5 @@
 {
-  "last_data_date": "2026-12-05",
+  "last_data_date": "2026-08-18",
   "session_picks": {
     "short": [
       {
@@ -12,7 +12,8 @@
         "expected_from": "2026-08-19",
         "expected_by": "2026-08-21",
         "expected_pct": 3.0,
-        "benchmark_pct": null
+        "benchmark_pct": 0.0,
+        "alpha_vs_benchmark_pct": 0.0
       },
       {
         "id": 17,
@@ -24,7 +25,8 @@
         "expected_from": "2026-08-18",
         "expected_by": "2026-08-20",
         "expected_pct": 3.0,
-        "benchmark_pct": null
+        "benchmark_pct": -0.25,
+        "alpha_vs_benchmark_pct": 1.71
       },
       {
         "id": 16,
@@ -36,7 +38,8 @@
         "expected_from": "2026-08-17",
         "expected_by": "2026-08-19",
         "expected_pct": 3.0,
-        "benchmark_pct": null
+        "benchmark_pct": -1.035,
+        "alpha_vs_benchmark_pct": -2.72
       },
       {
         "id": 14,
@@ -48,7 +51,8 @@
         "expected_from": "2026-08-14",
         "expected_by": "2026-08-16",
         "expected_pct": 3.0,
-        "benchmark_pct": null
+        "benchmark_pct": null,
+        "alpha_vs_benchmark_pct": null
       },
       {
         "id": 3,
@@ -60,7 +64,8 @@
         "expected_from": "2026-08-14",
         "expected_by": "2026-08-16",
         "expected_pct": 3.0,
-        "benchmark_pct": null
+        "benchmark_pct": null,
+        "alpha_vs_benchmark_pct": null
       },
       {
         "id": 1,
@@ -72,7 +77,8 @@
         "expected_from": "2026-08-14",
         "expected_by": "2026-08-16",
         "expected_pct": 3.0,
-        "benchmark_pct": null
+        "benchmark_pct": null,
+        "alpha_vs_benchmark_pct": null
       }
     ],
     "medium": [
@@ -86,7 +92,8 @@
         "expected_from": "2026-09-01",
         "expected_by": "2026-10-02",
         "expected_pct": 8.0,
-        "benchmark_pct": null
+        "benchmark_pct": 0.0,
+        "alpha_vs_benchmark_pct": 0.0
       },
       {
         "id": 8,
@@ -98,7 +105,8 @@
         "expected_from": "2026-08-27",
         "expected_by": "2026-09-27",
         "expected_pct": 8.0,
-        "benchmark_pct": null
+        "benchmark_pct": null,
+        "alpha_vs_benchmark_pct": null
       },
       {
         "id": 7,
@@ -110,7 +118,8 @@
         "expected_from": "2026-08-27",
         "expected_by": "2026-09-27",
         "expected_pct": 8.0,
-        "benchmark_pct": null
+        "benchmark_pct": null,
+        "alpha_vs_benchmark_pct": null
       },
       {
         "id": 6,
@@ -122,7 +131,8 @@
         "expected_from": "2026-08-27",
         "expected_by": "2026-09-27",
         "expected_pct": 8.0,
-        "benchmark_pct": null
+        "benchmark_pct": null,
+        "alpha_vs_benchmark_pct": null
       }
     ],
     "long": [
@@ -136,7 +146,8 @@
         "expected_from": "2026-10-17",
         "expected_by": "2027-02-14",
         "expected_pct": 15.0,
-        "benchmark_pct": null
+        "benchmark_pct": 0.0,
+        "alpha_vs_benchmark_pct": 0.0
       },
       {
         "id": 11,
@@ -148,7 +159,8 @@
         "expected_from": "2026-10-12",
         "expected_by": "2027-02-09",
         "expected_pct": 15.0,
-        "benchmark_pct": null
+        "benchmark_pct": null,
+        "alpha_vs_benchmark_pct": null
       },
       {
         "id": 10,
@@ -160,11 +172,24 @@
         "expected_from": "2026-10-12",
         "expected_by": "2027-02-09",
         "expected_pct": 15.0,
-        "benchmark_pct": null
+        "benchmark_pct": null,
+        "alpha_vs_benchmark_pct": null
       }
     ],
-    "achieved_today": [],
-    "session_date": "2026-12-05",
+    "achieved_today": [
+      {
+        "id": 9,
+        "ticker": "AMOC.CA",
+        "horizon": "long",
+        "pick_date": "2026-08-13",
+        "ref_price": 10.3,
+        "achieved_date": "2026-08-18",
+        "achieved_price": 11.85,
+        "achieved_pct": 15.05,
+        "source": "signal"
+      }
+    ],
+    "session_date": "2026-08-18",
     "benchmark_label": "EGX 30",
     "achieved_history": [
       {

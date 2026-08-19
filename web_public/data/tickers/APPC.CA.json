@@ -1,6 +1,6 @@
 {
   "ticker": "APPC.CA",
-  "last_data_date": "2026-12-05",
+  "last_data_date": "2026-08-18",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "APPC.CA",
@@ -8,7 +8,7 @@
     "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
       "No confirmed higher-low swing structure yet",
-      "Price Channel (Rising) match (quality 0.85)",
+      "Double Bottom match (quality 1.00)",
       "Avg volume below 100,000 long-term floor"
     ],
     "P/E Ratio": -0.28,
@@ -23,42 +23,42 @@
     "3Y Return %": 38.61,
     "External Rating Consensus": 0.875,
     "External Rating Note": null,
-    "Action": "🚫 ILLIQUID - 📈 ACCUMULATE",
-    "Rank Score": -7.0,
-    "Current Price": 1.28,
-    "Target Entry (VWAP)": 1.28,
-    "Suggested Stop-Loss": 1.0929,
-    "Take-Profit Target": 1.3146,
+    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
+    "Rank Score": 16.4,
+    "Current Price": 1.4,
+    "Target Entry (VWAP)": 1.3972,
+    "Suggested Stop-Loss": 1.1957,
+    "Take-Profit Target": 1.4378,
     "Resistance (52W High)": 1.5,
     "Support (52W Low)": 1.09,
-    "Pivot Point": 1.2433,
-    "R1": 1.3267,
-    "R2": 1.3833,
-    "R3": 1.4667,
-    "S1": 1.1867,
-    "S2": 1.1033,
-    "S3": 1.0467,
-    "Projected Gain (%)": -2.84,
-    "Pattern Conf (%)": 53.1,
-    "Projected Range 95%": "-4.67% to -1.01%",
+    "Pivot Point": 1.4267,
+    "R1": 1.4533,
+    "R2": 1.5067,
+    "R3": 1.5333,
+    "S1": 1.3733,
+    "S2": 1.3467,
+    "S3": 1.2933,
+    "Projected Gain (%)": 0.79,
+    "Pattern Conf (%)": 71.74,
+    "Projected Range 95%": "0.79% to 0.79%",
     "Kelly %": 0.0,
-    "Signal Reason": "🚫 ILLIQUID - 📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation | vol x1.15",
+    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | volatility squeeze",
     "Score Breakdown": {
-      "pattern": 15.93,
-      "projected": -4.26,
-      "range": 2.32,
-      "trend_bonus": -25.0,
-      "confidence_weight": 0.64
+      "pattern": 21.52,
+      "projected": 1.19,
+      "range": 3.78,
+      "trend_bonus": -0.2,
+      "confidence_weight": 0.62
     },
-    "Regime": "Volatile Range",
-    "Trend Class": "Weak Bullish",
-    "RSI-14": 47.0,
-    "ADX-14": 23.5,
-    "Vol Z-Score": 0.13,
+    "Regime": "Trending / Volatile",
+    "Trend Class": "Strong Bullish",
+    "RSI-14": 52.9,
+    "ADX-14": 32.8,
+    "Vol Z-Score": -0.9,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0137,
-    "Bollinger %B": 0.354,
-    "Avg Volume (20D)": 28792,
+    "MACD Histogram": -0.0013,
+    "Bollinger %B": 0.545,
+    "Avg Volume (20D)": 17934,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
@@ -142,14 +142,7 @@
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
-      "2026-08-18 00:00:00",
-      "2026-09-02 00:00:00",
-      "2026-09-03 00:00:00",
-      "2026-10-06 00:00:00",
-      "2026-11-02 00:00:00",
-      "2026-11-03 00:00:00",
-      "2026-11-05 00:00:00",
-      "2026-12-01 00:00:00"
+      "2026-08-18 00:00:00"
     ],
     "close": [
       1.26,
@@ -231,14 +224,7 @@
       1.4,
       1.4,
       1.4,
-      1.4,
-      1.24,
-      1.15,
-      1.31,
-      1.23,
-      1.18,
-      1.27,
-      1.28
+      1.4
     ],
     "open": [
       1.28,
@@ -320,14 +306,7 @@
       1.41,
       1.41,
       1.4,
-      1.4,
-      1.26,
-      1.2,
-      1.34,
-      1.22,
-      1.16,
-      1.26,
-      1.28
+      1.4
     ],
     "high": [
       1.3,
@@ -409,14 +388,7 @@
       1.45,
       1.45,
       1.45,
-      1.45,
-      1.3,
-      1.21,
-      1.36,
-      1.29,
-      1.19,
-      1.3,
-      1.35
+      1.45
     ],
     "low": [
       1.26,
@@ -498,14 +470,7 @@
       1.4,
       1.4,
       1.39,
-      1.39,
-      1.2,
-      1.13,
-      1.31,
-      1.22,
-      1.16,
-      1.25,
-      1.28
+      1.39
     ],
     "volume": [
       5880,
@@ -587,14 +552,7 @@
       0,
       5503,
       40560,
-      0,
-      71820,
-      36520,
-      9930,
-      80140,
-      25340,
-      135750,
-      33160
+      0
     ],
     "vwap": [
       1.2733,
@@ -676,25 +634,18 @@
       1.3907,
       1.3904,
       1.392,
-      1.3972,
-      1.3732,
-      1.3536,
-      1.3528,
-      1.3293,
-      1.3137,
-      1.2998,
-      1.3
+      1.3972
     ],
     "resistance": 1.5,
     "support": 1.09,
     "pivots": {
-      "pp": 1.2433,
-      "r1": 1.3267,
-      "r2": 1.3833,
-      "r3": 1.4667,
-      "s1": 1.1867,
-      "s2": 1.1033,
-      "s3": 1.0467
+      "pp": 1.4267,
+      "r1": 1.4533,
+      "r2": 1.5067,
+      "r3": 1.5333,
+      "s1": 1.3733,
+      "s2": 1.3467,
+      "s3": 1.2933
     },
     "patterns": [
       {
@@ -715,17 +666,32 @@
       {
         "pattern": "Price Channel (Rising)",
         "direction": "bullish",
-        "start_index": 17,
-        "end_index": 34,
-        "start_date": "2026-03-09",
-        "end_date": "2026-05-18",
+        "start_index": 16,
+        "end_index": 69,
+        "start_date": "2026-03-06",
+        "end_date": "2026-08-04",
         "levels": {
-          "resistance_start": 1.2508,
-          "resistance_end": 1.35,
-          "support_start": 1.15,
-          "support_end": 1.2415
+          "resistance_start": 1.3129,
+          "resistance_end": 1.3823,
+          "support_start": 1.1732,
+          "support_end": 1.2281
         },
         "quality": 0.85
+      },
+      {
+        "pattern": "Double Bottom",
+        "direction": "bullish",
+        "start_index": 30,
+        "end_index": 69,
+        "start_date": "2026-04-29",
+        "end_date": "2026-08-04",
+        "levels": {
+          "first_bottom": 1.22,
+          "second_bottom": 1.22,
+          "neckline": 1.35,
+          "target": 1.48
+        },
+        "quality": 1.0
       }
     ]
   }
