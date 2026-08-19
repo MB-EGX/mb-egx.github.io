@@ -74,6 +74,170 @@ FIELD_EXCLUDE_WORDS = {
 TICKER_EXACT_HEADERS = {'ticker', 'symbol', 'stock symbol', 'sym', 'stock_symbol'}
 TICKER_FALLBACK_WORDS = ['symbol', 'sym']
 
+# =============================================================================
+# Watchlist enrichment columns (fundamentals, technical-rating consensus,
+# and period returns) - a broker/data-provider "watchlist export" like
+# Investing.com's often carries 25-30 columns beyond plain OHLCV: P/E,
+# EPS, Beta, Dividend, Yield, Market Cap, Revenue, an 8-timeframe
+# Buy/Sell/Strong Buy technical-rating consensus, and Daily/1W/1M/YTD/1Y/3Y
+# % return columns. None of these feed the required date/ticker/close
+# schema above, so resolve_column_map() never looks for them and they were
+# previously read into df_raw and then silently dropped - parse_excel_worker
+# only ever builds the OHLCV data_records list.
+#
+# This is matched by EXACT (lowercased) header text against the RAW
+# (pre-dedup) column strings, not by the same word-token approach as
+# FIELD_WORDS above, for one specific reason: a real watchlist export can
+# legitimately use the same column name "Daily" once for a technical
+# RATING (Buy/Sell/...) and again for a Daily % CHANGE - two different
+# fields, same text. pandas.read_csv already disambiguates this for us on
+# read (auto-renaming the second occurrence "Daily" -> "Daily.1"), so
+# matching the exact mangled string is the only reliable way to route each
+# occurrence to the right field - a token/word match would just find
+# whichever "daily" column appears first in the header row and stop there,
+# silently losing the second one.
+ENRICHMENT_FIELD_EXACT = {
+    # Fundamentals
+    'market cap': 'market_cap',
+    'revenue': 'revenue',
+    'average vol. (3m)': 'avg_vol_3m',
+    'eps': 'eps',
+    'p/e ratio': 'pe_ratio',
+    'beta': 'beta',
+    'dividend': 'dividend',
+    'yield': 'yield_pct',
+    # Multi-timeframe technical-rating consensus (text: Strong Buy / Buy /
+    # Neutral / Sell / Strong Sell)
+    '5 minutes': 'rating_5min',
+    '15 minutes': 'rating_15min',
+    '30 minutes': 'rating_30min',
+    'hourly': 'rating_hourly',
+    '5 hours': 'rating_5hour',
+    'daily': 'rating_daily',       # first "Daily" occurrence = rating
+    'weekly': 'rating_weekly',
+    'monthly': 'rating_monthly',
+    # Period % returns (numeric provider-computed, spans far deeper history
+    # than this app's own ingested bars while that history is still short)
+    'daily.1': 'return_daily_pct',  # second "Daily" occurrence (pandas-mangled) = % return
+    '1 week': 'return_1w_pct',
+    '1 month': 'return_1m_pct',
+    'ytd': 'return_ytd_pct',
+    '1 year': 'return_1y_pct',
+    '3 years': 'return_3y_pct',
+}
+
+# Text rating -> numeric scale, for a single averaged "consensus score"
+# (-2..+2) across whichever of the 8 rating columns are present/non-empty,
+# so decision_matrix.py can use one number instead of 8 separate strings.
+RATING_TEXT_TO_SCORE = {
+    'strong sell': -2, 'sell': -1, 'neutral': 0, 'buy': 1, 'strong buy': 2,
+}
+RATING_FIELDS = (
+    'rating_5min', 'rating_15min', 'rating_30min', 'rating_hourly',
+    'rating_5hour', 'rating_daily', 'rating_weekly', 'rating_monthly',
+)
+RETURN_FIELDS = (
+    'return_daily_pct', 'return_1w_pct', 'return_1m_pct',
+    'return_ytd_pct', 'return_1y_pct', 'return_3y_pct',
+)
+FUNDAMENTAL_FIELDS = (
+    'market_cap', 'revenue', 'avg_vol_3m', 'eps', 'pe_ratio', 'beta',
+    'dividend', 'yield_pct',
+)
+
+
+def resolve_enrichment_column_map(raw_columns):
+    """Maps this watchlist CSV's enrichment columns (see
+    ENRICHMENT_FIELD_EXACT) by exact lowercased text against the RAW
+    (pandas-already-deduped) column names - e.g. pandas.read_csv turns a
+    header row containing "Daily" twice into columns named "Daily" and
+    "Daily.1" automatically; this relies on that exact behavior. Returns
+    {field_name: column_index}; a watchlist with none of these columns
+    (a plain OHLCV-only feed) returns {} and the caller skips enrichment
+    entirely for that file - this never affects the required OHLCV
+    ingestion path."""
+    col_map = {}
+    for idx, raw_col in enumerate(raw_columns):
+        key = str(raw_col).strip().lower()
+        field = ENRICHMENT_FIELD_EXACT.get(key)
+        if field and field not in col_map:
+            col_map[field] = idx
+    return col_map
+
+
+def _clean_percent(val):
+    """Like _clean_price but for provider "% change"-style cells
+    ('43.70%', '-1.39%', '-', '--') - keeps the sign (unlike _clean_price,
+    which discards non-positive values; a negative return is a normal,
+    meaningful value here, not a bad parse)."""
+    if pd.isna(val):
+        return None
+    if isinstance(val, str):
+        v = val.replace(',', '').replace('%', '').strip()
+        if v in ('', '--', '-', 'nan', 'None', 'N/A'):
+            return None
+        val = v
+    try:
+        return float(val)
+    except (ValueError, TypeError):
+        return None
+
+
+def _clean_number(val):
+    """Like _clean_percent but for plain numeric fundamentals (EPS, P/E,
+    Beta, Market Cap, ...) that can also legitimately be negative (a
+    loss-making company's EPS/P-E) - same '-'/'--' blank handling."""
+    return _clean_percent(val)
+
+
+def _clean_rating_text(val):
+    """Normalizes a technical-rating cell ('Strong Buy', 'Sell', ...) to
+    lowercase for RATING_TEXT_TO_SCORE lookup; returns None for blanks so
+    a missing timeframe's rating doesn't get invented as 'Neutral'."""
+    if pd.isna(val):
+        return None
+    s = str(val).strip().lower()
+    return s if s in RATING_TEXT_TO_SCORE else None
+
+
+def _extract_enrichment_row(row, enrichment_map, date_str, ticker_val):
+    """Builds one ticker_enrichment record from a watchlist row, or None
+    if none of the mapped enrichment columns actually had a usable value
+    (an index row like .EGX30 has no P/E/EPS/ratings at all - skip it
+    rather than inserting an all-NULL row)."""
+    rec = {'date': date_str, 'ticker': ticker_val}
+    any_value = False
+
+    for field in FUNDAMENTAL_FIELDS:
+        if field in enrichment_map:
+            v = _clean_number(row[enrichment_map[field]])
+            rec[field] = v
+            any_value = any_value or v is not None
+        else:
+            rec[field] = None
+
+    for field in RETURN_FIELDS:
+        if field in enrichment_map:
+            v = _clean_percent(row[enrichment_map[field]])
+            rec[field] = v
+            any_value = any_value or v is not None
+        else:
+            rec[field] = None
+
+    scores = []
+    for field in RATING_FIELDS:
+        if field in enrichment_map:
+            text = _clean_rating_text(row[enrichment_map[field]])
+            rec[field] = text
+            if text is not None:
+                any_value = True
+                scores.append(RATING_TEXT_TO_SCORE[text])
+        else:
+            rec[field] = None
+    rec['rating_consensus_score'] = round(sum(scores) / len(scores), 3) if scores else None
+
+    return rec if any_value else None
+
 
 def _tokenize(header):
     return set(re.findall(r'[a-z0-9]+', header))
@@ -221,6 +385,7 @@ def _parse_excel_date(val):
 def parse_excel_worker(file_info):
     file_path, last_mod, file_hash, override_map = file_info
     path_obj = Path(file_path)
+    enrichment_records = []
 
     try:
         if path_obj.suffix.lower() == '.csv':
@@ -230,6 +395,11 @@ def parse_excel_worker(file_info):
             required_keys = ['date', 'ticker', 'close']
             if not all(k in col_map for k in required_keys):
                 return ("ERROR", file_path, f"Missing required CSV schema (need date/ticker/close). Found headers: {headers}")
+            # Independent of col_map above - matched against df_raw's own
+            # (pandas-deduped) column names, not the lowercased/collapsed
+            # `headers` list, so the "Daily" vs "Daily.1" split survives.
+            # See resolve_enrichment_column_map's docstring.
+            enrichment_map = resolve_enrichment_column_map(list(df_raw.columns))
             rows_data = df_raw.values.tolist()
         else:
             workbook = CalamineWorkbook.from_path(file_path)
@@ -254,6 +424,11 @@ def parse_excel_worker(file_info):
             if not rows:
                 return ("ERROR", file_path, "No workbook tab matching required schema (date/ticker/close) found.")
             rows_data = rows[1:]
+            # Enrichment extraction is CSV-only for now (see module
+            # docstring above) - an .xlsx/.xls watchlist export skips it,
+            # same as before this feature existed. Its OHLCV ingestion is
+            # completely unaffected either way.
+            enrichment_map = {}
 
         data_records = []
         skipped_rows = 0
@@ -291,6 +466,11 @@ def parse_excel_worker(file_info):
                     'close': close_val,
                     'volume': volume_val
                 })
+
+                if enrichment_map:
+                    enr = _extract_enrichment_row(row, enrichment_map, date_str, ticker_val)
+                    if enr is not None:
+                        enrichment_records.append(enr)
             except (ValueError, TypeError, IndexError):
                 skipped_rows += 1
                 continue
@@ -299,7 +479,8 @@ def parse_excel_worker(file_info):
             return ("ERROR", file_path, f"No valid data rows could be parsed ({skipped_rows} row(s) skipped).")
 
         df = pd.DataFrame(data_records)
-        return ("SUCCESS", file_path, last_mod, file_hash, df, col_map)
+        enrichment_df = pd.DataFrame(enrichment_records) if enrichment_records else None
+        return ("SUCCESS", file_path, last_mod, file_hash, df, col_map, enrichment_df)
 
     except Exception as e:
         return ("ERROR", file_path, f"Fatal parse failure: {str(e)}")
@@ -346,6 +527,7 @@ class IngestionPipeline:
         batch_data = []
         batch_tracker = []
         batch_errors = []
+        batch_enrichment = []
 
         def _handle_result(res):
             nonlocal processed_count
@@ -358,10 +540,12 @@ class IngestionPipeline:
                 ))
 
             if res[0] == "SUCCESS":
-                _, f_path, l_mod, f_hash, df, used_col_map = res
+                _, f_path, l_mod, f_hash, df, used_col_map, enrichment_df = res
                 df['_file_mod_time'] = l_mod
                 batch_data.append(df)
                 batch_tracker.append((f_path, l_mod, f_hash))
+                if enrichment_df is not None and not enrichment_df.empty:
+                    batch_enrichment.append(enrichment_df)
                 try:
                     self.dbm.save_ingest_override(f_path, used_col_map)
                 except Exception:
@@ -378,10 +562,11 @@ class IngestionPipeline:
                 chunk = files_to_process[i:i + CHUNK_SIZE]
                 for meta in chunk:
                     _handle_result(parse_excel_worker(meta))
-                self._flush_to_db(batch_data, batch_tracker, batch_errors)
+                self._flush_to_db(batch_data, batch_tracker, batch_errors, batch_enrichment)
                 batch_data.clear()
                 batch_tracker.clear()
                 batch_errors.clear()
+                batch_enrichment.clear()
         else:
             # W7: BrokenProcessPool (the OpenBLAS/memory issue config.py's
             # own module docstring warns about on Windows) used to
@@ -419,10 +604,11 @@ class IngestionPipeline:
                     for meta in chunk:
                         _handle_result(parse_excel_worker(meta))
 
-                self._flush_to_db(batch_data, batch_tracker, batch_errors)
+                self._flush_to_db(batch_data, batch_tracker, batch_errors, batch_enrichment)
                 batch_data.clear()
                 batch_tracker.clear()
                 batch_errors.clear()
+                batch_enrichment.clear()
                 i += CHUNK_SIZE
 
         if progress_callback:
@@ -435,7 +621,7 @@ class IngestionPipeline:
                 f"اكتمل الاستيعاب. تمت معالجة {processed_count} ملف."
             ))
 
-    def _flush_to_db(self, data_dfs, tracker_records, error_records):
+    def _flush_to_db(self, data_dfs, tracker_records, error_records, enrichment_dfs=None):
         with self.dbm.get_connection() as conn:
             if data_dfs:
                 combined_df = pd.concat(data_dfs, ignore_index=True)
@@ -469,6 +655,30 @@ class IngestionPipeline:
                     ) WHERE rn = 1;
                 """)
                 conn.unregister("temp_df")
+
+            if enrichment_dfs:
+                # Fundamentals / technical-rating consensus / period returns
+                # from watchlist CSVs that carry them (see ENRICHMENT_FIELD_
+                # EXACT above) - a plain OHLCV-only feed contributes nothing
+                # here and this block is simply skipped for it, same as
+                # market_data ingestion is unaffected by files that DO carry
+                # enrichment columns. Same last-write-wins dedup shape as
+                # market_data above, keyed on (ticker, date) instead of
+                # needing _file_mod_time since a single watchlist file only
+                # ever contributes one row per ticker for a given date.
+                enrichment_combined = pd.concat(enrichment_dfs, ignore_index=True)
+                enrichment_combined = enrichment_combined.drop_duplicates(subset=['ticker', 'date'], keep='last')
+                conn.register("temp_enrichment_df", enrichment_combined)
+                conn.execute("""
+                    INSERT OR REPLACE INTO ticker_enrichment
+                    SELECT date, ticker, market_cap, revenue, avg_vol_3m, eps, pe_ratio, beta,
+                           dividend, yield_pct, return_daily_pct, return_1w_pct, return_1m_pct,
+                           return_ytd_pct, return_1y_pct, return_3y_pct, rating_5min, rating_15min,
+                           rating_30min, rating_hourly, rating_5hour, rating_daily, rating_weekly,
+                           rating_monthly, rating_consensus_score
+                    FROM temp_enrichment_df;
+                """)
+                conn.unregister("temp_enrichment_df")
 
             if tracker_records:
                 conn.executemany("""
