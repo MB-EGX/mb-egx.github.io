@@ -5,6 +5,7 @@ import os
 # set before numpy/pandas load anywhere in this process. See config.py's
 # module docstring.
 from config import WATCH_DIR, MAX_WORKERS, CHUNK_SIZE, get_logger
+from freshness import today_cairo
 
 import re
 import glob
@@ -369,17 +370,76 @@ def _sanitize_text_field(val: str, max_len: int = 200) -> str:
     return s[:max_len]
 
 
+# How far past "today" (Cairo) a parsed date is still allowed to be
+# before it's treated as corrupt input and rejected. Small and positive
+# (not 0) purely to absorb the gap between "today" as measured on
+# whatever machine/CI runner does the parsing and "today" in Cairo -
+# never intended to let a genuinely-future date (a bad MM/DD<->DD/MM
+# read, a fabricated/synthetic row, a typo'd year) through silently.
+_MAX_FUTURE_DATE_SLACK_DAYS = 2
+
+
 def _parse_excel_date(val):
+    """Parses one raw date cell from an ingested CSV/XLSX row.
+
+    ROOT-CAUSE FIX (recurring future-date corruption incident): every
+    feed this app ingests - the daily investing.com-style watchlist
+    export AND the historical backfill CSVs (see config.py's own
+    "investing.com-style watchlist exports" note and normalize_
+    historical_csvs.py's docstring) - is US-ordered, MM/DD/YYYY. This
+    function used to call pd.to_datetime(val, dayfirst=True), which is
+    backwards for that format: any cell where both components are <=12
+    (e.g. "5/12/2026", meant as 12 May 2026) got silently misread as
+    the other date (5 Dec 2026). normalize_historical_csvs.py and
+    data_repair_tools.py were both built to CLEAN UP data already
+    corrupted this way, but neither one patched THIS function - the one
+    every daily/backfill row actually flows through - so every new
+    batch kept re-corrupting the database the same way. dayfirst is now
+    explicitly False, matching the feed's real, confirmed format, with
+    no ambiguity left for this app to get backwards again.
+
+    SECOND, INDEPENDENT SAFETY NET: even with the correct date order, a
+    single bad cell (fat-fingered year, a stray future-dated row in a
+    hand-edited CSV, or a still-unknown parsing edge case) could
+    previously slide straight into the database as long as it happened
+    to be *some* valid calendar date - nothing ever checked whether that
+    date made sense. It didn't: this is exactly how 262 tickers' worth
+    of fabricated Aug-Dec 2026 bars made it into market_data.json.  Any
+    date more than _MAX_FUTURE_DATE_SLACK_DAYS past today (Cairo) is now
+    rejected outright (logged, row skipped by the caller) instead of
+    silently accepted - a market can't print a bar for a session that
+    hasn't happened yet, so a "future" date is never valid data, only
+    ever a parsing bug or bad input, either way it must not sail through
+    silently.
+    """
     if pd.isna(val):
         return None
     try:
         if isinstance(val, (int, float)) or (isinstance(val, str) and val.replace('.', '', 1).isdigit()):
             num = float(val)
             if 30000 < num < 70000:
-                return pd.to_datetime(num, unit='D', origin='1899-12-30').strftime('%Y-%m-%d')
-        return pd.to_datetime(val, dayfirst=True).strftime('%Y-%m-%d')
+                parsed = pd.to_datetime(num, unit='D', origin='1899-12-30')
+            else:
+                return None
+        else:
+            # dayfirst=False: this app's feeds are confirmed US-ordered
+            # (MM/DD/YYYY), not DD/MM/YYYY. See docstring above - this
+            # was the actual root cause of the recurring corruption.
+            parsed = pd.to_datetime(val, dayfirst=False)
     except Exception:
         return None
+
+    today_limit = pd.Timestamp(today_cairo()) + pd.Timedelta(days=_MAX_FUTURE_DATE_SLACK_DAYS)
+    if parsed > today_limit:
+        logger.warning(
+            f"Rejected impossible future-dated row: raw value {val!r} parsed to "
+            f"{parsed.strftime('%Y-%m-%d')}, which is beyond today (Cairo) + "
+            f"{_MAX_FUTURE_DATE_SLACK_DAYS} day(s) slack. This is either a bad "
+            f"source cell or a date-order misparse - row skipped, not ingested."
+        )
+        return None
+
+    return parsed.strftime('%Y-%m-%d')
 
 
 def parse_excel_worker(file_info):
