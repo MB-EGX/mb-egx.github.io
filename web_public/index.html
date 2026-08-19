@@ -233,6 +233,31 @@
            click away, never removed. */
         #tbl-exits.exits-compact .excol-sec { display: none; }
     </style>
+    <style>
+        /* Pre-Breakout Watchlist "Signals" column - cap width so 9-phrase rows no longer push the whole 19-column table sideways into horizontal scroll. Chips wrap inside the cap; full phrase text remains available via the title=... tooltip on each chip (set by trSignals() above). */
+        #tbody-breakout td.signals-col {
+            max-width: 320px;
+            min-width: 220px;
+            vertical-align: top;
+        }
+        .sig-chip {
+            display: inline-block;
+            background: rgba(59, 130, 246, 0.15);
+            color: #93c5fd;
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            border-radius: 9999px;
+            padding: 1px 8px;
+            margin: 1px 3px 1px 0;
+            font-size: 10px;
+            line-height: 1.5;
+            white-space: nowrap;
+            cursor: help;
+            max-width: 220px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sig-chip:hover { background: rgba(59, 130, 246, 0.30); color: #bfdbfe; }
+    </style>
 </head>
 <body class="bg-darkbg text-textmain font-sans min-h-screen text-xs md:text-sm transition-colors duration-200 pb-16 overflow-x-hidden">
 
@@ -2121,8 +2146,18 @@
         // individually, then rejoin with an Arabic-appropriate separator.
         function trSignals(raw) {
             if (!raw) return '';
-            if (currentLang !== 'AR') return escapeHtml(raw);
-            return escapeHtml(raw.split(", ").map(part => SIGNAL_PHRASE_AR[part] || part).join("، "));
+            // Chip-renderer: split the desktop's comma-joined Pre-Breakout
+            // reasons into one rounded pill per phrase. Full phrase text is
+            // preserved on each pill's title=... tooltip. Column width is
+            // capped via .signals-col / .sig-chip CSS so a 9-phrase row no
+            // longer pushes the entire 19-column table sideways.
+            const sep = currentLang === 'AR' ? '، ' : ', ';
+            const parts = raw.split(sep).map(s => s.trim()).filter(Boolean);
+            if (!parts.length) return '';
+            return parts.map(p => {
+                const label = (currentLang === 'AR' && SIGNAL_PHRASE_AR && SIGNAL_PHRASE_AR[p]) ? SIGNAL_PHRASE_AR[p] : p;
+                return `<span class="sig-chip" title="${escapeHtml(label)}">${escapeHtml(label)}</span>`;
+            }).join('');
         }
         function syncPreferenceHash() {
             const params = new URLSearchParams(window.location.hash.replace(/^#/, ''));
@@ -4107,7 +4142,7 @@
                     <td class="p-2.5 text-center">${rejectedLabel}</td>
                     <td class="p-2.5 font-sans text-textmuted">${trTrend(row["Trend Class"]) || '-'}</td>
                     <td class="p-2.5 font-sans text-textmuted">${escapeHtml(row["Data Confidence"]) || '-'}</td>
-                    <td class="p-2.5 font-sans text-textmuted whitespace-normal">${trSignals(row.Signals) || '-'}</td>
+                    <td class="p-2.5 font-sans text-textmuted signals-col">${trSignals(row.Signals) || '-'}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -5878,6 +5913,7 @@
             });
         }
     </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 </body>
 </html>
