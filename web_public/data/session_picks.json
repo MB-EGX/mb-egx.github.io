@@ -1,5 +1,5 @@
 {
-  "last_data_date": "2026-12-05",
+  "last_data_date": "2026-08-18",
   "session_picks": {
     "short": [
       {
@@ -12,8 +12,8 @@
         "expected_from": "2026-12-06",
         "expected_by": "2026-12-08",
         "expected_pct": 3.0,
-        "benchmark_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
+        "benchmark_pct": null,
+        "alpha_vs_benchmark_pct": null
       },
       {
         "id": 17,
@@ -25,8 +25,8 @@
         "expected_from": "2026-08-18",
         "expected_by": "2026-08-20",
         "expected_pct": 3.0,
-        "benchmark_pct": -2.448,
-        "alpha_vs_benchmark_pct": -67.7
+        "benchmark_pct": -0.25,
+        "alpha_vs_benchmark_pct": 1.71
       },
       {
         "id": 16,
@@ -38,8 +38,8 @@
         "expected_from": "2026-08-17",
         "expected_by": "2026-08-19",
         "expected_pct": 3.0,
-        "benchmark_pct": -3.215,
-        "alpha_vs_benchmark_pct": -21.36
+        "benchmark_pct": -1.035,
+        "alpha_vs_benchmark_pct": -2.72
       },
       {
         "id": 3,
@@ -70,14 +70,14 @@
     ],
     "medium": [
       {
-        "id": 20,
-        "ticker": "TWSA.CA",
+        "id": 21,
+        "ticker": "MHOT.CA",
         "horizon": "medium",
-        "pick_date": "2026-12-05",
-        "ref_price": 4.93,
+        "pick_date": "2026-08-18",
+        "ref_price": 18.66,
         "source": "signal",
-        "expected_from": "2026-12-19",
-        "expected_by": "2027-01-19",
+        "expected_from": "2026-09-01",
+        "expected_by": "2026-10-02",
         "expected_pct": 8.0,
         "benchmark_pct": 0.0,
         "alpha_vs_benchmark_pct": 0.0
@@ -120,8 +120,8 @@
         "expected_from": "2026-10-17",
         "expected_by": "2027-02-14",
         "expected_pct": 15.0,
-        "benchmark_pct": -2.204,
-        "alpha_vs_benchmark_pct": -25.31
+        "benchmark_pct": 0.0,
+        "alpha_vs_benchmark_pct": 0.0
       },
       {
         "id": 11,
@@ -152,29 +152,29 @@
     ],
     "achieved_today": [
       {
-        "id": 14,
-        "ticker": "ABUK.CA",
-        "horizon": "short",
-        "pick_date": "2026-08-13",
-        "ref_price": 77.9,
-        "achieved_date": "2026-12-05",
-        "achieved_price": 87.19,
-        "achieved_pct": 11.93,
+        "id": 20,
+        "ticker": "TWSA.CA",
+        "horizon": "medium",
+        "pick_date": "2026-12-05",
+        "ref_price": 4.93,
+        "achieved_date": "2026-08-18",
+        "achieved_price": 6.36,
+        "achieved_pct": 29.01,
         "source": "signal"
       },
       {
-        "id": 6,
-        "ticker": "EAST.CA",
-        "horizon": "medium",
+        "id": 9,
+        "ticker": "AMOC.CA",
+        "horizon": "long",
         "pick_date": "2026-08-13",
-        "ref_price": 36.26,
-        "achieved_date": "2026-12-05",
-        "achieved_price": 40.5,
-        "achieved_pct": 11.69,
+        "ref_price": 10.3,
+        "achieved_date": "2026-08-18",
+        "achieved_price": 11.85,
+        "achieved_pct": 15.05,
         "source": "signal"
       }
     ],
-    "session_date": "2026-12-05",
+    "session_date": "2026-08-18",
     "benchmark_label": "EGX 30",
     "achieved_history": [
       {
@@ -197,6 +197,17 @@
         "achieved_date": "2026-12-05",
         "achieved_price": 40.5,
         "achieved_pct": 11.69,
+        "source": "signal"
+      },
+      {
+        "id": 20,
+        "ticker": "TWSA.CA",
+        "horizon": "medium",
+        "pick_date": "2026-12-05",
+        "ref_price": 4.93,
+        "achieved_date": "2026-08-18",
+        "achieved_price": 6.36,
+        "achieved_pct": 29.01,
         "source": "signal"
       },
       {
