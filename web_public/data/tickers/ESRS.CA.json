@@ -1,6 +1,6 @@
 {
   "ticker": "ESRS.CA",
-  "last_data_date": "2026-08-18",
+  "last_data_date": "2026-08-19",
   "sector": "Basic Resources",
   "matrix": {
     "Ticker": "ESRS.CA",
@@ -17,17 +17,17 @@
     "Dividend Yield %": null,
     "Market Cap": 75010000000.0,
     "1W Return %": 0.0,
-    "1M Return %": -0.04,
+    "1M Return %": 0.0,
     "YTD Return %": 0.0,
     "1Y Return %": 2.06,
-    "3Y Return %": 200.64,
-    "External Rating Consensus": 1.0,
+    "3Y Return %": 201.73,
+    "External Rating Consensus": 0.875,
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release)",
-    "Rank Score": -11.5,
+    "Rank Score": -3.2,
     "Current Price": 141.0,
-    "Target Entry (VWAP)": 140.5137,
-    "Suggested Stop-Loss": 117.0343,
+    "Target Entry (VWAP)": 140.5006,
+    "Suggested Stop-Loss": 117.1043,
     "Take-Profit Target": 144.807,
     "Resistance (52W High)": 148.99,
     "Support (52W Low)": 61.0,
@@ -38,14 +38,14 @@
     "S1": 140.8333,
     "S2": 140.6667,
     "S3": 140.3333,
-    "Projected Gain (%)": -4.52,
-    "Pattern Conf (%)": 48.8,
-    "Projected Range 95%": "-9.81% to -0.3%",
+    "Projected Gain (%)": -1.5,
+    "Pattern Conf (%)": 76.52,
+    "Projected Range 95%": "-2.84% to -0.15%",
     "Kelly %": 0.0,
     "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) | trend=Strong Bullish | awaiting confirmation",
     "Score Breakdown": {
-      "pattern": 14.64,
-      "projected": -6.78,
+      "pattern": 22.96,
+      "projected": -2.25,
       "range": 4.55,
       "trend_bonus": -30.2,
       "confidence_weight": 0.65
@@ -53,12 +53,12 @@
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
     "RSI-14": 52.5,
-    "ADX-14": 67.7,
-    "Vol Z-Score": -1.09,
+    "ADX-14": 68.8,
+    "Vol Z-Score": -0.73,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.8008,
+    "MACD Histogram": 0.7605,
     "Bollinger %B": 0.555,
-    "Avg Volume (20D)": 2354,
+    "Avg Volume (20D)": 2331,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
@@ -154,7 +154,8 @@
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
-      "2026-08-18 00:00:00"
+      "2026-08-18 00:00:00",
+      "2026-08-19 00:00:00"
     ],
     "close": [
       141.0,
@@ -248,6 +249,7 @@
       141.0,
       141.0,
       141.0,
+      141.0,
       141.0
     ],
     "open": [
@@ -333,6 +335,7 @@
       141.0,
       142.0,
       144.0,
+      141.0,
       141.0,
       141.0,
       141.0,
@@ -436,7 +439,8 @@
       141.0,
       141.0,
       141.89,
-      141.89
+      141.89,
+      141.0
     ],
     "low": [
       141.0,
@@ -523,6 +527,7 @@
       141.0,
       141.0,
       61.0,
+      141.0,
       141.0,
       141.0,
       141.0,
@@ -624,7 +629,8 @@
       0,
       1751,
       5422,
-      0
+      0,
+      740
     ],
     "vwap": [
       142.0,
@@ -718,7 +724,8 @@
       140.4476,
       140.4536,
       140.5337,
-      140.5137
+      140.5137,
+      140.5006
     ],
     "resistance": 148.99,
     "support": 61.0,

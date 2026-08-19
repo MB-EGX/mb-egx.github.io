@@ -1,6 +1,6 @@
 {
   "ticker": "ADRI.CA",
-  "last_data_date": "2026-08-18",
+  "last_data_date": "2026-08-19",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "ADRI.CA",
@@ -14,20 +14,20 @@
     "EPS": null,
     "Beta": null,
     "Dividend Yield %": null,
-    "Market Cap": 710430000.0,
-    "1W Return %": 2.64,
-    "1M Return %": 24.2,
-    "YTD Return %": 131.88,
-    "1Y Return %": 253.5,
-    "3Y Return %": 1381.52,
-    "External Rating Consensus": 0.375,
+    "Market Cap": 729410000.0,
+    "1W Return %": 1.47,
+    "1M Return %": 27.99,
+    "YTD Return %": 138.07,
+    "1Y Return %": 247.16,
+    "3Y Return %": 1404.76,
+    "External Rating Consensus": 2.0,
     "External Rating Note": null,
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 34.8,
-    "Current Price": 10.11,
-    "Target Entry (VWAP)": 9.1719,
-    "Suggested Stop-Loss": 7.6843,
-    "Take-Profit Target": 10.383,
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 44.4,
+    "Current Price": 10.38,
+    "Target Entry (VWAP)": 9.233,
+    "Suggested Stop-Loss": 8.4114,
+    "Take-Profit Target": 10.6603,
     "Resistance (52W High)": 11.71,
     "Support (52W Low)": 4.0,
     "Pivot Point": 10.1033,
@@ -37,27 +37,27 @@
     "S1": 9.2267,
     "S2": 7.8633,
     "S3": 6.9867,
-    "Projected Gain (%)": -1.25,
-    "Pattern Conf (%)": 38.78,
-    "Projected Range 95%": "-10.68% to 6.94%",
+    "Projected Gain (%)": -2.92,
+    "Pattern Conf (%)": 36.96,
+    "Projected Range 95%": "-11.54% to 6.47%",
     "Kelly %": 0.0,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | confirmed | weekly aligned | positive money flow | vol x2.16",
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
-      "pattern": 11.63,
-      "projected": -1.88,
-      "range": 3.96,
-      "trend_bonus": 30.0,
+      "pattern": 11.09,
+      "projected": -4.38,
+      "range": 4.14,
+      "trend_bonus": 44.8,
       "confidence_weight": 0.8
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 61.8,
-    "ADX-14": 26.2,
-    "Vol Z-Score": 1.41,
+    "RSI-14": 63.2,
+    "ADX-14": 26.3,
+    "Vol Z-Score": -0.55,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.3406,
-    "Bollinger %B": 0.759,
-    "Avg Volume (20D)": 1557813,
+    "MACD Histogram": 0.2972,
+    "Bollinger %B": 0.769,
+    "Avg Volume (20D)": 1557783,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -219,7 +219,8 @@
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
-      "2026-08-18 00:00:00"
+      "2026-08-18 00:00:00",
+      "2026-08-19 00:00:00"
     ],
     "close": [
       4.62,
@@ -379,7 +380,8 @@
       10.04,
       10.59,
       10.44,
-      10.11
+      10.11,
+      10.38
     ],
     "open": [
       4.7,
@@ -539,7 +541,8 @@
       10.23,
       9.9,
       10.58,
-      10.44
+      10.44,
+      10.12
     ],
     "high": [
       4.82,
@@ -699,7 +702,8 @@
       10.22,
       10.98,
       10.65,
-      10.83
+      10.83,
+      10.38
     ],
     "low": [
       4.48,
@@ -859,7 +863,8 @@
       9.31,
       9.82,
       10.14,
-      9.85
+      9.85,
+      9.9
     ],
     "volume": [
       278160,
@@ -1019,7 +1024,8 @@
       679949,
       2735358,
       3177530,
-      3366096
+      3366096,
+      856424
     ],
     "vwap": [
       4.64,
@@ -1179,7 +1185,8 @@
       8.4967,
       8.7539,
       8.9821,
-      9.1719
+      9.1719,
+      9.233
     ],
     "resistance": 11.71,
     "support": 4.0,
@@ -1240,6 +1247,23 @@
         },
         "quality": 0.75,
         "apex_index": 144.75897914516187
+      },
+      {
+        "pattern": "Cup & Handle",
+        "direction": "bullish",
+        "start_index": 78,
+        "end_index": 158,
+        "start_date": "2026-04-23",
+        "end_date": "2026-08-19",
+        "levels": {
+          "left_rim": 10.65,
+          "right_rim": 10.59,
+          "cup_bottom": 4.29,
+          "handle_low": 10.11,
+          "breakout_level": 10.65,
+          "target": 16.98
+        },
+        "quality": 0.81
       }
     ]
   }

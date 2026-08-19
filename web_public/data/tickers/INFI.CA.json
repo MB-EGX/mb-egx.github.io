@@ -1,33 +1,33 @@
 {
   "ticker": "INFI.CA",
-  "last_data_date": "2026-08-18",
+  "last_data_date": "2026-08-19",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "INFI.CA",
     "Sector": "Food, Beverages & Tobacco",
-    "Long-Term Setup Confirmed": true,
+    "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
-      "Higher-low swing structure confirmed",
+      "No confirmed higher-low swing structure yet",
       "Ascending Triangle match (quality 0.95)"
     ],
-    "P/E Ratio": 81.5,
+    "P/E Ratio": 77.21,
     "EPS": 1.914,
     "Beta": 0.18,
     "Dividend Yield %": null,
-    "Market Cap": 3190000000.0,
-    "1W Return %": -6.84,
-    "1M Return %": 51.85,
-    "YTD Return %": 72.53,
-    "1Y Return %": 157.48,
-    "3Y Return %": 437.9,
-    "External Rating Consensus": 0.375,
+    "Market Cap": 3010000000.0,
+    "1W Return %": -8.04,
+    "1M Return %": 41.97,
+    "YTD Return %": 62.91,
+    "1Y Return %": 144.09,
+    "3Y Return %": 400.9,
+    "External Rating Consensus": -0.5,
     "External Rating Note": null,
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 43.0,
-    "Current Price": 156.51,
-    "Target Entry (VWAP)": 155.5436,
-    "Suggested Stop-Loss": 117.89,
-    "Take-Profit Target": 160.7358,
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 32.8,
+    "Current Price": 147.78,
+    "Target Entry (VWAP)": 147.78,
+    "Suggested Stop-Loss": 109.16,
+    "Take-Profit Target": 151.7701,
     "Resistance (52W High)": 192.0,
     "Support (52W Low)": 81.61,
     "Pivot Point": 164.0167,
@@ -37,27 +37,27 @@
     "S1": 136.0333,
     "S2": 121.2667,
     "S3": 93.2833,
-    "Projected Gain (%)": 0.56,
-    "Pattern Conf (%)": 66.73,
-    "Projected Range 95%": "-2.71% to 3.69%",
+    "Projected Gain (%)": 1.03,
+    "Pattern Conf (%)": 72.03,
+    "Projected Range 95%": "-1.46% to 3.49%",
     "Kelly %": 0.0,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 20.02,
-      "projected": 0.84,
-      "range": 3.39,
-      "trend_bonus": 29.8,
+      "pattern": 21.61,
+      "projected": 1.54,
+      "range": 3.0,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.8
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 62.9,
-    "ADX-14": 33.1,
-    "Vol Z-Score": -0.34,
+    "RSI-14": 58.5,
+    "ADX-14": 32.5,
+    "Vol Z-Score": -0.42,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 3.5268,
-    "Bollinger %B": 0.751,
-    "Avg Volume (20D)": 450405,
+    "MACD Histogram": 2.185,
+    "Bollinger %B": 0.665,
+    "Avg Volume (20D)": 453991,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -219,7 +219,8 @@
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
-      "2026-08-18 00:00:00"
+      "2026-08-18 00:00:00",
+      "2026-08-19 00:00:00"
     ],
     "close": [
       93.79,
@@ -379,7 +380,8 @@
       152.26,
       150.8,
       154.05,
-      156.51
+      156.51,
+      147.78
     ],
     "open": [
       94.24,
@@ -539,7 +541,8 @@
       160.7,
       153.25,
       151.0,
-      154.05
+      154.05,
+      157.99
     ],
     "high": [
       94.64,
@@ -699,7 +702,8 @@
       168.0,
       156.5,
       168.0,
-      162.0
+      162.0,
+      158.4
     ],
     "low": [
       91.81,
@@ -859,7 +863,8 @@
       150.1,
       149.25,
       150.35,
-      155.3
+      155.3,
+      140.66
     ],
     "volume": [
       82230,
@@ -1019,7 +1024,8 @@
       417630,
       194943,
       790996,
-      226181
+      226181,
+      174240
     ],
     "vwap": [
       93.4133,
@@ -1179,7 +1185,8 @@
       150.0969,
       150.8948,
       153.1066,
-      155.5436
+      155.5436,
+      155.9764
     ],
     "resistance": 192.0,
     "support": 81.61,

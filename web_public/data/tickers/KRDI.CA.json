@@ -1,6 +1,6 @@
 {
   "ticker": "KRDI.CA",
-  "last_data_date": "2026-08-18",
+  "last_data_date": "2026-08-19",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "KRDI.CA",
@@ -14,20 +14,20 @@
     "EPS": 0.0204,
     "Beta": -0.47,
     "Dividend Yield %": null,
-    "Market Cap": 944000000.0,
-    "1W Return %": 17.48,
-    "1M Return %": 29.07,
-    "YTD Return %": -23.42,
-    "1Y Return %": -12.16,
-    "3Y Return %": 5.91,
-    "External Rating Consensus": 1.25,
+    "Market Cap": 968000000.0,
+    "1W Return %": 3.12,
+    "1M Return %": 16.96,
+    "YTD Return %": -26.9,
+    "1Y Return %": -14.6,
+    "3Y Return %": 0.65,
+    "External Rating Consensus": -0.125,
     "External Rating Note": null,
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release)",
-    "Rank Score": 23.5,
-    "Current Price": 0.484,
-    "Target Entry (VWAP)": 0.4381,
-    "Suggested Stop-Loss": 0.3447,
-    "Take-Profit Target": 0.4971,
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 27.1,
+    "Current Price": 0.462,
+    "Target Entry (VWAP)": 0.4419,
+    "Suggested Stop-Loss": 0.3606,
+    "Take-Profit Target": 0.4745,
     "Resistance (52W High)": 0.695,
     "Support (52W Low)": 0.335,
     "Pivot Point": 0.446,
@@ -37,27 +37,27 @@
     "S1": 0.418,
     "S2": 0.38,
     "S3": 0.352,
-    "Projected Gain (%)": 0.85,
-    "Pattern Conf (%)": 54.49,
-    "Projected Range 95%": "-2.24% to 4.1%",
+    "Projected Gain (%)": -0.31,
+    "Pattern Conf (%)": 58.95,
+    "Projected Range 95%": "-2.06% to 2.06%",
     "Kelly %": 0.0,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) | trend=Strong Bullish | awaiting confirmation | vol x1.68",
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | vol x1.28",
     "Score Breakdown": {
-      "pattern": 16.35,
-      "projected": 1.27,
-      "range": 2.07,
-      "trend_bonus": 9.8,
+      "pattern": 17.68,
+      "projected": -0.46,
+      "range": 1.76,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.8
     },
     "Regime": "Volatile Range",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 56.2,
-    "ADX-14": 21.5,
-    "Vol Z-Score": 1.06,
+    "RSI-14": 53.4,
+    "ADX-14": 20.8,
+    "Vol Z-Score": 0.45,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0006,
-    "Bollinger %B": 0.591,
-    "Avg Volume (20D)": 322657583,
+    "MACD Histogram": -0.0009,
+    "Bollinger %B": 0.519,
+    "Avg Volume (20D)": 330435653,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -219,7 +219,8 @@
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
-      "2026-08-18 00:00:00"
+      "2026-08-18 00:00:00",
+      "2026-08-19 00:00:00"
     ],
     "close": [
       0.61,
@@ -379,7 +380,8 @@
       0.457,
       0.456,
       0.472,
-      0.484
+      0.484,
+      0.462
     ],
     "open": [
       0.575,
@@ -539,7 +541,8 @@
       0.448,
       0.461,
       0.461,
-      0.472
+      0.472,
+      0.49
     ],
     "high": [
       0.625,
@@ -699,7 +702,8 @@
       0.474,
       0.467,
       0.485,
-      0.499
+      0.499,
+      0.492
     ],
     "low": [
       0.575,
@@ -859,7 +863,8 @@
       0.452,
       0.447,
       0.451,
-      0.473
+      0.473,
+      0.455
     ],
     "volume": [
       53390000,
@@ -1019,7 +1024,8 @@
       555342808,
       246474362,
       571728890,
-      542400135
+      542400135,
+      423007034
     ],
     "vwap": [
       0.6033,
@@ -1179,7 +1185,8 @@
       0.4206,
       0.4247,
       0.4317,
-      0.4381
+      0.4381,
+      0.4419
     ],
     "resistance": 0.695,
     "support": 0.335,
@@ -1301,6 +1308,23 @@
           "target": 0.389
         },
         "quality": 1.0
+      },
+      {
+        "pattern": "Symmetrical Triangle",
+        "direction": "neutral",
+        "start_index": 122,
+        "end_index": 157,
+        "start_date": "2026-06-29",
+        "end_date": "2026-08-18",
+        "levels": {
+          "resistance_start": 0.9821,
+          "resistance_end": 0.484,
+          "support_start": 0.337,
+          "support_end": 0.3642,
+          "apex_price": 0.3704
+        },
+        "quality": 0.75,
+        "apex_index": 164.98063781321184
       }
     ]
   }

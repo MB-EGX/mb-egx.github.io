@@ -1,33 +1,33 @@
 {
   "ticker": "ISPH.CA",
-  "last_data_date": "2026-08-18",
+  "last_data_date": "2026-08-19",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "ISPH.CA",
     "Sector": "Health Care & Pharmaceuticals",
-    "Long-Term Setup Confirmed": true,
+    "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
-      "Higher-low swing structure confirmed",
+      "No confirmed higher-low swing structure yet",
       "Ascending Triangle match (quality 1.00)"
     ],
-    "P/E Ratio": 15.28,
+    "P/E Ratio": 15.06,
     "EPS": 0.8634,
     "Beta": 0.71,
-    "Dividend Yield %": 0.99,
-    "Market Cap": 13320000000.0,
-    "1W Return %": -5.64,
-    "1M Return %": 15.07,
-    "YTD Return %": 12.71,
-    "1Y Return %": 22.31,
-    "3Y Return %": 508.76,
-    "External Rating Consensus": -0.5,
+    "Dividend Yield %": 0.98,
+    "Market Cap": 13100000000.0,
+    "1W Return %": -4.76,
+    "1M Return %": 13.34,
+    "YTD Return %": 10.92,
+    "1Y Return %": 22.64,
+    "3Y Return %": 499.08,
+    "External Rating Consensus": -0.375,
     "External Rating Note": null,
     "Action": "📈 ACCUMULATE",
-    "Rank Score": 26.0,
-    "Current Price": 13.21,
-    "Target Entry (VWAP)": 13.1049,
-    "Suggested Stop-Loss": 10.6629,
-    "Take-Profit Target": 13.5667,
+    "Rank Score": 25.0,
+    "Current Price": 13.0,
+    "Target Entry (VWAP)": 13.0,
+    "Suggested Stop-Loss": 10.4714,
+    "Take-Profit Target": 13.351,
     "Resistance (52W High)": 16.0,
     "Support (52W Low)": 9.63,
     "Pivot Point": 14.0433,
@@ -37,27 +37,27 @@
     "S1": 12.0867,
     "S2": 11.0933,
     "S3": 9.1367,
-    "Projected Gain (%)": -1.83,
-    "Pattern Conf (%)": 58.73,
-    "Projected Range 95%": "-4.94% to 1.04%",
+    "Projected Gain (%)": 1.1,
+    "Pattern Conf (%)": 40.12,
+    "Projected Range 95%": "-5.94% to 12.53%",
     "Kelly %": 0.0,
     "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 17.62,
-      "projected": -2.75,
-      "range": 2.81,
+      "pattern": 12.04,
+      "projected": 1.65,
+      "range": 2.65,
       "trend_bonus": 15.0,
       "confidence_weight": 0.8
     },
     "Regime": "Volatile Range",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 54.6,
-    "ADX-14": 21.3,
-    "Vol Z-Score": -0.61,
+    "RSI-14": 53.1,
+    "ADX-14": 21.8,
+    "Vol Z-Score": -0.64,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0935,
-    "Bollinger %B": 0.657,
-    "Avg Volume (20D)": 11343713,
+    "MACD Histogram": 0.0404,
+    "Bollinger %B": 0.601,
+    "Avg Volume (20D)": 11157546,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -219,7 +219,8 @@
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
-      "2026-08-18 00:00:00"
+      "2026-08-18 00:00:00",
+      "2026-08-19 00:00:00"
     ],
     "close": [
       11.07,
@@ -379,7 +380,8 @@
       13.55,
       13.08,
       13.49,
-      13.21
+      13.21,
+      13.0
     ],
     "open": [
       11.06,
@@ -539,7 +541,8 @@
       13.65,
       13.58,
       13.1,
-      13.49
+      13.49,
+      13.23
     ],
     "high": [
       11.15,
@@ -699,7 +702,8 @@
       13.98,
       13.74,
       13.8,
-      13.8
+      13.8,
+      13.39
     ],
     "low": [
       10.95,
@@ -859,7 +863,8 @@
       13.38,
       13.05,
       13.08,
-      13.11
+      13.11,
+      13.0
     ],
     "volume": [
       3540000,
@@ -1019,7 +1024,8 @@
       8318950,
       8719401,
       10928535,
-      5609800
+      5609800,
+      5076436
     ],
     "vwap": [
       11.0567,
@@ -1179,7 +1185,8 @@
       12.9705,
       13.019,
       13.061,
-      13.1049
+      13.1049,
+      13.1586
     ],
     "resistance": 16.0,
     "support": 9.63,
@@ -1315,21 +1322,6 @@
         },
         "quality": 1.0,
         "apex_index": 140.82089552238804
-      },
-      {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 125,
-        "end_index": 155,
-        "start_date": "2026-07-04",
-        "end_date": "2026-08-16",
-        "levels": {
-          "resistance_start": 11.9717,
-          "resistance_end": 14.2629,
-          "support_start": 10.1646,
-          "support_end": 12.2854
-        },
-        "quality": 0.85
       },
       {
         "pattern": "Price Channel (Falling)",

@@ -1,6 +1,6 @@
 {
   "ticker": "AMII.CA",
-  "last_data_date": "2026-08-18",
+  "last_data_date": "2026-08-19",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "AMII.CA",
@@ -8,26 +8,26 @@
     "Long-Term Setup Confirmed": true,
     "Long-Term Setup Reasons": [
       "Not enough history for a long-term setup check",
-      "Substituted provider 1Y return (187.4%) for pattern/swing check - insufficient local history"
+      "Substituted provider 1Y return (192.63%) for pattern/swing check - insufficient local history"
     ],
-    "P/E Ratio": 2371.19,
+    "P/E Ratio": 2355.93,
     "EPS": 0.0059,
     "Beta": -0.37,
     "Dividend Yield %": null,
     "Market Cap": 1040000000.0,
-    "1W Return %": 0.72,
-    "1M Return %": 28.56,
-    "YTD Return %": 70.47,
-    "1Y Return %": 187.4,
-    "3Y Return %": 893.57,
-    "External Rating Consensus": -0.375,
+    "1W Return %": -1.07,
+    "1M Return %": 24.66,
+    "YTD Return %": 70.34,
+    "1Y Return %": 192.63,
+    "3Y Return %": 892.86,
+    "External Rating Consensus": -0.25,
     "External Rating Note": null,
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 8.5,
-    "Current Price": 13.91,
-    "Target Entry (VWAP)": 13.91,
-    "Suggested Stop-Loss": 11.7629,
-    "Take-Profit Target": 16.6913,
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release)",
+    "Rank Score": 5.9,
+    "Current Price": 13.9,
+    "Target Entry (VWAP)": 13.9,
+    "Suggested Stop-Loss": 11.9857,
+    "Take-Profit Target": 16.3902,
     "Resistance (52W High)": 17.25,
     "Support (52W Low)": 11.8,
     "Pivot Point": 14.47,
@@ -40,24 +40,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.27,
-    "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation | positive money flow",
+    "Kelly %": 1.36,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) | trend=Weak Bullish | awaiting confirmation | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 1.94,
-      "trend_bonus": 15.0,
+      "range": 1.93,
+      "trend_bonus": 9.8,
       "confidence_weight": 0.5
     },
     "Regime": "N/A",
     "Trend Class": "Weak Bullish",
-    "RSI-14": 53.8,
-    "ADX-14": 62.8,
-    "Vol Z-Score": -1.09,
+    "RSI-14": 53.7,
+    "ADX-14": 59.1,
+    "Vol Z-Score": -0.93,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0373,
+    "MACD Histogram": -0.0546,
     "Bollinger %B": 0.407,
-    "Avg Volume (20D)": 5343958,
+    "Avg Volume (20D)": 5121232,
     "Data Confidence": "Very Low (New/Short History)"
   },
   "chart_history": {
@@ -77,7 +77,8 @@
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
-      "2026-08-18 00:00:00"
+      "2026-08-18 00:00:00",
+      "2026-08-19 00:00:00"
     ],
     "close": [
       12.08,
@@ -95,7 +96,8 @@
       14.66,
       14.77,
       14.0,
-      13.91
+      13.91,
+      13.9
     ],
     "open": [
       12.5,
@@ -113,7 +115,8 @@
       14.05,
       14.7,
       14.86,
-      14.0
+      14.0,
+      13.95
     ],
     "high": [
       13.0,
@@ -131,7 +134,8 @@
       14.66,
       14.99,
       14.86,
-      14.09
+      14.09,
+      14.14
     ],
     "low": [
       12.07,
@@ -149,7 +153,8 @@
       13.86,
       14.45,
       13.82,
-      13.83
+      13.83,
+      13.67
     ],
     "volume": [
       5260726,
@@ -167,7 +172,8 @@
       2899933,
       2085049,
       2422237,
-      1179950
+      1179950,
+      1557619
     ],
     "vwap": [
       12.3833,
@@ -185,7 +191,8 @@
       14.4117,
       14.42,
       14.4144,
-      14.4079
+      14.4079,
+      14.3989
     ],
     "resistance": 17.25,
     "support": 11.8,

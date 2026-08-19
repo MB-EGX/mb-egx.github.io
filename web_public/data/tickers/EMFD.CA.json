@@ -1,33 +1,33 @@
 {
   "ticker": "EMFD.CA",
-  "last_data_date": "2026-08-18",
+  "last_data_date": "2026-08-19",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "EMFD.CA",
     "Sector": "Real Estate",
-    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Confirmed": true,
     "Long-Term Setup Reasons": [
-      "No confirmed higher-low swing structure yet",
+      "Higher-low swing structure confirmed",
       "Double Bottom match (quality 0.93)"
     ],
     "P/E Ratio": 9.51,
     "EPS": 1.2196,
     "Beta": 0.51,
     "Dividend Yield %": null,
-    "Market Cap": 63080000000.0,
-    "1W Return %": -2.69,
-    "1M Return %": -0.94,
-    "YTD Return %": 19.38,
-    "1Y Return %": 36.72,
-    "3Y Return %": 299.31,
-    "External Rating Consensus": -1.125,
-    "External Rating Note": "Diverges from external consensus (-1.1/2, bearish)",
+    "Market Cap": 63180000000.0,
+    "1W Return %": -1.44,
+    "1M Return %": -0.85,
+    "YTD Return %": 19.59,
+    "1Y Return %": 39.76,
+    "3Y Return %": 300.0,
+    "External Rating Consensus": -1.0,
+    "External Rating Note": "Diverges from external consensus (-1.0/2, bearish)",
     "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 42.9,
-    "Current Price": 11.58,
-    "Target Entry (VWAP)": 11.5501,
-    "Suggested Stop-Loss": 10.44,
-    "Take-Profit Target": 12.0455,
+    "Rank Score": 40.2,
+    "Current Price": 11.6,
+    "Target Entry (VWAP)": 11.5443,
+    "Suggested Stop-Loss": 10.7,
+    "Take-Profit Target": 12.0246,
     "Resistance (52W High)": 12.7,
     "Support (52W Low)": 8.2,
     "Pivot Point": 11.7533,
@@ -37,27 +37,27 @@
     "S1": 11.5067,
     "S2": 11.3533,
     "S3": 11.1067,
-    "Projected Gain (%)": 3.32,
-    "Pattern Conf (%)": 51.22,
-    "Projected Range 95%": "-2.64% to 8.36%",
+    "Projected Gain (%)": 2.96,
+    "Pattern Conf (%)": 41.24,
+    "Projected Range 95%": "-5.11% to 12.14%",
     "Kelly %": 0.0,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Weak Bullish (Low Trend Strength) | awaiting confirmation | weekly aligned | vol x1.12",
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Weak Bullish (Low Trend Strength) | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 15.37,
-      "projected": 4.98,
-      "range": 3.76,
+      "pattern": 12.37,
+      "projected": 4.44,
+      "range": 3.78,
       "trend_bonus": 29.8,
       "confidence_weight": 0.8
     },
     "Regime": "Volatile Range",
     "Trend Class": "Weak Bullish (Low Trend Strength)",
-    "RSI-14": 52.2,
-    "ADX-14": 14.0,
-    "Vol Z-Score": 0.12,
+    "RSI-14": 52.4,
+    "ADX-14": 13.5,
+    "Vol Z-Score": -0.3,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0838,
-    "Bollinger %B": 0.589,
-    "Avg Volume (20D)": 6257119,
+    "MACD Histogram": 0.0679,
+    "Bollinger %B": 0.596,
+    "Avg Volume (20D)": 6265987,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -219,7 +219,8 @@
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
-      "2026-08-18 00:00:00"
+      "2026-08-18 00:00:00",
+      "2026-08-19 00:00:00"
     ],
     "close": [
       9.07,
@@ -379,7 +380,8 @@
       11.74,
       11.66,
       11.64,
-      11.58
+      11.58,
+      11.6
     ],
     "open": [
       9.08,
@@ -539,6 +541,7 @@
       11.77,
       11.75,
       11.74,
+      11.64,
       11.64
     ],
     "high": [
@@ -699,7 +702,8 @@
       11.95,
       11.88,
       11.78,
-      11.83
+      11.83,
+      11.74
     ],
     "low": [
       8.98,
@@ -859,7 +863,8 @@
       11.74,
       11.65,
       11.64,
-      11.51
+      11.51,
+      11.6
     ],
     "volume": [
       2220000,
@@ -1019,7 +1024,8 @@
       3710639,
       5498964,
       3043841,
-      7016569
+      7016569,
+      4355403
     ],
     "vwap": [
       9.0667,
@@ -1179,7 +1185,8 @@
       11.5428,
       11.547,
       11.549,
-      11.5501
+      11.5501,
+      11.5443
     ],
     "resistance": 12.7,
     "support": 8.2,
@@ -1286,6 +1293,23 @@
           "support_end": 8.9573
         },
         "quality": 0.85
+      },
+      {
+        "pattern": "Symmetrical Triangle",
+        "direction": "neutral",
+        "start_index": 98,
+        "end_index": 157,
+        "start_date": "2026-05-20",
+        "end_date": "2026-08-18",
+        "levels": {
+          "resistance_start": 12.6583,
+          "resistance_end": 11.9836,
+          "support_start": 9.3941,
+          "support_end": 10.3643,
+          "apex_price": 11.3195
+        },
+        "quality": 0.75,
+        "apex_index": 215.08222825892693
       },
       {
         "pattern": "Descending Triangle",

@@ -1,33 +1,33 @@
 {
   "ticker": "MEPA.CA",
-  "last_data_date": "2026-08-18",
+  "last_data_date": "2026-08-19",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "MEPA.CA",
     "Sector": "Health Care & Pharmaceuticals",
-    "Long-Term Setup Confirmed": true,
+    "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
-      "Higher-low swing structure confirmed",
+      "No confirmed higher-low swing structure yet",
       "Price Channel (Rising) match (quality 0.85)"
     ],
-    "P/E Ratio": 118.87,
+    "P/E Ratio": 113.84,
     "EPS": 0.0159,
     "Beta": 0.53,
     "Dividend Yield %": null,
-    "Market Cap": 1230000000.0,
-    "1W Return %": -1.57,
-    "1M Return %": 6.21,
-    "YTD Return %": 0.53,
-    "1Y Return %": 51.61,
-    "3Y Return %": 163.31,
-    "External Rating Consensus": 1.25,
+    "Market Cap": 1190000000.0,
+    "1W Return %": -3.21,
+    "1M Return %": 1.69,
+    "YTD Return %": -3.21,
+    "1Y Return %": 48.36,
+    "3Y Return %": 150.69,
+    "External Rating Consensus": -0.75,
     "External Rating Note": null,
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 41.0,
-    "Current Price": 1.88,
-    "Target Entry (VWAP)": 1.8716,
-    "Suggested Stop-Loss": 1.6471,
-    "Take-Profit Target": 1.9308,
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 26.6,
+    "Current Price": 1.81,
+    "Target Entry (VWAP)": 1.81,
+    "Suggested Stop-Loss": 1.5729,
+    "Take-Profit Target": 1.8589,
     "Resistance (52W High)": 2.13,
     "Support (52W Low)": 1.16,
     "Pivot Point": 1.8833,
@@ -37,27 +37,27 @@
     "S1": 1.7667,
     "S2": 1.6833,
     "S3": 1.5667,
-    "Projected Gain (%)": 1.9,
-    "Pattern Conf (%)": 50.62,
-    "Projected Range 95%": "-3.14% to 10.56%",
+    "Projected Gain (%)": 0.21,
+    "Pattern Conf (%)": 48.88,
+    "Projected Range 95%": "-5.66% to 5.92%",
     "Kelly %": 0.0,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x1.28",
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 15.19,
-      "projected": 2.85,
-      "range": 3.71,
-      "trend_bonus": 29.8,
+      "pattern": 14.66,
+      "projected": 0.32,
+      "range": 3.35,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.8
     },
     "Regime": "Volatile Range",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 55.1,
-    "ADX-14": 21.8,
-    "Vol Z-Score": 0.4,
+    "RSI-14": 50.9,
+    "ADX-14": 21.6,
+    "Vol Z-Score": -0.8,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0055,
-    "Bollinger %B": 0.626,
-    "Avg Volume (20D)": 16429561,
+    "MACD Histogram": 0.0005,
+    "Bollinger %B": 0.502,
+    "Avg Volume (20D)": 14301626,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -219,7 +219,8 @@
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
-      "2026-08-18 00:00:00"
+      "2026-08-18 00:00:00",
+      "2026-08-19 00:00:00"
     ],
     "close": [
       1.62,
@@ -379,7 +380,8 @@
       1.88,
       1.85,
       1.83,
-      1.88
+      1.88,
+      1.81
     ],
     "open": [
       1.53,
@@ -539,7 +541,8 @@
       1.87,
       1.88,
       1.86,
-      1.83
+      1.83,
+      1.9
     ],
     "high": [
       1.62,
@@ -699,7 +702,8 @@
       1.9,
       1.88,
       1.86,
-      1.95
+      1.95,
+      1.91
     ],
     "low": [
       1.5,
@@ -858,6 +862,7 @@
       1.8,
       1.85,
       1.85,
+      1.81,
       1.81,
       1.81
     ],
@@ -1019,7 +1024,8 @@
       7676046,
       4220814,
       9974467,
-      20961336
+      20961336,
+      7828372
     ],
     "vwap": [
       1.58,
@@ -1179,7 +1185,8 @@
       1.8926,
       1.9017,
       1.9066,
-      1.8716
+      1.8716,
+      1.8594
     ],
     "resistance": 2.13,
     "support": 1.16,
@@ -1302,23 +1309,6 @@
         },
         "quality": 0.78,
         "apex_index": 269.51724137931024
-      },
-      {
-        "pattern": "Symmetrical Triangle",
-        "direction": "neutral",
-        "start_index": 125,
-        "end_index": 156,
-        "start_date": "2026-07-04",
-        "end_date": "2026-08-17",
-        "levels": {
-          "resistance_start": 2.0243,
-          "resistance_end": 1.9357,
-          "support_start": 1.4382,
-          "support_end": 1.7279,
-          "apex_price": 1.8871
-        },
-        "quality": 0.75,
-        "apex_index": 173.0290010741138
       }
     ]
   }

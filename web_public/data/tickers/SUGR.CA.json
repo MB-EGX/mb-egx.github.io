@@ -1,6 +1,6 @@
 {
   "ticker": "SUGR.CA",
-  "last_data_date": "2026-08-18",
+  "last_data_date": "2026-08-19",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "SUGR.CA",
@@ -10,24 +10,24 @@
       "No confirmed higher-low swing structure yet",
       "Double Bottom match (quality 0.96)"
     ],
-    "P/E Ratio": -10.23,
+    "P/E Ratio": -5.69,
     "EPS": -8.9171,
     "Beta": -0.33,
     "Dividend Yield %": null,
-    "Market Cap": 7410000000.0,
-    "1W Return %": 7.53,
-    "1M Return %": 10.9,
-    "YTD Return %": 10.4,
-    "1Y Return %": -1.19,
-    "3Y Return %": 41.54,
-    "External Rating Consensus": 1.125,
+    "Market Cap": 7210000000.0,
+    "1W Return %": 1.83,
+    "1M Return %": 8.12,
+    "YTD Return %": 7.5,
+    "1Y Return %": -2.85,
+    "3Y Return %": 36.66,
+    "External Rating Consensus": 0.125,
     "External Rating Note": null,
-    "Action": "🔥 STRONG BUY (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 45.8,
-    "Current Price": 52.1,
-    "Target Entry (VWAP)": 49.8688,
-    "Suggested Stop-Loss": 48.5014,
-    "Take-Profit Target": 53.5067,
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 28.3,
+    "Current Price": 50.73,
+    "Target Entry (VWAP)": 50.0815,
+    "Suggested Stop-Loss": 46.96,
+    "Take-Profit Target": 52.0997,
     "Resistance (52W High)": 53.5,
     "Support (52W Low)": 43.5,
     "Pivot Point": 50.31,
@@ -37,27 +37,27 @@
     "S1": 48.64,
     "S2": 46.58,
     "S3": 44.91,
-    "Projected Gain (%)": -2.35,
-    "Pattern Conf (%)": 64.16,
-    "Projected Range 95%": "-3.45% to -1.4%",
+    "Projected Gain (%)": -0.62,
+    "Pattern Conf (%)": 59.39,
+    "Projected Range 95%": "-3.45% to 3.32%",
     "Kelly %": 0.0,
-    "Signal Reason": "🔥 STRONG BUY (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Weak Bullish (Low Trend Strength) | awaiting confirmation | weekly aligned | vol x3.88",
+    "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish (Low Trend Strength) | awaiting confirmation | weekly aligned | vol x1.83",
     "Score Breakdown": {
-      "pattern": 19.25,
-      "projected": -3.53,
-      "range": 4.3,
-      "trend_bonus": 37.5,
+      "pattern": 17.82,
+      "projected": -0.93,
+      "range": 3.61,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.8
     },
-    "Regime": "Range / Consolidation",
+    "Regime": "Volatile Range",
     "Trend Class": "Weak Bullish (Low Trend Strength)",
-    "RSI-14": 68.4,
-    "ADX-14": 18.1,
-    "Vol Z-Score": 2.67,
+    "RSI-14": 59.7,
+    "ADX-14": 19.7,
+    "Vol Z-Score": 0.81,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.4477,
-    "Bollinger %B": 1.073,
-    "Avg Volume (20D)": 419121,
+    "MACD Histogram": 0.3768,
+    "Bollinger %B": 0.825,
+    "Avg Volume (20D)": 449896,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -219,7 +219,8 @@
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
-      "2026-08-18 00:00:00"
+      "2026-08-18 00:00:00",
+      "2026-08-19 00:00:00"
     ],
     "close": [
       47.5,
@@ -379,7 +380,8 @@
       49.36,
       50.7,
       51.06,
-      52.1
+      52.1,
+      50.73
     ],
     "open": [
       47.13,
@@ -539,7 +541,8 @@
       49.82,
       49.73,
       51.49,
-      51.06
+      51.06,
+      52.19
     ],
     "high": [
       48.3,
@@ -699,7 +702,8 @@
       50.72,
       51.5,
       51.8,
-      53.5
+      53.5,
+      53.2
     ],
     "low": [
       46.35,
@@ -859,7 +863,8 @@
       49.3,
       49.73,
       50.84,
-      51.26
+      51.26,
+      50.72
     ],
     "volume": [
       423670,
@@ -1019,7 +1024,8 @@
       462507,
       767646,
       744101,
-      1625183
+      1625183,
+      821370
     ],
     "vwap": [
       47.3833,
@@ -1179,7 +1185,8 @@
       48.6995,
       48.9942,
       49.2636,
-      49.8688
+      49.8688,
+      50.0815
     ],
     "resistance": 53.5,
     "support": 43.5,
@@ -1289,21 +1296,6 @@
         "apex_index": 76.99999999999996
       },
       {
-        "pattern": "Price Channel (Flat)",
-        "direction": "neutral",
-        "start_index": 77,
-        "end_index": 144,
-        "start_date": "2026-04-22",
-        "end_date": "2026-08-01",
-        "levels": {
-          "resistance_start": 50.5535,
-          "resistance_end": 50.2888,
-          "support_start": 46.7599,
-          "support_end": 45.9607
-        },
-        "quality": 0.85
-      },
-      {
         "pattern": "Head & Shoulders",
         "direction": "bearish",
         "start_index": 81,
@@ -1316,6 +1308,21 @@
           "right_shoulder": 49.95,
           "neckline": 46.205,
           "target": 40.61
+        },
+        "quality": 0.85
+      },
+      {
+        "pattern": "Price Channel (Flat)",
+        "direction": "neutral",
+        "start_index": 81,
+        "end_index": 157,
+        "start_date": "2026-04-28",
+        "end_date": "2026-08-18",
+        "levels": {
+          "resistance_start": 50.2314,
+          "resistance_end": 51.6694,
+          "support_start": 46.3376,
+          "support_end": 45.9876
         },
         "quality": 0.85
       },

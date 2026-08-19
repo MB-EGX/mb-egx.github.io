@@ -1,6 +1,6 @@
 {
   "ticker": "GGCC.CA",
-  "last_data_date": "2026-08-18",
+  "last_data_date": "2026-08-19",
   "sector": "Construction & Engineering",
   "matrix": {
     "Ticker": "GGCC.CA",
@@ -15,18 +15,18 @@
     "Beta": 0.01,
     "Dividend Yield %": null,
     "Market Cap": 2010000000.0,
-    "1W Return %": -21.19,
-    "1M Return %": 9.28,
+    "1W Return %": -17.7,
+    "1M Return %": 6.04,
     "YTD Return %": 115.28,
-    "1Y Return %": 138.46,
-    "3Y Return %": 358.88,
-    "External Rating Consensus": -0.5,
+    "1Y Return %": 130.2,
+    "3Y Return %": 376.11,
+    "External Rating Consensus": -0.75,
     "External Rating Note": null,
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 28.7,
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release)",
+    "Rank Score": 23.6,
     "Current Price": 0.93,
     "Target Entry (VWAP)": 0.93,
-    "Suggested Stop-Loss": 0.4279,
+    "Suggested Stop-Loss": 0.4746,
     "Take-Profit Target": 0.9551,
     "Resistance (52W High)": 1.31,
     "Support (52W Low)": 0.303,
@@ -37,27 +37,27 @@
     "S1": 0.8967,
     "S2": 0.7833,
     "S3": 0.5767,
-    "Projected Gain (%)": 1.57,
-    "Pattern Conf (%)": 52.06,
-    "Projected Range 95%": "-2.3% to 5.26%",
+    "Projected Gain (%)": -0.42,
+    "Pattern Conf (%)": 57.82,
+    "Projected Range 95%": "-2.39% to 1.87%",
     "Kelly %": 0.0,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | vol x2.08",
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) | trend=Strong Bullish | awaiting confirmation | vol x1.50",
     "Score Breakdown": {
-      "pattern": 15.62,
-      "projected": 2.35,
+      "pattern": 17.35,
+      "projected": -0.63,
       "range": 3.11,
-      "trend_bonus": 15.0,
+      "trend_bonus": 9.8,
       "confidence_weight": 0.8
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
     "RSI-14": 53.3,
-    "ADX-14": 30.9,
-    "Vol Z-Score": 1.66,
+    "ADX-14": 29.8,
+    "Vol Z-Score": 0.78,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0095,
-    "Bollinger %B": 0.572,
-    "Avg Volume (20D)": 41080276,
+    "MACD Histogram": 0.0007,
+    "Bollinger %B": 0.57,
+    "Avg Volume (20D)": 40072506,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -219,7 +219,8 @@
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
-      "2026-08-18 00:00:00"
+      "2026-08-18 00:00:00",
+      "2026-08-19 00:00:00"
     ],
     "close": [
       0.367,
@@ -379,6 +380,7 @@
       1.01,
       1.01,
       0.99,
+      0.93,
       0.93
     ],
     "open": [
@@ -539,7 +541,8 @@
       1.13,
       1.02,
       1.02,
-      0.99
+      0.99,
+      0.93
     ],
     "high": [
       0.369,
@@ -699,7 +702,8 @@
       1.14,
       1.07,
       1.06,
-      1.0
+      1.0,
+      0.98
     ],
     "low": [
       0.358,
@@ -859,7 +863,8 @@
       0.99,
       0.99,
       0.97,
-      0.91
+      0.91,
+      0.89
     ],
     "volume": [
       4850000,
@@ -1019,7 +1024,8 @@
       83182612,
       50803542,
       71023777,
-      85571811
+      85571811,
+      59909884
     ],
     "vwap": [
       0.3647,
@@ -1179,7 +1185,8 @@
       0.9214,
       0.9376,
       0.9469,
-      0.9551
+      0.9551,
+      0.9626
     ],
     "resistance": 1.31,
     "support": 0.303,

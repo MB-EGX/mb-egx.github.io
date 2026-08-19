@@ -1,33 +1,33 @@
 {
   "ticker": "KWIN.CA",
-  "last_data_date": "2026-08-18",
+  "last_data_date": "2026-08-19",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "KWIN.CA",
     "Sector": "Non-Bank Financial Services",
-    "Long-Term Setup Confirmed": true,
+    "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
-      "Higher-low swing structure confirmed",
+      "No confirmed higher-low swing structure yet",
       "Price Channel (Rising) match (quality 0.85)"
     ],
-    "P/E Ratio": 208.16,
+    "P/E Ratio": 200.52,
     "EPS": 0.4251,
     "Beta": 0.85,
     "Dividend Yield %": null,
-    "Market Cap": 700290000.0,
-    "1W Return %": -1.62,
-    "1M Return %": 10.09,
-    "YTD Return %": 20.07,
-    "1Y Return %": 5.65,
-    "3Y Return %": 758.19,
-    "External Rating Consensus": -0.375,
+    "Market Cap": 677940000.0,
+    "1W Return %": -2.08,
+    "1M Return %": -11.18,
+    "YTD Return %": 16.24,
+    "1Y Return %": 4.31,
+    "3Y Return %": 730.8,
+    "External Rating Consensus": -0.875,
     "External Rating Note": null,
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release)",
-    "Rank Score": 19.8,
-    "Current Price": 88.05,
-    "Target Entry (VWAP)": 88.05,
-    "Suggested Stop-Loss": 65.5014,
-    "Take-Profit Target": 90.4273,
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 24.3,
+    "Current Price": 85.24,
+    "Target Entry (VWAP)": 85.24,
+    "Suggested Stop-Loss": 64.7186,
+    "Take-Profit Target": 88.7775,
     "Resistance (52W High)": 111.95,
     "Support (52W Low)": 52.0,
     "Pivot Point": 88.4567,
@@ -37,27 +37,27 @@
     "S1": 81.4133,
     "S2": 77.0367,
     "S3": 69.9933,
-    "Projected Gain (%)": -3.29,
-    "Pattern Conf (%)": 56.73,
-    "Projected Range 95%": "-3.29% to -3.29%",
+    "Projected Gain (%)": 3.45,
+    "Pattern Conf (%)": 25.16,
+    "Projected Range 95%": "-9.68% to 18.67%",
     "Kelly %": 0.0,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) | trend=Strong Bullish | awaiting confirmation | vol x1.45",
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation",
     "Score Breakdown": {
-      "pattern": 17.02,
-      "projected": -4.94,
-      "range": 3.01,
-      "trend_bonus": 9.8,
+      "pattern": 7.55,
+      "projected": 5.18,
+      "range": 2.77,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.8
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 53.6,
-    "ADX-14": 25.6,
-    "Vol Z-Score": 0.43,
-    "MACD Signal": "Bullish",
-    "MACD Histogram": 0.1258,
-    "Bollinger %B": 0.538,
-    "Avg Volume (20D)": 331832,
+    "RSI-14": 51.6,
+    "ADX-14": 25.3,
+    "Vol Z-Score": -0.26,
+    "MACD Signal": "🔴 Bearish Cross",
+    "MACD Histogram": -0.0286,
+    "Bollinger %B": 0.498,
+    "Avg Volume (20D)": 304326,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -219,7 +219,8 @@
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
-      "2026-08-18 00:00:00"
+      "2026-08-18 00:00:00",
+      "2026-08-19 00:00:00"
     ],
     "close": [
       65.49,
@@ -379,7 +380,8 @@
       86.8,
       85.79,
       85.65,
-      88.05
+      88.05,
+      85.24
     ],
     "open": [
       63.1,
@@ -539,7 +541,8 @@
       87.05,
       87.09,
       85.81,
-      85.65
+      85.65,
+      88.25
     ],
     "high": [
       67.2,
@@ -699,7 +702,8 @@
       90.0,
       87.45,
       88.14,
-      94.18
+      94.18,
+      91.85
     ],
     "low": [
       63.1,
@@ -859,7 +863,8 @@
       84.08,
       85.12,
       85.01,
-      86.0
+      86.0,
+      85.0
     ],
     "volume": [
       70000,
@@ -1019,7 +1024,8 @@
       101106,
       97203,
       109379,
-      482550
+      482550,
+      218065
     ],
     "vwap": [
       65.2633,
@@ -1179,7 +1185,8 @@
       95.0538,
       96.149,
       96.9057,
-      95.4337
+      95.4337,
+      94.6166
     ],
     "resistance": 111.95,
     "support": 52.0,
@@ -1256,23 +1263,6 @@
         },
         "quality": 0.75,
         "apex_index": 132.68726348501377
-      },
-      {
-        "pattern": "Symmetrical Triangle",
-        "direction": "neutral",
-        "start_index": 125,
-        "end_index": 156,
-        "start_date": "2026-07-04",
-        "end_date": "2026-08-17",
-        "levels": {
-          "resistance_start": 113.38,
-          "resistance_end": 89.2,
-          "support_start": 55.968,
-          "support_end": 77.1827,
-          "apex_price": 82.7989
-        },
-        "quality": 0.75,
-        "apex_index": 164.20655618450067
       }
     ]
   }

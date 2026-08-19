@@ -1,13 +1,13 @@
 {
   "ticker": "RKAZ.CA",
-  "last_data_date": "2026-08-18",
+  "last_data_date": "2026-08-19",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "RKAZ.CA",
     "Sector": "Non-Bank Financial Services",
-    "Long-Term Setup Confirmed": true,
+    "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
-      "Higher-low swing structure confirmed",
+      "No confirmed higher-low swing structure yet",
       "Double Bottom match (quality 1.00)"
     ],
     "P/E Ratio": null,
@@ -15,19 +15,19 @@
     "Beta": null,
     "Dividend Yield %": null,
     "Market Cap": null,
-    "1W Return %": -2.64,
-    "1M Return %": -7.92,
-    "YTD Return %": 60.14,
-    "1Y Return %": 48.32,
-    "3Y Return %": 25.21,
+    "1W Return %": -2.88,
+    "1M Return %": -5.79,
+    "YTD Return %": 59.06,
+    "1Y Return %": 44.88,
+    "3Y Return %": 24.36,
     "External Rating Consensus": -0.875,
     "External Rating Note": null,
     "Action": "📈 ACCUMULATE",
-    "Rank Score": 44.0,
-    "Current Price": 4.42,
-    "Target Entry (VWAP)": 4.2737,
-    "Suggested Stop-Loss": 3.4686,
-    "Take-Profit Target": 5.2333,
+    "Rank Score": 35.7,
+    "Current Price": 4.39,
+    "Target Entry (VWAP)": 4.25,
+    "Suggested Stop-Loss": 3.6843,
+    "Take-Profit Target": 4.7838,
     "Resistance (52W High)": 6.14,
     "Support (52W Low)": 2.26,
     "Pivot Point": 4.5167,
@@ -37,27 +37,27 @@
     "S1": 4.3533,
     "S2": 4.2367,
     "S3": 4.0733,
-    "Projected Gain (%)": 17.7,
-    "Pattern Conf (%)": 36.39,
-    "Projected Range 95%": "4.41% to 30.68%",
+    "Projected Gain (%)": 8.27,
+    "Pattern Conf (%)": 48.8,
+    "Projected Range 95%": "-0.54% to 15.97%",
     "Kelly %": 0.0,
     "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 10.92,
-      "projected": 26.55,
-      "range": 2.78,
+      "pattern": 14.64,
+      "projected": 12.4,
+      "range": 2.74,
       "trend_bonus": 15.0,
       "confidence_weight": 0.8
     },
     "Regime": "Volatile Range",
     "Trend Class": "Weak Bullish",
-    "RSI-14": 51.8,
-    "ADX-14": 14.1,
-    "Vol Z-Score": -1.02,
+    "RSI-14": 51.3,
+    "ADX-14": 13.6,
+    "Vol Z-Score": -0.77,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.081,
-    "Bollinger %B": 0.6,
-    "Avg Volume (20D)": 128458,
+    "MACD Histogram": 0.0687,
+    "Bollinger %B": 0.592,
+    "Avg Volume (20D)": 117371,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -219,7 +219,8 @@
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
-      "2026-08-18 00:00:00"
+      "2026-08-18 00:00:00",
+      "2026-08-19 00:00:00"
     ],
     "close": [
       2.4,
@@ -379,7 +380,8 @@
       4.51,
       4.47,
       4.41,
-      4.42
+      4.42,
+      4.39
     ],
     "open": [
       2.44,
@@ -539,7 +541,8 @@
       4.52,
       4.5,
       4.41,
-      4.41
+      4.41,
+      4.48
     ],
     "high": [
       2.44,
@@ -699,6 +702,7 @@
       4.6,
       4.53,
       4.5,
+      4.48,
       4.48
     ],
     "low": [
@@ -859,7 +863,8 @@
       4.5,
       4.4,
       4.4,
-      4.39
+      4.39,
+      4.36
     ],
     "volume": [
       12120,
@@ -1019,7 +1024,8 @@
       37839,
       59612,
       89965,
-      46955
+      46955,
+      61475
     ],
     "vwap": [
       2.4067,
@@ -1179,7 +1185,8 @@
       4.3343,
       4.3202,
       4.2889,
-      4.2737
+      4.2737,
+      4.25
     ],
     "resistance": 6.14,
     "support": 2.26,
@@ -1270,23 +1277,6 @@
           "support_end": 3.2737
         },
         "quality": 0.85
-      },
-      {
-        "pattern": "Symmetrical Triangle",
-        "direction": "neutral",
-        "start_index": 106,
-        "end_index": 156,
-        "start_date": "2026-06-05",
-        "end_date": "2026-08-17",
-        "levels": {
-          "resistance_start": 6.0452,
-          "resistance_end": 4.4484,
-          "support_start": 2.9641,
-          "support_end": 3.6089,
-          "apex_price": 3.8504
-        },
-        "quality": 0.75,
-        "apex_index": 174.72471597818156
       }
     ]
   }

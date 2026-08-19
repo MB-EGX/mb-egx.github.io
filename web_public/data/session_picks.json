@@ -1,5 +1,5 @@
 {
-  "last_data_date": "2026-08-18",
+  "last_data_date": "2026-08-19",
   "session_picks": {
     "short": [
       {
@@ -12,8 +12,8 @@
         "expected_from": "2026-08-19",
         "expected_by": "2026-08-21",
         "expected_pct": 3.0,
-        "benchmark_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
+        "benchmark_pct": -1.382,
+        "alpha_vs_benchmark_pct": 0.81
       },
       {
         "id": 17,
@@ -25,8 +25,8 @@
         "expected_from": "2026-08-18",
         "expected_by": "2026-08-20",
         "expected_pct": 3.0,
-        "benchmark_pct": -0.25,
-        "alpha_vs_benchmark_pct": 1.71
+        "benchmark_pct": -1.628,
+        "alpha_vs_benchmark_pct": -5.59
       },
       {
         "id": 16,
@@ -38,8 +38,8 @@
         "expected_from": "2026-08-17",
         "expected_by": "2026-08-19",
         "expected_pct": 3.0,
-        "benchmark_pct": -1.035,
-        "alpha_vs_benchmark_pct": -2.72
+        "benchmark_pct": -2.403,
+        "alpha_vs_benchmark_pct": -1.77
       },
       {
         "id": 14,
@@ -47,19 +47,6 @@
         "horizon": "short",
         "pick_date": "2026-08-13",
         "ref_price": 77.9,
-        "source": "signal",
-        "expected_from": "2026-08-14",
-        "expected_by": "2026-08-16",
-        "expected_pct": 3.0,
-        "benchmark_pct": null,
-        "alpha_vs_benchmark_pct": null
-      },
-      {
-        "id": 3,
-        "ticker": "SAUD.CA",
-        "horizon": "short",
-        "pick_date": "2026-08-13",
-        "ref_price": 23.51,
         "source": "signal",
         "expected_from": "2026-08-14",
         "expected_by": "2026-08-16",
@@ -92,8 +79,8 @@
         "expected_from": "2026-09-01",
         "expected_by": "2026-10-02",
         "expected_pct": 8.0,
-        "benchmark_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
+        "benchmark_pct": -1.382,
+        "alpha_vs_benchmark_pct": -0.5
       },
       {
         "id": 8,
@@ -146,8 +133,8 @@
         "expected_from": "2026-10-17",
         "expected_by": "2027-02-14",
         "expected_pct": 15.0,
-        "benchmark_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
+        "benchmark_pct": -1.382,
+        "alpha_vs_benchmark_pct": -2.92
       },
       {
         "id": 11,
@@ -178,20 +165,31 @@
     ],
     "achieved_today": [
       {
-        "id": 9,
-        "ticker": "AMOC.CA",
-        "horizon": "long",
+        "id": 3,
+        "ticker": "SAUD.CA",
+        "horizon": "short",
         "pick_date": "2026-08-13",
-        "ref_price": 10.3,
-        "achieved_date": "2026-08-18",
-        "achieved_price": 11.85,
-        "achieved_pct": 15.05,
+        "ref_price": 23.51,
+        "achieved_date": "2026-08-19",
+        "achieved_price": 24.49,
+        "achieved_pct": 4.17,
         "source": "signal"
       }
     ],
-    "session_date": "2026-08-18",
+    "session_date": "2026-08-19",
     "benchmark_label": "EGX 30",
     "achieved_history": [
+      {
+        "id": 3,
+        "ticker": "SAUD.CA",
+        "horizon": "short",
+        "pick_date": "2026-08-13",
+        "ref_price": 23.51,
+        "achieved_date": "2026-08-19",
+        "achieved_price": 24.49,
+        "achieved_pct": 4.17,
+        "source": "signal"
+      },
       {
         "id": 9,
         "ticker": "AMOC.CA",

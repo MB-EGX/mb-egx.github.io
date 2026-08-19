@@ -1,33 +1,33 @@
 {
   "ticker": "IDRE.CA",
-  "last_data_date": "2026-08-18",
+  "last_data_date": "2026-08-19",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "IDRE.CA",
     "Sector": "Real Estate",
-    "Long-Term Setup Confirmed": true,
+    "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
-      "Higher-low swing structure confirmed",
+      "No confirmed higher-low swing structure yet",
       "Price Channel (Rising) match (quality 0.85)"
     ],
-    "P/E Ratio": 1540.9,
+    "P/E Ratio": 1485.99,
     "EPS": 0.0357,
     "Beta": -0.14,
     "Dividend Yield %": null,
-    "Market Cap": 2050000000.0,
-    "1W Return %": -2.28,
-    "1M Return %": 23.81,
-    "YTD Return %": 36.82,
-    "1Y Return %": 98.57,
-    "3Y Return %": 19.12,
-    "External Rating Consensus": 2.0,
+    "Market Cap": 1950000000.0,
+    "1W Return %": -7.26,
+    "1M Return %": 16.85,
+    "YTD Return %": 30.31,
+    "1Y Return %": 92.84,
+    "3Y Return %": 13.45,
+    "External Rating Consensus": -0.5,
     "External Rating Note": null,
-    "Action": "🔥 STRONG BUY (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 52.7,
-    "Current Price": 55.7,
-    "Target Entry (VWAP)": 51.0722,
-    "Suggested Stop-Loss": 44.8257,
-    "Take-Profit Target": 59.9221,
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 28.7,
+    "Current Price": 53.05,
+    "Target Entry (VWAP)": 51.4007,
+    "Suggested Stop-Loss": 42.8071,
+    "Take-Profit Target": 56.3073,
     "Resistance (52W High)": 59.0,
     "Support (52W Low)": 30.5,
     "Pivot Point": 55.9233,
@@ -37,27 +37,27 @@
     "S1": 52.8467,
     "S2": 50.9233,
     "S3": 47.8467,
-    "Projected Gain (%)": 6.88,
-    "Pattern Conf (%)": 46.51,
-    "Projected Range 95%": "-0.07% to 18.85%",
+    "Projected Gain (%)": 5.44,
+    "Pattern Conf (%)": 29.62,
+    "Projected Range 95%": "-8.69% to 20.35%",
     "Kelly %": 0.0,
-    "Signal Reason": "🔥 STRONG BUY (Unconfirmed: low ADX/volume) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 13.95,
-      "projected": 10.32,
-      "range": 4.42,
-      "trend_bonus": 37.5,
+      "pattern": 8.89,
+      "projected": 8.16,
+      "range": 3.96,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.8
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 59.1,
-    "ADX-14": 25.9,
-    "Vol Z-Score": -0.8,
+    "RSI-14": 55.0,
+    "ADX-14": 25.7,
+    "Vol Z-Score": -0.71,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.9599,
-    "Bollinger %B": 0.717,
-    "Avg Volume (20D)": 469356,
+    "MACD Histogram": 0.6222,
+    "Bollinger %B": 0.625,
+    "Avg Volume (20D)": 442289,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -219,7 +219,8 @@
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
-      "2026-08-18 00:00:00"
+      "2026-08-18 00:00:00",
+      "2026-08-19 00:00:00"
     ],
     "close": [
       35.72,
@@ -379,7 +380,8 @@
       55.0,
       54.77,
       55.2,
-      55.7
+      55.7,
+      53.05
     ],
     "open": [
       35.76,
@@ -539,7 +541,8 @@
       57.2,
       55.2,
       54.77,
-      55.2
+      55.2,
+      55.7
     ],
     "high": [
       36.26,
@@ -699,7 +702,8 @@
       57.16,
       55.79,
       55.4,
-      55.9
+      55.9,
+      56.7
     ],
     "low": [
       34.6,
@@ -859,7 +863,8 @@
       54.94,
       54.0,
       54.05,
-      54.28
+      54.28,
+      52.62
     ],
     "volume": [
       95430,
@@ -1019,7 +1024,8 @@
       269891,
       216743,
       160680,
-      159605
+      159605,
+      164897
     ],
     "vwap": [
       35.5267,
@@ -1179,7 +1185,8 @@
       50.143,
       50.285,
       50.4044,
-      51.0722
+      51.0722,
+      51.4007
     ],
     "resistance": 59.0,
     "support": 30.5,
@@ -1253,21 +1260,6 @@
           "resistance_end": 44.021,
           "support_start": 39.962,
           "support_end": 35.509
-        },
-        "quality": 0.85
-      },
-      {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 125,
-        "end_index": 155,
-        "start_date": "2026-07-04",
-        "end_date": "2026-08-16",
-        "levels": {
-          "resistance_start": 41.6708,
-          "resistance_end": 58.3092,
-          "support_start": 30.1225,
-          "support_end": 47.6358
         },
         "quality": 0.85
       }

@@ -1,6 +1,6 @@
 {
   "ticker": "PRDC.CA",
-  "last_data_date": "2026-08-18",
+  "last_data_date": "2026-08-19",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "PRDC.CA",
@@ -14,20 +14,20 @@
     "EPS": 0.5895,
     "Beta": 0.46,
     "Dividend Yield %": null,
-    "Market Cap": 9400000000.0,
-    "1W Return %": -2.11,
-    "1M Return %": -13.2,
-    "YTD Return %": 102.53,
-    "1Y Return %": 162.99,
-    "3Y Return %": 336.14,
-    "External Rating Consensus": -0.875,
+    "Market Cap": 9200000000.0,
+    "1W Return %": 2.47,
+    "1M Return %": -2.98,
+    "YTD Return %": 109.66,
+    "1Y Return %": 177.2,
+    "3Y Return %": 353.73,
+    "External Rating Consensus": 1.0,
     "External Rating Note": null,
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 15.2,
-    "Current Price": 8.81,
-    "Target Entry (VWAP)": 8.81,
-    "Suggested Stop-Loss": 5.9371,
-    "Take-Profit Target": 9.0479,
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release)",
+    "Rank Score": 17.6,
+    "Current Price": 9.12,
+    "Target Entry (VWAP)": 8.7763,
+    "Suggested Stop-Loss": 6.9043,
+    "Take-Profit Target": 9.3662,
     "Resistance (52W High)": 10.4,
     "Support (52W Low)": 3.7,
     "Pivot Point": 8.9833,
@@ -37,27 +37,27 @@
     "S1": 8.5167,
     "S2": 8.2333,
     "S3": 7.7667,
-    "Projected Gain (%)": -3.39,
-    "Pattern Conf (%)": 18.01,
-    "Projected Range 95%": "-21.27% to 7.62%",
+    "Projected Gain (%)": -0.29,
+    "Pattern Conf (%)": 28.86,
+    "Projected Range 95%": "-13.39% to 6.76%",
     "Kelly %": 0.0,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation",
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) | trend=Weak Bullish (Low Trend Strength) | awaiting confirmation | vol x1.58",
     "Score Breakdown": {
-      "pattern": 5.4,
-      "projected": -5.08,
-      "range": 3.81,
-      "trend_bonus": 15.0,
+      "pattern": 8.66,
+      "projected": -0.43,
+      "range": 4.04,
+      "trend_bonus": 9.8,
       "confidence_weight": 0.8
     },
     "Regime": "Volatile Range",
-    "Trend Class": "Strong Bullish",
-    "RSI-14": 53.4,
-    "ADX-14": 20.1,
-    "Vol Z-Score": -0.83,
+    "Trend Class": "Weak Bullish (Low Trend Strength)",
+    "RSI-14": 54.7,
+    "ADX-14": 19.6,
+    "Vol Z-Score": 0.85,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.1558,
-    "Bollinger %B": 0.597,
-    "Avg Volume (20D)": 5061750,
+    "MACD Histogram": 0.1523,
+    "Bollinger %B": 0.64,
+    "Avg Volume (20D)": 4933971,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -219,7 +219,8 @@
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
-      "2026-08-18 00:00:00"
+      "2026-08-18 00:00:00",
+      "2026-08-19 00:00:00"
     ],
     "close": [
       3.8,
@@ -379,7 +380,8 @@
       8.83,
       8.8,
       9.0,
-      8.81
+      8.81,
+      9.12
     ],
     "open": [
       3.77,
@@ -539,7 +541,8 @@
       8.9,
       8.98,
       8.9,
-      9.0
+      9.0,
+      8.84
     ],
     "high": [
       3.85,
@@ -699,7 +702,8 @@
       9.14,
       8.99,
       9.19,
-      9.14
+      9.14,
+      9.31
     ],
     "low": [
       3.72,
@@ -859,7 +863,8 @@
       8.7,
       8.74,
       8.8,
-      8.81
+      8.81,
+      8.82
     ],
     "volume": [
       4390000,
@@ -1019,7 +1024,8 @@
       4450466,
       2576172,
       8787756,
-      2138929
+      2138929,
+      7777804
     ],
     "vwap": [
       3.79,
@@ -1179,7 +1185,8 @@
       9.217,
       9.0601,
       8.9257,
-      8.8453
+      8.8453,
+      8.7763
     ],
     "resistance": 10.4,
     "support": 3.7,

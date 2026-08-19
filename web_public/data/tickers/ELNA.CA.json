@@ -1,6 +1,6 @@
 {
   "ticker": "ELNA.CA",
-  "last_data_date": "2026-08-18",
+  "last_data_date": "2026-08-19",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "ELNA.CA",
@@ -11,24 +11,24 @@
       "Ascending Triangle match (quality 0.90)",
       "Avg volume below 100,000 long-term floor"
     ],
-    "P/E Ratio": -135.52,
+    "P/E Ratio": -130.47,
     "EPS": -0.277,
     "Beta": null,
     "Dividend Yield %": null,
-    "Market Cap": 296290000.0,
-    "1W Return %": -0.55,
-    "1M Return %": -0.97,
-    "YTD Return %": -6.11,
-    "1Y Return %": 11.35,
-    "3Y Return %": 85.38,
-    "External Rating Consensus": 0.25,
-    "External Rating Note": null,
-    "Action": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE]",
-    "Rank Score": -10.6,
-    "Current Price": 37.67,
-    "Target Entry (VWAP)": 37.67,
-    "Suggested Stop-Loss": 33.2586,
-    "Take-Profit Target": 43.448,
+    "Market Cap": 284260000.0,
+    "1W Return %": -4.59,
+    "1M Return %": -6.47,
+    "YTD Return %": -9.92,
+    "1Y Return %": 6.83,
+    "3Y Return %": 77.85,
+    "External Rating Consensus": -1.75,
+    "External Rating Note": "Diverges from external consensus (-1.8/2, bearish)",
+    "Action": "🚫 ILLIQUID - ⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor)",
+    "Rank Score": -7.1,
+    "Current Price": 36.14,
+    "Target Entry (VWAP)": 36.14,
+    "Suggested Stop-Loss": 32.6257,
+    "Take-Profit Target": 37.1158,
     "Resistance (52W High)": 45.86,
     "Support (52W Low)": 33.73,
     "Pivot Point": 37.6267,
@@ -38,27 +38,27 @@
     "S1": 37.0533,
     "S2": 36.4367,
     "S3": 35.8633,
-    "Projected Gain (%)": "N/A",
-    "Pattern Conf (%)": "N/A",
-    "Projected Range 95%": "N/A",
-    "Kelly %": 1.5,
-    "Signal Reason": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE] | trend=Weak Bullish | awaiting confirmation | volatility squeeze",
+    "Projected Gain (%)": 0.75,
+    "Pattern Conf (%)": 44.2,
+    "Projected Range 95%": "-3.64% to 4.6%",
+    "Kelly %": 0.0,
+    "Signal Reason": "🚫 ILLIQUID - ⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor) | trend=Consolidation / Neutral | awaiting confirmation | vol x3.16",
     "Score Breakdown": {
-      "pattern": 0.0,
-      "projected": 0.0,
-      "range": 1.62,
-      "trend_bonus": -15.0,
+      "pattern": 13.26,
+      "projected": 1.12,
+      "range": 0.99,
+      "trend_bonus": -24.25,
       "confidence_weight": 0.8
     },
-    "Regime": "N/A",
-    "Trend Class": "Weak Bullish",
-    "RSI-14": 47.6,
-    "ADX-14": 11.4,
-    "Vol Z-Score": -0.77,
+    "Regime": "Volatile Range",
+    "Trend Class": "Consolidation / Neutral",
+    "RSI-14": 42.0,
+    "ADX-14": 10.8,
+    "Vol Z-Score": 2.35,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0814,
-    "Bollinger %B": 0.375,
-    "Avg Volume (20D)": 10206,
+    "MACD Histogram": -0.1669,
+    "Bollinger %B": 0.142,
+    "Avg Volume (20D)": 10765,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -220,7 +220,8 @@
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
-      "2026-08-18 00:00:00"
+      "2026-08-18 00:00:00",
+      "2026-08-19 00:00:00"
     ],
     "close": [
       37.67,
@@ -380,7 +381,8 @@
       37.88,
       37.67,
       37.67,
-      37.67
+      37.67,
+      36.14
     ],
     "open": [
       35.86,
@@ -540,7 +542,8 @@
       37.88,
       37.7,
       37.5,
-      37.67
+      37.67,
+      37.6
     ],
     "high": [
       37.67,
@@ -700,7 +703,8 @@
       37.88,
       38.0,
       38.18,
-      38.4
+      38.4,
+      38.14
     ],
     "low": [
       35.86,
@@ -860,7 +864,8 @@
       37.01,
       37.22,
       37.4,
-      37.51
+      37.51,
+      36.1
     ],
     "volume": [
       1150,
@@ -1020,7 +1025,8 @@
       6700,
       8231,
       3347,
-      3502
+      3502,
+      33966
     ],
     "vwap": [
       37.0667,
@@ -1180,7 +1186,8 @@
       38.4108,
       38.4065,
       38.3948,
-      38.3878
+      38.3878,
+      38.1138
     ],
     "resistance": 45.86,
     "support": 33.73,

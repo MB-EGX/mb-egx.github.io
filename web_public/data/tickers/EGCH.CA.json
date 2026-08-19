@@ -1,6 +1,6 @@
 {
   "ticker": "EGCH.CA",
-  "last_data_date": "2026-08-18",
+  "last_data_date": "2026-08-19",
   "sector": "Basic Resources",
   "matrix": {
     "Ticker": "EGCH.CA",
@@ -8,26 +8,26 @@
     "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
       "No confirmed higher-low swing structure yet",
-      "Double Bottom match (quality 0.91)"
+      "Cup & Handle match (quality 1.00)"
     ],
-    "P/E Ratio": 8.74,
+    "P/E Ratio": 8.6,
     "EPS": 1.6279,
     "Beta": 0.58,
     "Dividend Yield %": null,
-    "Market Cap": 28230000000.0,
-    "1W Return %": 0.64,
-    "1M Return %": 7.08,
-    "YTD Return %": 13.77,
-    "1Y Return %": 17.44,
-    "3Y Return %": 120.58,
-    "External Rating Consensus": -0.125,
+    "Market Cap": 27810000000.0,
+    "1W Return %": -2.03,
+    "1M Return %": 6.95,
+    "YTD Return %": 12.09,
+    "1Y Return %": 20.07,
+    "3Y Return %": 117.86,
+    "External Rating Consensus": -0.5,
     "External Rating Note": null,
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 32.7,
-    "Current Price": 14.21,
-    "Target Entry (VWAP)": 13.6688,
-    "Suggested Stop-Loss": 12.4071,
-    "Take-Profit Target": 14.5937,
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 27.0,
+    "Current Price": 14.0,
+    "Target Entry (VWAP)": 13.6977,
+    "Suggested Stop-Loss": 12.3343,
+    "Take-Profit Target": 14.7322,
     "Resistance (52W High)": 15.37,
     "Support (52W Low)": 9.77,
     "Pivot Point": 14.5433,
@@ -37,27 +37,27 @@
     "S1": 14.2167,
     "S2": 13.7333,
     "S3": 13.4067,
-    "Projected Gain (%)": -0.43,
-    "Pattern Conf (%)": 26.55,
-    "Projected Range 95%": "-12.52% to 12.87%",
+    "Projected Gain (%)": 4.53,
+    "Pattern Conf (%)": 27.4,
+    "Projected Range 95%": "-11.33% to 20.65%",
     "Kelly %": 0.0,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Weak Bullish (Low Trend Strength) | awaiting confirmation | weekly aligned",
+    "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish (Low Trend Strength) | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 7.96,
-      "projected": -0.65,
-      "range": 3.96,
-      "trend_bonus": 29.8,
+      "pattern": 8.22,
+      "projected": 6.79,
+      "range": 3.78,
+      "trend_bonus": 15.0,
       "confidence_weight": 0.8
     },
     "Regime": "Volatile Range",
     "Trend Class": "Weak Bullish (Low Trend Strength)",
-    "RSI-14": 55.3,
-    "ADX-14": 16.4,
-    "Vol Z-Score": -0.56,
+    "RSI-14": 53.4,
+    "ADX-14": 16.2,
+    "Vol Z-Score": -0.3,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.1198,
-    "Bollinger %B": 0.693,
-    "Avg Volume (20D)": 9499891,
+    "MACD Histogram": 0.0755,
+    "Bollinger %B": 0.628,
+    "Avg Volume (20D)": 9647319,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -219,7 +219,8 @@
       "2026-08-13 00:00:00",
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
-      "2026-08-18 00:00:00"
+      "2026-08-18 00:00:00",
+      "2026-08-19 00:00:00"
     ],
     "close": [
       11.25,
@@ -379,7 +380,8 @@
       14.42,
       14.7,
       14.22,
-      14.21
+      14.21,
+      14.0
     ],
     "open": [
       11.16,
@@ -539,7 +541,8 @@
       14.29,
       14.79,
       14.79,
-      14.22
+      14.22,
+      14.25
     ],
     "high": [
       11.3,
@@ -699,7 +702,8 @@
       14.61,
       14.87,
       14.79,
-      14.39
+      14.39,
+      14.34
     ],
     "low": [
       11.0,
@@ -859,7 +863,8 @@
       14.25,
       14.64,
       14.15,
-      14.12
+      14.12,
+      13.91
     ],
     "volume": [
       1280000,
@@ -1019,7 +1024,8 @@
       11604396,
       16575220,
       10520555,
-      4491780
+      4491780,
+      7045344
     ],
     "vwap": [
       11.1833,
@@ -1179,7 +1185,8 @@
       13.4738,
       13.5919,
       13.6435,
-      13.6688
+      13.6688,
+      13.6977
     ],
     "resistance": 15.37,
     "support": 9.77,
@@ -1239,6 +1246,23 @@
           "support_end": 11.0673
         },
         "quality": 0.85
+      },
+      {
+        "pattern": "Cup & Handle",
+        "direction": "bullish",
+        "start_index": 25,
+        "end_index": 158,
+        "start_date": "2026-02-06",
+        "end_date": "2026-08-19",
+        "levels": {
+          "left_rim": 14.7,
+          "right_rim": 14.7,
+          "cup_bottom": 11.17,
+          "handle_low": 14.0,
+          "breakout_level": 14.7,
+          "target": 18.23
+        },
+        "quality": 1.0
       },
       {
         "pattern": "Double Bottom",
