@@ -3,17 +3,17 @@
   "session_picks": {
     "short": [
       {
-        "id": 19,
-        "ticker": "RTVC.CA",
+        "id": 22,
+        "ticker": "ICID.CA",
         "horizon": "short",
-        "pick_date": "2026-12-05",
-        "ref_price": 4.32,
+        "pick_date": "2026-08-18",
+        "ref_price": 15.72,
         "source": "signal",
-        "expected_from": "2026-12-06",
-        "expected_by": "2026-12-08",
+        "expected_from": "2026-08-19",
+        "expected_by": "2026-08-21",
         "expected_pct": 3.0,
-        "benchmark_pct": null,
-        "alpha_vs_benchmark_pct": null
+        "benchmark_pct": 0.0,
+        "alpha_vs_benchmark_pct": 0.0
       },
       {
         "id": 17,
@@ -40,6 +40,19 @@
         "expected_pct": 3.0,
         "benchmark_pct": -1.035,
         "alpha_vs_benchmark_pct": -2.72
+      },
+      {
+        "id": 14,
+        "ticker": "ABUK.CA",
+        "horizon": "short",
+        "pick_date": "2026-08-13",
+        "ref_price": 77.9,
+        "source": "signal",
+        "expected_from": "2026-08-14",
+        "expected_by": "2026-08-16",
+        "expected_pct": 3.0,
+        "benchmark_pct": null,
+        "alpha_vs_benchmark_pct": null
       },
       {
         "id": 3,
@@ -107,6 +120,19 @@
         "expected_pct": 8.0,
         "benchmark_pct": null,
         "alpha_vs_benchmark_pct": null
+      },
+      {
+        "id": 6,
+        "ticker": "EAST.CA",
+        "horizon": "medium",
+        "pick_date": "2026-08-13",
+        "ref_price": 36.26,
+        "source": "signal",
+        "expected_from": "2026-08-27",
+        "expected_by": "2026-09-27",
+        "expected_pct": 8.0,
+        "benchmark_pct": null,
+        "alpha_vs_benchmark_pct": null
       }
     ],
     "long": [
@@ -152,17 +178,6 @@
     ],
     "achieved_today": [
       {
-        "id": 20,
-        "ticker": "TWSA.CA",
-        "horizon": "medium",
-        "pick_date": "2026-12-05",
-        "ref_price": 4.93,
-        "achieved_date": "2026-08-18",
-        "achieved_price": 6.36,
-        "achieved_pct": 29.01,
-        "source": "signal"
-      },
-      {
         "id": 9,
         "ticker": "AMOC.CA",
         "horizon": "long",
@@ -177,39 +192,6 @@
     "session_date": "2026-08-18",
     "benchmark_label": "EGX 30",
     "achieved_history": [
-      {
-        "id": 14,
-        "ticker": "ABUK.CA",
-        "horizon": "short",
-        "pick_date": "2026-08-13",
-        "ref_price": 77.9,
-        "achieved_date": "2026-12-05",
-        "achieved_price": 87.19,
-        "achieved_pct": 11.93,
-        "source": "signal"
-      },
-      {
-        "id": 6,
-        "ticker": "EAST.CA",
-        "horizon": "medium",
-        "pick_date": "2026-08-13",
-        "ref_price": 36.26,
-        "achieved_date": "2026-12-05",
-        "achieved_price": 40.5,
-        "achieved_pct": 11.69,
-        "source": "signal"
-      },
-      {
-        "id": 20,
-        "ticker": "TWSA.CA",
-        "horizon": "medium",
-        "pick_date": "2026-12-05",
-        "ref_price": 4.93,
-        "achieved_date": "2026-08-18",
-        "achieved_price": 6.36,
-        "achieved_pct": 29.01,
-        "source": "signal"
-      },
       {
         "id": 9,
         "ticker": "AMOC.CA",

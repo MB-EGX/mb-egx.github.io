@@ -74,6 +74,23 @@ from config import (
 
 from market_regime import pct_change_between
 
+# W-future-date-guard: today_cairo() is the ONLY trustworthy "now" - the
+# real-world Cairo wall-clock date, untouched by any corruption in
+# market_data. session_date (passed in below) instead comes from
+# DatabaseManager.get_latest_market_date() - i.e. MAX(date) in
+# market_data - which is exactly what the MM/DD-vs-DD/MM CSV bug
+# corrupted into a future date, and that corrupted value is what got
+# stamped straight into pick_date/achieved_date the moment this module
+# ran against it (see fix_future_dates.py / fix_session_pick_dates.py /
+# revert_false_achievements.py for the cleanup this caused). Comparing
+# session_date against today_cairo() below is what stops it from ever
+# happening silently again, regardless of what causes a future date to
+# show up next time.
+from freshness import today_cairo
+from config import get_logger
+
+logger = get_logger("session_picks")
+
 
 
 HORIZONS = ("short", "medium", "long")
@@ -562,9 +579,32 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
 
     """
 
-    if not session_date or session_date == "N/A":
+    # Guard against a corrupted "now": refuse to stamp today's
+    # picks/achievements against a session_date that's ahead of the
+    # real Cairo date - the exact failure mode that fabricated a false
+    # TWSA.CA pick and corrupted ABUK.CA/EAST.CA's achieved_date (see
+    # this module's docstring and the today_cairo import above). Every
+    # OTHER part of analyze_market()'s return (rankings, exits, sector
+    # summary, breakout watchlist, ...) doesn't depend on session_date
+    # being correct, so only Session Picks is held back - not the whole
+    # matrix run - and the already-stored state is handed back
+    # unchanged, same shape as the "no data yet" branch below, so
+    # callers never have to special-case this.
+    future_session_date = bool(session_date) and session_date != "N/A" and str(session_date)[:10] > today_cairo()
+    if future_session_date:
+        logger.warning(
+            f"REFUSING to refresh session_picks: market_data's latest date "
+            f"({session_date}) is AFTER today (Africa/Cairo, {today_cairo()}) - "
+            f"this is impossible and is the same corruption fix_future_dates.py "
+            f"exists to fix. Run fix_future_dates.py against market_data, then "
+            f"re-run. Session Picks state is left untouched this run - no new "
+            f"picks or achievements were stamped."
+        )
 
-        # No ingested data yet — nothing to check or refill against; just
+    if not session_date or session_date == "N/A" or future_session_date:
+
+        # No ingested data yet (or session_date is corrupted/future - see
+        # the guard above) — nothing to check or refill against; just
 
         # hand back whatever's already stored so the GUI still has something
 
