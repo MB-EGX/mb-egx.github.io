@@ -3218,14 +3218,46 @@
             // window is skipped outright.
             let clippedPatterns = [];
             if (mode === 'stock' && showPatterns && patterns && patterns.length && labels.length) {
-                const firstLabel = labels[0], lastLabel = labels[labels.length - 1];
+                // Match pattern start_date/end_date to a position in `labels`
+                // by DATE VALUE, not exact string equality. The previous
+                // labels.indexOf(p.start_date) required byte-for-byte
+                // identical strings - if the exported patterns carried a
+                // trailing time component (e.g. "2026-03-08T00:00:00") that
+                // the chart's own date labels didn't, indexOf returned -1
+                // for every single pattern, and the old fallback (snap to
+                // index 0 / labels.length-1) silently pinned EVERY pattern's
+                // label to the chart's very first/last bar - which is
+                // exactly the "label says August, click says Feb-Mar" bug:
+                // the popup reads pattern.start_date/end_date directly (so
+                // it was always correct), but the on-chart position was
+                // computed through this broken index lookup.
+                const dateKey = (d) => String(d == null ? '' : d).trim().slice(0, 10);
+                const labelIndexByDate = new Map();
+                labels.forEach((l, i) => { const k = dateKey(l); if (!labelIndexByDate.has(k)) labelIndexByDate.set(k, i); });
+                // Fallback for a pattern date that genuinely falls outside
+                // the visible window (e.g. after a Time Horizon zoom): find
+                // the nearest bar chronologically instead of blindly
+                // snapping to an edge. `labels` is sorted ascending, so a
+                // binary search for the first bar >= the target date works.
+                const nearestIndexFor = (targetKey) => {
+                    if (!labels.length) return 0;
+                    let lo = 0, hi = labels.length - 1;
+                    while (lo < hi) {
+                        const mid = (lo + hi) >> 1;
+                        if (dateKey(labels[mid]) < targetKey) lo = mid + 1; else hi = mid;
+                    }
+                    return lo;
+                };
+                const indexForDate = (d) => {
+                    const k = dateKey(d);
+                    return labelIndexByDate.has(k) ? labelIndexByDate.get(k) : nearestIndexFor(k);
+                };
+                const firstLabel = dateKey(labels[0]), lastLabel = dateKey(labels[labels.length - 1]);
                 clippedPatterns = patterns
-                    .filter(p => p.end_date >= firstLabel && p.start_date <= lastLabel)
+                    .filter(p => dateKey(p.end_date) >= firstLabel && dateKey(p.start_date) <= lastLabel)
                     .map(p => {
-                        let startIdx = labels.indexOf(p.start_date);
-                        let endIdx = labels.indexOf(p.end_date);
-                        if (startIdx === -1) startIdx = 0;
-                        if (endIdx === -1) endIdx = labels.length - 1;
+                        const startIdx = Math.max(0, Math.min(labels.length - 1, indexForDate(p.start_date)));
+                        const endIdx = Math.max(0, Math.min(labels.length - 1, indexForDate(p.end_date)));
                         return { ...p, _startIdx: startIdx, _endIdx: endIdx, _labelPrice: prices[endIdx] };
                     });
             }
