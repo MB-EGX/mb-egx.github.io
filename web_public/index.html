@@ -860,7 +860,15 @@
                     <!-- Generated dynamically -->
                 </div>
 
-                <!-- Canvas Container -->
+                <!-- Canvas Container.
+                     Default height is 500px (the embedded view). In maximize
+                     mode #chart-fullscreen-wrapper turns into a flex column
+                     and this container's class is swapped to flex-1 so the
+                     chart canvas grows to fill ALL remaining viewport
+                     height. The canvas itself (Chart.js with responsive:true
+                     + maintainAspectRatio:false) auto-stretches to its
+                     parent's box, so no extra width/height attributes are
+                     needed. -->
                 <div class="bg-darkbg p-4 rounded-xl border border-bordercol relative h-[500px] w-full" id="chart-canvas-container">
                     <canvas id="mainChart"></canvas>
                 </div>
@@ -3051,17 +3059,18 @@
         // controls (mode/item picker, style row incl. Patterns/Volume/S-R/
         // Save Chart, time horizon, alphabet filter) + the canvas together
         // in #chart-fullscreen-wrapper, so maximizing keeps every control
-        // reachable instead of just enlarging the bare canvas — mirrors the
-        // desktop app's popped-out chart window, which does the same for
-        // its own toolbar. z-[201] is deliberately higher than the sticky
-        // header's z-30 (and the standard z-50 modals) — a lower value here
-        // previously let the header's own stacking context paint over the
-        // "maximized" chart instead of the other way around.
-        // Chart.js is already configured with responsive:true +
-        // maintainAspectRatio:false (see plotChart()), so it auto-resizes
-        // via its own ResizeObserver on the container — we just also call
-        // chartInstance.resize() explicitly right after the class swap so
-        // it snaps to the new size immediately instead of waiting a frame.
+        // reachable. In maximized mode the wrapper becomes a flex column and
+        // the canvas box uses flex-1 / min-h-0 — that lets the chart canvas
+        // fill ALL remaining vertical space (filling the full window) instead
+        // of fighting with a hand-tuned `calc(100vh - 260px)` whose -260 was
+        // never large enough on tall control bars (alphabet row + time
+        // horizon + style row easily push past 260px combined, which used to
+        // leave a large black gap at the bottom of the maximized view).
+        // Chart.js is configured with responsive:true + maintainAspectRatio:
+        // false (see plotChart()), plus ResizeObserver handles keep it in
+        // step with container size changes; we still call chartInstance.resize()
+        // explicitly right after the class swap so it snaps to the new size
+        // on the same frame, no visible lag.
         let isChartMaximized = false;
         function toggleChartMaximize() {
             const wrapper = document.getElementById('chart-fullscreen-wrapper');
@@ -3072,25 +3081,38 @@
             isChartMaximized = !isChartMaximized;
 
             if (isChartMaximized) {
-                wrapper.classList.add('fixed', 'inset-0', 'z-[201]', 'bg-panelbg', 'p-3', 'md:p-5', 'overflow-y-auto');
+                wrapper.classList.add('fixed', 'inset-0', 'z-[201]', 'bg-panelbg', 'p-3', 'md:p-5', 'flex', 'flex-col', 'overflow-hidden');
+                // Drop the fixed pixel height — let flexbox give the canvas the
+                // full remaining viewport height instead of a hand-tuned calc().
                 canvasBox.classList.remove('h-[500px]');
-                canvasBox.classList.add('h-[calc(100vh-260px)]', 'min-h-[320px]');
+                canvasBox.classList.add('flex-1', 'min-h-0');
                 closeBtn.classList.remove('hidden');
                 closeBtn.classList.add('flex');
                 if (maximizeBtn) { maximizeBtn.innerText = t_current().btn_exit_fullscreen_chart || '⛶ Exit Fullscreen'; }
                 document.body.style.overflow = 'hidden';
             } else {
-                wrapper.classList.remove('fixed', 'inset-0', 'z-[201]', 'bg-panelbg', 'p-3', 'md:p-5', 'overflow-y-auto');
+                wrapper.classList.remove('fixed', 'inset-0', 'z-[201]', 'bg-panelbg', 'p-3', 'md:p-5', 'flex', 'flex-col', 'overflow-hidden');
                 canvasBox.classList.add('h-[500px]');
-                canvasBox.classList.remove('h-[calc(100vh-260px)]', 'min-h-[320px]');
+                canvasBox.classList.remove('flex-1', 'min-h-0');
                 closeBtn.classList.add('hidden');
                 closeBtn.classList.remove('flex');
                 if (maximizeBtn) { maximizeBtn.innerText = t_current().btn_maximize_chart || '⛶ Maximize'; }
                 document.body.style.overflow = '';
             }
-            // Let the layout settle one frame, then force Chart.js to
-            // recompute its canvas size against the new container box.
-            requestAnimationFrame(() => { if (chartInstance) chartInstance.resize(); });
+            // Belt-and-braces: Chart.js's ResizeObserver does fire on container
+            // resize, but requestAnimationFrame guarantees the layout has
+            // committed (flexbox's new flex-1 box height needs one paint pass
+            // to take effect), so without an explicit call the chart snaps to
+            // the OLD height for one frame and then jumps.
+            requestAnimationFrame(() => {
+                if (chartInstance) {
+                    chartInstance.resize();
+                    // After resize, replot is sometimes needed so Chart.js picks
+                    // up the larger drawing surface (otherwise the scale and
+                    // tick density stay at the previous, smaller, resolution).
+                    chartInstance.update('none');
+                }
+            });
         }
         // Small helper so the exit-fullscreen label re-translates cleanly
         // without needing its own dedicated re-render pass; falls back to

@@ -579,13 +579,61 @@ class StockSectorChartWidget(QWidget):
             if self.chk_sr.isChecked() and {'high', 'low', 'close'}.issubset(df.columns):
                 pivots = self.qe.compute_pivot_points(df)
                 if pivots:
-                    for tag, color, va in (("r3", "#ef4444", "bottom"), ("r2", "#ef4444", "bottom"), ("r1", "#ef4444", "bottom"),
-                                            ("s1", "#22c55e", "top"), ("s2", "#22c55e", "top"), ("s3", "#22c55e", "top")):
+                    # When the six SR levels cluster tightly (e.g. a high-priced
+                    # ticker whose pivot range collapses into a narrow band near
+                    # the current close), the dotted axhlines visually pile on
+                    # top of each other and their right-edge text labels print
+                    # in the same row, producing the unreadable "block of
+                    # overlapping numbers" seen in screenshots. Sort all levels
+                    # and stack each label by a small vertical step (in points)
+                    # so even tightly clustered SR stays individually legibl
+                    # while the lines themselves still sit exactly where the
+                    # pivots say they should.
+                    sr_tags = (
+                        ("r3", "#ef4444", "bottom"),
+                        ("r2", "#ef4444", "bottom"),
+                        ("r1", "#ef4444", "bottom"),
+                        ("s1", "#22c55e", "top"),
+                        ("s2", "#22c55e", "top"),
+                        ("s3", "#22c55e", "top"),
+                    )
+                    plotted = [(tag, pivots[tag]) for tag, _, _ in sr_tags if pivots.get(tag) is not None]
+                    plotted.sort(key=lambda t: t[1])
+                    # Tight-cluster threshold in price units: if any two SR
+                    # levels are closer than 1.5% of the visible price range
+                    # apart, push labels apart in point space.
+                    if prices is not None and len(prices) > 1:
+                        span = float(prices.max() - prices.min()) or max(float(prices.max()) * 0.01, 1e-6)
+                        cluster_step_pts = 11 if span > 0 and (max(p[1] for p in plotted) - min(p[1] for p in plotted)) < span * 0.06 else 0
+                    else:
+                        cluster_step_pts = 0
+                    label_offsets = {}
+                    for i, (tag, _) in enumerate(plotted):
+                        label_offsets[tag] = i * cluster_step_pts
+                    for tag, color, va in sr_tags:
                         lvl = pivots[tag]
                         weight = 1.4 if tag in ("r1", "s1") else 0.9
                         alpha = 0.85 if tag in ("r1", "s1") else 0.5
                         ax.axhline(y=lvl, color=color, linestyle=(0, (4, 3)), linewidth=weight, alpha=alpha, zorder=1)
-                        ax.text(dates[-1], lvl, f" {tag.upper()} {lvl:.4g}", color=color, fontsize=7.5, va=va, ha="right", zorder=4)
+                        # Up-shift "top" labels (S*) and down-shift "bottom"
+                        # labels (R*) so even if multiple series collide at
+                        # the same y, the SRS1..3 / RSR1..3 text strings stack
+                        # instead of overprinting.
+                        y_text_offset = label_offsets.get(tag, 0)
+                        if va == "top":
+                            y_text_offset = -y_text_offset
+                        ax.annotate(
+                            f" {tag.upper()} {lvl:.4g}",
+                            xy=(dates[-1], lvl),
+                            xytext=(4, y_text_offset),
+                            textcoords="offset points",
+                            color=color,
+                            fontsize=7.5,
+                            va=va,
+                            ha="left",
+                            zorder=4,
+                            bbox=dict(boxstyle="round,pad=0.15", facecolor="#111318", edgecolor=color, alpha=0.85, linewidth=0.5),
+                        )
 
             if self.chk_patterns.isChecked():
                 self._plot_patterns(ax, df)
@@ -606,8 +654,14 @@ class StockSectorChartWidget(QWidget):
                 
             ax.plot(dates, trend_vals, label=trend_label, color=trend_color, linestyle="--", linewidth=2.0)
             title = f"Stock: {selected} — Trend Analysis" if self.lang == "EN" else f"سهم: {selected} — تحليل الاتجاه"
-            ax.set_title(title, color="#ffffff", fontsize=12, fontweight="bold")
-            
+            # Auto-shrink the title when longer ticker names + the trailing
+            # "Trend Analysis" label would otherwise clip against the figure
+            # edge. Empirically a ~12pt bold title breaks ~around 36 chars on
+            # a 10in-wide figure; scale down from there, never below 9pt so
+            # it stays readable.
+            title_fontsize = max(9, 12 - max(0, (len(title) - 30) // 4))
+            ax.set_title(title, color="#ffffff", fontsize=title_fontsize, fontweight="bold", pad=12, loc="center")
+
         else:
             sector_map = self._get_sector_map_cached()
             df_sec = self.qe.get_sector_historical_index(
@@ -631,7 +685,8 @@ class StockSectorChartWidget(QWidget):
                 
             ax.plot(dates, trend_vals, label=trend_label, color=trend_color, linestyle="--", linewidth=2.0)
             title = f"Sector: {selected_display} Index" if self.lang == "EN" else f"قطاع: {selected_display}"
-            ax.set_title(title, color="#ffffff", fontsize=12, fontweight="bold")
+            title_fontsize = max(9, 12 - max(0, (len(title) - 30) // 4))
+            ax.set_title(title, color="#ffffff", fontsize=title_fontsize, fontweight="bold", pad=12, loc="center")
 
         if len(dates) > 0:
             last_date = dates[-1]
