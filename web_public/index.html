@@ -2938,10 +2938,17 @@
         function patternHitboxFromEvent(evt, chart) {
             if (!chart || !chart.$patternOverlayData || !Array.isArray(chart.$patternOverlayData.hitboxes)) return null;
             const rect = chart.canvas.getBoundingClientRect();
-            const scaleX = chart.canvas.width / rect.width;
-            const scaleY = chart.canvas.height / rect.height;
-            const x = (evt.clientX - rect.left) * scaleX;
-            const y = (evt.clientY - rect.top) * scaleY;
+            // Chart.js draws (and this plugin builds hitboxes) in CSS-pixel
+            // space - it internally does ctx.scale(devicePixelRatio, ...),
+            // so xScale/yScale.getPixelForValue() already return CSS
+            // pixels, matching clientX/Y - rect.left/top directly. The old
+            // extra (canvas.width / rect.width) factor re-applied the
+            // device pixel ratio a second time, so on any screen where
+            // devicePixelRatio != 1 (most Windows displays at 125%/150%
+            // scaling) the computed point landed outside every hitbox and
+            // clicking a label silently did nothing.
+            const x = evt.clientX - rect.left;
+            const y = evt.clientY - rect.top;
             const hitboxes = chart.$patternOverlayData.hitboxes;
             for (let i = hitboxes.length - 1; i >= 0; i--) {
                 const h = hitboxes[i];
@@ -3230,9 +3237,18 @@
                 if (pivots) { collect([pivots.r1, pivots.r2, pivots.r3, pivots.s1, pivots.s2, pivots.s3]); }
                 else { collect([resistance, support]); }
             }
-            if (mode === 'stock' && showPatterns && clippedPatterns.length) {
-                clippedPatterns.forEach(p => collect(Object.values(p.levels || {}).filter(v => typeof v === 'number')));
-            }
+            // Pattern price levels (necklines/targets/implied support-
+            // resistance) are intentionally NOT folded into the y-axis
+            // range anymore. A pattern's target can sit far below/above the
+            // visible price action, and including it here stretched the
+            // axis every time Patterns was switched on - squeezing the
+            // actual price line into a small vertical band and making the
+            // whole chart look "shrunk" compared to Patterns-off. Levels
+            // that end up outside the (now-stable) range are simply not
+            // drawn - see the chartArea bounds check in the patternOverlay
+            // plugin below - so nothing is silently lost, the chart's
+            // vertical scale just no longer changes when you toggle
+            // Patterns.
             let yMin, yMax;
             if (rangeValues.length > 0) {
                 const dataMin = Math.min(...rangeValues), dataMax = Math.max(...rangeValues);
@@ -3352,8 +3368,8 @@
                             // Stack sibling labels in the same bucket 16px
                             // apart vertically; cap the stack so labels never
                             // escape the chart area either way.
-                            const baseY = p.direction === 'bearish' ? chartArea.bottom - 8 - (slot - 1) * 16
-                                            : chartArea.top + 14 + (slot - 1) * 16;
+                            const baseY = p.direction === 'bearish' ? chartArea.bottom - 8 - (slot - 1) * 18
+                                            : chartArea.top + 14 + (slot - 1) * 18;
                             const labelX = xRight - 6;
                             const labelY = Math.min(Math.max(baseY, chartArea.top + 12), chartArea.bottom - 4);
 
@@ -3413,7 +3429,26 @@
                 needsOverlayUpdate = true;
             }
             if (clippedPatterns.length) {
-                chartInstance.$patternOverlayData = { patterns: clippedPatterns, hitboxes: [] };
+                // De-clutter before drawing: the detector can flag the same
+                // structure at several nearby pivot combinations (e.g. the
+                // same "Symmetrical Triangle" 2-3 times a few bars apart),
+                // which used to stack near-duplicate labels on top of each
+                // other at the right edge. Collapse same-pattern detections
+                // whose start/end bars are within 3 bars of each other down
+                // to the single highest-quality instance, and sort so the
+                // most confident pattern always claims the first (most
+                // readable) label slot in its bucket.
+                const deduped = [];
+                clippedPatterns
+                    .slice()
+                    .sort((a, b) => (b.quality || 0) - (a.quality || 0))
+                    .forEach(p => {
+                        const dup = deduped.find(q => q.pattern === p.pattern &&
+                            Math.abs(q._startIdx - p._startIdx) <= 3 &&
+                            Math.abs(q._endIdx - p._endIdx) <= 3);
+                        if (!dup) deduped.push(p);
+                    });
+                chartInstance.$patternOverlayData = { patterns: deduped, hitboxes: [] };
                 needsOverlayUpdate = true;
             }
             chartInstance.canvas.onclick = (evt) => handlePatternOverlayClick(evt, chartInstance);
