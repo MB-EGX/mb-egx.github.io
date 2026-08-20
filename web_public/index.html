@@ -883,7 +883,7 @@
     <!-- MODALS -->
     <!-- Column Chooser Modal -->
     <!-- Keyboard Shortcuts Cheat-Sheet Modal (press "?" anywhere to open) -->
-    <div id="modal-shortcuts" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+    <div id="modal-shortcuts" class="fixed inset-0 bg-black/80 hidden z-[210] flex items-center justify-center p-4">
         <div class="bg-panelbg border border-bordercol rounded-xl max-w-sm w-full p-5 space-y-3 shadow-2xl">
             <h3 class="text-base font-bold text-sky-400">⌨️ <span data-i18n="modal_shortcuts_title">Keyboard Shortcuts</span></h3>
             <div class="text-xs space-y-2 text-textmuted">
@@ -899,7 +899,7 @@
         </div>
     </div>
 
-    <div id="modal-columns" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+    <div id="modal-columns" class="fixed inset-0 bg-black/80 hidden z-[210] flex items-center justify-center p-4">
         <div class="bg-panelbg border border-bordercol rounded-xl max-w-sm w-full p-5 space-y-4 shadow-2xl max-h-[80vh] flex flex-col">
             <h3 class="text-base font-bold text-sky-400">👁️ <span data-i18n="modal_columns_title">Select Columns to Display</span></h3>
             <div class="flex gap-2">
@@ -914,7 +914,7 @@
     </div>
 
     <!-- Theme Settings Modal -->
-    <div id="modal-theme" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+    <div id="modal-theme" class="fixed inset-0 bg-black/80 hidden z-[210] flex items-center justify-center p-4">
         <div class="bg-panelbg border border-bordercol rounded-xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
             <h3 class="text-base font-bold text-sky-400">⚙️ <span data-i18n="modal_theme_title">Appearance & Theme Settings</span></h3>
             <p class="text-xs text-textmuted" data-i18n="modal_theme_desc">Choose your preferred visual dashboard palette:</p>
@@ -932,7 +932,7 @@
     </div>
 
     <!-- Signal & Terminology Guide Modal (bilingual EN/AR) -->
-    <div id="modal-guide" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+    <div id="modal-guide" class="fixed inset-0 bg-black/80 hidden z-[210] flex items-center justify-center p-4">
         <div class="bg-panelbg border border-bordercol rounded-xl max-w-4xl w-full p-5 space-y-5 shadow-2xl max-h-[85vh] overflow-y-auto">
 
             <div class="flex flex-wrap items-center justify-between gap-3">
@@ -1205,7 +1205,7 @@
     </div>
 
     <!-- Full Glossary Modal (desktop parity — data-driven from glossary.json) -->
-    <div id="modal-glossary" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+    <div id="modal-glossary" class="fixed inset-0 bg-black/80 hidden z-[210] flex items-center justify-center p-4">
         <div class="bg-panelbg border border-bordercol rounded-xl max-w-3xl w-full p-5 space-y-4 shadow-2xl max-h-[85vh] flex flex-col">
             <div class="flex items-center justify-between">
                 <h3 class="text-base font-bold text-sky-400">📖 <span data-i18n="glossary_title">Full Glossary & Chart Patterns</span></h3>
@@ -1223,7 +1223,7 @@
     </div>
 
     <!-- Clicked Pattern Detail Modal -->
-    <div id="modal-pattern-info" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+    <div id="modal-pattern-info" class="fixed inset-0 bg-black/80 hidden z-[210] flex items-center justify-center p-4">
         <div class="bg-panelbg border border-bordercol rounded-xl max-w-2xl w-full p-5 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
             <div class="flex items-center justify-between gap-3">
                 <h3 class="text-base font-bold text-amber-400">📐 <span id="pattern-info-title">Pattern Detail</span></h3>
@@ -1238,7 +1238,7 @@
     </div>
 
     <!-- Usage Analytics Modal (admin only) -->
-    <div id="modal-analytics" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+    <div id="modal-analytics" class="fixed inset-0 bg-black/80 hidden z-[210] flex items-center justify-center p-4">
         <div class="bg-panelbg border border-bordercol rounded-xl max-w-3xl w-full p-5 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
             <h3 class="text-base font-bold text-teal-400">📊 <span data-i18n="modal_analytics_title">Usage Analytics</span></h3>
             <p class="text-[11px] text-textmuted" data-i18n="modal_analytics_desc">Sessions and trading activity combined across the website (🌐) and the desktop app (🖥️). "Time on site" is approximate — measured from sign-in until the tab is switched away from or closed. Trade Value = total EGP bought + sold; Portfolio Value = cash + open positions at cost.</p>
@@ -1296,7 +1296,7 @@
     </div>
 
     <!-- Risk Calculator Modal -->
-    <div id="modal-calc" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+    <div id="modal-calc" class="fixed inset-0 bg-black/80 hidden z-[210] flex items-center justify-center p-4">
         <div class="bg-panelbg border border-bordercol rounded-xl max-w-md w-full p-5 space-y-4 shadow-2xl">
             <h3 class="text-base font-bold text-amber-400">⚖️ <span data-i18n="modal_calc_title">Interactive Risk Calculator</span></h3>
             <div class="space-y-3 text-xs">
@@ -1336,7 +1336,7 @@
     </div>
 
     <!-- Set Cash Modal -->
-    <div id="modal-cash" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+    <div id="modal-cash" class="fixed inset-0 bg-black/80 hidden z-[210] flex items-center justify-center p-4">
         <div class="bg-panelbg border border-bordercol rounded-xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
             <h3 class="text-base font-bold text-sky-400">💵 <span data-i18n="modal_cash_title">Set Available Cash Balance</span></h3>
             <input type="number" id="input-cash" placeholder="e.g. 100000" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono text-sm">
@@ -1355,7 +1355,7 @@
     </div>
 
     <!-- Portfolio Modal -->
-    <div id="modal-portfolio" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+    <div id="modal-portfolio" class="fixed inset-0 bg-black/80 hidden z-[210] flex items-center justify-center p-4">
         <div class="bg-panelbg border border-bordercol rounded-xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
             <h3 class="text-base font-bold text-purple-400">🛒 <span data-i18n="modal_portfolio_title">Open / Add Position</span></h3>
             <div class="space-y-3 text-xs">
@@ -1390,7 +1390,7 @@
     </div>
 
     <!-- Set Profit Target Modal -->
-    <div id="modal-target" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+    <div id="modal-target" class="fixed inset-0 bg-black/80 hidden z-[210] flex items-center justify-center p-4">
         <div class="bg-panelbg border border-bordercol rounded-xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
             <h3 class="text-base font-bold text-sky-400">🎯 <span data-i18n="modal_target_title">Set Profit Target</span></h3>
             <input type="hidden" id="target-ticker">
@@ -2350,6 +2350,15 @@
             if (tabId === 'tab-charts' && !chartInstance) plotChart();
             if (tabId === 'tab-strategy' && !strategyPerfData) loadStrategyPerformance();
         }
+        // NOTE: every modal below uses z-[210], one level above the chart's
+        // fullscreen wrapper (#chart-fullscreen-wrapper, z-[201] - see
+        // toggleChartMaximize()). Modals used to sit at z-50: openModal()
+        // still opened them correctly (removed the `hidden` class), but
+        // while the chart was maximized the full-screen wrapper's higher
+        // z-index painted over the entire viewport on top of them, so a
+        // modal opened from a maximized chart (e.g. clicking a pattern
+        // label) was technically open yet completely invisible - "nothing
+        // appears" on click.
         function openModal(id) {
             document.getElementById(id).classList.remove('hidden');
             if (id === 'modal-calc') { populateSelects(); runRiskCalc(); }
