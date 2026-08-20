@@ -1,13 +1,13 @@
 {
   "ticker": "UPMS.CA",
-  "last_data_date": "2026-08-19",
+  "last_data_date": "2026-08-20",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "UPMS.CA",
     "Sector": "Health Care & Pharmaceuticals",
     "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
-      "Higher-low swing structure confirmed",
+      "No confirmed higher-low swing structure yet",
       "No bullish pattern match at required quality",
       "Avg volume below 100,000 long-term floor"
     ],
@@ -16,19 +16,19 @@
     "Beta": null,
     "Dividend Yield %": null,
     "Market Cap": null,
-    "1W Return %": -3.42,
-    "1M Return %": -13.47,
-    "YTD Return %": 61.11,
-    "1Y Return %": 73.2,
-    "3Y Return %": 791.96,
-    "External Rating Consensus": -0.5,
+    "1W Return %": -1.06,
+    "1M Return %": -11.63,
+    "YTD Return %": 60.26,
+    "1Y Return %": 70.2,
+    "3Y Return %": 787.22,
+    "External Rating Consensus": -0.375,
     "External Rating Note": null,
     "Action": "📈 ACCUMULATE",
-    "Rank Score": 31.3,
-    "Current Price": 11.31,
-    "Target Entry (VWAP)": 10.7079,
-    "Suggested Stop-Loss": 9.3557,
-    "Take-Profit Target": 11.776,
+    "Rank Score": 28.5,
+    "Current Price": 11.25,
+    "Target Entry (VWAP)": 10.7039,
+    "Suggested Stop-Loss": 9.4829,
+    "Take-Profit Target": 11.7202,
     "Resistance (52W High)": 13.61,
     "Support (52W Low)": 6.96,
     "Pivot Point": 11.62,
@@ -38,27 +38,27 @@
     "S1": 10.85,
     "S2": 10.27,
     "S3": 9.5,
-    "Projected Gain (%)": 3.42,
-    "Pattern Conf (%)": 52.8,
-    "Projected Range 95%": "-0.42% to 13.01%",
+    "Projected Gain (%)": 3.48,
+    "Pattern Conf (%)": 40.64,
+    "Projected Range 95%": "-4.65% to 13.57%",
     "Kelly %": 0.0,
-    "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish (Low Trend Strength) | awaiting confirmation | weekly aligned",
+    "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 15.84,
-      "projected": 5.13,
-      "range": 3.27,
+      "pattern": 12.19,
+      "projected": 5.22,
+      "range": 3.23,
       "trend_bonus": 15.0,
       "confidence_weight": 0.8
     },
     "Regime": "Volatile Range",
-    "Trend Class": "Weak Bullish (Low Trend Strength)",
-    "RSI-14": 49.9,
-    "ADX-14": 11.8,
-    "Vol Z-Score": -0.79,
+    "Trend Class": "Weak Bullish",
+    "RSI-14": 49.6,
+    "ADX-14": 11.3,
+    "Vol Z-Score": -0.26,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0241,
+    "MACD Histogram": 0.0147,
     "Bollinger %B": 0.534,
-    "Avg Volume (20D)": 54073,
+    "Avg Volume (20D)": 55518,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -221,7 +221,8 @@
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
       "2026-08-18 00:00:00",
-      "2026-08-19 00:00:00"
+      "2026-08-19 00:00:00",
+      "2026-08-20 00:00:00"
     ],
     "close": [
       8.24,
@@ -382,7 +383,8 @@
       11.43,
       11.28,
       11.29,
-      11.31
+      11.31,
+      11.25
     ],
     "open": [
       8.01,
@@ -543,7 +545,8 @@
       11.49,
       11.47,
       11.28,
-      11.28
+      11.28,
+      11.3
     ],
     "high": [
       8.25,
@@ -704,7 +707,8 @@
       11.67,
       11.47,
       11.41,
-      11.41
+      11.41,
+      11.3
     ],
     "low": [
       7.73,
@@ -865,7 +869,8 @@
       11.15,
       11.23,
       11.26,
-      11.25
+      11.25,
+      11.16
     ],
     "volume": [
       47340,
@@ -1026,7 +1031,8 @@
       52023,
       35135,
       16457,
-      22339
+      22339,
+      45359
     ],
     "vwap": [
       8.0733,
@@ -1187,7 +1193,8 @@
       10.8881,
       10.7607,
       10.7306,
-      10.7079
+      10.7079,
+      10.7039
     ],
     "resistance": 13.61,
     "support": 6.96,
@@ -1232,23 +1239,6 @@
           "support_end": 8.4107
         },
         "quality": 0.85
-      },
-      {
-        "pattern": "Symmetrical Triangle",
-        "direction": "neutral",
-        "start_index": 106,
-        "end_index": 156,
-        "start_date": "2026-06-05",
-        "end_date": "2026-08-17",
-        "levels": {
-          "resistance_start": 14.4187,
-          "resistance_end": 12.075,
-          "support_start": 8.2575,
-          "support_end": 10.0686,
-          "apex_price": 10.9432
-        },
-        "quality": 0.75,
-        "apex_index": 180.14483154501704
       }
     ]
   }

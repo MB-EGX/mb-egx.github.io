@@ -1,6 +1,6 @@
 {
   "ticker": "GSSC.CA",
-  "last_data_date": "2026-08-19",
+  "last_data_date": "2026-08-20",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "GSSC.CA",
@@ -11,24 +11,24 @@
       "Double Bottom match (quality 0.85)",
       "Avg volume below 100,000 long-term floor"
     ],
-    "P/E Ratio": 31.13,
+    "P/E Ratio": 30.92,
     "EPS": 9.1547,
     "Beta": 0.68,
     "Dividend Yield %": 1.47,
-    "Market Cap": 4990000000.0,
-    "1W Return %": 1.05,
-    "1M Return %": 4.01,
-    "YTD Return %": 19.3,
-    "1Y Return %": 21.84,
-    "3Y Return %": 331.63,
-    "External Rating Consensus": 0.875,
+    "Market Cap": 4950000000.0,
+    "1W Return %": 0.86,
+    "1M Return %": 4.07,
+    "YTD Return %": 18.49,
+    "1Y Return %": 21.93,
+    "3Y Return %": 331.73,
+    "External Rating Consensus": -0.125,
     "External Rating Note": null,
-    "Action": "🚫 ILLIQUID - 📈 ACCUMULATE",
-    "Rank Score": 5.3,
-    "Current Price": 285.0,
-    "Target Entry (VWAP)": 283.1845,
-    "Suggested Stop-Loss": 254.0914,
-    "Take-Profit Target": 307.2585,
+    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release)",
+    "Rank Score": 4.4,
+    "Current Price": 283.06,
+    "Target Entry (VWAP)": 283.06,
+    "Suggested Stop-Loss": 253.0843,
+    "Take-Profit Target": 304.7707,
     "Resistance (52W High)": 301.0,
     "Support (52W Low)": 205.05,
     "Pivot Point": 280.3367,
@@ -38,27 +38,27 @@
     "S1": 271.6733,
     "S2": 264.3367,
     "S3": 255.6733,
-    "Projected Gain (%)": 7.11,
-    "Pattern Conf (%)": 56.18,
-    "Projected Range 95%": "-1.44% to 14.35%",
-    "Kelly %": 0.0,
-    "Signal Reason": "🚫 ILLIQUID - 📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | vol x1.20",
+    "Projected Gain (%)": 6.97,
+    "Pattern Conf (%)": 70.67,
+    "Projected Range 95%": "3.89% to 11.19%",
+    "Kelly %": 15.09,
+    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) | trend=Strong Bullish | awaiting confirmation",
     "Score Breakdown": {
-      "pattern": 16.85,
-      "projected": 10.67,
-      "range": 4.17,
-      "trend_bonus": -25.0,
+      "pattern": 21.2,
+      "projected": 10.46,
+      "range": 4.07,
+      "trend_bonus": -30.2,
       "confidence_weight": 0.8
     },
     "Regime": "Volatile Range",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 57.4,
-    "ADX-14": 23.9,
-    "Vol Z-Score": 0.13,
+    "RSI-14": 56.4,
+    "ADX-14": 24.5,
+    "Vol Z-Score": -0.2,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 2.3983,
-    "Bollinger %B": 0.723,
-    "Avg Volume (20D)": 46046,
+    "MACD Histogram": 1.9381,
+    "Bollinger %B": 0.684,
+    "Avg Volume (20D)": 47272,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -221,7 +221,8 @@
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
       "2026-08-18 00:00:00",
-      "2026-08-19 00:00:00"
+      "2026-08-19 00:00:00",
+      "2026-08-20 00:00:00"
     ],
     "close": [
       230.12,
@@ -382,7 +383,8 @@
       279.01,
       281.17,
       290.0,
-      285.0
+      285.0,
+      283.06
     ],
     "open": [
       235.45,
@@ -543,7 +545,8 @@
       278.6,
       279.01,
       281.17,
-      291.0
+      291.0,
+      285.0
     ],
     "high": [
       236.4,
@@ -704,7 +707,8 @@
       281.5,
       286.25,
       301.0,
-      291.1
+      291.1,
+      285.0
     ],
     "low": [
       229.3,
@@ -865,7 +869,8 @@
       278.05,
       279.01,
       282.0,
-      283.0
+      283.0,
+      282.2
     ],
     "volume": [
       2420,
@@ -1026,7 +1031,8 @@
       9524,
       24162,
       287063,
-      55202
+      55202,
+      32941
     ],
     "vwap": [
       231.94,
@@ -1187,7 +1193,8 @@
       277.9346,
       278.5265,
       282.708,
-      283.1845
+      283.1845,
+      283.3344
     ],
     "resistance": 301.0,
     "support": 205.05,

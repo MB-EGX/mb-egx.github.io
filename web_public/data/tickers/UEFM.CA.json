@@ -1,6 +1,6 @@
 {
   "ticker": "UEFM.CA",
-  "last_data_date": "2026-08-19",
+  "last_data_date": "2026-08-20",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "UEFM.CA",
@@ -16,19 +16,19 @@
     "Beta": 0.13,
     "Dividend Yield %": 3.67,
     "Market Cap": 3770000000.0,
-    "1W Return %": -6.24,
-    "1M Return %": -2.05,
-    "YTD Return %": 12.68,
-    "1Y Return %": 0.3,
-    "3Y Return %": 334.84,
-    "External Rating Consensus": -0.75,
+    "1W Return %": -5.21,
+    "1M Return %": -0.26,
+    "YTD Return %": 12.62,
+    "1Y Return %": 4.97,
+    "3Y Return %": 334.63,
+    "External Rating Consensus": -0.25,
     "External Rating Note": null,
-    "Action": "🚫 ILLIQUID - 📈 ACCUMULATE",
-    "Rank Score": -7.3,
-    "Current Price": 539.11,
-    "Target Entry (VWAP)": 539.11,
-    "Suggested Stop-Loss": 473.73,
-    "Take-Profit Target": 553.666,
+    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release)",
+    "Rank Score": -18.4,
+    "Current Price": 538.85,
+    "Target Entry (VWAP)": 538.85,
+    "Suggested Stop-Loss": 474.0171,
+    "Take-Profit Target": 553.399,
     "Resistance (52W High)": 625.0,
     "Support (52W Low)": 432.0,
     "Pivot Point": 566.56,
@@ -38,27 +38,27 @@
     "S1": 544.12,
     "S2": 519.56,
     "S3": 497.12,
-    "Projected Gain (%)": -3.07,
-    "Pattern Conf (%)": 59.11,
-    "Projected Range 95%": "-5.25% to -0.83%",
+    "Projected Gain (%)": -5.94,
+    "Pattern Conf (%)": 44.42,
+    "Projected Range 95%": "-9.69% to -3.87%",
     "Kelly %": 0.0,
-    "Signal Reason": "🚫 ILLIQUID - 📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation",
+    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) | trend=Strong Bullish | awaiting confirmation",
     "Score Breakdown": {
-      "pattern": 17.73,
-      "projected": -4.6,
+      "pattern": 13.33,
+      "projected": -8.91,
       "range": 2.77,
-      "trend_bonus": -25.0,
+      "trend_bonus": -30.2,
       "confidence_weight": 0.8
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 52.1,
-    "ADX-14": 29.3,
-    "Vol Z-Score": -0.05,
-    "MACD Signal": "Bullish",
-    "MACD Histogram": 0.9581,
-    "Bollinger %B": 0.558,
-    "Avg Volume (20D)": 7677,
+    "RSI-14": 52.0,
+    "ADX-14": 28.6,
+    "Vol Z-Score": -0.57,
+    "MACD Signal": "🔴 Bearish Cross",
+    "MACD Histogram": -0.1205,
+    "Bollinger %B": 0.557,
+    "Avg Volume (20D)": 7639,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -221,7 +221,8 @@
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
       "2026-08-18 00:00:00",
-      "2026-08-19 00:00:00"
+      "2026-08-19 00:00:00",
+      "2026-08-20 00:00:00"
     ],
     "close": [
       473.88,
@@ -382,7 +383,8 @@
       568.68,
       543.52,
       544.63,
-      539.11
+      539.11,
+      538.85
     ],
     "open": [
       476.41,
@@ -543,7 +545,8 @@
       585.0,
       568.25,
       543.52,
-      545.0
+      545.0,
+      537.0
     ],
     "high": [
       478.4,
@@ -704,7 +707,8 @@
       585.0,
       570.0,
       555.0,
-      546.99
+      546.99,
+      543.47
     ],
     "low": [
       455.1,
@@ -865,7 +869,8 @@
       566.0,
       531.0,
       535.11,
-      536.01
+      536.01,
+      536.18
     ],
     "volume": [
       1740,
@@ -1026,7 +1031,8 @@
       3972,
       29932,
       6289,
-      7130
+      7130,
+      1421
     ],
     "vwap": [
       469.1267,
@@ -1187,7 +1193,8 @@
       557.2039,
       555.4222,
       555.5763,
-      555.256
+      555.256,
+      555.2822
     ],
     "resistance": 625.0,
     "support": 432.0,

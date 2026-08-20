@@ -1,6 +1,6 @@
 {
   "ticker": "SMPP.CA",
-  "last_data_date": "2026-08-19",
+  "last_data_date": "2026-08-20",
   "sector": "Paper & Packaging",
   "matrix": {
     "Ticker": "SMPP.CA",
@@ -23,12 +23,12 @@
     "3Y Return %": 8.49,
     "External Rating Consensus": 0.375,
     "External Rating Note": null,
-    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (X-OVER + MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP) [💥 SQUEEZE]",
-    "Rank Score": 6.1,
+    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP) [💥 SQUEEZE]",
+    "Rank Score": -1.7,
     "Current Price": 115.0,
     "Target Entry (VWAP)": 115.0,
-    "Suggested Stop-Loss": 72.88,
-    "Take-Profit Target": 168.455,
+    "Suggested Stop-Loss": 74.6943,
+    "Take-Profit Target": 166.1871,
     "Resistance (52W High)": 150.0,
     "Support (52W Low)": 80.1,
     "Pivot Point": 112.0833,
@@ -41,24 +41,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 0.83,
-    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (X-OVER + MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP) [💥 SQUEEZE] | trend=Weak Bullish (Low Trend Strength) | awaiting confirmation | volatility squeeze | positive money flow",
+    "Kelly %": 0.85,
+    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP) [💥 SQUEEZE] | trend=Weak Bullish (Low Trend Strength) | awaiting confirmation | volatility squeeze | positive money flow | vol x1.05",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
       "range": 2.5,
-      "trend_bonus": 7.05,
+      "trend_bonus": -5.2,
       "confidence_weight": 0.64
     },
     "Regime": "N/A",
     "Trend Class": "Weak Bullish (Low Trend Strength)",
     "RSI-14": 53.6,
-    "ADX-14": 9.6,
-    "Vol Z-Score": -0.09,
-    "MACD Signal": "Bearish",
-    "MACD Histogram": -0.6905,
-    "Bollinger %B": 0.499,
-    "Avg Volume (20D)": 65,
+    "ADX-14": 8.9,
+    "Vol Z-Score": 0.04,
+    "MACD Signal": "🟢 Bullish Cross",
+    "MACD Histogram": 0.0178,
+    "Bollinger %B": 0.523,
+    "Avg Volume (20D)": 54,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
@@ -151,7 +151,8 @@
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
       "2026-08-18 00:00:00",
-      "2026-08-19 00:00:00"
+      "2026-08-19 00:00:00",
+      "2026-08-20 00:00:00"
     ],
     "close": [
       110.0,
@@ -242,6 +243,7 @@
       103.05,
       103.05,
       103.05,
+      115.0,
       115.0
     ],
     "open": [
@@ -333,6 +335,7 @@
       132.0,
       132.0,
       132.0,
+      103.2,
       103.2
     ],
     "high": [
@@ -424,6 +427,7 @@
       132.0,
       132.0,
       132.0,
+      115.0,
       115.0
     ],
     "low": [
@@ -515,6 +519,7 @@
       101.2,
       101.2,
       101.2,
+      103.2,
       103.2
     ],
     "volume": [
@@ -606,6 +611,7 @@
       0,
       0,
       0,
+      57,
       57
     ],
     "vwap": [
@@ -697,7 +703,8 @@
       119.3023,
       119.379,
       120.3643,
-      121.5056
+      121.5056,
+      118.4354
     ],
     "resistance": 150.0,
     "support": 80.1,

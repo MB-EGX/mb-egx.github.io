@@ -1,33 +1,33 @@
 {
   "ticker": "ISPH.CA",
-  "last_data_date": "2026-08-19",
+  "last_data_date": "2026-08-20",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "ISPH.CA",
     "Sector": "Health Care & Pharmaceuticals",
-    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Confirmed": true,
     "Long-Term Setup Reasons": [
-      "No confirmed higher-low swing structure yet",
+      "Higher-low swing structure confirmed",
       "Ascending Triangle match (quality 1.00)"
     ],
-    "P/E Ratio": 15.06,
+    "P/E Ratio": 15.08,
     "EPS": 0.8634,
     "Beta": 0.71,
     "Dividend Yield %": 0.98,
-    "Market Cap": 13100000000.0,
-    "1W Return %": -4.76,
-    "1M Return %": 13.34,
-    "YTD Return %": 10.92,
-    "1Y Return %": 22.64,
-    "3Y Return %": 499.08,
-    "External Rating Consensus": -0.375,
+    "Market Cap": 13120000000.0,
+    "1W Return %": -3.91,
+    "1M Return %": 11.86,
+    "YTD Return %": 11.09,
+    "1Y Return %": 21.8,
+    "3Y Return %": 511.27,
+    "External Rating Consensus": -0.625,
     "External Rating Note": null,
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 25.0,
-    "Current Price": 13.0,
-    "Target Entry (VWAP)": 13.0,
-    "Suggested Stop-Loss": 10.4714,
-    "Take-Profit Target": 13.351,
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 41.8,
+    "Current Price": 13.02,
+    "Target Entry (VWAP)": 13.02,
+    "Suggested Stop-Loss": 10.7643,
+    "Take-Profit Target": 13.697,
     "Resistance (52W High)": 16.0,
     "Support (52W Low)": 9.63,
     "Pivot Point": 14.0433,
@@ -37,27 +37,27 @@
     "S1": 12.0867,
     "S2": 11.0933,
     "S3": 9.1367,
-    "Projected Gain (%)": 1.1,
-    "Pattern Conf (%)": 40.12,
-    "Projected Range 95%": "-5.94% to 12.53%",
+    "Projected Gain (%)": 4.5,
+    "Pattern Conf (%)": 43.29,
+    "Projected Range 95%": "-4.69% to 13.53%",
     "Kelly %": 0.0,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 12.04,
-      "projected": 1.65,
-      "range": 2.65,
-      "trend_bonus": 15.0,
+      "pattern": 12.99,
+      "projected": 6.75,
+      "range": 2.66,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.8
     },
     "Regime": "Volatile Range",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 53.1,
-    "ADX-14": 21.8,
-    "Vol Z-Score": -0.64,
+    "RSI-14": 53.2,
+    "ADX-14": 21.9,
+    "Vol Z-Score": -0.6,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0404,
-    "Bollinger %B": 0.601,
-    "Avg Volume (20D)": 11157546,
+    "MACD Histogram": 0.0024,
+    "Bollinger %B": 0.592,
+    "Avg Volume (20D)": 11228612,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -220,7 +220,8 @@
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
       "2026-08-18 00:00:00",
-      "2026-08-19 00:00:00"
+      "2026-08-19 00:00:00",
+      "2026-08-20 00:00:00"
     ],
     "close": [
       11.07,
@@ -381,7 +382,8 @@
       13.08,
       13.49,
       13.21,
-      13.0
+      13.0,
+      13.02
     ],
     "open": [
       11.06,
@@ -542,7 +544,8 @@
       13.58,
       13.1,
       13.49,
-      13.23
+      13.23,
+      13.06
     ],
     "high": [
       11.15,
@@ -703,7 +706,8 @@
       13.74,
       13.8,
       13.8,
-      13.39
+      13.39,
+      13.44
     ],
     "low": [
       10.95,
@@ -864,7 +868,8 @@
       13.05,
       13.08,
       13.11,
-      13.0
+      13.0,
+      12.75
     ],
     "volume": [
       3540000,
@@ -1025,7 +1030,8 @@
       8719401,
       10928535,
       5609800,
-      5076436
+      5076436,
+      5559404
     ],
     "vwap": [
       11.0567,
@@ -1186,7 +1192,8 @@
       13.019,
       13.061,
       13.1049,
-      13.1586
+      13.1586,
+      13.1833
     ],
     "resistance": 16.0,
     "support": 9.63,
@@ -1322,6 +1329,21 @@
         },
         "quality": 1.0,
         "apex_index": 140.82089552238804
+      },
+      {
+        "pattern": "Price Channel (Rising)",
+        "direction": "bullish",
+        "start_index": 125,
+        "end_index": 158,
+        "start_date": "2026-07-04",
+        "end_date": "2026-08-19",
+        "levels": {
+          "resistance_start": 11.9717,
+          "resistance_end": 14.492,
+          "support_start": 10.1564,
+          "support_end": 12.3534
+        },
+        "quality": 0.85
       },
       {
         "pattern": "Price Channel (Falling)",

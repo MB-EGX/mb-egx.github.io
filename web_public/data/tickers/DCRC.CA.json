@@ -1,6 +1,6 @@
 {
   "ticker": "DCRC.CA",
-  "last_data_date": "2026-08-19",
+  "last_data_date": "2026-08-20",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "DCRC.CA",
@@ -20,15 +20,15 @@
     "1M Return %": 8.7,
     "YTD Return %": 20.11,
     "1Y Return %": 7.53,
-    "3Y Return %": 163.16,
+    "3Y Return %": 170.12,
     "External Rating Consensus": 1.75,
     "External Rating Note": null,
-    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE]",
-    "Rank Score": -0.3,
+    "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release)",
+    "Rank Score": -9.8,
     "Current Price": 50.0,
-    "Target Entry (VWAP)": 44.2503,
-    "Suggested Stop-Loss": 39.5586,
-    "Take-Profit Target": 63.4018,
+    "Target Entry (VWAP)": 45.3324,
+    "Suggested Stop-Loss": 40.9871,
+    "Take-Profit Target": 51.35,
     "Resistance (52W High)": 52.0,
     "Support (52W Low)": 21.3,
     "Pivot Point": 43.51,
@@ -38,27 +38,27 @@
     "S1": 39.02,
     "S2": 35.51,
     "S3": 31.02,
-    "Projected Gain (%)": "N/A",
-    "Pattern Conf (%)": "N/A",
-    "Projected Range 95%": "N/A",
-    "Kelly %": 1.07,
-    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume) [💥 SQUEEZE] | trend=Strong Bullish | awaiting confirmation | volatility squeeze | positive money flow",
+    "Projected Gain (%)": -9.96,
+    "Pattern Conf (%)": 34.68,
+    "Projected Range 95%": "-9.96% to -9.96%",
+    "Kelly %": 0.0,
+    "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) | trend=Strong Bullish | awaiting confirmation | positive money flow",
     "Score Breakdown": {
-      "pattern": 0.0,
-      "projected": 0.0,
+      "pattern": 10.4,
+      "projected": -14.94,
       "range": 4.67,
-      "trend_bonus": -5.2,
+      "trend_bonus": -15.2,
       "confidence_weight": 0.65
     },
-    "Regime": "N/A",
+    "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
     "RSI-14": 54.1,
     "ADX-14": 79.9,
-    "Vol Z-Score": -0.45,
-    "MACD Signal": "🟢 Bullish Cross",
-    "MACD Histogram": 0.0547,
-    "Bollinger %B": 0.548,
-    "Avg Volume (20D)": 9876,
+    "Vol Z-Score": -0.37,
+    "MACD Signal": "Bullish",
+    "MACD Histogram": 0.2001,
+    "Bollinger %B": 0.557,
+    "Avg Volume (20D)": 6882,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
@@ -154,7 +154,8 @@
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
       "2026-08-18 00:00:00",
-      "2026-08-19 00:00:00"
+      "2026-08-19 00:00:00",
+      "2026-08-20 00:00:00"
     ],
     "close": [
       50.0,
@@ -246,6 +247,7 @@
       42.53,
       42.53,
       42.53,
+      50.0,
       50.0,
       50.0,
       50.0
@@ -342,6 +344,7 @@
       48.0,
       49.96,
       49.96,
+      50.0,
       50.0
     ],
     "high": [
@@ -434,6 +437,7 @@
       48.0,
       48.0,
       48.0,
+      50.0,
       50.0,
       50.0,
       50.0
@@ -530,6 +534,7 @@
       40.0,
       43.05,
       43.05,
+      50.0,
       50.0
     ],
     "volume": [
@@ -624,6 +629,7 @@
       819,
       59349,
       0,
+      25,
       25
     ],
     "vwap": [
@@ -718,7 +724,8 @@
       43.181,
       44.2502,
       44.2499,
-      44.2503
+      44.2503,
+      45.3324
     ],
     "resistance": 52.0,
     "support": 21.3,

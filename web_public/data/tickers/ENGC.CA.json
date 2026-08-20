@@ -1,33 +1,33 @@
 {
   "ticker": "ENGC.CA",
-  "last_data_date": "2026-08-19",
+  "last_data_date": "2026-08-20",
   "sector": "Construction & Engineering",
   "matrix": {
     "Ticker": "ENGC.CA",
     "Sector": "Construction & Engineering",
-    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Confirmed": true,
     "Long-Term Setup Reasons": [
-      "No confirmed higher-low swing structure yet",
+      "Higher-low swing structure confirmed",
       "Ascending Triangle match (quality 0.91)"
     ],
-    "P/E Ratio": 8.1,
+    "P/E Ratio": 8.12,
     "EPS": 5.5544,
     "Beta": 0.4,
     "Dividend Yield %": null,
-    "Market Cap": 6550000000.0,
-    "1W Return %": -9.02,
-    "1M Return %": 4.65,
-    "YTD Return %": 35.38,
-    "1Y Return %": 83.08,
-    "3Y Return %": 640.74,
+    "Market Cap": 6560000000.0,
+    "1W Return %": -10.2,
+    "1M Return %": 7.38,
+    "YTD Return %": 35.68,
+    "1Y Return %": 83.11,
+    "3Y Return %": 632.34,
     "External Rating Consensus": -0.625,
     "External Rating Note": null,
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 33.9,
-    "Current Price": 45.0,
-    "Target Entry (VWAP)": 45.0,
-    "Suggested Stop-Loss": 34.7486,
-    "Take-Profit Target": 46.215,
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release)",
+    "Rank Score": 14.7,
+    "Current Price": 45.1,
+    "Target Entry (VWAP)": 45.1,
+    "Suggested Stop-Loss": 34.7829,
+    "Take-Profit Target": 46.3177,
     "Resistance (52W High)": 54.79,
     "Support (52W Low)": 29.0,
     "Pivot Point": 48.9,
@@ -37,27 +37,27 @@
     "S1": 46.8,
     "S2": 43.71,
     "S3": 41.61,
-    "Projected Gain (%)": 1.15,
-    "Pattern Conf (%)": 75.66,
-    "Projected Range 95%": "-0.82% to 2.86%",
+    "Projected Gain (%)": -4.18,
+    "Pattern Conf (%)": 39.06,
+    "Projected Range 95%": "-12.6% to -0.21%",
     "Kelly %": 0.0,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | positive money flow",
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) | trend=Strong Bullish | awaiting confirmation | positive money flow",
     "Score Breakdown": {
-      "pattern": 22.7,
-      "projected": 1.72,
-      "range": 3.1,
-      "trend_bonus": 15.0,
+      "pattern": 11.72,
+      "projected": -6.27,
+      "range": 3.12,
+      "trend_bonus": 9.8,
       "confidence_weight": 0.8
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 51.9,
-    "ADX-14": 26.6,
-    "Vol Z-Score": -0.12,
+    "RSI-14": 52.0,
+    "ADX-14": 25.9,
+    "Vol Z-Score": -0.54,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.4983,
-    "Bollinger %B": 0.565,
-    "Avg Volume (20D)": 467496,
+    "MACD Histogram": 0.1517,
+    "Bollinger %B": 0.563,
+    "Avg Volume (20D)": 449270,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -220,7 +220,8 @@
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
       "2026-08-18 00:00:00",
-      "2026-08-19 00:00:00"
+      "2026-08-19 00:00:00",
+      "2026-08-20 00:00:00"
     ],
     "close": [
       34.09,
@@ -381,7 +382,8 @@
       49.89,
       51.2,
       50.0,
-      45.0
+      45.0,
+      45.1
     ],
     "open": [
       34.0,
@@ -542,7 +544,8 @@
       50.0,
       49.89,
       51.2,
-      50.0
+      50.0,
+      45.1
     ],
     "high": [
       34.79,
@@ -703,7 +706,8 @@
       50.72,
       54.79,
       51.79,
-      50.0
+      50.0,
+      47.5
     ],
     "low": [
       33.75,
@@ -864,7 +868,8 @@
       49.11,
       49.89,
       49.6,
-      44.31
+      44.31,
+      45.0
     ],
     "volume": [
       38810,
@@ -1025,7 +1030,8 @@
       199327,
       1604655,
       327830,
-      425223
+      425223,
+      253417
     ],
     "vwap": [
       34.21,
@@ -1186,7 +1192,8 @@
       43.5451,
       45.0396,
       45.3135,
-      45.489
+      45.489,
+      45.7543
     ],
     "resistance": 54.79,
     "support": 29.0,
@@ -1291,6 +1298,21 @@
           "resistance_end": 35.0458,
           "support_start": 30.6553,
           "support_end": 32.7445
+        },
+        "quality": 0.85
+      },
+      {
+        "pattern": "Price Channel (Rising)",
+        "direction": "bullish",
+        "start_index": 116,
+        "end_index": 158,
+        "start_date": "2026-06-21",
+        "end_date": "2026-08-19",
+        "levels": {
+          "resistance_start": 36.8602,
+          "resistance_end": 50.7973,
+          "support_start": 26.8805,
+          "support_end": 41.6212
         },
         "quality": 0.85
       },

@@ -1,13 +1,13 @@
 {
   "ticker": "IBCT.CA",
-  "last_data_date": "2026-08-19",
+  "last_data_date": "2026-08-20",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "IBCT.CA",
     "Sector": "Non-Bank Financial Services",
-    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Confirmed": true,
     "Long-Term Setup Reasons": [
-      "No confirmed higher-low swing structure yet",
+      "Higher-low swing structure confirmed",
       "Double Bottom match (quality 1.00)"
     ],
     "P/E Ratio": null,
@@ -15,19 +15,19 @@
     "Beta": null,
     "Dividend Yield %": null,
     "Market Cap": null,
-    "1W Return %": -8.37,
-    "1M Return %": -9.47,
-    "YTD Return %": 8.95,
-    "1Y Return %": 34.76,
-    "3Y Return %": 822.14,
-    "External Rating Consensus": -1.125,
-    "External Rating Note": "Diverges from external consensus (-1.1/2, bearish)",
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 33.1,
-    "Current Price": 12.91,
+    "1W Return %": -5.43,
+    "1M Return %": -8.31,
+    "YTD Return %": 11.73,
+    "1Y Return %": 39.52,
+    "3Y Return %": 845.71,
+    "External Rating Consensus": -0.5,
+    "External Rating Note": null,
+    "Action": "⚡ BREAKOUT BUY (X-OVER) (Unconfirmed: low ADX/volume, no squeeze release)",
+    "Rank Score": 26.0,
+    "Current Price": 13.24,
     "Target Entry (VWAP)": 12.91,
-    "Suggested Stop-Loss": 10.8557,
-    "Take-Profit Target": 13.2586,
+    "Suggested Stop-Loss": 11.2057,
+    "Take-Profit Target": 13.5975,
     "Resistance (52W High)": 16.09,
     "Support (52W Low)": 9.62,
     "Pivot Point": 13.93,
@@ -37,27 +37,27 @@
     "S1": 13.27,
     "S2": 12.64,
     "S3": 11.98,
-    "Projected Gain (%)": 0.89,
-    "Pattern Conf (%)": 75.22,
-    "Projected Range 95%": "-0.22% to 2.81%",
+    "Projected Gain (%)": 0.06,
+    "Pattern Conf (%)": 57.89,
+    "Projected Range 95%": "-4.37% to 3.63%",
     "Kelly %": 0.0,
-    "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish | awaiting confirmation | vol x1.07",
+    "Signal Reason": "⚡ BREAKOUT BUY (X-OVER) (Unconfirmed: low ADX/volume, no squeeze release) | trend=Strong Bullish | awaiting confirmation",
     "Score Breakdown": {
-      "pattern": 22.57,
-      "projected": 1.33,
-      "range": 2.54,
-      "trend_bonus": 15.0,
+      "pattern": 17.37,
+      "projected": 0.09,
+      "range": 2.8,
+      "trend_bonus": 12.25,
       "confidence_weight": 0.8
     },
     "Regime": "Volatile Range",
-    "Trend Class": "Weak Bullish",
-    "RSI-14": 48.5,
-    "ADX-14": 21.5,
-    "Vol Z-Score": 0.09,
+    "Trend Class": "Strong Bullish",
+    "RSI-14": 50.8,
+    "ADX-14": 20.2,
+    "Vol Z-Score": -0.93,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0666,
-    "Bollinger %B": 0.499,
-    "Avg Volume (20D)": 298254,
+    "MACD Histogram": 0.041,
+    "Bollinger %B": 0.57,
+    "Avg Volume (20D)": 286319,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -220,7 +220,8 @@
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
       "2026-08-18 00:00:00",
-      "2026-08-19 00:00:00"
+      "2026-08-19 00:00:00",
+      "2026-08-20 00:00:00"
     ],
     "close": [
       10.52,
@@ -381,7 +382,8 @@
       13.9,
       13.75,
       13.48,
-      12.91
+      12.91,
+      13.24
     ],
     "open": [
       10.39,
@@ -542,7 +544,8 @@
       14.4,
       13.92,
       13.75,
-      13.46
+      13.46,
+      12.96
     ],
     "high": [
       10.94,
@@ -703,7 +706,8 @@
       14.59,
       14.0,
       13.74,
-      13.48
+      13.48,
+      13.45
     ],
     "low": [
       10.0,
@@ -864,7 +868,8 @@
       13.8,
       13.7,
       13.4,
-      12.17
+      12.17,
+      12.96
     ],
     "volume": [
       178040,
@@ -1025,7 +1030,8 @@
       148377,
       260879,
       409825,
-      317955
+      317955,
+      85800
     ],
     "vwap": [
       10.4867,
@@ -1186,7 +1192,8 @@
       13.0346,
       13.0031,
       12.9964,
-      12.9484
+      12.9484,
+      12.91
     ],
     "resistance": 16.09,
     "support": 9.62,
@@ -1371,6 +1378,23 @@
           "target": 13.515
         },
         "quality": 0.8
+      },
+      {
+        "pattern": "Symmetrical Triangle",
+        "direction": "neutral",
+        "start_index": 125,
+        "end_index": 158,
+        "start_date": "2026-07-04",
+        "end_date": "2026-08-19",
+        "levels": {
+          "resistance_start": 14.9889,
+          "resistance_end": 13.9295,
+          "support_start": 10.1028,
+          "support_end": 12.1449,
+          "apex_price": 13.3199
+        },
+        "quality": 0.75,
+        "apex_index": 176.98753575191932
       }
     ]
   }

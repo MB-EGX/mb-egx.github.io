@@ -1,6 +1,6 @@
 {
   "ticker": "AMII.CA",
-  "last_data_date": "2026-08-19",
+  "last_data_date": "2026-08-20",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "AMII.CA",
@@ -8,26 +8,26 @@
     "Long-Term Setup Confirmed": true,
     "Long-Term Setup Reasons": [
       "Not enough history for a long-term setup check",
-      "Substituted provider 1Y return (192.63%) for pattern/swing check - insufficient local history"
+      "Substituted provider 1Y return (200.59%) for pattern/swing check - insufficient local history"
     ],
-    "P/E Ratio": 2355.93,
+    "P/E Ratio": 2572.88,
     "EPS": 0.0059,
     "Beta": -0.37,
     "Dividend Yield %": null,
-    "Market Cap": 1040000000.0,
-    "1W Return %": -1.07,
-    "1M Return %": 24.66,
-    "YTD Return %": 70.34,
-    "1Y Return %": 192.63,
-    "3Y Return %": 892.86,
-    "External Rating Consensus": -0.25,
+    "Market Cap": 1140000000.0,
+    "1W Return %": 3.55,
+    "1M Return %": 37.38,
+    "YTD Return %": 86.03,
+    "1Y Return %": 200.59,
+    "3Y Return %": 981.97,
+    "External Rating Consensus": 2.0,
     "External Rating Note": null,
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release)",
-    "Rank Score": 5.9,
-    "Current Price": 13.9,
-    "Target Entry (VWAP)": 13.9,
-    "Suggested Stop-Loss": 11.9857,
-    "Take-Profit Target": 16.3902,
+    "Action": "⚡ BREAKOUT BUY (X-OVER + MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 22.6,
+    "Current Price": 15.18,
+    "Target Entry (VWAP)": 14.4495,
+    "Suggested Stop-Loss": 13.5114,
+    "Take-Profit Target": 17.372,
     "Resistance (52W High)": 17.25,
     "Support (52W Low)": 11.8,
     "Pivot Point": 14.47,
@@ -40,24 +40,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 1.36,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, below VWAP, no squeeze release) | trend=Weak Bullish | awaiting confirmation | positive money flow",
+    "Kelly %": 1.57,
+    "Signal Reason": "⚡ BREAKOUT BUY (X-OVER + MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow | vol x2.31",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 1.93,
-      "trend_bonus": 9.8,
+      "range": 3.1,
+      "trend_bonus": 42.05,
       "confidence_weight": 0.5
     },
     "Regime": "N/A",
-    "Trend Class": "Weak Bullish",
-    "RSI-14": 53.7,
-    "ADX-14": 59.1,
-    "Vol Z-Score": -0.93,
+    "Trend Class": "Strong Bullish",
+    "RSI-14": 64.6,
+    "ADX-14": 57.2,
+    "Vol Z-Score": 1.76,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0546,
-    "Bollinger %B": 0.407,
-    "Avg Volume (20D)": 5121232,
+    "MACD Histogram": -0.019,
+    "Bollinger %B": 0.796,
+    "Avg Volume (20D)": 5548476,
     "Data Confidence": "Very Low (New/Short History)"
   },
   "chart_history": {
@@ -78,7 +78,8 @@
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
       "2026-08-18 00:00:00",
-      "2026-08-19 00:00:00"
+      "2026-08-19 00:00:00",
+      "2026-08-20 00:00:00"
     ],
     "close": [
       12.08,
@@ -97,7 +98,8 @@
       14.77,
       14.0,
       13.91,
-      13.9
+      13.9,
+      15.18
     ],
     "open": [
       12.5,
@@ -116,7 +118,8 @@
       14.7,
       14.86,
       14.0,
-      13.95
+      13.95,
+      14.03
     ],
     "high": [
       13.0,
@@ -135,7 +138,8 @@
       14.99,
       14.86,
       14.09,
-      14.14
+      14.14,
+      15.3
     ],
     "low": [
       12.07,
@@ -154,7 +158,8 @@
       14.45,
       13.82,
       13.83,
-      13.67
+      13.67,
+      13.9
     ],
     "volume": [
       5260726,
@@ -173,7 +178,8 @@
       2085049,
       2422237,
       1179950,
-      1557619
+      1557619,
+      12811621
     ],
     "vwap": [
       12.3833,
@@ -192,7 +198,8 @@
       14.42,
       14.4144,
       14.4079,
-      14.3989
+      14.3989,
+      14.4495
     ],
     "resistance": 17.25,
     "support": 11.8,

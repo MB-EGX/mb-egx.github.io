@@ -1,33 +1,33 @@
 {
   "ticker": "UBEE.CA",
-  "last_data_date": "2026-08-19",
+  "last_data_date": "2026-08-20",
   "sector": "Banks",
   "matrix": {
     "Ticker": "UBEE.CA",
     "Sector": "Banks",
-    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Confirmed": true,
     "Long-Term Setup Reasons": [
-      "No confirmed higher-low swing structure yet",
+      "Higher-low swing structure confirmed",
       "Ascending Triangle match (quality 0.99)"
     ],
     "P/E Ratio": null,
-    "EPS": 1.6059,
+    "EPS": 1.5739,
     "Beta": null,
-    "Dividend Yield %": 5.07,
-    "Market Cap": 16260000000.0,
-    "1W Return %": -1.09,
-    "1M Return %": 5.84,
-    "YTD Return %": -1.69,
-    "1Y Return %": 3.5,
+    "Dividend Yield %": 5.17,
+    "Market Cap": 15950000000.0,
+    "1W Return %": -1.15,
+    "1M Return %": 6.78,
+    "YTD Return %": -0.68,
+    "1Y Return %": 4.57,
     "3Y Return %": null,
-    "External Rating Consensus": -0.125,
+    "External Rating Consensus": 1.625,
     "External Rating Note": null,
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 27.9,
-    "Current Price": 14.5,
-    "Target Entry (VWAP)": 14.3444,
-    "Suggested Stop-Loss": 13.5529,
-    "Take-Profit Target": 14.8915,
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 38.3,
+    "Current Price": 14.65,
+    "Target Entry (VWAP)": 14.364,
+    "Suggested Stop-Loss": 13.7543,
+    "Take-Profit Target": 15.0456,
     "Resistance (52W High)": 15.88,
     "Support (52W Low)": 12.52,
     "Pivot Point": 14.87,
@@ -37,27 +37,27 @@
     "S1": 13.96,
     "S2": 12.99,
     "S3": 12.08,
-    "Projected Gain (%)": 0.37,
-    "Pattern Conf (%)": 56.01,
-    "Projected Range 95%": "-2.33% to 4.66%",
+    "Projected Gain (%)": -0.88,
+    "Pattern Conf (%)": 55.27,
+    "Projected Range 95%": "-4.83% to 4.72%",
     "Kelly %": 0.0,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned",
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 16.8,
-      "projected": 0.55,
-      "range": 2.95,
-      "trend_bonus": 15.0,
+      "pattern": 16.58,
+      "projected": -1.32,
+      "range": 3.17,
+      "trend_bonus": 29.8,
       "confidence_weight": 0.79
     },
     "Regime": "Range / Consolidation",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 56.2,
-    "ADX-14": 23.9,
-    "Vol Z-Score": -0.36,
+    "RSI-14": 58.3,
+    "ADX-14": 24.3,
+    "Vol Z-Score": -0.49,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0715,
-    "Bollinger %B": 0.693,
-    "Avg Volume (20D)": 320017,
+    "MACD Histogram": 0.0561,
+    "Bollinger %B": 0.743,
+    "Avg Volume (20D)": 322649,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -217,7 +217,8 @@
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
       "2026-08-18 00:00:00",
-      "2026-08-19 00:00:00"
+      "2026-08-19 00:00:00",
+      "2026-08-20 00:00:00"
     ],
     "close": [
       13.91,
@@ -375,7 +376,8 @@
       14.93,
       14.78,
       14.78,
-      14.5
+      14.5,
+      14.65
     ],
     "open": [
       13.9,
@@ -533,7 +535,8 @@
       14.84,
       14.82,
       14.78,
-      14.78
+      14.78,
+      14.4
     ],
     "high": [
       14.15,
@@ -691,7 +694,8 @@
       15.0,
       14.94,
       14.9,
-      14.85
+      14.85,
+      14.69
     ],
     "low": [
       13.84,
@@ -849,7 +853,8 @@
       14.8,
       14.7,
       14.7,
-      14.44
+      14.44,
+      14.4
     ],
     "volume": [
       124440,
@@ -1007,7 +1012,8 @@
       348359,
       274393,
       352246,
-      214770
+      214770,
+      178120
     ],
     "vwap": [
       13.9667,
@@ -1165,7 +1171,8 @@
       14.2385,
       14.2732,
       14.3256,
-      14.3444
+      14.3444,
+      14.364
     ],
     "resistance": 15.88,
     "support": 12.52,
@@ -1283,6 +1290,21 @@
           "resistance_end": 14.4265,
           "support_start": 13.2829,
           "support_end": 13.39
+        },
+        "quality": 0.85
+      },
+      {
+        "pattern": "Price Channel (Rising)",
+        "direction": "bullish",
+        "start_index": 123,
+        "end_index": 155,
+        "start_date": "2026-07-06",
+        "end_date": "2026-08-19",
+        "levels": {
+          "resistance_start": 13.7709,
+          "resistance_end": 15.0695,
+          "support_start": 13.0308,
+          "support_end": 14.3151
         },
         "quality": 0.85
       }

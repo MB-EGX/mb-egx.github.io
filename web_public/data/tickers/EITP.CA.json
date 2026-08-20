@@ -1,6 +1,6 @@
 {
   "ticker": "EITP.CA",
-  "last_data_date": "2026-08-19",
+  "last_data_date": "2026-08-20",
   "sector": "Trade & Distributors",
   "matrix": {
     "Ticker": "EITP.CA",
@@ -24,11 +24,11 @@
     "External Rating Consensus": -1.75,
     "External Rating Note": "Diverges from external consensus (-1.8/2, bearish)",
     "Action": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE]",
-    "Rank Score": 0.2,
+    "Rank Score": -4.3,
     "Current Price": 8.71,
     "Target Entry (VWAP)": 8.71,
-    "Suggested Stop-Loss": 7.4914,
-    "Take-Profit Target": 8.9783,
+    "Suggested Stop-Loss": 7.6129,
+    "Take-Profit Target": 8.9452,
     "Resistance (52W High)": 10.89,
     "Support (52W Low)": 6.35,
     "Pivot Point": 8.97,
@@ -38,14 +38,14 @@
     "S1": 8.44,
     "S2": 8.17,
     "S3": 7.64,
-    "Projected Gain (%)": 2.38,
-    "Pattern Conf (%)": 30.25,
-    "Projected Range 95%": "-7.55% to 9.88%",
+    "Projected Gain (%)": -3.13,
+    "Pattern Conf (%)": 35.05,
+    "Projected Range 95%": "-8.45% to 2.19%",
     "Kelly %": 0.0,
     "Signal Reason": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE] | trend=Weak Bullish | awaiting confirmation | volatility squeeze",
     "Score Breakdown": {
-      "pattern": 9.07,
-      "projected": 3.57,
+      "pattern": 10.51,
+      "projected": -4.7,
       "range": 2.6,
       "trend_bonus": -15.0,
       "confidence_weight": 0.65
@@ -53,12 +53,12 @@
     "Regime": "Trending / Volatile",
     "Trend Class": "Weak Bullish",
     "RSI-14": 47.1,
-    "ADX-14": 38.5,
-    "Vol Z-Score": -0.84,
+    "ADX-14": 39.7,
+    "Vol Z-Score": -0.8,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0165,
-    "Bollinger %B": 0.363,
-    "Avg Volume (20D)": 947,
+    "MACD Histogram": -0.0131,
+    "Bollinger %B": 0.382,
+    "Avg Volume (20D)": 917,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
@@ -154,7 +154,8 @@
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
       "2026-08-18 00:00:00",
-      "2026-08-19 00:00:00"
+      "2026-08-19 00:00:00",
+      "2026-08-20 00:00:00"
     ],
     "close": [
       9.9,
@@ -241,6 +242,7 @@
       8.65,
       8.75,
       8.65,
+      8.71,
       8.71,
       8.71,
       8.71,
@@ -342,6 +344,7 @@
       9.49,
       8.91,
       8.91,
+      8.71,
       8.71
     ],
     "high": [
@@ -436,6 +439,7 @@
       9.5,
       8.91,
       8.91,
+      8.71,
       8.71
     ],
     "low": [
@@ -525,6 +529,7 @@
       8.65,
       8.7,
       8.7,
+      8.71,
       8.71,
       8.71,
       8.71,
@@ -624,6 +629,7 @@
       1592,
       855,
       0,
+      1,
       1
     ],
     "vwap": [
@@ -718,7 +724,8 @@
       8.9143,
       8.9086,
       8.9003,
-      8.8912
+      8.8912,
+      8.8689
     ],
     "resistance": 10.89,
     "support": 6.35,

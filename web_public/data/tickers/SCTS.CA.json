@@ -1,6 +1,6 @@
 {
   "ticker": "SCTS.CA",
-  "last_data_date": "2026-08-19",
+  "last_data_date": "2026-08-20",
   "sector": "Education Services",
   "matrix": {
     "Ticker": "SCTS.CA",
@@ -11,24 +11,24 @@
       "Double Bottom match (quality 0.99)",
       "Avg volume below 100,000 long-term floor"
     ],
-    "P/E Ratio": 27.98,
+    "P/E Ratio": 27.91,
     "EPS": 22.22,
     "Beta": 0.57,
     "Dividend Yield %": 4.09,
-    "Market Cap": 56520000000.0,
-    "1W Return %": 0.77,
-    "1M Return %": 1.55,
-    "YTD Return %": 112.12,
-    "1Y Return %": 220.67,
-    "3Y Return %": 936.3,
-    "External Rating Consensus": 1.375,
+    "Market Cap": 56370000000.0,
+    "1W Return %": 0.4,
+    "1M Return %": 1.43,
+    "YTD Return %": 111.57,
+    "1Y Return %": 208.43,
+    "3Y Return %": 933.6,
+    "External Rating Consensus": 0.5,
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 3.4,
-    "Current Price": 621.78,
-    "Target Entry (VWAP)": 541.8764,
-    "Suggested Stop-Loss": 542.6943,
-    "Take-Profit Target": 638.5681,
+    "Rank Score": 3.7,
+    "Current Price": 620.16,
+    "Target Entry (VWAP)": 537.6716,
+    "Suggested Stop-Loss": 541.81,
+    "Take-Profit Target": 636.9043,
     "Resistance (52W High)": 829.02,
     "Support (52W Low)": 230.1,
     "Pivot Point": 619.1333,
@@ -38,27 +38,27 @@
     "S1": 608.2667,
     "S2": 600.1833,
     "S3": 589.3167,
-    "Projected Gain (%)": -3.74,
-    "Pattern Conf (%)": 56.15,
-    "Projected Range 95%": "-5.57% to -2.37%",
+    "Projected Gain (%)": -3.53,
+    "Pattern Conf (%)": 56.08,
+    "Projected Range 95%": "-5.57% to -2.02%",
     "Kelly %": 0.0,
     "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Weak Bullish (Low Trend Strength) | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 16.84,
-      "projected": -5.61,
-      "range": 3.27,
+      "pattern": 16.82,
+      "projected": -5.29,
+      "range": 3.26,
       "trend_bonus": -10.2,
       "confidence_weight": 0.8
     },
     "Regime": "Volatile Range",
     "Trend Class": "Weak Bullish (Low Trend Strength)",
-    "RSI-14": 56.3,
-    "ADX-14": 17.6,
-    "Vol Z-Score": -0.36,
+    "RSI-14": 56.1,
+    "ADX-14": 17.8,
+    "Vol Z-Score": -0.41,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 12.8094,
-    "Bollinger %B": 0.633,
-    "Avg Volume (20D)": 14742,
+    "MACD Histogram": 11.0879,
+    "Bollinger %B": 0.63,
+    "Avg Volume (20D)": 14015,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -221,7 +221,8 @@
       "2026-08-16 00:00:00",
       "2026-08-17 00:00:00",
       "2026-08-18 00:00:00",
-      "2026-08-19 00:00:00"
+      "2026-08-19 00:00:00",
+      "2026-08-20 00:00:00"
     ],
     "close": [
       269.69,
@@ -382,7 +383,8 @@
       616.35,
       616.67,
       617.0,
-      621.78
+      621.78,
+      620.16
     ],
     "open": [
       271.1,
@@ -543,7 +545,8 @@
       620.0,
       618.0,
       616.67,
-      618.0
+      618.0,
+      622.5
     ],
     "high": [
       275.99,
@@ -704,7 +707,8 @@
       620.0,
       620.0,
       660.0,
-      629.0
+      629.0,
+      624.0
     ],
     "low": [
       269.2,
@@ -864,6 +868,7 @@
       617.0,
       616.0,
       616.5,
+      617.0,
       617.0,
       617.0
     ],
@@ -1026,7 +1031,8 @@
       11401,
       5228,
       61176,
-      7727
+      7727,
+      5935
     ],
     "vwap": [
       271.6267,
@@ -1187,7 +1193,8 @@
       530.4513,
       519.5916,
       541.3948,
-      541.8764
+      541.8764,
+      537.6716
     ],
     "resistance": 829.02,
     "support": 230.1,
@@ -1267,16 +1274,16 @@
         "pattern": "Double Top",
         "direction": "bearish",
         "start_index": 140,
-        "end_index": 151,
+        "end_index": 158,
         "start_date": "2026-07-27",
-        "end_date": "2026-08-10",
+        "end_date": "2026-08-19",
         "levels": {
           "first_top": 620.92,
-          "second_top": 620.33,
+          "second_top": 621.78,
           "neckline": 266.35,
-          "target": -87.925
+          "target": -88.65
         },
-        "quality": 0.97
+        "quality": 0.95
       }
     ]
   }
