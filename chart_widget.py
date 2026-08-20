@@ -1,10 +1,13 @@
+import html
+import re
+
 import numpy as np
 import pandas as pd
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QComboBox, QLabel, 
     QRadioButton, QButtonGroup, QPushButton, QScrollArea, QFrame, QFileDialog,
-    QDialog
+    QDialog, QMessageBox
 )
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -41,6 +44,184 @@ _AR_SECTOR_NAMES = {
 # Overlay color per detected-pattern direction (matches the existing
 # up/down palette used for candles and trend lines elsewhere in this file).
 _PATTERN_COLORS = {"bullish": "#22c55e", "bearish": "#ef4444", "neutral": "#a0aec0"}
+
+_PATTERN_GUIDES = {
+    "head_shoulders": {
+        "en": {
+            "summary": "Classic topping structure. A neckline break usually warns that buyers are losing control.",
+            "investor": "Conservative investors often wait for a confirmed break below the neckline before reducing exposure or planning short-biased trades. A common invalidation is a close back above the right-shoulder area.",
+        },
+        "ar": {
+            "summary": "نموذج قمّة انعكاسي كلاسيكي. كسر خط العنق غالباً يعني أن المشترين يفقدون السيطرة.",
+            "investor": "المستثمر المحافظ ينتظر عادةً كسر خط العنق بإغلاق واضح قبل تخفيف المراكز أو التفكير في سيناريو هابط. ويُعتبر الرجوع فوق منطقة الكتف الأيمن إشارة إبطال شائعة.",
+        },
+    },
+    "inverse_head_shoulders": {
+        "en": {
+            "summary": "Classic bottoming structure. A neckline break can mark a shift from accumulation into a new up-leg.",
+            "investor": "Many investors wait for a decisive breakout above the neckline, then use the neckline or right-shoulder low as a risk reference instead of buying while the pattern is still incomplete.",
+        },
+        "ar": {
+            "summary": "نموذج قاع انعكاسي كلاسيكي. اختراق خط العنق قد يشير إلى انتقال السهم من التجميع إلى موجة صاعدة جديدة.",
+            "investor": "كثير من المستثمرين ينتظرون اختراقاً واضحاً فوق خط العنق، ثم يستخدمون خط العنق أو قاع الكتف الأيمن كمرجع للمخاطرة بدلاً من الشراء قبل اكتمال النموذج.",
+        },
+    },
+    "double_top": {
+        "en": {
+            "summary": "Two failed pushes into roughly the same high. That often signals overhead supply and possible reversal lower.",
+            "investor": "Investors usually want confirmation through a break of the swing low between the two peaks. Until that break happens, it is only a warning, not a complete sell signal.",
+        },
+        "ar": {
+            "summary": "محاولتان فاشلتان قرب القمة نفسها. هذا يشير غالباً إلى وجود عروض بيع واحتمال انعكاس هابط.",
+            "investor": "غالباً ما ينتظر المستثمر كسر القاع الواقع بين القمتين للتأكيد. قبل هذا الكسر يبقى النموذج مجرد تحذير وليس إشارة بيع مكتملة.",
+        },
+    },
+    "double_bottom": {
+        "en": {
+            "summary": "Two defended lows near the same area. That often suggests demand is absorbing selling pressure.",
+            "investor": "A common confirmation is a breakout above the middle swing high. Investors often use the second low as the invalidation line when planning entries.",
+        },
+        "ar": {
+            "summary": "قاعان متقاربان مع دفاع واضح عن المنطقة. هذا يوحي غالباً بأن الطلب يمتص ضغط البيع.",
+            "investor": "التأكيد الشائع يكون باختراق القمة بين القاعين. وغالباً ما يستخدم المستثمر القاع الثاني كخط إبطال للمخاطرة عند التخطيط للدخول.",
+        },
+    },
+    "ascending_triangle": {
+        "en": {
+            "summary": "Flat resistance with rising lows. Buyers keep stepping up, so pressure builds under resistance.",
+            "investor": "Investors usually watch for a breakout above resistance on expanding volume. Failed breakouts that fall back under the last higher low deserve caution.",
+        },
+        "ar": {
+            "summary": "مقاومة أفقية مع قيعان صاعدة. المشترون يرفعون عروضهم تدريجياً، لذلك يتزايد الضغط أسفل المقاومة.",
+            "investor": "يراقب المستثمر عادةً اختراق المقاومة مع تحسن في الحجم. أما الاختراقات الفاشلة والعودة أسفل آخر قاع صاعد فتستوجب الحذر.",
+        },
+    },
+    "descending_triangle": {
+        "en": {
+            "summary": "Flat support with lower highs. Sellers are becoming more aggressive into the same floor.",
+            "investor": "The breakdown of support is the usual confirmation. If price instead reclaims the lower-high sequence, the bearish read weakens quickly.",
+        },
+        "ar": {
+            "summary": "دعم أفقي مع قمم هابطة. البائعون يصبحون أكثر ضغطاً على نفس منطقة الدعم.",
+            "investor": "التأكيد المعتاد يكون بكسر الدعم. وإذا استعاد السعر سلسلة القمم الهابطة فإن القراءة السلبية تضعف بسرعة.",
+        },
+    },
+    "symmetrical_triangle": {
+        "en": {
+            "summary": "Contracting range with lower highs and higher lows. It usually signals compression before a directional move.",
+            "investor": "Because the pattern is neutral until the break, many investors wait for price to exit the triangle and then align with the breakout direction rather than guessing inside the squeeze.",
+        },
+        "ar": {
+            "summary": "نطاق منكمش مع قمم هابطة وقيعان صاعدة. غالباً ما يعكس ضغطاً يسبق حركة اتجاهية.",
+            "investor": "لأن النموذج محايد حتى يحدث الكسر، يفضّل كثير من المستثمرين انتظار خروج السعر من المثلث ثم التوافق مع اتجاه الاختراق بدلاً من التخمين داخله.",
+        },
+    },
+    "rising_wedge": {
+        "en": {
+            "summary": "Upward-sloping but narrowing advance. Momentum may be weakening even while price still rises.",
+            "investor": "This often becomes a caution pattern. Investors typically wait for a downside break of the lower wedge boundary before acting, instead of assuming reversal too early.",
+        },
+        "ar": {
+            "summary": "صعود مائل للأعلى لكنه يضيق تدريجياً. قد يضعف الزخم رغم استمرار ارتفاع السعر.",
+            "investor": "يُعد هذا النموذج غالباً إشارة حذر. وعادةً ينتظر المستثمر كسر الحد السفلي للوتد قبل اتخاذ قرار بدلاً من افتراض الانعكاس مبكراً.",
+        },
+    },
+    "falling_wedge": {
+        "en": {
+            "summary": "Downward-sloping but narrowing decline. Selling pressure may be fading.",
+            "investor": "Investors often wait for an upside break of the wedge and then use the last swing low as a nearby risk reference.",
+        },
+        "ar": {
+            "summary": "هبوط مائل للأسفل لكنه يضيق تدريجياً. قد يكون ضغط البيع في طريقه للانحسار.",
+            "investor": "غالباً ما ينتظر المستثمر اختراق الحد العلوي للوتد ثم يستخدم آخر قاع قريب كمرجع للمخاطرة.",
+        },
+    },
+    "bull_flag": {
+        "en": {
+            "summary": "Short pause after a sharp upward run. It often acts as continuation if price breaks the flag upward.",
+            "investor": "Many investors avoid chasing the initial spike and instead wait for a clean breakout from the flag, with the flag low acting as a nearby invalidation area.",
+        },
+        "ar": {
+            "summary": "استراحة قصيرة بعد اندفاعة صاعدة قوية. وغالباً يعمل كنموذج استمراري إذا اخترق السعر العلم لأعلى.",
+            "investor": "يفضّل كثير من المستثمرين عدم مطاردة الاندفاعة الأولى، بل انتظار اختراق واضح من العلم مع استخدام قاع العلم كمنطقة إبطال قريبة.",
+        },
+    },
+    "bear_flag": {
+        "en": {
+            "summary": "Short pause after a sharp selloff. It often continues lower if price breaks down from the flag.",
+            "investor": "The usual read is defensive: protect long exposure and wait for confirmation instead of averaging down into a still-weak chart.",
+        },
+        "ar": {
+            "summary": "استراحة قصيرة بعد هبوط حاد. وغالباً يستكمل الهبوط إذا كسر السعر العلم لأسفل.",
+            "investor": "القراءة المعتادة دفاعية: حماية المراكز الشرائية وانتظار التأكيد بدلاً من متوسط شراء جديد داخل رسم ما زال ضعيفاً.",
+        },
+    },
+    "channel_up": {
+        "en": {
+            "summary": "Price is trending higher within a rising channel.",
+            "investor": "Investors often treat the lower channel as trend support and the upper channel as an area to manage expectations or take partial profits.",
+        },
+        "ar": {
+            "summary": "السعر يتحرك صعوداً داخل قناة صاعدة.",
+            "investor": "غالباً ما ينظر المستثمر إلى الحد السفلي للقناة كدعم للاتجاه وإلى الحد العلوي كمنطقة لإدارة التوقعات أو جني جزء من الأرباح.",
+        },
+    },
+    "channel_down": {
+        "en": {
+            "summary": "Price is trending lower within a falling channel.",
+            "investor": "Until the upper channel breaks, the default read stays cautious. Some investors wait for that break before treating the move as a real trend change.",
+        },
+        "ar": {
+            "summary": "السعر يتحرك هبوطاً داخل قناة هابطة.",
+            "investor": "ما دام الحد العلوي للقناة لم يُخترق، تبقى القراءة الأساسية حذرة. وبعض المستثمرين ينتظرون ذلك الاختراق قبل اعتبار الحركة تغيراً حقيقياً في الاتجاه.",
+        },
+    },
+    "rectangle": {
+        "en": {
+            "summary": "Sideways range between clear support and resistance. It shows balance until one side wins.",
+            "investor": "Range traders may buy support / sell resistance, while trend traders often wait for the eventual breakout and then follow the side that wins.",
+        },
+        "ar": {
+            "summary": "نطاق عرضي بين دعم ومقاومة واضحين. يعكس توازناً حتى يحسم أحد الطرفين المعركة.",
+            "investor": "متداولو النطاق قد يتعاملون مع الدعم والمقاومة مباشرةً، أما متابعو الاتجاه فيفضّلون عادةً انتظار الكسر النهائي ثم السير مع الجهة المنتصرة.",
+        },
+    },
+    "cup_handle": {
+        "en": {
+            "summary": "Rounded base followed by a shallow pullback. It often signals bullish continuation or base breakout potential.",
+            "investor": "Investors commonly wait for price to clear the handle high before treating the structure as actionable, because early entries can get trapped in the final shakeout.",
+        },
+        "ar": {
+            "summary": "قاعدة مستديرة يتبعها تراجع خفيف. وغالباً ما يشير إلى استمرار صاعد أو احتمال اختراق من قاعدة تجميع.",
+            "investor": "كثير من المستثمرين ينتظرون تجاوز قمة المقبض قبل اعتبار النموذج قابلاً للتنفيذ، لأن الدخول المبكر قد يتعرض لهزة أخيرة.",
+        },
+    },
+}
+
+
+def _normalize_pattern_key(pattern_name: str) -> str:
+    name = re.sub(r"\s*\([^)]*\)\s*$", "", str(pattern_name or "")).strip().lower()
+    compact = re.sub(r"[^a-z0-9]+", "_", name).strip("_")
+    aliases = {
+        "head_and_shoulders": "head_shoulders",
+        "head_shoulders_top": "head_shoulders",
+        "inverse_head_and_shoulders": "inverse_head_shoulders",
+        "inverse_head_shoulders_bottom": "inverse_head_shoulders",
+        "inverse_h_s": "inverse_head_shoulders",
+        "doubletop": "double_top",
+        "doublebottom": "double_bottom",
+        "bullish_flag": "bull_flag",
+        "bearish_flag": "bear_flag",
+        "flag_bull": "bull_flag",
+        "flag_bear": "bear_flag",
+        "rising_channel": "channel_up",
+        "ascending_channel": "channel_up",
+        "falling_channel": "channel_down",
+        "descending_channel": "channel_down",
+        "flat_base": "rectangle",
+        "cup_and_handle": "cup_handle",
+    }
+    return aliases.get(compact, compact)
 
 
 class _ChartFullscreenDialog(QDialog):
@@ -286,6 +467,8 @@ class StockSectorChartWidget(QWidget):
         # 3. Matplotlib Canvas
         self.fig = Figure(figsize=(10, 5), facecolor='#1a1d24')
         self.canvas = FigureCanvas(self.fig)
+        self._pattern_annotations = []
+        self.canvas.mpl_connect('button_press_event', self._on_chart_click)
         layout.addWidget(self.canvas)
 
         # Signals
@@ -424,7 +607,7 @@ class StockSectorChartWidget(QWidget):
                 slot_y = abs(slot_y)
             elif p["direction"] == "bullish":
                 slot_y = -abs(slot_y)
-            ax.annotate(
+            ann = ax.annotate(
                 label, xy=(end_date, float(df["close"].iloc[end_i])),
                 xytext=(6, slot_y), textcoords="offset points",
                 color=color, fontsize=8.5, fontweight="bold", zorder=6,
@@ -432,6 +615,89 @@ class StockSectorChartWidget(QWidget):
                 # Hide the leader line so stacked labels don't criss-cross.
                 arrowprops=dict(arrowstyle="-", color=color, alpha=0.4, linewidth=0.6),
             )
+            self._pattern_annotations.append({"annotation": ann, "pattern": p})
+
+    def _pattern_copy(self, pattern: dict) -> dict:
+        safe = dict(pattern or {})
+        safe["levels"] = dict((pattern or {}).get("levels") or {})
+        return safe
+
+    def _format_pattern_levels(self, pattern: dict) -> str:
+        levels = []
+        for key, val in (pattern.get("levels") or {}).items():
+            if "index" in str(key).lower() or not isinstance(val, (int, float)):
+                continue
+            levels.append(f"{key}: {val:.4f}")
+        return ", ".join(levels[:4])
+
+    def _build_pattern_explanation(self, pattern: dict) -> str:
+        lang = "ar" if self.lang == "AR" else "en"
+        raw_name = str(pattern.get("pattern") or "Pattern")
+        key = _normalize_pattern_key(raw_name)
+        guide = _PATTERN_GUIDES.get(key, {})
+        copy = guide.get(lang, {})
+        direction = pattern.get("direction") or "neutral"
+        quality = pattern.get("quality")
+        quality_txt = f"{quality:.0%}" if isinstance(quality, (int, float)) else ("N/A" if lang == "en" else "غير متاح")
+        levels_txt = self._format_pattern_levels(pattern)
+
+        if lang == "en":
+            bias_map = {"bullish": "Bullish", "bearish": "Bearish", "neutral": "Neutral"}
+            summary = copy.get("summary") or "Detected structural chart pattern. Use it as context, not as a stand-alone buy/sell command."
+            investor = copy.get("investor") or (
+                "Wait for confirmation around the key level before acting. For bullish setups, investors عادةً look for a clean break above resistance; for bearish setups, they usually protect capital if support fails."
+            ).replace("عادةً", "")
+            lines = [
+                f"Pattern: {raw_name}",
+                f"Bias: {bias_map.get(direction, 'Neutral')}",
+                f"Confidence: {quality_txt}",
+                f"Range: {pattern.get('start_date', '—')} → {pattern.get('end_date', '—')}",
+                f"Key levels: {levels_txt or 'Not available'}",
+                "",
+                f"What it means: {summary}",
+                f"Investor read: {investor}",
+                "",
+                "Educational note: wait for confirmation and manage risk with a clear invalidation level instead of relying on the label alone.",
+            ]
+        else:
+            bias_map = {"bullish": "صاعد", "bearish": "هابط", "neutral": "محايد"}
+            summary = copy.get("summary") or "تم رصد نموذج سعري بنيوي. استخدمه كسياق مساعد وليس كأمر شراء أو بيع مستقل."
+            investor = copy.get("investor") or "انتظر التأكيد عند المستوى المهم قبل اتخاذ القرار. في النماذج الصاعدة يفضّل كثير من المستثمرين رؤية اختراق واضح، وفي النماذج الهابطة يركّزون على حماية رأس المال إذا فشل الدعم."
+            lines = [
+                f"النموذج: {raw_name}",
+                f"الانحياز: {bias_map.get(direction, 'محايد')}",
+                f"الثقة: {quality_txt}",
+                f"الفترة: {pattern.get('start_date', '—')} ← {pattern.get('end_date', '—')}",
+                f"المستويات المهمة: {levels_txt or 'غير متاحة'}",
+                "",
+                f"ماذا يعني: {summary}",
+                f"قراءة للمستثمر: {investor}",
+                "",
+                "ملاحظة تعليمية: انتظر التأكيد وحدد مستوى إبطال واضح لإدارة المخاطرة، ولا تعتمد على اسم النموذج وحده.",
+            ]
+        return "\n".join(lines)
+
+    def _on_chart_click(self, event):
+        if event.x is None or event.y is None or not self._pattern_annotations:
+            return
+        renderer = getattr(self.canvas, 'renderer', None)
+        if renderer is None:
+            try:
+                renderer = self.canvas.get_renderer()
+            except Exception:
+                return
+        for item in reversed(self._pattern_annotations):
+            ann = item.get("annotation")
+            if ann is None:
+                continue
+            try:
+                bbox = ann.get_window_extent(renderer=renderer).expanded(1.08, 1.18)
+            except Exception:
+                continue
+            if bbox.contains(event.x, event.y):
+                title = str(item.get("pattern", {}).get("pattern") or ("Pattern" if self.lang == "EN" else "نموذج"))
+                QMessageBox.information(self, title, self._build_pattern_explanation(self._pattern_copy(item.get("pattern") or {})))
+                break
 
     def _get_alpha_btn_style(self, is_active=False):
         if is_active:
@@ -577,6 +843,7 @@ class StockSectorChartWidget(QWidget):
             if not selected:
                 selected = selected_display
         self.fig.clear()
+        self._pattern_annotations = []
         
         if not selected:
             self.canvas.draw()

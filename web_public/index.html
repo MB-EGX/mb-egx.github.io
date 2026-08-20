@@ -1222,6 +1222,21 @@
         </div>
     </div>
 
+    <!-- Clicked Pattern Detail Modal -->
+    <div id="modal-pattern-info" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-panelbg border border-bordercol rounded-xl max-w-2xl w-full p-5 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
+            <div class="flex items-center justify-between gap-3">
+                <h3 class="text-base font-bold text-amber-400">📐 <span id="pattern-info-title">Pattern Detail</span></h3>
+                <button onclick="closeModal('modal-pattern-info')" class="text-textmuted hover:text-white text-lg font-bold">✕</button>
+            </div>
+            <div id="pattern-info-body" class="space-y-3 text-sm"></div>
+            <div class="flex justify-between gap-2 flex-wrap">
+                <button onclick="openPatternGlossaryFromModal()" class="bg-sky-700 hover:bg-sky-600 text-white px-4 py-2 rounded font-bold text-xs">📖 <span id="pattern-info-glossary-btn">Open in Glossary</span></button>
+                <button onclick="closeModal('modal-pattern-info')" class="bg-slate-700 text-white px-4 py-2 rounded font-bold text-xs">✅ <span id="pattern-info-close-btn">Close</span></button>
+            </div>
+        </div>
+    </div>
+
     <!-- Usage Analytics Modal (admin only) -->
     <div id="modal-analytics" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
         <div class="bg-panelbg border border-bordercol rounded-xl max-w-3xl w-full p-5 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
@@ -2650,6 +2665,299 @@
             });
         }
 
+        const PATTERN_GUIDES = {
+            head_shoulders: {
+                bias: 'bearish',
+                en: {
+                    summary: 'Classic topping structure. A neckline break usually warns that buyers are losing control.',
+                    investor: 'Many investors wait for a confirmed break below the neckline before reducing long exposure or acting on a bearish thesis. A recovery back above the right-shoulder zone weakens the setup.'
+                },
+                ar: {
+                    summary: 'نموذج قمّة انعكاسي كلاسيكي. كسر خط العنق غالباً يعني أن المشترين يفقدون السيطرة.',
+                    investor: 'كثير من المستثمرين ينتظرون كسر خط العنق بإغلاق واضح قبل تخفيف المراكز الشرائية أو التعامل مع سيناريو هابط. والعودة فوق منطقة الكتف الأيمن تضعف هذا السيناريو.'
+                }
+            },
+            inverse_head_shoulders: {
+                bias: 'bullish',
+                en: {
+                    summary: 'Classic bottoming structure. A neckline breakout can mark a shift into a new upward leg.',
+                    investor: 'A common approach is to wait for the neckline breakout, then use the neckline or right-shoulder low as a risk reference instead of buying too early.'
+                },
+                ar: {
+                    summary: 'نموذج قاع انعكاسي كلاسيكي. اختراق خط العنق قد يشير إلى بداية موجة صاعدة جديدة.',
+                    investor: 'النهج الشائع هو انتظار اختراق خط العنق ثم استخدام خط العنق أو قاع الكتف الأيمن كمرجع للمخاطرة بدلاً من الشراء المبكر.'
+                }
+            },
+            double_top: {
+                bias: 'bearish',
+                en: {
+                    summary: 'Two failed pushes near the same high. That often signals overhead supply and possible reversal lower.',
+                    investor: 'Most investors want confirmation through a break of the swing low between the two peaks. Before that, it is a warning rather than a complete sell signal.'
+                },
+                ar: {
+                    summary: 'محاولتان فاشلتان قرب القمة نفسها، ما يشير غالباً إلى عروض بيع واحتمال انعكاس هابط.',
+                    investor: 'يفضّل معظم المستثمرين انتظار كسر القاع بين القمتين للتأكيد. قبل ذلك يبقى النموذج تحذيراً أكثر منه إشارة بيع مكتملة.'
+                }
+            },
+            double_bottom: {
+                bias: 'bullish',
+                en: {
+                    summary: 'Two defended lows near the same area. That often suggests demand is absorbing selling pressure.',
+                    investor: 'A common confirmation is a breakout above the middle swing high. Investors often use the second low as the invalidation level.'
+                },
+                ar: {
+                    summary: 'قاعان متقاربان مع دفاع واضح عن المنطقة، ما يوحي بأن الطلب يمتص ضغط البيع.',
+                    investor: 'التأكيد الشائع يكون باختراق القمة بين القاعين، وغالباً يُستخدم القاع الثاني كمستوى إبطال.'
+                }
+            },
+            ascending_triangle: {
+                bias: 'bullish',
+                en: {
+                    summary: 'Flat resistance with rising lows. Buyers keep stepping up under the same ceiling.',
+                    investor: 'Investors often watch for a breakout above resistance with stronger volume. Failed breakouts deserve caution.'
+                },
+                ar: {
+                    summary: 'مقاومة أفقية مع قيعان صاعدة، أي أن المشترين يرفعون عروضهم تدريجياً تحت السقف نفسه.',
+                    investor: 'يراقب المستثمر غالباً اختراق المقاومة مع تحسن الحجم. أما الاختراقات الفاشلة فتستوجب الحذر.'
+                }
+            },
+            descending_triangle: {
+                bias: 'bearish',
+                en: {
+                    summary: 'Flat support with lower highs. Sellers are pressing the same floor more aggressively.',
+                    investor: 'The usual confirmation is a support breakdown. If price reclaims the lower-high sequence, the bearish read weakens fast.'
+                },
+                ar: {
+                    summary: 'دعم أفقي مع قمم هابطة، أي أن البائعين يضغطون على نفس الأرضية بشكل متزايد.',
+                    investor: 'التأكيد المعتاد يكون بكسر الدعم. وإذا استعاد السعر سلسلة القمم الهابطة فإن القراءة السلبية تضعف سريعاً.'
+                }
+            },
+            symmetrical_triangle: {
+                bias: 'neutral',
+                en: {
+                    summary: 'Contracting range with lower highs and higher lows. It usually signals compression before a directional move.',
+                    investor: 'Because the pattern is neutral until the break, many investors wait for price to exit the triangle and then follow the breakout direction.'
+                },
+                ar: {
+                    summary: 'نطاق منكمش مع قمم هابطة وقيعان صاعدة، وغالباً يعكس ضغطاً يسبق حركة اتجاهية.',
+                    investor: 'لأن النموذج محايد حتى يحدث الكسر، يفضّل كثير من المستثمرين انتظار خروج السعر من المثلث ثم اتباع اتجاه الاختراق.'
+                }
+            },
+            rising_wedge: {
+                bias: 'bearish',
+                en: {
+                    summary: 'Upward-sloping but narrowing advance. Momentum may be weakening even while price still rises.',
+                    investor: 'This is often treated as a caution pattern. Many investors wait for a downside break of the lower wedge boundary before acting.'
+                },
+                ar: {
+                    summary: 'صعود مائل للأعلى لكنه يضيق تدريجياً، ما قد يعني ضعف الزخم رغم استمرار الارتفاع.',
+                    investor: 'يُتعامل معه غالباً كنموذج تحذيري، وينتظر كثير من المستثمرين كسر الحد السفلي للوتد قبل اتخاذ قرار.'
+                }
+            },
+            falling_wedge: {
+                bias: 'bullish',
+                en: {
+                    summary: 'Downward-sloping but narrowing decline. Selling pressure may be fading.',
+                    investor: 'Investors often wait for an upside break of the wedge, then use the last swing low as a nearby risk reference.'
+                },
+                ar: {
+                    summary: 'هبوط مائل للأسفل لكنه يضيق تدريجياً، ما قد يعني انحسار ضغط البيع.',
+                    investor: 'غالباً ما ينتظر المستثمر اختراق الحد العلوي للوتد ثم يستخدم آخر قاع قريب كمرجع للمخاطرة.'
+                }
+            },
+            bull_flag: {
+                bias: 'bullish',
+                en: {
+                    summary: 'Short pause after a sharp upward run. It often acts as continuation if price breaks upward from the flag.',
+                    investor: 'Many investors avoid chasing the initial spike and instead wait for a clean breakout from the flag, using the flag low as invalidation.'
+                },
+                ar: {
+                    summary: 'استراحة قصيرة بعد اندفاعة صاعدة قوية، وغالباً ما يعمل كنموذج استمراري إذا اخترق العلم لأعلى.',
+                    investor: 'يفضّل كثير من المستثمرين عدم مطاردة الاندفاعة الأولى، بل انتظار اختراق واضح من العلم مع استخدام قاع العلم كمستوى إبطال.'
+                }
+            },
+            bear_flag: {
+                bias: 'bearish',
+                en: {
+                    summary: 'Short pause after a sharp selloff. It often continues lower if price breaks down from the flag.',
+                    investor: 'The usual read is defensive: protect long exposure and wait for confirmation instead of averaging down into a still-weak chart.'
+                },
+                ar: {
+                    summary: 'استراحة قصيرة بعد هبوط حاد، وغالباً يستكمل السهم الهبوط إذا كسر العلم لأسفل.',
+                    investor: 'القراءة المعتادة دفاعية: حماية المراكز الشرائية وانتظار التأكيد بدلاً من تعزيز الشراء داخل رسم ما زال ضعيفاً.'
+                }
+            },
+            channel_up: {
+                bias: 'bullish',
+                en: {
+                    summary: 'Price is trending higher within a rising channel.',
+                    investor: 'Investors often treat the lower channel boundary as trend support and the upper boundary as an area to manage expectations or partial profits.'
+                },
+                ar: {
+                    summary: 'السعر يتحرك صعوداً داخل قناة صاعدة.',
+                    investor: 'ينظر المستثمر غالباً إلى الحد السفلي للقناة كدعم للاتجاه وإلى الحد العلوي كمنطقة لإدارة التوقعات أو جني جزء من الأرباح.'
+                }
+            },
+            channel_down: {
+                bias: 'bearish',
+                en: {
+                    summary: 'Price is trending lower within a falling channel.',
+                    investor: 'Until the upper boundary breaks, the default read stays cautious. Some investors wait for that break before calling a real trend change.'
+                },
+                ar: {
+                    summary: 'السعر يتحرك هبوطاً داخل قناة هابطة.',
+                    investor: 'ما دام الحد العلوي للقناة لم يُخترق، تبقى القراءة الأساسية حذرة. وبعض المستثمرين ينتظرون ذلك الاختراق قبل اعتبار الحركة تغيراً حقيقياً في الاتجاه.'
+                }
+            },
+            rectangle: {
+                bias: 'neutral',
+                en: {
+                    summary: 'Sideways range between clear support and resistance. It shows balance until one side wins.',
+                    investor: 'Range traders may react near support/resistance, while trend traders often wait for the breakout and then follow the winning side.'
+                },
+                ar: {
+                    summary: 'نطاق عرضي بين دعم ومقاومة واضحين، ويعكس توازناً حتى يحسم أحد الطرفين المعركة.',
+                    investor: 'متداولو النطاق قد يتعاملون مع الدعم والمقاومة مباشرةً، بينما يفضّل متابعو الاتجاه انتظار الكسر النهائي ثم اتباع الجهة المنتصرة.'
+                }
+            },
+            cup_handle: {
+                bias: 'bullish',
+                en: {
+                    summary: 'Rounded base followed by a shallow pullback. It often signals bullish continuation or base breakout potential.',
+                    investor: 'A common approach is to wait for price to clear the handle high before treating the structure as actionable.'
+                },
+                ar: {
+                    summary: 'قاعدة مستديرة يتبعها تراجع خفيف، وغالباً ما يشير إلى استمرار صاعد أو احتمال اختراق من قاعدة تجميع.',
+                    investor: 'النهج الشائع هو انتظار تجاوز قمة المقبض قبل اعتبار النموذج قابلاً للتنفيذ.'
+                }
+            }
+        };
+        let activePatternFromClick = null;
+
+        function normalizePatternKey(name) {
+            const base = String(name || '').replace(/\s*\([^)]*\)\s*$/, '').trim().toLowerCase();
+            const compact = base.replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+            const aliases = {
+                head_and_shoulders: 'head_shoulders',
+                head_shoulders_top: 'head_shoulders',
+                inverse_head_and_shoulders: 'inverse_head_shoulders',
+                inverse_head_shoulders_bottom: 'inverse_head_shoulders',
+                inverse_h_s: 'inverse_head_shoulders',
+                bullish_flag: 'bull_flag',
+                bearish_flag: 'bear_flag',
+                flag_bull: 'bull_flag',
+                flag_bear: 'bear_flag',
+                rising_channel: 'channel_up',
+                ascending_channel: 'channel_up',
+                falling_channel: 'channel_down',
+                descending_channel: 'channel_down',
+                cup_and_handle: 'cup_handle',
+                flat_base: 'rectangle'
+            };
+            return aliases[compact] || compact;
+        }
+        function getGlossaryPatternEntry(patternName) {
+            if (!glossaryData || !Array.isArray(glossaryData.patterns)) return null;
+            const wanted = normalizePatternKey(patternName);
+            return glossaryData.patterns.find(entry => normalizePatternKey(entry?.term?.en || entry?.term?.ar || '') === wanted) || null;
+        }
+        function getPatternGuide(pattern) {
+            if (!pattern) return null;
+            const key = normalizePatternKey(pattern.pattern || pattern.name || '');
+            return PATTERN_GUIDES[key] || null;
+        }
+        function formatPatternLevels(pattern) {
+            const levels = Object.entries((pattern && pattern.levels) || {})
+                .filter(([k, v]) => !String(k).toLowerCase().includes('index') && typeof v === 'number' && isFinite(v))
+                .slice(0, 5)
+                .map(([k, v]) => `${escapeHtml(k)}: ${Number(v).toFixed(4)}`);
+            return levels.length ? levels.join(' · ') : (currentLang === 'AR' ? 'غير متاحة' : 'Not available');
+        }
+        function getPatternBiasText(bias) {
+            const ar = currentLang === 'AR';
+            const map = ar
+                ? { bullish: '🟢 صاعد', bearish: '🔴 هابط', neutral: '⚪ محايد' }
+                : { bullish: '🟢 Bullish', bearish: '🔴 Bearish', neutral: '⚪ Neutral' };
+            return map[bias] || map.neutral;
+        }
+        function openPatternGlossaryFromModal() {
+            if (!activePatternFromClick) return;
+            openGlossaryModal().then(() => {
+                glossaryTab = 'patterns';
+                setGlossaryTab('patterns');
+                const search = document.getElementById('glossary-search');
+                if (search) {
+                    search.value = activePatternFromClick.pattern || '';
+                    renderGlossary();
+                }
+            });
+        }
+        function openPatternInfoModal(pattern) {
+            if (!pattern) return;
+            activePatternFromClick = pattern;
+            const ar = currentLang === 'AR';
+            const guide = getPatternGuide(pattern);
+            const glossaryEntry = getGlossaryPatternEntry(pattern.pattern || '');
+            const guideCopy = guide ? (ar ? guide.ar : guide.en) : null;
+            const def = glossaryEntry ? (ar && glossaryEntry.definition?.ar ? glossaryEntry.definition.ar : glossaryEntry.definition?.en || '') : '';
+            const why = glossaryEntry ? (ar && glossaryEntry.why_it_matters?.ar ? glossaryEntry.why_it_matters.ar : glossaryEntry.why_it_matters?.en || '') : '';
+            const bias = (glossaryEntry && glossaryEntry.bias) || (guide && guide.bias) || pattern.direction || 'neutral';
+            const quality = typeof pattern.quality === 'number' ? `${Math.round(pattern.quality * 100)}%` : (ar ? 'غير متاح' : 'N/A');
+            const title = pattern.pattern || (ar ? 'تفاصيل النموذج' : 'Pattern Detail');
+            document.getElementById('pattern-info-title').textContent = title;
+            document.getElementById('pattern-info-glossary-btn').textContent = ar ? 'فتح في المعجم' : 'Open in Glossary';
+            document.getElementById('pattern-info-close-btn').textContent = ar ? 'إغلاق' : 'Close';
+            const body = document.getElementById('pattern-info-body');
+            const summary = (guideCopy && guideCopy.summary) || def || (ar ? 'نموذج سعري مكتشف آلياً على الرسم.' : 'Automatically detected chart structure on the current price graph.');
+            const investor = (guideCopy && guideCopy.investor) || why || (ar
+                ? 'استخدمه كسياق مساعد فقط: انتظر التأكيد عند مستوى مهم وحدد نقطة إبطال واضحة لإدارة المخاطرة.'
+                : 'Use it as context only: wait for confirmation at an important level and define a clear invalidation point for risk management.');
+            body.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    <div class="bg-darkbg border border-bordercol rounded-lg p-3"><div class="text-textmuted mb-1">${ar ? 'الانحياز' : 'Bias'}</div><div class="font-bold text-sm">${getPatternBiasText(bias)}</div></div>
+                    <div class="bg-darkbg border border-bordercol rounded-lg p-3"><div class="text-textmuted mb-1">${ar ? 'الثقة' : 'Confidence'}</div><div class="font-bold text-sm">${escapeHtml(quality)}</div></div>
+                    <div class="bg-darkbg border border-bordercol rounded-lg p-3"><div class="text-textmuted mb-1">${ar ? 'من' : 'From'}</div><div class="font-bold text-sm">${escapeHtml(pattern.start_date || '—')}</div></div>
+                    <div class="bg-darkbg border border-bordercol rounded-lg p-3"><div class="text-textmuted mb-1">${ar ? 'إلى' : 'To'}</div><div class="font-bold text-sm">${escapeHtml(pattern.end_date || '—')}</div></div>
+                </div>
+                <div class="bg-darkbg border border-bordercol rounded-lg p-3">
+                    <div class="text-sky-300 font-bold mb-1">${ar ? 'ما الذي يصفه هذا النموذج' : 'What this pattern describes'}</div>
+                    <p class="text-textmain text-sm leading-6">${escapeHtml(summary)}</p>
+                </div>
+                <div class="bg-amber-500/10 border border-amber-500/30 rounded-lg p-3">
+                    <div class="text-amber-300 font-bold mb-1">${ar ? 'كيف يقرأه المستثمر عادةً' : 'How investors usually read it'}</div>
+                    <p class="text-textmain text-sm leading-6">${escapeHtml(investor)}</p>
+                </div>
+                <div class="bg-darkbg border border-bordercol rounded-lg p-3">
+                    <div class="text-textmuted mb-1 text-xs">${ar ? 'المستويات المهمة' : 'Key levels'}</div>
+                    <div class="font-mono text-[12px] text-sky-300">${formatPatternLevels(pattern)}</div>
+                </div>
+                <div class="text-[11px] text-textmuted">${ar ? 'ملاحظة تعليمية: اسم النموذج وحده لا يكفي. الأفضل دمجه مع الاتجاه العام والحجم وخطة مخاطرة واضحة.' : 'Educational note: the label alone is not enough. It works best when combined with trend, volume, and a clear risk plan.'}</div>
+            `;
+            openModal('modal-pattern-info');
+        }
+        function patternHitboxFromEvent(evt, chart) {
+            if (!chart || !chart.$patternOverlayData || !Array.isArray(chart.$patternOverlayData.hitboxes)) return null;
+            const rect = chart.canvas.getBoundingClientRect();
+            const scaleX = chart.canvas.width / rect.width;
+            const scaleY = chart.canvas.height / rect.height;
+            const x = (evt.clientX - rect.left) * scaleX;
+            const y = (evt.clientY - rect.top) * scaleY;
+            const hitboxes = chart.$patternOverlayData.hitboxes;
+            for (let i = hitboxes.length - 1; i >= 0; i--) {
+                const h = hitboxes[i];
+                if (x >= h.left && x <= h.right && y >= h.top && y <= h.bottom) return h;
+            }
+            return null;
+        }
+        function handlePatternOverlayPointer(evt, chart) {
+            if (!chart || !chart.canvas) return;
+            chart.canvas.style.cursor = patternHitboxFromEvent(evt, chart) ? 'pointer' : 'default';
+        }
+        function handlePatternOverlayClick(evt, chart) {
+            const hit = patternHitboxFromEvent(evt, chart);
+            if (hit && hit.pattern) openPatternInfoModal(hit.pattern);
+        }
+
         function populateSelects() {
             if (!globalData || !globalData.market_matrix) return;
             const tickers = globalData.market_matrix.map(row => row.Ticker).filter(Boolean).sort();
@@ -2980,12 +3288,13 @@
                         // another. Outside the chart area (above/below) is
                         // also drawn so labels never lie on top of a candle.
                         const labelSlotsTaken = {};
+                        overlay.hitboxes = [];
                         // Track which x-ranges have already been shaded so
                         // overlapping patterns don't pile alpha into a
                         // opaque block that hides the price action.
                         const spanKeys = new Set();
                         overlay.patterns.forEach(p => {
-                            if (!p || !p._startIdx || !p._endIdx) return;
+                            if (!p || p._startIdx == null || p._endIdx == null) return;
                             const x1 = xScale.getPixelForValue(p._startIdx);
                             const x2 = xScale.getPixelForValue(p._endIdx);
                             const xLeft = Math.min(x1, x2), xRight = Math.max(x1, x2);
@@ -3072,6 +3381,13 @@
                             ctx.textAlign = 'right';
                             ctx.textBaseline = 'middle';
                             ctx.fillText(label, labelX - padX, labelY - 2);
+                            overlay.hitboxes.push({
+                                left: labelX - textW - padX*2,
+                                top: labelY - 12,
+                                right: labelX,
+                                bottom: labelY + 8,
+                                pattern: p,
+                            });
                         });
                         ctx.restore();
                     },
@@ -3097,9 +3413,11 @@
                 needsOverlayUpdate = true;
             }
             if (clippedPatterns.length) {
-                chartInstance.$patternOverlayData = { patterns: clippedPatterns };
+                chartInstance.$patternOverlayData = { patterns: clippedPatterns, hitboxes: [] };
                 needsOverlayUpdate = true;
             }
+            chartInstance.canvas.onclick = (evt) => handlePatternOverlayClick(evt, chartInstance);
+            chartInstance.canvas.onmousemove = (evt) => handlePatternOverlayPointer(evt, chartInstance);
             if (needsOverlayUpdate) chartInstance.update();
         }
 
@@ -6073,6 +6391,7 @@
             });
         }
     </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 </body>
