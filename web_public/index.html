@@ -789,74 +789,84 @@
 
         <!-- TAB 7: CHARTS & TREND LINES -->
         <div id="tab-charts" class="bg-panelbg rounded-b-xl border border-t-0 border-bordercol p-4 shadow-xl hidden space-y-4">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 bg-darkbg p-3 rounded-xl border border-bordercol">
-                <div class="flex items-center gap-4">
-                    <label class="flex items-center gap-1.5 font-bold cursor-pointer">
-                        <input type="radio" name="chart_mode" value="stock" checked onchange="onChartModeChange()" class="text-sky-500">
-                        <span id="lbl-rad-stock">📈 Per Stock</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 font-bold cursor-pointer">
-                        <input type="radio" name="chart_mode" value="sector" onchange="onChartModeChange()" class="text-sky-500">
-                        <span id="lbl-rad-sector">🏢 Per Sector</span>
-                    </label>
-                </div>
-                <div class="flex items-center gap-2 w-full md:w-auto">
-                    <span class="font-bold text-textmuted" id="lbl-chart-select">Select Item:</span>
-                    <select id="chart-selector" onchange="plotChart()" class="bg-panelbg border border-bordercol rounded px-3 py-1.5 text-textmain font-bold w-full md:w-64"></select>
-                </div>
-                <div class="flex items-center gap-3 font-bold text-xs">
-                    <label class="flex items-center gap-1.5 cursor-pointer">
-                        <input type="radio" name="chart_style" value="line" checked onchange="plotChart()" class="text-sky-500">
-                        <span id="lbl-style-line">📉 Line</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 cursor-pointer" id="wrap-style-candle">
-                        <input type="radio" name="chart_style" value="candle" onchange="plotChart()" class="text-sky-500">
-                        <span id="lbl-style-candle">🕯️ Candles</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 cursor-pointer" id="wrap-toggle-sr">
-                        <input type="checkbox" id="toggle-sr" checked onchange="plotChart()" class="rounded text-sky-500">
-                        <span id="lbl-toggle-sr">📐 Support / Resistance</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 cursor-pointer" id="wrap-toggle-patterns">
-                        <input type="checkbox" id="toggle-patterns" onchange="plotChart()" class="rounded text-sky-500">
-                        <span id="lbl-toggle-patterns">🔺 Patterns</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 cursor-pointer" id="wrap-toggle-volume">
-                        <input type="checkbox" id="toggle-volume" checked onchange="plotChart()" class="rounded text-sky-500">
-                        <span id="lbl-toggle-volume">📊 Volume</span>
-                    </label>
-                    <button onclick="saveChartImage()" class="bg-teal-700 hover:bg-teal-600 text-white px-3 py-1.5 rounded font-bold" id="btn-save-chart">💾 Save Chart</button>
-                    <button onclick="toggleChartMaximize()" class="bg-indigo-700 hover:bg-indigo-600 text-white px-3 py-1.5 rounded font-bold" id="btn-maximize-chart">⛶ Maximize</button>
-                </div>
-            </div>
+            <!-- Everything below (controls + canvas) is wrapped together so
+                 Maximize turns the WHOLE thing into one fullscreen view, not
+                 just the bare canvas — every control (mode, item picker,
+                 style, S/R, Patterns, Volume, Save Chart, time horizon,
+                 alphabet filter) stays reachable while maximized, mirroring
+                 the desktop app's popped-out chart window. -->
+            <div id="chart-fullscreen-wrapper" class="space-y-4">
+                <button onclick="toggleChartMaximize()" class="hidden fixed top-4 right-4 z-[201] bg-panelbg hover:bg-red-600 text-textmain hover:text-white border border-bordercol rounded-full w-10 h-10 items-center justify-center font-bold text-lg shadow-lg" id="btn-close-maximized-chart" title="Exit fullscreen (Esc)">✕</button>
 
-            <!-- Time Horizon Zoom Filter Bar -->
-            <div class="flex flex-wrap items-center justify-between gap-2 bg-darkbg p-2.5 rounded-lg border border-bordercol text-xs">
-                <div class="flex items-center gap-1" id="timeframe-buttons">
-                    <span class="font-bold text-sky-400 mr-2" id="lbl-time-zoom">⏱️ Time Horizon:</span>
-                    <button onclick="applyTimeFrame('1W')" class="px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white" data-tf="1W">1W (1 Week)</button>
-                    <button onclick="applyTimeFrame('2W')" class="px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white" data-tf="2W">2W (2 Weeks)</button>
-                    <button onclick="applyTimeFrame('1M')" class="px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white" data-tf="1M">1M (1 Month)</button>
-                    <button onclick="applyTimeFrame('3M')" class="px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white" data-tf="3M">3M (3 Months)</button>
-                    <button onclick="applyTimeFrame('6M')" class="px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white" data-tf="6M">6M (6 Months)</button>
-                    <button onclick="applyTimeFrame('1Y')" class="px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white" data-tf="1Y">1Y (1 Year)</button>
-                    <button onclick="applyTimeFrame('ALL')" class="px-2.5 py-1 rounded font-bold transition bg-sky-600 text-white" data-tf="ALL">ALL History</button>
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 bg-darkbg p-3 rounded-xl border border-bordercol">
+                    <div class="flex items-center gap-4">
+                        <label class="flex items-center gap-1.5 font-bold cursor-pointer">
+                            <input type="radio" name="chart_mode" value="stock" checked onchange="onChartModeChange()" class="text-sky-500">
+                            <span id="lbl-rad-stock">📈 Per Stock</span>
+                        </label>
+                        <label class="flex items-center gap-1.5 font-bold cursor-pointer">
+                            <input type="radio" name="chart_mode" value="sector" onchange="onChartModeChange()" class="text-sky-500">
+                            <span id="lbl-rad-sector">🏢 Per Sector</span>
+                        </label>
+                    </div>
+                    <div class="flex items-center gap-2 w-full md:w-auto">
+                        <span class="font-bold text-textmuted" id="lbl-chart-select">Select Item:</span>
+                        <select id="chart-selector" onchange="plotChart()" class="bg-panelbg border border-bordercol rounded px-3 py-1.5 text-textmain font-bold w-full md:w-64"></select>
+                    </div>
+                    <div class="flex items-center gap-3 font-bold text-xs">
+                        <label class="flex items-center gap-1.5 cursor-pointer">
+                            <input type="radio" name="chart_style" value="line" checked onchange="plotChart()" class="text-sky-500">
+                            <span id="lbl-style-line">📉 Line</span>
+                        </label>
+                        <label class="flex items-center gap-1.5 cursor-pointer" id="wrap-style-candle">
+                            <input type="radio" name="chart_style" value="candle" onchange="plotChart()" class="text-sky-500">
+                            <span id="lbl-style-candle">🕯️ Candles</span>
+                        </label>
+                        <label class="flex items-center gap-1.5 cursor-pointer" id="wrap-toggle-sr">
+                            <input type="checkbox" id="toggle-sr" checked onchange="plotChart()" class="rounded text-sky-500">
+                            <span id="lbl-toggle-sr">📐 Support / Resistance</span>
+                        </label>
+                        <label class="flex items-center gap-1.5 cursor-pointer" id="wrap-toggle-patterns">
+                            <input type="checkbox" id="toggle-patterns" onchange="plotChart()" class="rounded text-sky-500">
+                            <span id="lbl-toggle-patterns">🔺 Patterns</span>
+                        </label>
+                        <label class="flex items-center gap-1.5 cursor-pointer" id="wrap-toggle-volume">
+                            <input type="checkbox" id="toggle-volume" checked onchange="plotChart()" class="rounded text-sky-500">
+                            <span id="lbl-toggle-volume">📊 Volume</span>
+                        </label>
+                        <button onclick="saveChartImage()" class="bg-teal-700 hover:bg-teal-600 text-white px-3 py-1.5 rounded font-bold" id="btn-save-chart">💾 Save Chart</button>
+                        <button onclick="toggleChartMaximize()" class="bg-indigo-700 hover:bg-indigo-600 text-white px-3 py-1.5 rounded font-bold" id="btn-maximize-chart">⛶ Maximize</button>
+                    </div>
                 </div>
-                <span id="lbl-bars-shown" class="text-textmuted font-mono text-[11px]">Showing all available bars</span>
-            </div>
 
-            <!-- Alphabet Quick Filter -->
-            <div id="alpha-container" class="flex flex-wrap items-center gap-1 bg-darkbg p-2 rounded-lg border border-bordercol text-xs">
-                <span class="font-bold text-textmuted mr-2" id="lbl-alpha-quick">🔤 Quick Filter:</span>
-                <!-- Generated dynamically -->
-            </div>
+                <!-- Time Horizon Zoom Filter Bar -->
+                <div class="flex flex-wrap items-center justify-between gap-2 bg-darkbg p-2.5 rounded-lg border border-bordercol text-xs">
+                    <div class="flex items-center gap-1" id="timeframe-buttons">
+                        <span class="font-bold text-sky-400 mr-2" id="lbl-time-zoom">⏱️ Time Horizon:</span>
+                        <button onclick="applyTimeFrame('1W')" class="px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white" data-tf="1W">1W (1 Week)</button>
+                        <button onclick="applyTimeFrame('2W')" class="px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white" data-tf="2W">2W (2 Weeks)</button>
+                        <button onclick="applyTimeFrame('1M')" class="px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white" data-tf="1M">1M (1 Month)</button>
+                        <button onclick="applyTimeFrame('3M')" class="px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white" data-tf="3M">3M (3 Months)</button>
+                        <button onclick="applyTimeFrame('6M')" class="px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white" data-tf="6M">6M (6 Months)</button>
+                        <button onclick="applyTimeFrame('1Y')" class="px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white" data-tf="1Y">1Y (1 Year)</button>
+                        <button onclick="applyTimeFrame('ALL')" class="px-2.5 py-1 rounded font-bold transition bg-sky-600 text-white" data-tf="ALL">ALL History</button>
+                    </div>
+                    <span id="lbl-bars-shown" class="text-textmuted font-mono text-[11px]">Showing all available bars</span>
+                </div>
 
-            <!-- Canvas Container -->
-            <div class="bg-darkbg p-4 rounded-xl border border-bordercol relative h-[500px] w-full" id="chart-canvas-container">
-                <button onclick="toggleChartMaximize()" class="hidden absolute top-3 right-3 z-[70] bg-panelbg hover:bg-red-600 text-textmain hover:text-white border border-bordercol rounded-full w-9 h-9 items-center justify-center font-bold text-lg shadow-lg" id="btn-close-maximized-chart" title="Exit fullscreen (Esc)">✕</button>
-                <canvas id="mainChart"></canvas>
+                <!-- Alphabet Quick Filter -->
+                <div id="alpha-container" class="flex flex-wrap items-center gap-1 bg-darkbg p-2 rounded-lg border border-bordercol text-xs">
+                    <span class="font-bold text-textmuted mr-2" id="lbl-alpha-quick">🔤 Quick Filter:</span>
+                    <!-- Generated dynamically -->
+                </div>
+
+                <!-- Canvas Container -->
+                <div class="bg-darkbg p-4 rounded-xl border border-bordercol relative h-[500px] w-full" id="chart-canvas-container">
+                    <canvas id="mainChart"></canvas>
+                </div>
             </div>
         </div>
+
 
     </div>
 
@@ -3037,11 +3047,16 @@
             document.body.removeChild(link);
         }
 
-        // Chart Fullscreen / Maximize toggle. The canvas container simply
-        // switches from its normal in-flow "h-[500px] w-full" box to a
-        // fixed, full-viewport overlay (z-[65] — above regular page content
-        // and above the standard z-50 modals, since this is meant to be the
-        // sole focus of the screen while active).
+        // Chart Fullscreen / Maximize toggle. Wraps the ENTIRE chart tab's
+        // controls (mode/item picker, style row incl. Patterns/Volume/S-R/
+        // Save Chart, time horizon, alphabet filter) + the canvas together
+        // in #chart-fullscreen-wrapper, so maximizing keeps every control
+        // reachable instead of just enlarging the bare canvas — mirrors the
+        // desktop app's popped-out chart window, which does the same for
+        // its own toolbar. z-[201] is deliberately higher than the sticky
+        // header's z-30 (and the standard z-50 modals) — a lower value here
+        // previously let the header's own stacking context paint over the
+        // "maximized" chart instead of the other way around.
         // Chart.js is already configured with responsive:true +
         // maintainAspectRatio:false (see plotChart()), so it auto-resizes
         // via its own ResizeObserver on the container — we just also call
@@ -3049,22 +3064,25 @@
         // it snaps to the new size immediately instead of waiting a frame.
         let isChartMaximized = false;
         function toggleChartMaximize() {
-            const container = document.getElementById('chart-canvas-container');
+            const wrapper = document.getElementById('chart-fullscreen-wrapper');
+            const canvasBox = document.getElementById('chart-canvas-container');
             const closeBtn = document.getElementById('btn-close-maximized-chart');
             const maximizeBtn = document.getElementById('btn-maximize-chart');
-            if (!container) return;
+            if (!wrapper || !canvasBox) return;
             isChartMaximized = !isChartMaximized;
 
             if (isChartMaximized) {
-                container.classList.remove('h-[500px]', 'w-full');
-                container.classList.add('fixed', 'inset-0', 'z-[65]', 'h-screen', 'w-screen', 'rounded-none', 'p-6', 'md:p-10');
+                wrapper.classList.add('fixed', 'inset-0', 'z-[201]', 'bg-panelbg', 'p-3', 'md:p-5', 'overflow-y-auto');
+                canvasBox.classList.remove('h-[500px]');
+                canvasBox.classList.add('h-[calc(100vh-260px)]', 'min-h-[320px]');
                 closeBtn.classList.remove('hidden');
                 closeBtn.classList.add('flex');
                 if (maximizeBtn) { maximizeBtn.innerText = t_current().btn_exit_fullscreen_chart || '⛶ Exit Fullscreen'; }
                 document.body.style.overflow = 'hidden';
             } else {
-                container.classList.add('h-[500px]', 'w-full');
-                container.classList.remove('fixed', 'inset-0', 'z-[65]', 'h-screen', 'w-screen', 'rounded-none', 'p-6', 'md:p-10');
+                wrapper.classList.remove('fixed', 'inset-0', 'z-[201]', 'bg-panelbg', 'p-3', 'md:p-5', 'overflow-y-auto');
+                canvasBox.classList.add('h-[500px]');
+                canvasBox.classList.remove('h-[calc(100vh-260px)]', 'min-h-[320px]');
                 closeBtn.classList.add('hidden');
                 closeBtn.classList.remove('flex');
                 if (maximizeBtn) { maximizeBtn.innerText = t_current().btn_maximize_chart || '⛶ Maximize'; }

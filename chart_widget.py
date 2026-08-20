@@ -46,18 +46,23 @@ _PATTERN_COLORS = {"bullish": "#22c55e", "bearish": "#ef4444", "neutral": "#a0ae
 class _ChartFullscreenDialog(QDialog):
     """Fullscreen host window for the chart canvas, opened on demand by
     StockSectorChartWidget._toggle_maximize_chart(). Qt widgets only ever
-    have one parent, so reparenting ``canvas`` into this dialog's layout
-    automatically removes it from the small embedded view — and
-    reparenting it back (done by the ``on_close`` callback) is all that's
-    needed to restore the normal default-size layout, no separate
-    "shrink" codepath required.
+    have one parent, so reparenting ``canvas`` (and ``controls``) into
+    this dialog's layout automatically removes them from the small
+    embedded view — and reparenting them back (done by the ``on_close``
+    callback) is all that's needed to restore the normal default-size
+    layout, no separate "shrink" codepath required.
+
+    ``controls`` are the same Line/Candle/Support-Resistance/Patterns/
+    Volume/Save-Chart widgets the embedded toolbar normally shows —
+    moved up here into the dialog's own top bar so every one of them
+    stays usable while maximized, instead of only the bare chart.
 
     Closing works three ways, all routed through closeEvent() below so
     ``on_close`` always fires exactly once: the ✕ button, the Esc key, or
     the OS window-close control (still available since this is a normal
     QDialog, not a frameless one).
     """
-    def __init__(self, canvas, on_close, lang="EN", parent=None):
+    def __init__(self, canvas, controls, on_close, lang="EN", parent=None):
         super().__init__(parent)
         self.setWindowTitle("MB-EGX — Chart")
         self.setStyleSheet("background-color: #1a1d24;")
@@ -69,9 +74,11 @@ class _ChartFullscreenDialog(QDialog):
         outer.setSpacing(6)
 
         top_bar = QHBoxLayout()
-        hint = QLabel("Esc" if lang != "AR" else "Esc")
+        hint = QLabel("Esc")
         hint.setStyleSheet("color: #64748b; font-size: 11px;")
         top_bar.addWidget(hint)
+        for w in controls:
+            top_bar.addWidget(w)
         top_bar.addStretch()
         self.btn_close = QPushButton("✕ Close" if lang != "AR" else "✕ إغلاق")
         self.btn_close.setCursor(Qt.CursorShape.PointingHandCursor)
@@ -220,6 +227,7 @@ class StockSectorChartWidget(QWidget):
         style_layout.addWidget(self.btn_maximize_chart)
         style_layout.addStretch()
         layout.addLayout(style_layout)
+        self._style_layout = style_layout  # kept for _toggle_maximize_chart's reparent-out/back
 
         # 1c. Time-horizon zoom (parity port of the web dashboard's
         # timeframe-buttons bar — index.html's applyTimeFrame). Slices the
@@ -348,6 +356,16 @@ class StockSectorChartWidget(QWidget):
             return
 
         min_quality = PATTERN_DETECTION["min_quality"]
+        # Multiple detected patterns often end within a few bars of each
+        # other (most commonly right at the most recent bar, since that's
+        # where "still forming" patterns naturally converge) — with every
+        # label using the same fixed (4, 10) point offset, those labels
+        # rendered exactly on top of one another. Bucketing by end_index
+        # (grouped into small ranges rather than requiring an exact match,
+        # since "close" bars should stack too) and giving each subsequent
+        # label in the same bucket a larger vertical offset staggers them
+        # into a readable stack instead.
+        label_bucket_counts = {}
         for p in patterns:
             if p.get("quality", 1.0) < min_quality:
                 continue
@@ -369,9 +387,12 @@ class StockSectorChartWidget(QWidget):
             label = p["pattern"]
             if "quality" in p:
                 label += f" ({p['quality']:.0%})"
+            bucket_key = end_i // 5
+            slot = label_bucket_counts.get(bucket_key, 0)
+            label_bucket_counts[bucket_key] = slot + 1
             ax.annotate(
                 label, xy=(end_date, float(df["close"].iloc[end_i])),
-                xytext=(4, 10), textcoords="offset points",
+                xytext=(4, 10 + slot * 15), textcoords="offset points",
                 color=color, fontsize=7.5, fontweight="bold", zorder=6,
                 bbox=dict(boxstyle="round,pad=0.2", facecolor="#1a1d24", edgecolor=color, alpha=0.85),
             )
@@ -474,26 +495,37 @@ class StockSectorChartWidget(QWidget):
             self.fig.savefig(file_path, dpi=180, bbox_inches="tight")
 
     def _toggle_maximize_chart(self):
-        """Pops the chart canvas out into a fullscreen window (see
-        _ChartFullscreenDialog above), or is a no-op if it's already
-        maximized — the dialog owns the canvas until it closes, so a
+        """Pops the chart canvas — plus its Line/Candle/Support-Resistance/
+        Patterns/Volume/Save-Chart controls — out into a fullscreen window
+        (see _ChartFullscreenDialog above), or is a no-op if it's already
+        maximized: the dialog owns those widgets until it closes, so a
         second click while it's open just does nothing rather than
-        opening a second dialog around the same widget."""
+        opening a second dialog around the same widgets."""
         if self._fullscreen_dialog is not None:
             return
-        dlg = _ChartFullscreenDialog(self.canvas, on_close=self._on_chart_fullscreen_closed,
+        controls = [self.rad_line, self.rad_candle, self.chk_sr, self.chk_patterns,
+                    self.chk_volume, self.btn_save_chart]
+        dlg = _ChartFullscreenDialog(self.canvas, controls, on_close=self._on_chart_fullscreen_closed,
                                       lang=self.lang, parent=self.window())
         self._fullscreen_dialog = dlg
         dlg.showMaximized()
 
     def _on_chart_fullscreen_closed(self):
-        """Reparents the canvas back into this widget's own layout — Qt
-        widgets only have one parent at a time, so this is also what
-        removes it from the closing dialog. Runs the default-size chart's
-        own resize/redraw once it's back (Qt fires this via the canvas's
-        normal resizeEvent once it's laid out here again, no manual call
-        needed)."""
+        """Reparents the canvas and the moved-out controls back into this
+        widget's own layout — Qt widgets only have one parent at a time,
+        so this is also what removes them from the closing dialog. The
+        controls are re-inserted at index 0..N in their original left-to-
+        right order, ahead of the Maximize button + trailing stretch that
+        stayed behind in the embedded row, which restores the exact
+        original ordering. The default-size chart's own resize/redraw
+        happens automatically once it's back (Qt fires this via the
+        canvas's normal resizeEvent once it's laid out here again, no
+        manual call needed)."""
         self.layout().addWidget(self.canvas)
+        controls = [self.rad_line, self.rad_candle, self.chk_sr, self.chk_patterns,
+                    self.chk_volume, self.btn_save_chart]
+        for i, w in enumerate(controls):
+            self._style_layout.insertWidget(i, w)
         self._fullscreen_dialog = None
 
     def plot_chart(self):
