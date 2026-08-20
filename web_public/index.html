@@ -826,6 +826,7 @@
                         <span id="lbl-toggle-volume">📊 Volume</span>
                     </label>
                     <button onclick="saveChartImage()" class="bg-teal-700 hover:bg-teal-600 text-white px-3 py-1.5 rounded font-bold" id="btn-save-chart">💾 Save Chart</button>
+                    <button onclick="toggleChartMaximize()" class="bg-indigo-700 hover:bg-indigo-600 text-white px-3 py-1.5 rounded font-bold" id="btn-maximize-chart">⛶ Maximize</button>
                 </div>
             </div>
 
@@ -851,7 +852,8 @@
             </div>
 
             <!-- Canvas Container -->
-            <div class="bg-darkbg p-4 rounded-xl border border-bordercol relative h-[500px] w-full">
+            <div class="bg-darkbg p-4 rounded-xl border border-bordercol relative h-[500px] w-full" id="chart-canvas-container">
+                <button onclick="toggleChartMaximize()" class="hidden absolute top-3 right-3 z-[70] bg-panelbg hover:bg-red-600 text-textmain hover:text-white border border-bordercol rounded-full w-9 h-9 items-center justify-center font-bold text-lg shadow-lg" id="btn-close-maximized-chart" title="Exit fullscreen (Esc)">✕</button>
                 <canvas id="mainChart"></canvas>
             </div>
         </div>
@@ -1615,6 +1617,7 @@
                 time_zoom: "⏱️ Time Horizon:", guide: "Guide",
                 style_line: "📉 Line", style_candle: "🕯️ Candles", toggle_sr: "📐 Support / Resistance",
                 toggle_patterns: "🔺 Patterns", toggle_volume: "📊 Volume", btn_save_chart_img: "💾 Save Chart",
+                btn_maximize_chart: "⛶ Maximize", btn_exit_fullscreen_chart: "⛶ Exit Fullscreen",
                 // Table headers
                 hdr_ticker: "Ticker", hdr_action: "Action", hdr_score: "Score", hdr_price: "Price",
                 hdr_horizon: "Horizon", hdr_picked_on: "Picked On", hdr_pick_price: "Pick Price",
@@ -1860,6 +1863,7 @@
                 time_zoom: "⏱️ الفترة الزمنية:", guide: "الدليل",
                 style_line: "📉 خط", style_candle: "🕯️ شموع", toggle_sr: "📐 الدعم / المقاومة",
                 toggle_patterns: "🔺 الأنماط", toggle_volume: "📊 الحجم", btn_save_chart_img: "💾 حفظ الرسم",
+                btn_maximize_chart: "⛶ تكبير", btn_exit_fullscreen_chart: "⛶ إنهاء ملء الشاشة",
                 // Table headers
                 hdr_ticker: "الرمز", hdr_action: "الإجراء", hdr_score: "الدرجة", hdr_price: "السعر",
                 hdr_horizon: "المدى", hdr_picked_on: "تاريخ الترشيح", hdr_pick_price: "سعر الترشيح",
@@ -2237,6 +2241,7 @@
             if (document.getElementById('lbl-toggle-patterns')) document.getElementById('lbl-toggle-patterns').innerText = t.toggle_patterns;
             if (document.getElementById('lbl-toggle-volume')) document.getElementById('lbl-toggle-volume').innerText = t.toggle_volume;
             if (document.getElementById('btn-save-chart')) document.getElementById('btn-save-chart').innerText = t.btn_save_chart_img;
+            if (document.getElementById('btn-maximize-chart')) document.getElementById('btn-maximize-chart').innerText = isChartMaximized ? (t.btn_exit_fullscreen_chart || t.btn_maximize_chart) : t.btn_maximize_chart;
             document.getElementById('lbl-alpha-quick').innerText = t.alpha_quick;
             if (document.getElementById('lbl-time-zoom')) document.getElementById('lbl-time-zoom').innerText = t.time_zoom;
             if (chartInstance) plotChart();
@@ -3031,6 +3036,55 @@
             link.click();
             document.body.removeChild(link);
         }
+
+        // Chart Fullscreen / Maximize toggle. The canvas container simply
+        // switches from its normal in-flow "h-[500px] w-full" box to a
+        // fixed, full-viewport overlay (z-[65] — above regular page content
+        // and above the standard z-50 modals, since this is meant to be the
+        // sole focus of the screen while active).
+        // Chart.js is already configured with responsive:true +
+        // maintainAspectRatio:false (see plotChart()), so it auto-resizes
+        // via its own ResizeObserver on the container — we just also call
+        // chartInstance.resize() explicitly right after the class swap so
+        // it snaps to the new size immediately instead of waiting a frame.
+        let isChartMaximized = false;
+        function toggleChartMaximize() {
+            const container = document.getElementById('chart-canvas-container');
+            const closeBtn = document.getElementById('btn-close-maximized-chart');
+            const maximizeBtn = document.getElementById('btn-maximize-chart');
+            if (!container) return;
+            isChartMaximized = !isChartMaximized;
+
+            if (isChartMaximized) {
+                container.classList.remove('h-[500px]', 'w-full');
+                container.classList.add('fixed', 'inset-0', 'z-[65]', 'h-screen', 'w-screen', 'rounded-none', 'p-6', 'md:p-10');
+                closeBtn.classList.remove('hidden');
+                closeBtn.classList.add('flex');
+                if (maximizeBtn) { maximizeBtn.innerText = t_current().btn_exit_fullscreen_chart || '⛶ Exit Fullscreen'; }
+                document.body.style.overflow = 'hidden';
+            } else {
+                container.classList.add('h-[500px]', 'w-full');
+                container.classList.remove('fixed', 'inset-0', 'z-[65]', 'h-screen', 'w-screen', 'rounded-none', 'p-6', 'md:p-10');
+                closeBtn.classList.add('hidden');
+                closeBtn.classList.remove('flex');
+                if (maximizeBtn) { maximizeBtn.innerText = t_current().btn_maximize_chart || '⛶ Maximize'; }
+                document.body.style.overflow = '';
+            }
+            // Let the layout settle one frame, then force Chart.js to
+            // recompute its canvas size against the new container box.
+            requestAnimationFrame(() => { if (chartInstance) chartInstance.resize(); });
+        }
+        // Small helper so the exit-fullscreen label re-translates cleanly
+        // without needing its own dedicated re-render pass; falls back to
+        // the currently-active language's translation table if present.
+        function t_current() {
+            try {
+                return TRANSLATIONS[currentLang] || TRANSLATIONS.EN || {};
+            } catch (e) { return {}; }
+        }
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isChartMaximized) toggleChartMaximize();
+        });
 
         // Portfolio & Risk Engine
         function autoLoadRiskPrices() {

@@ -3,7 +3,8 @@ import pandas as pd
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QComboBox, QLabel, 
-    QRadioButton, QButtonGroup, QPushButton, QScrollArea, QFrame, QFileDialog
+    QRadioButton, QButtonGroup, QPushButton, QScrollArea, QFrame, QFileDialog,
+    QDialog
 )
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -40,6 +41,64 @@ _AR_SECTOR_NAMES = {
 # Overlay color per detected-pattern direction (matches the existing
 # up/down palette used for candles and trend lines elsewhere in this file).
 _PATTERN_COLORS = {"bullish": "#22c55e", "bearish": "#ef4444", "neutral": "#a0aec0"}
+
+
+class _ChartFullscreenDialog(QDialog):
+    """Fullscreen host window for the chart canvas, opened on demand by
+    StockSectorChartWidget._toggle_maximize_chart(). Qt widgets only ever
+    have one parent, so reparenting ``canvas`` into this dialog's layout
+    automatically removes it from the small embedded view — and
+    reparenting it back (done by the ``on_close`` callback) is all that's
+    needed to restore the normal default-size layout, no separate
+    "shrink" codepath required.
+
+    Closing works three ways, all routed through closeEvent() below so
+    ``on_close`` always fires exactly once: the ✕ button, the Esc key, or
+    the OS window-close control (still available since this is a normal
+    QDialog, not a frameless one).
+    """
+    def __init__(self, canvas, on_close, lang="EN", parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("MB-EGX — Chart")
+        self.setStyleSheet("background-color: #1a1d24;")
+        self._on_close = on_close
+        self._closed_cleanly = False
+
+        outer = QVBoxLayout(self)
+        outer.setContentsMargins(10, 10, 10, 10)
+        outer.setSpacing(6)
+
+        top_bar = QHBoxLayout()
+        hint = QLabel("Esc" if lang != "AR" else "Esc")
+        hint.setStyleSheet("color: #64748b; font-size: 11px;")
+        top_bar.addWidget(hint)
+        top_bar.addStretch()
+        self.btn_close = QPushButton("✕ Close" if lang != "AR" else "✕ إغلاق")
+        self.btn_close.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.btn_close.setStyleSheet(
+            "QPushButton { background-color: #2d3748; color: #e2e8f0; border-radius: 4px; "
+            "border: none; padding: 6px 16px; font-size: 12px; font-weight: bold; }"
+            "QPushButton:hover { background-color: #dc2626; color: white; }"
+        )
+        self.btn_close.clicked.connect(self.close)
+        top_bar.addWidget(self.btn_close)
+        outer.addLayout(top_bar)
+
+        outer.addWidget(canvas, stretch=1)
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key.Key_Escape:
+            self.close()
+        else:
+            super().keyPressEvent(event)
+
+    def closeEvent(self, event):
+        # Guards against firing on_close twice — e.g. the ✕ button calls
+        # close(), which then also triggers this same closeEvent.
+        if not self._closed_cleanly:
+            self._closed_cleanly = True
+            self._on_close()
+        super().closeEvent(event)
 
 
 class StockSectorChartWidget(QWidget):
@@ -146,12 +205,19 @@ class StockSectorChartWidget(QWidget):
         )
         self.btn_save_chart = QPushButton("💾 Save Chart")
         self.btn_save_chart.setStyleSheet("QPushButton { background-color: #0f766e; color: white; border-radius: 4px; border: none; padding: 4px 10px; font-size: 11px; font-weight: bold; }")
+        self.btn_maximize_chart = QPushButton("⛶ Maximize")
+        self.btn_maximize_chart.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.btn_maximize_chart.setStyleSheet(
+            "QPushButton { background-color: #4338ca; color: white; border-radius: 4px; border: none; padding: 4px 10px; font-size: 11px; font-weight: bold; }"
+            "QPushButton:hover { background-color: #4f46e5; }"
+        )
         style_layout.addWidget(self.rad_line)
         style_layout.addWidget(self.rad_candle)
         style_layout.addWidget(self.chk_sr)
         style_layout.addWidget(self.chk_patterns)
         style_layout.addWidget(self.chk_volume)
         style_layout.addWidget(self.btn_save_chart)
+        style_layout.addWidget(self.btn_maximize_chart)
         style_layout.addStretch()
         layout.addLayout(style_layout)
 
@@ -218,8 +284,10 @@ class StockSectorChartWidget(QWidget):
         self.chk_patterns.toggled.connect(self.plot_chart)
         self.chk_volume.toggled.connect(self.plot_chart)
         self.btn_save_chart.clicked.connect(self._save_chart)
+        self.btn_maximize_chart.clicked.connect(self._toggle_maximize_chart)
         self.cmb_selector.currentIndexChanged.connect(self.plot_chart)
 
+        self._fullscreen_dialog = None
         self.populate_selector()
 
     def _plot_candles(self, ax, df):
@@ -326,6 +394,7 @@ class StockSectorChartWidget(QWidget):
             self.chk_sr.setText("📐 الدعم / المقاومة")
             self.chk_volume.setText("📊 الحجم")
             self.btn_save_chart.setText("💾 حفظ الرسم")
+            self.btn_maximize_chart.setText("⛶ تكبير")
             if hasattr(self, "lbl_time_zoom"):
                 self.lbl_time_zoom.setText("⏱️ الأفق الزمني:")
         else:
@@ -339,6 +408,7 @@ class StockSectorChartWidget(QWidget):
             self.chk_sr.setText("📐 Support / Resistance")
             self.chk_volume.setText("📊 Volume")
             self.btn_save_chart.setText("💾 Save Chart")
+            self.btn_maximize_chart.setText("⛶ Maximize")
             if hasattr(self, "lbl_time_zoom"):
                 self.lbl_time_zoom.setText("⏱️ Time Horizon:")
 
@@ -402,6 +472,29 @@ class StockSectorChartWidget(QWidget):
         file_path, _ = QFileDialog.getSaveFileName(self, "Save Chart" if self.lang == "EN" else "حفظ الرسم", "mb_egx_chart.png", "PNG Files (*.png)")
         if file_path:
             self.fig.savefig(file_path, dpi=180, bbox_inches="tight")
+
+    def _toggle_maximize_chart(self):
+        """Pops the chart canvas out into a fullscreen window (see
+        _ChartFullscreenDialog above), or is a no-op if it's already
+        maximized — the dialog owns the canvas until it closes, so a
+        second click while it's open just does nothing rather than
+        opening a second dialog around the same widget."""
+        if self._fullscreen_dialog is not None:
+            return
+        dlg = _ChartFullscreenDialog(self.canvas, on_close=self._on_chart_fullscreen_closed,
+                                      lang=self.lang, parent=self.window())
+        self._fullscreen_dialog = dlg
+        dlg.showMaximized()
+
+    def _on_chart_fullscreen_closed(self):
+        """Reparents the canvas back into this widget's own layout — Qt
+        widgets only have one parent at a time, so this is also what
+        removes it from the closing dialog. Runs the default-size chart's
+        own resize/redraw once it's back (Qt fires this via the canvas's
+        normal resizeEvent once it's laid out here again, no manual call
+        needed)."""
+        self.layout().addWidget(self.canvas)
+        self._fullscreen_dialog = None
 
     def plot_chart(self):
         is_stock_mode = self.rad_stock.isChecked()
