@@ -1,0 +1,737 @@
+{
+  "generated_at": "2026-08-20T22:39:34+00:00",
+  "walk_forward": {
+    "config": {
+      "min_train_bars": 250,
+      "test_bars": 60,
+      "step_bars": 60,
+      "min_folds": 4,
+      "max_hold_bars": 60
+    },
+    "tickers_backtested": 231,
+    "fold_count": 6,
+    "is_reliable": true,
+    "reliability_note": null,
+    "trade_count": 5061,
+    "win_rate_pct": 51.2,
+    "avg_return_pct": 1.021,
+    "profit_factor": 1.25,
+    "overall": {
+      "mean": 0.010209,
+      "vol": 0.118732,
+      "sharpe": 0.086,
+      "sortino": 0.1911,
+      "max_drawdown": -0.960094
+    }
+  },
+  "factors": {
+    "by_action": [
+      {
+        "bucket": "ACCUMULATE",
+        "trade_count": 3127,
+        "win_rate_pct": 50.7,
+        "win_rate_95pct_ci": [
+          49.0,
+          52.5
+        ],
+        "avg_return_pct": 1.083,
+        "avg_excess_return_vs_benchmark_pct": -0.899,
+        "benchmark_coverage": "3015/3127",
+        "reliable": true
+      },
+      {
+        "bucket": "BUY ON DIP",
+        "trade_count": 1059,
+        "win_rate_pct": 54.1,
+        "win_rate_95pct_ci": [
+          51.1,
+          57.1
+        ],
+        "avg_return_pct": 1.592,
+        "avg_excess_return_vs_benchmark_pct": -1.363,
+        "benchmark_coverage": "1020/1059",
+        "reliable": true
+      },
+      {
+        "bucket": "BREAKOUT BUY (MOMENTUM)",
+        "trade_count": 638,
+        "win_rate_pct": 50.8,
+        "win_rate_95pct_ci": [
+          46.9,
+          54.6
+        ],
+        "avg_return_pct": 0.366,
+        "avg_excess_return_vs_benchmark_pct": -0.175,
+        "benchmark_coverage": "617/638",
+        "reliable": true
+      },
+      {
+        "bucket": "STRONG BUY",
+        "trade_count": 191,
+        "win_rate_pct": 45.5,
+        "win_rate_95pct_ci": [
+          38.6,
+          52.6
+        ],
+        "avg_return_pct": -0.913,
+        "avg_excess_return_vs_benchmark_pct": -2.178,
+        "benchmark_coverage": "175/191",
+        "reliable": true
+      },
+      {
+        "bucket": "BREAKOUT BUY (X-OVER + MOMENTUM)",
+        "trade_count": 39,
+        "win_rate_pct": 48.7,
+        "win_rate_95pct_ci": [
+          33.9,
+          63.8
+        ],
+        "avg_return_pct": 0.269,
+        "avg_excess_return_vs_benchmark_pct": -1.523,
+        "benchmark_coverage": "38/39",
+        "reliable": true
+      },
+      {
+        "bucket": "BREAKOUT BUY (X-OVER)",
+        "trade_count": 7,
+        "win_rate_pct": 57.1,
+        "win_rate_95pct_ci": [
+          25.0,
+          84.2
+        ],
+        "avg_return_pct": 3.602,
+        "avg_excess_return_vs_benchmark_pct": -1.729,
+        "benchmark_coverage": "7/7",
+        "reliable": false
+      }
+    ],
+    "by_market_regime_at_entry": [
+      {
+        "bucket": "bull",
+        "trade_count": 3394,
+        "win_rate_pct": 50.1,
+        "win_rate_95pct_ci": [
+          48.5,
+          51.8
+        ],
+        "avg_return_pct": 0.799,
+        "avg_excess_return_vs_benchmark_pct": -1.133,
+        "benchmark_coverage": "3339/3394",
+        "reliable": true
+      },
+      {
+        "bucket": "neutral",
+        "trade_count": 1181,
+        "win_rate_pct": 52.2,
+        "win_rate_95pct_ci": [
+          49.3,
+          55.0
+        ],
+        "avg_return_pct": 1.551,
+        "avg_excess_return_vs_benchmark_pct": -0.805,
+        "benchmark_coverage": "1146/1181",
+        "reliable": true
+      },
+      {
+        "bucket": "bear",
+        "trade_count": 390,
+        "win_rate_pct": 62.6,
+        "win_rate_95pct_ci": [
+          57.7,
+          67.2
+        ],
+        "avg_return_pct": 2.662,
+        "avg_excess_return_vs_benchmark_pct": 0.124,
+        "benchmark_coverage": "387/390",
+        "reliable": true
+      },
+      {
+        "bucket": "unknown",
+        "trade_count": 96,
+        "win_rate_pct": 32.3,
+        "win_rate_95pct_ci": [
+          23.8,
+          42.2
+        ],
+        "avg_return_pct": -4.318,
+        "avg_excess_return_vs_benchmark_pct": null,
+        "benchmark_coverage": "0/96",
+        "reliable": true
+      }
+    ],
+    "by_adx_bucket": [
+      {
+        "bucket": "adx<20 (weak trend)",
+        "trade_count": 1575,
+        "win_rate_pct": 54.3,
+        "win_rate_95pct_ci": [
+          51.8,
+          56.7
+        ],
+        "avg_return_pct": 1.781,
+        "avg_excess_return_vs_benchmark_pct": -0.177,
+        "benchmark_coverage": "1514/1575",
+        "reliable": true
+      },
+      {
+        "bucket": "adx 25-35",
+        "trade_count": 1318,
+        "win_rate_pct": 49.4,
+        "win_rate_95pct_ci": [
+          46.7,
+          52.1
+        ],
+        "avg_return_pct": 0.798,
+        "avg_excess_return_vs_benchmark_pct": -1.298,
+        "benchmark_coverage": "1260/1318",
+        "reliable": true
+      },
+      {
+        "bucket": "adx 20-25",
+        "trade_count": 1127,
+        "win_rate_pct": 49.9,
+        "win_rate_95pct_ci": [
+          47.0,
+          52.8
+        ],
+        "avg_return_pct": 0.844,
+        "avg_excess_return_vs_benchmark_pct": -0.484,
+        "benchmark_coverage": "1085/1127",
+        "reliable": true
+      },
+      {
+        "bucket": "adx>=35 (strong trend)",
+        "trade_count": 1041,
+        "win_rate_pct": 50.4,
+        "win_rate_95pct_ci": [
+          47.4,
+          53.5
+        ],
+        "avg_return_pct": 0.345,
+        "avg_excess_return_vs_benchmark_pct": -2.202,
+        "benchmark_coverage": "1013/1041",
+        "reliable": true
+      }
+    ],
+    "by_rsi_bucket": [
+      {
+        "bucket": "rsi 40-55",
+        "trade_count": 2019,
+        "win_rate_pct": 53.3,
+        "win_rate_95pct_ci": [
+          51.1,
+          55.5
+        ],
+        "avg_return_pct": 1.776,
+        "avg_excess_return_vs_benchmark_pct": -1.197,
+        "benchmark_coverage": "1946/2019",
+        "reliable": true
+      },
+      {
+        "bucket": "rsi 55-65",
+        "trade_count": 1015,
+        "win_rate_pct": 47.1,
+        "win_rate_95pct_ci": [
+          44.0,
+          50.2
+        ],
+        "avg_return_pct": 0.127,
+        "avg_excess_return_vs_benchmark_pct": -0.163,
+        "benchmark_coverage": "967/1015",
+        "reliable": true
+      },
+      {
+        "bucket": "rsi<40",
+        "trade_count": 887,
+        "win_rate_pct": 53.1,
+        "win_rate_95pct_ci": [
+          49.8,
+          56.4
+        ],
+        "avg_return_pct": 1.222,
+        "avg_excess_return_vs_benchmark_pct": -1.8,
+        "benchmark_coverage": "853/887",
+        "reliable": true
+      },
+      {
+        "bucket": "rsi 65-75",
+        "trade_count": 708,
+        "win_rate_pct": 48.3,
+        "win_rate_95pct_ci": [
+          44.6,
+          52.0
+        ],
+        "avg_return_pct": 0.022,
+        "avg_excess_return_vs_benchmark_pct": -0.902,
+        "benchmark_coverage": "686/708",
+        "reliable": true
+      },
+      {
+        "bucket": "rsi>=75",
+        "trade_count": 432,
+        "win_rate_pct": 52.3,
+        "win_rate_95pct_ci": [
+          47.6,
+          57.0
+        ],
+        "avg_return_pct": 0.817,
+        "avg_excess_return_vs_benchmark_pct": -0.044,
+        "benchmark_coverage": "420/432",
+        "reliable": true
+      }
+    ],
+    "by_gap_bucket": [
+      {
+        "bucket": "gap<-1%",
+        "trade_count": 2675,
+        "win_rate_pct": 49.3,
+        "win_rate_95pct_ci": [
+          47.4,
+          51.2
+        ],
+        "avg_return_pct": 1.105,
+        "avg_excess_return_vs_benchmark_pct": -0.543,
+        "benchmark_coverage": "2576/2675",
+        "reliable": true
+      },
+      {
+        "bucket": "gap>=3%",
+        "trade_count": 702,
+        "win_rate_pct": 51.6,
+        "win_rate_95pct_ci": [
+          47.9,
+          55.2
+        ],
+        "avg_return_pct": 0.376,
+        "avg_excess_return_vs_benchmark_pct": -1.122,
+        "benchmark_coverage": "668/702",
+        "reliable": true
+      },
+      {
+        "bucket": "gap 0%..1%",
+        "trade_count": 630,
+        "win_rate_pct": 53.3,
+        "win_rate_95pct_ci": [
+          49.4,
+          57.2
+        ],
+        "avg_return_pct": 1.135,
+        "avg_excess_return_vs_benchmark_pct": -1.793,
+        "benchmark_coverage": "615/630",
+        "reliable": true
+      },
+      {
+        "bucket": "gap 1%..3%",
+        "trade_count": 541,
+        "win_rate_pct": 56.2,
+        "win_rate_95pct_ci": [
+          52.0,
+          60.3
+        ],
+        "avg_return_pct": 1.623,
+        "avg_excess_return_vs_benchmark_pct": -0.596,
+        "benchmark_coverage": "517/541",
+        "reliable": true
+      },
+      {
+        "bucket": "gap -1%..0%",
+        "trade_count": 513,
+        "win_rate_pct": 53.2,
+        "win_rate_95pct_ci": [
+          48.9,
+          57.5
+        ],
+        "avg_return_pct": 0.69,
+        "avg_excess_return_vs_benchmark_pct": -2.217,
+        "benchmark_coverage": "496/513",
+        "reliable": true
+      }
+    ],
+    "by_volume_confirmation": [
+      {
+        "bucket": "unconfirmed",
+        "trade_count": 3423,
+        "win_rate_pct": 51.6,
+        "win_rate_95pct_ci": [
+          49.9,
+          53.3
+        ],
+        "avg_return_pct": 1.074,
+        "avg_excess_return_vs_benchmark_pct": -1.311,
+        "benchmark_coverage": "3296/3423",
+        "reliable": true
+      },
+      {
+        "bucket": "very strong volume",
+        "trade_count": 1106,
+        "win_rate_pct": 49.0,
+        "win_rate_95pct_ci": [
+          46.1,
+          51.9
+        ],
+        "avg_return_pct": 0.505,
+        "avg_excess_return_vs_benchmark_pct": -0.525,
+        "benchmark_coverage": "1068/1106",
+        "reliable": true
+      },
+      {
+        "bucket": "strong volume",
+        "trade_count": 532,
+        "win_rate_pct": 53.6,
+        "win_rate_95pct_ci": [
+          49.3,
+          57.8
+        ],
+        "avg_return_pct": 1.751,
+        "avg_excess_return_vs_benchmark_pct": 0.441,
+        "benchmark_coverage": "508/532",
+        "reliable": true
+      }
+    ],
+    "by_sector": [
+      {
+        "bucket": "Real Estate",
+        "trade_count": 954,
+        "win_rate_pct": 52.0,
+        "win_rate_95pct_ci": [
+          48.8,
+          55.1
+        ],
+        "avg_return_pct": 1.002,
+        "avg_excess_return_vs_benchmark_pct": -0.878,
+        "benchmark_coverage": "921/954",
+        "reliable": true
+      },
+      {
+        "bucket": "Non-Bank Financial Services",
+        "trade_count": 776,
+        "win_rate_pct": 50.0,
+        "win_rate_95pct_ci": [
+          46.5,
+          53.5
+        ],
+        "avg_return_pct": 1.264,
+        "avg_excess_return_vs_benchmark_pct": -0.791,
+        "benchmark_coverage": "744/776",
+        "reliable": true
+      },
+      {
+        "bucket": "Food, Beverages & Tobacco",
+        "trade_count": 566,
+        "win_rate_pct": 46.5,
+        "win_rate_95pct_ci": [
+          42.4,
+          50.6
+        ],
+        "avg_return_pct": -0.034,
+        "avg_excess_return_vs_benchmark_pct": -1.835,
+        "benchmark_coverage": "550/566",
+        "reliable": true
+      },
+      {
+        "bucket": "Health Care & Pharmaceuticals",
+        "trade_count": 413,
+        "win_rate_pct": 55.2,
+        "win_rate_95pct_ci": [
+          50.4,
+          59.9
+        ],
+        "avg_return_pct": 2.981,
+        "avg_excess_return_vs_benchmark_pct": 1.133,
+        "benchmark_coverage": "398/413",
+        "reliable": true
+      },
+      {
+        "bucket": "Basic Resources",
+        "trade_count": 378,
+        "win_rate_pct": 50.5,
+        "win_rate_95pct_ci": [
+          45.5,
+          55.5
+        ],
+        "avg_return_pct": -0.064,
+        "avg_excess_return_vs_benchmark_pct": -1.739,
+        "benchmark_coverage": "361/378",
+        "reliable": true
+      },
+      {
+        "bucket": "Building Materials",
+        "trade_count": 319,
+        "win_rate_pct": 53.6,
+        "win_rate_95pct_ci": [
+          48.1,
+          59.0
+        ],
+        "avg_return_pct": 1.256,
+        "avg_excess_return_vs_benchmark_pct": -0.744,
+        "benchmark_coverage": "304/319",
+        "reliable": true
+      },
+      {
+        "bucket": "Construction & Engineering",
+        "trade_count": 282,
+        "win_rate_pct": 56.4,
+        "win_rate_95pct_ci": [
+          50.5,
+          62.0
+        ],
+        "avg_return_pct": 2.198,
+        "avg_excess_return_vs_benchmark_pct": 0.202,
+        "benchmark_coverage": "272/282",
+        "reliable": true
+      },
+      {
+        "bucket": "Banks",
+        "trade_count": 250,
+        "win_rate_pct": 53.6,
+        "win_rate_95pct_ci": [
+          47.4,
+          59.7
+        ],
+        "avg_return_pct": 1.582,
+        "avg_excess_return_vs_benchmark_pct": -0.182,
+        "benchmark_coverage": "243/250",
+        "reliable": true
+      },
+      {
+        "bucket": "IT, Media & Communication Services",
+        "trade_count": 226,
+        "win_rate_pct": 51.8,
+        "win_rate_95pct_ci": [
+          45.3,
+          58.2
+        ],
+        "avg_return_pct": 0.756,
+        "avg_excess_return_vs_benchmark_pct": -0.88,
+        "benchmark_coverage": "224/226",
+        "reliable": true
+      },
+      {
+        "bucket": "Textiles & Durables",
+        "trade_count": 177,
+        "win_rate_pct": 45.2,
+        "win_rate_95pct_ci": [
+          38.0,
+          52.6
+        ],
+        "avg_return_pct": 0.557,
+        "avg_excess_return_vs_benchmark_pct": -2.004,
+        "benchmark_coverage": "173/177",
+        "reliable": true
+      },
+      {
+        "bucket": "Industrial Goods, Services & Automobiles",
+        "trade_count": 167,
+        "win_rate_pct": 55.1,
+        "win_rate_95pct_ci": [
+          47.5,
+          62.4
+        ],
+        "avg_return_pct": 1.257,
+        "avg_excess_return_vs_benchmark_pct": -0.742,
+        "benchmark_coverage": "160/167",
+        "reliable": true
+      },
+      {
+        "bucket": "Travel & Leisure",
+        "trade_count": 152,
+        "win_rate_pct": 50.7,
+        "win_rate_95pct_ci": [
+          42.8,
+          58.5
+        ],
+        "avg_return_pct": 0.867,
+        "avg_excess_return_vs_benchmark_pct": -1.616,
+        "benchmark_coverage": "141/152",
+        "reliable": true
+      },
+      {
+        "bucket": "Trade & Distributors",
+        "trade_count": 102,
+        "win_rate_pct": 51.0,
+        "win_rate_95pct_ci": [
+          41.4,
+          60.5
+        ],
+        "avg_return_pct": 0.674,
+        "avg_excess_return_vs_benchmark_pct": -2.161,
+        "benchmark_coverage": "97/102",
+        "reliable": true
+      },
+      {
+        "bucket": "Shipping & Transportation Services",
+        "trade_count": 88,
+        "win_rate_pct": 43.2,
+        "win_rate_95pct_ci": [
+          33.3,
+          53.6
+        ],
+        "avg_return_pct": -0.951,
+        "avg_excess_return_vs_benchmark_pct": -3.522,
+        "benchmark_coverage": "86/88",
+        "reliable": true
+      },
+      {
+        "bucket": "Paper & Packaging",
+        "trade_count": 73,
+        "win_rate_pct": 45.2,
+        "win_rate_95pct_ci": [
+          34.3,
+          56.6
+        ],
+        "avg_return_pct": -0.323,
+        "avg_excess_return_vs_benchmark_pct": -3.635,
+        "benchmark_coverage": "66/73",
+        "reliable": true
+      },
+      {
+        "bucket": "Education Services",
+        "trade_count": 70,
+        "win_rate_pct": 57.1,
+        "win_rate_95pct_ci": [
+          45.5,
+          68.1
+        ],
+        "avg_return_pct": 0.732,
+        "avg_excess_return_vs_benchmark_pct": -1.81,
+        "benchmark_coverage": "69/70",
+        "reliable": true
+      },
+      {
+        "bucket": "Utilities",
+        "trade_count": 49,
+        "win_rate_pct": 49.0,
+        "win_rate_95pct_ci": [
+          35.6,
+          62.5
+        ],
+        "avg_return_pct": 0.273,
+        "avg_excess_return_vs_benchmark_pct": -0.679,
+        "benchmark_coverage": "44/49",
+        "reliable": true
+      },
+      {
+        "bucket": "Energy & Support Services",
+        "trade_count": 19,
+        "win_rate_pct": 52.6,
+        "win_rate_95pct_ci": [
+          31.7,
+          72.7
+        ],
+        "avg_return_pct": -0.594,
+        "avg_excess_return_vs_benchmark_pct": -3.314,
+        "benchmark_coverage": "19/19",
+        "reliable": false
+      }
+    ],
+    "by_exit_reason": [
+      {
+        "bucket": "take_profit",
+        "trade_count": 2286,
+        "win_rate_pct": 94.2,
+        "win_rate_95pct_ci": [
+          93.1,
+          95.1
+        ],
+        "avg_return_pct": 9.758,
+        "avg_excess_return_vs_benchmark_pct": 6.482,
+        "benchmark_coverage": "2223/2286",
+        "reliable": true
+      },
+      {
+        "bucket": "stop_loss",
+        "trade_count": 1849,
+        "win_rate_pct": 3.7,
+        "win_rate_95pct_ci": [
+          3.0,
+          4.7
+        ],
+        "avg_return_pct": -8.873,
+        "avg_excess_return_vs_benchmark_pct": -9.149,
+        "benchmark_coverage": "1786/1849",
+        "reliable": true
+      },
+      {
+        "bucket": "fold_end",
+        "trade_count": 926,
+        "win_rate_pct": 40.1,
+        "win_rate_95pct_ci": [
+          37.0,
+          43.3
+        ],
+        "avg_return_pct": -0.793,
+        "avg_excess_return_vs_benchmark_pct": -3.163,
+        "benchmark_coverage": "863/926",
+        "reliable": true
+      }
+    ]
+  },
+  "benchmark": {
+    "primary_benchmark": ".EGX30",
+    "trades_with_benchmark_data": 4872,
+    "trades_total": 5061,
+    "avg_excess_return_vs_benchmark_pct": -0.956,
+    "pct_of_trades_that_beat_benchmark": 44.7,
+    "reliable": true
+  },
+  "min_trades_for_reliable": 30,
+  "note": "Every bucket above is reported with its raw trade count and a 95% confidence interval on win rate, and flagged reliable=false below min_trades_for_reliable closed trades. A false flag does not mean the factor is bad - it means there is not yet enough closed-trade history to say either way. Treat unreliable buckets as hypotheses to keep watching, not signals to trade on; only lean on buckets flagged reliable=true when sizing or filtering real positions.",
+  "pre_breakout_watchlist": {
+    "sample_count": 180,
+    "target_pct": 3.0,
+    "window_sessions": [
+      1,
+      3
+    ],
+    "overall_hit_rate_pct": 13.9,
+    "score_quintiles_low_to_high": [
+      {
+        "score_range": [
+          34.9,
+          49.8
+        ],
+        "sample_count": 36,
+        "hit_rate_pct": 27.8,
+        "avg_best_gain_pct": 1.77
+      },
+      {
+        "score_range": [
+          50.1,
+          57.8
+        ],
+        "sample_count": 36,
+        "hit_rate_pct": 13.9,
+        "avg_best_gain_pct": 0.66
+      },
+      {
+        "score_range": [
+          57.8,
+          63.0
+        ],
+        "sample_count": 36,
+        "hit_rate_pct": 13.9,
+        "avg_best_gain_pct": 0.93
+      },
+      {
+        "score_range": [
+          63.1,
+          75.8
+        ],
+        "sample_count": 36,
+        "hit_rate_pct": 5.6,
+        "avg_best_gain_pct": 0.19
+      },
+      {
+        "score_range": [
+          76.2,
+          107.3
+        ],
+        "sample_count": 36,
+        "hit_rate_pct": 8.3,
+        "avg_best_gain_pct": -0.02
+      }
+    ],
+    "reliable": true,
+    "note": "Based on 180 scored snapshot(s). If hit rate rises fairly steadily from the lowest to the highest score quintile, the Breakout Score is doing real predictive work; if it's flat or noisy, treat the score as unproven regardless of how any single factor inside it 'feels'. Needs at least 30 scored snapshots before the quintile breakdown is anything more than noise - reached."
+  }
+}
