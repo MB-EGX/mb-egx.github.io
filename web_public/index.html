@@ -836,22 +836,24 @@
                         </label>
                         <button onclick="saveChartImage()" class="bg-teal-700 hover:bg-teal-600 text-white px-3 py-1.5 rounded font-bold" id="btn-save-chart">💾 Save Chart</button>
                         <button onclick="toggleChartMaximize()" class="bg-indigo-700 hover:bg-indigo-600 text-white px-3 py-1.5 rounded font-bold" id="btn-maximize-chart">⛶ Maximize</button>
+                        <!-- Time Horizon merged into the same row as style controls
+                             (separated by a styled left border on the label so
+                             the visual grouping still reads clearly). With
+                             flatten width, this saves ~30-40px of vertical
+                             space and gives the chart canvas more breathing
+                             room, mirroring the desktop app's chart_widget.py
+                             style_layout merger. -->
+                        <div class="flex items-center gap-1 pl-2 ml-2 border-l border-bordercol" id="timeframe-buttons">
+                            <span class="font-bold text-sky-400 mr-1" id="lbl-time-zoom">⏱️</span>
+                            <button onclick="applyTimeFrame('1W')" class="px-2 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white text-[11px]" data-tf="1W">1W</button>
+                            <button onclick="applyTimeFrame('2W')" class="px-2 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white text-[11px]" data-tf="2W">2W</button>
+                            <button onclick="applyTimeFrame('1M')" class="px-2 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white text-[11px]" data-tf="1M">1M</button>
+                            <button onclick="applyTimeFrame('3M')" class="px-2 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white text-[11px]" data-tf="3M">3M</button>
+                            <button onclick="applyTimeFrame('6M')" class="px-2 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white text-[11px]" data-tf="6M">6M</button>
+                            <button onclick="applyTimeFrame('1Y')" class="px-2 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white text-[11px]" data-tf="1Y">1Y</button>
+                            <button onclick="applyTimeFrame('ALL')" class="px-2 py-1 rounded font-bold transition bg-sky-600 text-white text-[11px]" data-tf="ALL">ALL</button>
+                        </div>
                     </div>
-                </div>
-
-                <!-- Time Horizon Zoom Filter Bar -->
-                <div class="flex flex-wrap items-center justify-between gap-2 bg-darkbg p-2.5 rounded-lg border border-bordercol text-xs">
-                    <div class="flex items-center gap-1" id="timeframe-buttons">
-                        <span class="font-bold text-sky-400 mr-2" id="lbl-time-zoom">⏱️ Time Horizon:</span>
-                        <button onclick="applyTimeFrame('1W')" class="px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white" data-tf="1W">1W (1 Week)</button>
-                        <button onclick="applyTimeFrame('2W')" class="px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white" data-tf="2W">2W (2 Weeks)</button>
-                        <button onclick="applyTimeFrame('1M')" class="px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white" data-tf="1M">1M (1 Month)</button>
-                        <button onclick="applyTimeFrame('3M')" class="px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white" data-tf="3M">3M (3 Months)</button>
-                        <button onclick="applyTimeFrame('6M')" class="px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white" data-tf="6M">6M (6 Months)</button>
-                        <button onclick="applyTimeFrame('1Y')" class="px-2.5 py-1 rounded font-bold transition bg-panelbg text-textmuted hover:text-white" data-tf="1Y">1Y (1 Year)</button>
-                        <button onclick="applyTimeFrame('ALL')" class="px-2.5 py-1 rounded font-bold transition bg-sky-600 text-white" data-tf="ALL">ALL History</button>
-                    </div>
-                    <span id="lbl-bars-shown" class="text-textmuted font-mono text-[11px]">Showing all available bars</span>
                 </div>
 
                 <!-- Alphabet Quick Filter -->
@@ -2971,26 +2973,58 @@
                         if (!xScale || !yScale) return;
                         const { ctx, chartArea } = chart;
                         ctx.save();
+
+                        // Bucket labels by end_index / 8 so closely-spaced
+                        // patterns stack into a readable ring at the right
+                        // edge of the chart instead of all overplotting one
+                        // another. Outside the chart area (above/below) is
+                        // also drawn so labels never lie on top of a candle.
+                        const labelSlotsTaken = {};
+                        // Track which x-ranges have already been shaded so
+                        // overlapping patterns don't pile alpha into a
+                        // opaque block that hides the price action.
+                        const spanKeys = new Set();
                         overlay.patterns.forEach(p => {
+                            if (!p || !p._startIdx || !p._endIdx) return;
                             const x1 = xScale.getPixelForValue(p._startIdx);
                             const x2 = xScale.getPixelForValue(p._endIdx);
                             const xLeft = Math.min(x1, x2), xRight = Math.max(x1, x2);
                             const color = p.direction === 'bullish' ? '#22c55e' : (p.direction === 'bearish' ? '#ef4444' : '#a0aec0');
 
-                            // Shaded span over the pattern's date range.
-                            ctx.fillStyle = color + '14'; // ~8% alpha
-                            ctx.fillRect(xLeft, chartArea.top, Math.max(xRight - xLeft, 1), chartArea.bottom - chartArea.top);
+                            // Suppress overlapping shaded spans — only the
+                            // first pattern in a given (pattern, start-idx)
+                            // bucket shades the full x-range; subsequent
+                            // overlapping patterns draw only a tiny tick at
+                            // their start so the price action underneath stays
+                            // visible.
+                            const spanKey = `${p.pattern}:${Math.round(p._startIdx/3)}:${Math.round(p._endIdx/3)}`;
+                            if (!spanKeys.has(spanKey)) {
+                                spanKeys.add(spanKey);
+                                ctx.fillStyle = color + '10'; // ~6% alpha
+                                ctx.fillRect(xLeft, chartArea.top, Math.max(xRight - xLeft, 1), chartArea.bottom - chartArea.top);
+                            } else {
+                                ctx.strokeStyle = color;
+                                ctx.globalAlpha = 0.40;
+                                ctx.setLineDash([2, 3]);
+                                ctx.lineWidth = 0.7;
+                                ctx.beginPath();
+                                ctx.moveTo(xLeft + 0.5, chartArea.top);
+                                ctx.lineTo(xLeft + 0.5, chartArea.bottom);
+                                ctx.stroke();
+                                ctx.setLineDash([]);
+                            }
 
-                            // Dashed line per key price level (neckline, support/resistance,
-                            // target, ...) - skip anything that isn't an actual price (e.g.
-                            // apex_index is an x-position, not a y-level).
-                            ctx.lineWidth = 1.1;
-                            ctx.setLineDash([4, 3]);
+                            // Dashed line per key price level (neckline,
+                            // target, ...). Skip anything that isn't an
+                            // actual price (e.g. apex_index).
+                            ctx.lineWidth = 1.4;
+                            ctx.setLineDash([5, 3]);
                             Object.entries(p.levels || {}).forEach(([key, val]) => {
                                 if (key.toLowerCase().includes('index') || typeof val !== 'number') return;
                                 const y = yScale.getPixelForValue(val);
+                                if (y < chartArea.top - 4 || y > chartArea.bottom + 4) return;
                                 ctx.strokeStyle = color;
-                                ctx.globalAlpha = 0.65;
+                                ctx.globalAlpha = 0.80;
                                 ctx.beginPath();
                                 ctx.moveTo(xLeft, y);
                                 ctx.lineTo(xRight, y);
@@ -2999,13 +3033,45 @@
                             ctx.setLineDash([]);
                             ctx.globalAlpha = 1;
 
-                            // Name + quality label near the end of the pattern.
+                            // Name + quality label, lifted to the chart-area
+                            // edge so stacked labels never sit on a candle.
                             const label = (typeof p.quality === 'number') ? `${p.pattern} (${Math.round(p.quality * 100)}%)` : p.pattern;
-                            const labelY = yScale.getPixelForValue(typeof p._labelPrice === 'number' ? p._labelPrice : Object.values(p.levels || {})[0] || 0);
+                            const bucket = Math.round(p._endIdx / 8);
+                            const slot = (labelSlotsTaken[bucket] = (labelSlotsTaken[bucket] || 0) + 1);
+                            // Bullish: above y-position (carry label up).
+                            // Bearish: below y-position (carry label down).
+                            // Stack sibling labels in the same bucket 16px
+                            // apart vertically; cap the stack so labels never
+                            // escape the chart area either way.
+                            const baseY = p.direction === 'bearish' ? chartArea.bottom - 8 - (slot - 1) * 16
+                                            : chartArea.top + 14 + (slot - 1) * 16;
+                            const labelX = xRight - 6;
+                            const labelY = Math.min(Math.max(baseY, chartArea.top + 12), chartArea.bottom - 4);
+
+                            // Padded rounded rect label background, like the
+                            // desktop app's pattern labels — readable on top
+                            // of any candle color.
                             ctx.font = 'bold 10px sans-serif';
+                            const textW = ctx.measureText(label).width;
+                            const padX = 5, padY = 3;
+                            ctx.fillStyle = '#0b0f14';
+                            ctx.globalAlpha = 0.92;
+                            ctx.beginPath();
+                            if (ctx.roundRect) {
+                                ctx.roundRect(labelX - textW - padX*2, labelY - 12, textW + padX*2, 20, 4);
+                            } else {
+                                ctx.rect(labelX - textW - padX*2, labelY - 12, textW + padX*2, 20);
+                            }
+                            ctx.fill();
+                            ctx.globalAlpha = 1;
+                            ctx.strokeStyle = color;
+                            ctx.lineWidth = 1.0;
+                            ctx.stroke();
+
                             ctx.fillStyle = color;
                             ctx.textAlign = 'right';
-                            ctx.fillText(label, xRight - 4, labelY - 6);
+                            ctx.textBaseline = 'middle';
+                            ctx.fillText(label, labelX - padX, labelY - 2);
                         });
                         ctx.restore();
                     },

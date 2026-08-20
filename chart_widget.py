@@ -230,12 +230,18 @@ class StockSectorChartWidget(QWidget):
         self._style_layout = style_layout  # kept for _toggle_maximize_chart's reparent-out/back
 
         # 1c. Time-horizon zoom (parity port of the web dashboard's
-        # timeframe-buttons bar — index.html's applyTimeFrame). Slices the
+        # timeframe-buttons bar — index.html's applyTimeFrame). Sliced the
         # plotted window to the last N bars; 'ALL' plots everything.
-        zoom_row = QHBoxLayout()
+        # MERGED into style_layout above instead of living on its own row:
+        # the separate row was costing ~30-40px of vertical space and shrank
+        # the chart canvas to ~35% of the window on desktop. With the
+        # timeframe buttons appended to the right end of the style_layout,
+        # separated visually by a tiny styled vertical spacer label, the
+        # chart panel can grow taller again. The web side mirrors this same
+        # merger — see index.html's chart-controls-bar.
         self.lbl_time_zoom = QLabel("⏱️ Time Horizon:")
-        self.lbl_time_zoom.setStyleSheet("font-weight: bold; color: #38bdf8; font-size: 11px;")
-        zoom_row.addWidget(self.lbl_time_zoom)
+        self.lbl_time_zoom.setStyleSheet("font-weight: bold; color: #38bdf8; font-size: 11px; padding-left: 10px; border-left: 1px solid #334155;")
+        style_layout.addWidget(self.lbl_time_zoom)
         self._timeframe_buttons = {}
         self._timeframe_limit = 0
         for tf, bars in (("1M", 22), ("3M", 66), ("6M", 132), ("1Y", 252), ("ALL", 0)):
@@ -243,15 +249,14 @@ class StockSectorChartWidget(QWidget):
             btn.setCheckable(True)
             btn.setChecked(bars == 0)
             btn.setStyleSheet(
-                "QPushButton { background-color: #1e293b; color: #cbd5e0; padding: 3px 12px; "
-                "font-size: 11px; font-weight: bold; border-radius: 12px; border: 1px solid #334155; }"
+                "QPushButton { background-color: #1e293b; color: #cbd5e0; padding: 3px 10px; "
+                "font-size: 10px; font-weight: bold; border-radius: 10px; border: 1px solid #334155; }"
                 "QPushButton:checked { background-color: #0284c7; color: white; border: 1px solid #38bdf8; }"
             )
             btn.clicked.connect(lambda _, b=bars, btb=btn: self._select_timeframe(b, btb))
-            zoom_row.addWidget(btn)
+            style_layout.addWidget(btn)
             self._timeframe_buttons[tf] = btn
-        zoom_row.addStretch()
-        layout.addLayout(zoom_row)
+        style_layout.addStretch()
 
         # 2. Alphabet Quick-Filter Bar
         self.alpha_container = QFrame()
@@ -366,6 +371,7 @@ class StockSectorChartWidget(QWidget):
         # label in the same bucket a larger vertical offset staggers them
         # into a readable stack instead.
         label_bucket_counts = {}
+        span_count_seen = set()
         for p in patterns:
             if p.get("quality", 1.0) < min_quality:
                 continue
@@ -374,27 +380,57 @@ class StockSectorChartWidget(QWidget):
             end_i = max(0, min(p["end_index"], len(df) - 1))
             start_date, end_date = df.index[start_i], df.index[end_i]
 
-            ax.axvspan(start_date, end_date, color=color, alpha=0.06, zorder=0)
+            # Suppress the shaded axvspan whenever a previous pattern in
+            # this batch already spans an overlapping range — overlapping
+            # 0.06-alpha rectangles stack into an opaque block that hides
+            # the price action underneath. Once one pattern has already
+            # shaded a given x-range, skip the span for every subsequent
+            # overlapping pattern; the dashed level lines and label still
+            # render so the pattern is identifiable without painting the
+            # whole chart solid.
+            span_key = (p["pattern"], start_i // 3, end_i // 3)
+            if span_key not in span_count_seen:
+                span_count_seen.add(span_key)
+                ax.axvspan(start_date, end_date, color=color, alpha=0.05, zorder=0)
+            else:
+                # Just a faint edge tick on the overlapping span so it's
+                # visible without piling alpha rectangles.
+                ax.axvline(start_date, color=color, alpha=0.35, linewidth=0.7, linestyle=(0, (2, 3)), zorder=1)
 
             for key, val in p["levels"].items():
                 if "index" in key or not isinstance(val, (int, float)):
                     continue  # e.g. apex_index is an x-position, not a price level
                 ax.hlines(
                     y=val, xmin=start_date, xmax=end_date, color=color,
-                    linestyle=(0, (3, 2)), linewidth=1.1, alpha=0.65, zorder=2,
+                    linestyle=(0, (4, 3)), linewidth=1.4, alpha=0.80, zorder=2,
                 )
 
             label = p["pattern"]
             if "quality" in p:
                 label += f" ({p['quality']:.0%})"
-            bucket_key = end_i // 5
+            # Larger bucket so closely-spaced patterns stack with breathing
+            # room (was 5 bars -> 12 bars -> 18px per sibling + larger y
+            # offset so stacked labels don't smear into each other).
+            bucket_key = end_i // 12
             slot = label_bucket_counts.get(bucket_key, 0)
             label_bucket_counts[bucket_key] = slot + 1
+            # Use DIRECTIONAL offset: bullish labels above the bar (negative
+            # y in offset-points), bearish below (positive y). Without this
+            # the bearish short + bullish head-and-shoulders labels would
+            # overlap directly. Also bigger label box + bigger font to make
+            # individual patterns distinguishable at a glance.
+            slot_y = 14 + slot * 16
+            if p["direction"] == "bearish":
+                slot_y = abs(slot_y)
+            elif p["direction"] == "bullish":
+                slot_y = -abs(slot_y)
             ax.annotate(
                 label, xy=(end_date, float(df["close"].iloc[end_i])),
-                xytext=(4, 10 + slot * 15), textcoords="offset points",
-                color=color, fontsize=7.5, fontweight="bold", zorder=6,
-                bbox=dict(boxstyle="round,pad=0.2", facecolor="#1a1d24", edgecolor=color, alpha=0.85),
+                xytext=(6, slot_y), textcoords="offset points",
+                color=color, fontsize=8.5, fontweight="bold", zorder=6,
+                bbox=dict(boxstyle="round,pad=0.3", facecolor="#0b0f14", edgecolor=color, alpha=0.95, linewidth=1.0),
+                # Hide the leader line so stacked labels don't criss-cross.
+                arrowprops=dict(arrowstyle="-", color=color, alpha=0.4, linewidth=0.6),
             )
 
     def _get_alpha_btn_style(self, is_active=False):
