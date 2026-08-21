@@ -314,6 +314,7 @@ AR_TRANSLATIONS = {
     "⚡ BREAKOUT BUY (MOMENTUM)": "⚡ شراء اختراق (زخم)",
     "⏳ BUY ON DIP": "⏳ شراء عند الهبوط",
     "📈 ACCUMULATE": "📈 تجميع",
+    "🟡 HOLD / NEUTRAL": "🟡 احتفاظ / محايد",
     # Live-filter dropdown items (generic/aggregate labels, distinct from
     # the specific badge variants above)
     "All Actions": "كل الإجراءات",

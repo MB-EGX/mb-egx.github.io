@@ -323,6 +323,18 @@ ACTION_LABELS = [
         },
     },
     {
+        "term": {"en": "🟡 HOLD / NEUTRAL", "ar": "🟡 احتفاظ / محايد"},
+        "bias": "neutral",
+        "definition": {
+            "en": "The default bucket for mixed or no-edge conditions: not strong enough to buy, not deteriorating enough to sell. Constructive but uncommitted price action.",
+            "ar": "الحالة الافتراضية للظروف المختلطة أو التي لا تميل لأي اتجاه: ليست قوية بما يكفي للشراء، وليست متدهورة بما يكفي للبيع. حركة سعرية بناءة لكن غير حاسمة.",
+        },
+        "why_it_matters": {
+            "en": "Gives the matrix a true neutral lane so weak or mixed setups stop being pushed into ACCUMULATE, and gives a real 'wait / do nothing' signal instead of a forced bullish one.",
+            "ar": "يمنح المصفوفة مساراً محايداً حقيقياً حتى تتوقف الإعدادات الضعيفة أو المختلطة عن الدفع نحو التجميع، ويمنحك إشارة 'انتظر / لا تفعل شيئاً' حقيقية بدلاً من إشارة صاعدة مفروضة.",
+        },
+    },
+    {
         "term": {"en": "🛑 SELL / AVOID", "ar": "🛑 بيع / تجنب"},
         "bias": "bearish",
         "definition": {

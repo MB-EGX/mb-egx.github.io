@@ -138,6 +138,8 @@ ARABIC_KEYWORDS = {
     "/breakout":    ["اختراق"],
     "/accumulate":  ["تجميع", "تراكم"],
     "/dip":         ["انخفاض", "هبوط"],
+    "/hold":        ["محايد", "احتفاظ"],
+    "/sell":        ["بيع", "تجنب"],
     "/sectors":     ["قطاعات", "قطاع"],
     "/picks":       ["توصيات", "الفرص", "فرص اليوم"],
     "/leaderboard": ["المتصدرين", "متصدر", "الأفضل"],
@@ -172,6 +174,10 @@ LABELS = {
         "accumulate_empty": "No ACCUMULATE signals right now.",
         "dip_title": "⏳ Buy On Dip",
         "dip_empty": "No BUY ON DIP signals right now.",
+        "hold_title": "🟡 Hold / Neutral",
+        "hold_empty": "No HOLD / NEUTRAL signals right now.",
+        "sell_title": "🛑 Sell / Avoid",
+        "sell_empty": "No SELL / AVOID signals right now.",
         "sectors_title": "🏢 Sector Heatmap",
         "sectors_empty": "No sector data available.",
         "picks_title": "Session Picks",
@@ -202,6 +208,8 @@ LABELS = {
             "/breakout — today's ⚡ BREAKOUT BUY tickers\n"
             "/accumulate — today's 📈 ACCUMULATE tickers\n"
             "/dip — today's ⏳ BUY ON DIP tickers\n"
+            "/hold — today's 🟡 HOLD / NEUTRAL tickers\n"
+            "/sell — today's 🛑 SELL / AVOID tickers\n"
             "/sectors — sector heatmap summary\n"
             "/picks — active Session Picks\n"
             "/leaderboard — top 10 leaderboard\n"
@@ -221,6 +229,10 @@ LABELS = {
         "accumulate_empty": "لا توجد إشارات تجميع حالياً.",
         "dip_title": "⏳ شراء عند الانخفاض",
         "dip_empty": "لا توجد إشارات شراء عند الانخفاض حالياً.",
+        "hold_title": "🟡 احتفاظ / محايد",
+        "hold_empty": "لا توجد إشارات احتفاظ / محايد حالياً.",
+        "sell_title": "🛑 بيع / تجنب",
+        "sell_empty": "لا توجد إشارات بيع / تجنب حالياً.",
         "sectors_title": "🏢 خريطة القطاعات",
         "sectors_empty": "لا توجد بيانات قطاعات متاحة.",
         "picks_title": "الفرص المختارة (Session Picks)",
@@ -251,6 +263,8 @@ LABELS = {
             "اختراق — أسهم ⚡ الاختراق اليوم\n"
             "تجميع — أسهم 📈 التجميع اليوم\n"
             "انخفاض — أسهم ⏳ الشراء عند الانخفاض اليوم\n"
+            "محايد — أسهم 🟡 الاحتفاظ / المحايد اليوم\n"
+            "بيع — أسهم 🛑 البيع / التجنب اليوم\n"
             "قطاعات — ملخص خريطة القطاعات\n"
             "توصيات — الفرص المختارة النشطة\n"
             "متصدرين — قائمة أفضل 10 أسهم\n"
@@ -310,6 +324,14 @@ def format_accumulate(data: dict, arg: str, lang: str) -> str:
 
 def format_dip(data: dict, arg: str, lang: str) -> str:
     return _format_action_list(data, "BUY ON DIP", "dip_title", "dip_empty", lang)
+
+
+def format_hold(data: dict, arg: str, lang: str) -> str:
+    return _format_action_list(data, "HOLD / NEUTRAL", "hold_title", "hold_empty", lang)
+
+
+def format_sell(data: dict, arg: str, lang: str) -> str:
+    return _format_action_list(data, "SELL / AVOID", "sell_title", "sell_empty", lang)
 
 
 def format_sectors(data: dict, arg: str, lang: str) -> str:
@@ -397,6 +419,8 @@ COMMAND_HANDLERS = {
     "/breakout": format_breakout,
     "/accumulate": format_accumulate,
     "/dip": format_dip,
+    "/hold": format_hold,
+    "/sell": format_sell,
     "/sectors": format_sectors,
     "/picks": format_picks,
     "/leaderboard": format_leaderboard,
