@@ -22,11 +22,20 @@ import math
 # NUMEXPR thread caps as a module-level side effect; those only take
 # effect if set before numpy/pandas load anywhere in this process. See
 # config.py's module docstring.
-from config import MIN_BARS_FOR_PATTERN_TRUST
+from config import (
+    MIN_BARS_FOR_PATTERN_TRUST,
+    SR_LOOKBACK_BARS,
+    SR_SWING_ORDER,
+    SR_CLUSTER_TOLERANCE_PCT,
+    SR_MIN_TOUCHES,
+    SR_RECENCY_HALF_LIFE_DAYS,
+    SR_MAX_LEVELS,
+)
 
 import numpy as np
 import pandas as pd
 from numpy.lib.stride_tricks import sliding_window_view
+from scipy.signal import argrelextrema
 
 from db_manager import DatabaseManager, clean_sector_name
 
@@ -653,6 +662,138 @@ class QuantitativeEngine:
             "pp": round(pp, 4),
             "r1": round(r1, 4), "r2": round(r2, 4), "r3": round(r3, 4),
             "s1": round(s1, 4), "s2": round(s2, 4), "s3": round(s3, 4),
+        }
+
+    @staticmethod
+    def compute_support_resistance(
+        df: pd.DataFrame,
+        lookback: int = SR_LOOKBACK_BARS,
+        swing_order: int = SR_SWING_ORDER,
+        cluster_tol_pct: float = SR_CLUSTER_TOLERANCE_PCT,
+        min_touches: int = SR_MIN_TOUCHES,
+        half_life_days: int = SR_RECENCY_HALF_LIFE_DAYS,
+        max_levels: int = SR_MAX_LEVELS,
+    ) -> dict | None:
+        """Real support/resistance: prices the market has actually
+        reversed at more than once, not just the single highest/lowest
+        print in the window. That raw extreme still exists elsewhere in
+        this app (decision_matrix.py's own range_high/range_low, which
+        feeds range_pos_pct and Rank Score) - it's a different, already-
+        tuned concept (every ACTION_THRESHOLDS[..._range_pos_...] knob
+        was calibrated against it) and is deliberately left untouched.
+        This function is for anything actually LABELED "support" /
+        "resistance" to a user, or used to judge whether a level has
+        genuinely held/failed: the matrix table's "Nearest Support" /
+        "Nearest Resistance" columns, the Pre-Breakout Watchlist's
+        "Dist. to Resistance (%)", the failed-breakout-test gate (see
+        decision_matrix._recent_failed_resistance_test), and the price
+        chart's reference lines (see export_json.py).
+
+        METHOD
+        ------
+        1. Local swing highs/lows on the CLOSE series over the trailing
+           `lookback` bars via scipy.signal.argrelextrema(order=
+           swing_order) - the same tool and window convention chart_
+           patterns.py and usd_divergence.py already use elsewhere in
+           this app, not a new dependency or a different definition of
+           "swing" to reconcile.
+        2. Swings on each side (highs together, lows together) are
+           sorted by price and merged into one cluster whenever
+           consecutive swings are within `cluster_tol_pct`% of each
+           other - repeated tests of "the same" level collapse into one
+           zone even though the exact print differs bar to bar, instead
+           of being counted as unrelated one-off levels.
+        3. A cluster only counts as a real level once it has at least
+           `min_touches` swings in it - a single untested swing is just
+           a print, not support or resistance yet.
+        4. Each qualifying cluster's strength = sum over its touches of
+           0.5 ** (days_since_that_touch / half_life_days) - a level
+           tested 3 times in the last month outranks one tested 5 times
+           a year ago and never since; an old, long-abandoned level may
+           no longer be "in play" even if it was touched often at the
+           time.
+        5. Clusters are split by whether their level sits below price
+           (support candidates) or above it (resistance candidates).
+           The NEAREST qualifying cluster on each side is returned as
+           the primary level - proximity is what makes a level the one
+           price is actually about to test, not raw strength - with up
+           to `max_levels` further levels on that side for context,
+           nearest-first.
+
+        Returns None if there's too little history to find swings at
+        all (same "missing means unavailable" contract as market_
+        regime.py / sector_rotation.py) - callers should fall back to
+        the plain range extreme in that case, never fabricate a level.
+        Otherwise:
+            {
+              "support":    {"level": .., "touches": N, "strength": .., "last_touch": "YYYY-MM-DD"} | None,
+              "resistance": {...} | None,
+              "support_levels": [...],     # up to max_levels, nearest first
+              "resistance_levels": [...],
+            }
+        "support"/"resistance" being None means no qualifying (>=
+        min_touches) zone exists on that side yet, not that price has
+        no support/resistance at all - it just hasn't been established
+        within this lookback window.
+        """
+        if df is None or df.empty or "close" not in df.columns:
+            return None
+        window = df.iloc[-lookback:]
+        closes = window["close"].astype(float).values
+        idx = window.index
+        n = len(closes)
+        if n < swing_order * 4:
+            return None
+
+        peak_pos = argrelextrema(closes, np.greater, order=swing_order)[0]
+        trough_pos = argrelextrema(closes, np.less, order=swing_order)[0]
+        if len(peak_pos) == 0 and len(trough_pos) == 0:
+            return None
+
+        last_date = idx[-1]
+        curr_price = float(closes[-1])
+
+        def _cluster(positions):
+            pts = sorted(((float(closes[p]), idx[p]) for p in positions), key=lambda t: t[0])
+            clusters = []
+            for price, dt in pts:
+                if clusters and price > 0 and abs(price - clusters[-1]["prices"][-1]) / clusters[-1]["prices"][-1] * 100.0 <= cluster_tol_pct:
+                    clusters[-1]["prices"].append(price)
+                    clusters[-1]["dates"].append(dt)
+                else:
+                    clusters.append({"prices": [price], "dates": [dt]})
+            out = []
+            for c in clusters:
+                touches = len(c["prices"])
+                if touches < min_touches:
+                    continue
+                level = float(np.mean(c["prices"]))
+                last_touch = max(c["dates"])
+                strength = sum(
+                    0.5 ** (max(0.0, (last_date - dt).days) / half_life_days) for dt in c["dates"]
+                )
+                out.append({
+                    "level": round(level, 4),
+                    "touches": touches,
+                    "strength": round(strength, 3),
+                    "last_touch": str(last_touch)[:10],
+                })
+            return out
+
+        resistance_zones = sorted(
+            (z for z in _cluster(peak_pos) if z["level"] > curr_price),
+            key=lambda z: z["level"],  # ascending -> nearest above price first
+        )
+        support_zones = sorted(
+            (z for z in _cluster(trough_pos) if z["level"] < curr_price),
+            key=lambda z: z["level"], reverse=True,  # descending -> nearest below price first
+        )
+
+        return {
+            "resistance": resistance_zones[0] if resistance_zones else None,
+            "support": support_zones[0] if support_zones else None,
+            "resistance_levels": resistance_zones[:max_levels],
+            "support_levels": support_zones[:max_levels],
         }
 
     # -------------------------------------------------------------------------

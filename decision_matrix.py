@@ -403,25 +403,34 @@ def sector_benchmark_label(sec_name: str) -> str:
     return f"its sector index ({benchmark_label(bench_ticker)})"
 
 
-def _recent_failed_resistance_test(df_ind, range_high: float, curr_price: float,
+def _recent_failed_resistance_test(df_ind, resistance_level: float, curr_price: float,
                                      lookback: int, near_pct: float, reject_pct: float) -> bool:
-    """True if price tested (came within ``near_pct``% of) the range high
-    within the last ``lookback`` bars but has since pulled back at least
-    ``reject_pct``% from that high without closing above it - i.e. a
-    recent failed breakout attempt. Chasing a resistance level that just
+    """True if price tested (came within ``near_pct``% of) ``resistance_
+    level`` within the last ``lookback`` bars but has since pulled back at
+    least ``reject_pct``% from that level without closing above it - i.e.
+    a recent failed breakout attempt. Chasing a resistance level that just
     rejected the stock is a materially worse setup than a fresh approach,
     even though both can otherwise look identical on RSI/ADX/volume,
-    which is why the base score doesn't already capture this."""
+    which is why the base score doesn't already capture this.
+
+    ``resistance_level`` should be the ticker's nearest genuine (touch-
+    confirmed) resistance zone when one exists (see analytics.
+    compute_support_resistance), falling back to the plain 250-day range
+    high only when no qualifying zone has formed yet - testing the real
+    nearest level a stock is fighting is what actually matters here, not
+    necessarily the all-time high of the lookback window, which a name
+    can be nowhere near while still being genuinely capped by a much
+    closer level."""
     try:
         highs = df_ind["high"].iloc[-lookback:]
     except Exception:
         return False
-    if highs.empty or range_high <= 0:
+    if highs.empty or resistance_level <= 0:
         return False
-    tested = bool((highs >= range_high * (1 - near_pct / 100.0)).any())
+    tested = bool((highs >= resistance_level * (1 - near_pct / 100.0)).any())
     if not tested:
         return False
-    pulled_back = curr_price <= range_high * (1 - reject_pct / 100.0)
+    pulled_back = curr_price <= resistance_level * (1 - reject_pct / 100.0)
     return bool(tested and pulled_back)
 
 
@@ -1062,6 +1071,18 @@ class DecisionMatrix:
                 except Exception as e:
                     logger.warning(f"{norm_ticker}: pivot points failed ({e}) - continuing without them")
                     pivots = None
+                try:
+                    sr = self.qe.compute_support_resistance(df_ind)
+                except Exception as e:
+                    logger.warning(f"{norm_ticker}: support/resistance clustering failed ({e}) - continuing without it")
+                    sr = None
+                # Nearest genuine (touch-confirmed) resistance, falling back to
+                # the plain range extreme when no qualifying cluster exists yet
+                # (thin history, or price simply hasn't reversed near-term) -
+                # see analytics.compute_support_resistance's own docstring for
+                # why this is a different, more accurate concept than range_high.
+                nearest_resistance = (sr["resistance"]["level"] if sr and sr.get("resistance") else range_high)
+                nearest_support = (sr["support"]["level"] if sr and sr.get("support") else range_low)
                 if macd_hist > 0 and prev_macd_hist <= 0:
                     macd_state = "🟢 Bullish Cross"
                 elif macd_hist < 0 and prev_macd_hist >= 0:
@@ -1377,7 +1398,7 @@ class DecisionMatrix:
                         # rejected the stock once is a worse setup than a
                         # fresh approach, even with identical RSI/ADX/volume.
                         failed_test = _recent_failed_resistance_test(
-                            df_ind, range_high, curr_price,
+                            df_ind, nearest_resistance, curr_price,
                             int(at["breakout_watch_failed_test_lookback"]),
                             at["breakout_watch_failed_test_near_pct"],
                             at["breakout_watch_failed_test_reject_pct"],
@@ -1498,7 +1519,7 @@ class DecisionMatrix:
                         )
                         if not already_fired:
                             dist_to_resistance = (
-                                round(max(0.0, ((range_high - curr_price) / curr_price) * 100), 2)
+                                round(max(0.0, ((nearest_resistance - curr_price) / curr_price) * 100), 2)
                                 if curr_price > 0 else None
                             )
                             tier = (
@@ -1667,6 +1688,18 @@ class DecisionMatrix:
                         "Take-Profit Target": take_profit_target,
                         "Resistance (52W High)": round(float(range_high), 4),
                         "Support (52W Low)": round(float(range_low), 4),
+                        # Genuine, touch-confirmed levels (see analytics.
+                        # compute_support_resistance) - the nearest price the
+                        # stock has actually reversed at more than once,
+                        # which is often well inside the 52-week range and a
+                        # more useful "what happens next" reference than the
+                        # single highest/lowest print above. None when no
+                        # qualifying (>= SR_MIN_TOUCHES) zone has formed yet
+                        # on that side within the lookback window.
+                        "Nearest Resistance": sr["resistance"]["level"] if sr and sr.get("resistance") else None,
+                        "Resistance Touches": sr["resistance"]["touches"] if sr and sr.get("resistance") else None,
+                        "Nearest Support": sr["support"]["level"] if sr and sr.get("support") else None,
+                        "Support Touches": sr["support"]["touches"] if sr and sr.get("support") else None,
                         "Pivot Point": pivots["pp"] if pivots else None,
                         "R1": pivots["r1"] if pivots else None,
                         "R2": pivots["r2"] if pivots else None,

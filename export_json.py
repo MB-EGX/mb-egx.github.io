@@ -275,13 +275,26 @@ def build_chart_history(qe, dbm, sector_map):
                 else None
                 for v in df_ind.get("vwap_20", df_ind["close"])
             ]
-            # Resistance/support reference lines for the chart, matching the
-            # same 250-day range the matrix table's "Resistance (52W High)" /
-            # "Support (52W Low)" columns use, so the chart and the table
-            # never disagree about where those levels sit.
+            # Resistance/support reference lines for the chart: the real,
+            # touch-confirmed nearest levels (see analytics.compute_support_
+            # resistance and the matrix table's "Nearest Resistance"/"Nearest
+            # Support" columns, which use the exact same function) rather
+            # than the raw 250-day high/low print - a level the market has
+            # actually reversed at more than once is a far more meaningful
+            # line to draw on a price chart than the single highest wick in
+            # the window. Falls back to that raw extreme only when no
+            # qualifying cluster has formed yet (thin history, or price
+            # simply hasn't reversed near-term), so the chart always has
+            # SOME reference line rather than none.
             lookback = min(250, len(df_ind))
-            resistance = round(float(df_ind["high"].iloc[-lookback:].max()), 4)
-            support = round(float(df_ind["low"].iloc[-lookback:].min()), 4)
+            range_high = float(df_ind["high"].iloc[-lookback:].max())
+            range_low = float(df_ind["low"].iloc[-lookback:].min())
+            try:
+                sr = qe.compute_support_resistance(df_ind)
+            except Exception:
+                sr = None
+            resistance = round(float(sr["resistance"]["level"]) if sr and sr.get("resistance") else range_high, 4)
+            support = round(float(sr["support"]["level"]) if sr and sr.get("support") else range_low, 4)
             pivots = qe.compute_pivot_points(df_ind)
             chart_history["stocks"][norm_sym] = {
                 "dates": dates,

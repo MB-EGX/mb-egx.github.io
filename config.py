@@ -212,6 +212,25 @@ ACTION_THRESHOLDS = {
     "breakout_watch_sector_index_rs_span_pct": 5.0,  # outperformance (pct pts) vs. the real sector index needed for full bonus
 }
 
+# --- Support/Resistance (swing-cluster method) ---
+# Real S/R levels are prices the market has repeatedly reversed at, not
+# simply the single highest/lowest print in the lookback window - that
+# naive "range extreme" is still computed separately (decision_matrix.py's
+# own range_high/range_low) for range_pos_pct and Rank Score, which are a
+# different, already-tuned concept (every ACTION_THRESHOLDS[..._range_
+# pos_...] knob was calibrated against that definition) and is
+# deliberately left alone here. This block only feeds the "Nearest
+# Support"/"Nearest Resistance" columns, the failed-resistance-test gate,
+# the Pre-Breakout Watchlist's "Dist. to Resistance (%)", and the price
+# chart's reference lines - see analytics.QuantitativeEngine.
+# compute_support_resistance for the full method.
+SR_LOOKBACK_BARS = 250          # same window as the existing range extreme, for a like-for-like comparison
+SR_SWING_ORDER = 5              # bars on each side for a swing high/low (same convention as chart_patterns.py)
+SR_CLUSTER_TOLERANCE_PCT = 1.5  # swings within this % of each other collapse into one zone
+SR_MIN_TOUCHES = 2              # a single untested swing isn't a "level" yet - needs at least one repeat
+SR_RECENCY_HALF_LIFE_DAYS = 120 # a touch's weight in the strength score halves every this-many days
+SR_MAX_LEVELS = 3               # runner-up levels kept per side (nearest-first), beyond the primary one
+
 # --- Data-confidence weighting ---
 CONFIDENCE_FLOOR_WEIGHT = 0.5
 CONFIDENCE_FULL_TRUST_BARS = 250
