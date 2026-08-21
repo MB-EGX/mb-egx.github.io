@@ -191,12 +191,14 @@ ACTION_THRESHOLDS = {
     "breakout_watch_updown_vol_ratio_min": 1.3,     # up-day vol / down-day vol >= this = full credit
     "breakout_watch_updown_vol_ratio_soft_min": 0.9,  # graduated taper floor
     "breakout_watch_updown_vol_bonus_max": 10.0,
-    "breakout_watch_min_score": 60.0,  # minimum composite score for the confirmed list (tightened from 45 - eliminates marginal setups)
-    "breakout_watch_fallback_min_score": 30.0,  # secondary "Watching" tier (see fallback_top_n)
-    "breakout_watch_fallback_top_n": 15,   # always surface the top N by score even under min_score,
+    "breakout_watch_min_score": 65.0,  # minimum composite score for the confirmed list (tightened from 60 -> 45 originally - raised again so "Confirmed" means genuinely tight, not just past a low bar)
+    "breakout_watch_fallback_min_score": 35.0,  # secondary "Watching" tier (tightened from 30 - keeps the "always visible" fallback list from filling with noise)
+    "breakout_watch_fallback_top_n": 10,   # always surface the top N by score even under min_score,
                                             # tagged as lower-confidence, so near-miss setups are
                                             # never simply invisible (see decision_matrix.py notes)
-    "breakout_watch_alert_score": 75.0,  # score bar for a proactive "new pre-breakout" push alert
+                                            # (tightened from 15 - the fallback tier is a safety net,
+                                            # not a second list to trawl through)
+    "breakout_watch_alert_score": 78.0,  # score bar for a proactive "new pre-breakout" push alert
                                           # (raised from 70 alongside the new v2b bonus factors below,
                                           # so "High Confidence" stays selective now that there are
                                           # more ways to accumulate points)
@@ -285,8 +287,16 @@ SESSION_PICKS_QUOTA = {
 # highest-scoring still-coiling names once the already-fired pool is
 # exhausted, instead of leaving genuine setups completely unflagged (see
 # session_picks._candidate_pool).
-SESSION_PICKS_PRE_BREAKOUT_MAX_SLOTS = 2      # cap: never more than this many of the 5 "short" slots
-SESSION_PICKS_PRE_BREAKOUT_MIN_SCORE = 55.0   # quality bar, stricter than the base watchlist's 45
+SESSION_PICKS_PRE_BREAKOUT_MAX_SLOTS = 1      # cap: never more than this many of the 5 "short" slots
+                                               # (tightened from 2 - a Session Pick is a stronger claim
+                                               # than a watchlist entry; at most one speculative slot)
+SESSION_PICKS_PRE_BREAKOUT_MIN_SCORE = 75.0   # quality bar. MUST stay >= breakout_watch_min_score (65) -
+                                               # it used to be 55, i.e. BELOW the watchlist's own 60-point
+                                               # "Confirmed" bar at the time, which meant a merely-"Watching"
+                                               # (sub-Confirmed) name could still leak into a Session Pick.
+                                               # Set here to breakout_watch_alert_score (78) minus a small
+                                               # margin, so in practice only "High Confidence" tier names -
+                                               # not just barely-Confirmed ones - ever fill this slot.
 
 # Per-horizon expected % gain target. A LONGER horizon gets a bigger
 # target, not just a bigger window — a 3% move over 2-6 months would be a
