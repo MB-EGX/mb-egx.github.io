@@ -2157,7 +2157,28 @@
 
         function trAction(raw) {
             if (!raw) return '';
-            const display = (currentLang === 'AR' && ACTION_AR[raw]) ? ACTION_AR[raw] : raw;
+            let display = raw;
+            if (currentLang === 'AR') {
+                if (ACTION_AR[display]) {
+                    display = ACTION_AR[display];
+                } else {
+                    Object.entries(ACTION_AR)
+                        .sort((a, b) => b[0].length - a[0].length)
+                        .forEach(([en, ar]) => {
+                            if (display.includes(en)) display = display.split(en).join(ar);
+                        });
+                    display = display
+                        .split('🚫 ILLIQUID - ').join('🚫 سيولة ضعيفة - ')
+                        .split(' (Unconfirmed: ').join(' (غير مؤكد: ')
+                        .split('low ADX/volume').join('ضعف ADX/الحجم')
+                        .split('below VWAP').join('أسفل VWAP')
+                        .split('no squeeze release').join('من دون فك الانضغاط')
+                        .split('weekly trend not aligned').join('الاتجاه الأسبوعي غير متوافق')
+                        .split('CMF below accumulation floor').join('CMF دون حد التجميع')
+                        .split(' [💥 SQUEEZE]').join(' [💥 انضغاط]')
+                        .split(' [👑 WEEKLY ALIGNED]').join(' [👑 توافق أسبوعي]');
+                }
+            }
             return escapeHtml(display);
         }
         function trTrend(raw) {
@@ -4967,11 +4988,11 @@
                 const posLabel = held ? tt('pos_owned') : tt('pos_new');
                 const posStyle = held ? 'text-amber-300 font-bold' : 'text-textmuted';
                 let actionStyle = 'bg-slate-800 text-slate-300';
-                if (action.includes('STRONG BUY') || action.includes('BREAKOUT BUY')) actionStyle = 'bg-[#276749] text-white font-bold';
+                if (action.includes('ILLIQUID') || action.includes('Unconfirmed')) actionStyle = 'bg-[#4a5568] text-slate-200';
+                else if (action.includes('STRONG BUY') || action.includes('BREAKOUT BUY')) actionStyle = 'bg-[#276749] text-white font-bold';
                 else if (action.includes('ACCUMULATE') || action.includes('BUY ON DIP')) actionStyle = 'bg-[#2b6cb0] text-white';
                 else if (action.includes('SELL') || action.includes('AVOID')) actionStyle = 'bg-[#9b2c2c] text-white font-bold';
                 else if (action.includes('HOLD')) actionStyle = 'bg-[#975a16] text-white';
-                else if (action.includes('ILLIQUID') || action.includes('Unconfirmed')) actionStyle = 'bg-[#4a5568] text-slate-200';
                 let confStyle = 'text-slate-300';
                 if (conf.includes('Very Low')) confStyle = 'text-rose-400 font-bold';
                 else if (conf.includes('Low')) confStyle = 'text-amber-400 font-semibold';

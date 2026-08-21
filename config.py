@@ -64,17 +64,18 @@ ROUND_TRIP_FEE_PCT = TRANSACTION_FEE_PCT * 2
 
 # --- Multi-factor confirmation matrix scoring weights ---
 SCORE_WEIGHTS = {
-    "sell_avoid": -35.0,
-    "strong_buy": 50.0,
-    "breakout_crossover": 35.0,  # NEW: SMA-50 golden-cross component
-    "breakout_momentum": 28.0,   # NEW: price > EMA20 + RSI >= 52 component
-    "buy_on_dip": 45.0,
-    "accumulate": 15.0,
-    "unconfirmed_scale": 0.35,
-    "cmf_bonus": 15.0,
+    "sell_avoid": -45.0,
+    "strong_buy": 48.0,
+    "breakout_crossover": 32.0,  # tighter than before: reduce false-positive urgency
+    "breakout_momentum": 24.0,
+    "buy_on_dip": 30.0,
+    "accumulate": 10.0,
+    "hold_neutral": 0.0,
+    "unconfirmed_scale": 0.25,
+    "cmf_bonus": 12.0,
     "cmf_bonus_threshold": 0.15,
-    "squeeze_bonus": 10.0,
-    "weekly_aligned_bonus": 20.0,
+    "squeeze_bonus": 8.0,
+    "weekly_aligned_bonus": 15.0,
     "illiquid_penalty": -40.0,
     "range_position_weight": 0.05,
     "pattern_confidence_weight": 0.3,
@@ -87,19 +88,36 @@ ACTION_THRESHOLDS = {
     # SELL / AVOID: catastrophic drawdown + deeply oversold
     "sell_avoid_price_ratio": 0.75,      # close < sma50 * this
     "sell_avoid_rsi_max": 28.0,
-    # STRONG BUY: near 1Y high, RSI mid-bull, gap not down
-    "strong_buy_range_pos_min": 85.0,
-    "strong_buy_rsi_min": 55.0,
-    "strong_buy_rsi_max": 75.0,
-    "strong_buy_gap_min": 0.0,
+    # STRONG BUY: only when the stock is genuinely pressing highs with
+    # healthy-but-not-overcooked momentum.
+    "strong_buy_range_pos_min": 88.0,
+    "strong_buy_rsi_min": 58.0,
+    "strong_buy_rsi_max": 72.0,
+    "strong_buy_gap_min": 0.2,
     # BREAKOUT BUY components (see decision_matrix for how they combine)
-    "breakout_momentum_rsi_min": 52.0,
-    "breakout_gap_min": -1.0,
-    # BUY ON DIP
-    "buy_on_dip_range_pos_max": 25.0,
-    "buy_on_dip_rsi_max": 38.0,
+    "breakout_momentum_rsi_min": 55.0,
+    "breakout_gap_min": 0.0,
+    # Secondary SELL / AVOID lane: catches structurally weak names that are
+    # no longer just "not bullish" but actively deteriorating.
+    "sell_trend_price_ratio": 0.97,
+    "sell_trend_rsi_max": 42.0,
+    "sell_trend_cmf_max": -0.05,
+    # BUY ON DIP: only for genuinely stretched pullbacks, not every mildly
+    # weak name drifting sideways under resistance.
+    "buy_on_dip_range_pos_max": 20.0,
+    "buy_on_dip_rsi_max": 35.0,
+    # ACCUMULATE: constructive trend, but not strong enough for breakout/
+    # strong-buy urgency.
+    "accumulate_range_pos_min": 45.0,
+    "accumulate_rsi_min": 45.0,
+    "accumulate_cmf_min": 0.0,
+    # HOLD / NEUTRAL: default bucket for mixed/no-edge conditions.
+    "hold_neutral_range_pos_min": 35.0,
+    "hold_neutral_range_pos_max": 70.0,
+    "hold_neutral_rsi_min": 42.0,
+    "hold_neutral_rsi_max": 58.0,
     # Confirmation gates
-    "strong_trend_adx_min": 20.0,
+    "strong_trend_adx_min": 22.0,
     "volume_ratio_threshold": 1.6,   # tightened from 1.3 - demand real institutional-size RVOL before confirming a short-term signal
     "volume_z_score_threshold": 1.5,
     # VWAP acceptance gate (short-term confirmation): close must sit at least

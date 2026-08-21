@@ -130,6 +130,12 @@ def _point_in_time_signal(df_upto: pd.DataFrame) -> dict | None:
     vol_z = float(latest.get("vol_z_score", 0.0) or 0.0)
     avg_volume_20 = float(latest.get("volume_avg", 0.0) or 0.0)
     atr = float(latest.get("atr_14", curr_price * 0.02) or curr_price * 0.02)
+    vwap = float(latest.get("vwap_20", curr_price) or curr_price)
+    cmf = float(latest.get("cmf_20", 0.0) or 0.0)
+    is_squeezed = bool(latest.get("bb_kc_squeeze", False))
+    w_sma50 = float(latest.get("w_sma_50", curr_price) or curr_price)
+    w_rsi = float(latest.get("w_rsi", 50.0) or 50.0)
+    weekly_aligned = (curr_price > w_sma50) and (w_rsi >= 50.0)
     if atr <= 0:
         atr = curr_price * 0.02
 
@@ -171,16 +177,31 @@ def _point_in_time_signal(df_upto: pd.DataFrame) -> dict | None:
         raw_action = "BREAKOUT BUY (MOMENTUM)"
         needs_confirmation = True
     elif (
+        curr_price < sma50 * ACTION_THRESHOLDS["sell_trend_price_ratio"]
+        and rsi <= ACTION_THRESHOLDS["sell_trend_rsi_max"]
+        and cmf <= ACTION_THRESHOLDS["sell_trend_cmf_max"]
+    ):
+        raw_action = "SELL / AVOID"
+        needs_confirmation = False
+    elif (
         range_pos_pct <= ACTION_THRESHOLDS["buy_on_dip_range_pos_max"]
         or rsi <= ACTION_THRESHOLDS["buy_on_dip_rsi_max"]
     ):
         raw_action = "BUY ON DIP"
         needs_confirmation = False
-    else:
+    elif (
+        range_pos_pct >= ACTION_THRESHOLDS["accumulate_range_pos_min"]
+        and rsi >= ACTION_THRESHOLDS["accumulate_rsi_min"]
+        and cmf >= ACTION_THRESHOLDS["accumulate_cmf_min"]
+        and (curr_price >= ema20 or curr_price >= sma50)
+    ):
         raw_action = "ACCUMULATE"
         needs_confirmation = False
+    else:
+        raw_action = "HOLD / NEUTRAL"
+        needs_confirmation = False
 
-    if not is_liquid or "SELL" in raw_action:
+    if not is_liquid or "SELL" in raw_action or "HOLD" in raw_action:
         return None  # backtester only ever takes the long/buy side
 
     strong_trend = adx >= ACTION_THRESHOLDS["strong_trend_adx_min"]
@@ -188,12 +209,16 @@ def _point_in_time_signal(df_upto: pd.DataFrame) -> dict | None:
         vol_ratio >= ACTION_THRESHOLDS["volume_ratio_threshold"]
         or vol_z >= ACTION_THRESHOLDS["volume_z_score_threshold"]
     )
-    confirmed = strong_trend and vol_confirmed
+    vwap_ok = curr_price >= vwap * ACTION_THRESHOLDS["vwap_acceptance_ratio"]
+    squeeze_ok = is_squeezed if "BREAKOUT BUY" in raw_action else True
+    confirmed = strong_trend and vol_confirmed and vwap_ok and squeeze_ok
     if needs_confirmation and not confirmed:
-        # Live matrix would still show this (labelled "Unconfirmed", score
-        # halved) - the backtester treats it as not-yet-actionable, same
-        # as a trader waiting for confirmation before risking capital.
         return None
+
+    if raw_action == "BUY ON DIP":
+        dip_confirmed = weekly_aligned and cmf >= ACTION_THRESHOLDS["medium_term_cmf_min"]
+        if not dip_confirmed:
+            return None
 
     if not any(a in raw_action for a in QUALIFYING_ACTIONS):
         return None

@@ -427,12 +427,15 @@ def _recent_failed_resistance_test(df_ind, range_high: float, curr_price: float,
 
 def _build_signal_reason(action_cmd: str, trend_latest: str, confirmed: bool, weekly_aligned: bool, is_squeezed: bool, cmf: float, vol_ratio: float) -> str:
     reasons = [action_cmd, f"trend={trend_latest}"]
-    reasons.append("confirmed" if confirmed else "awaiting confirmation")
+    if "HOLD / NEUTRAL" in action_cmd:
+        reasons.append("no decisive edge")
+    else:
+        reasons.append("confirmed" if confirmed else "awaiting confirmation")
     if weekly_aligned:
         reasons.append("weekly aligned")
-    if is_squeezed:
+    if is_squeezed and "HOLD / NEUTRAL" not in action_cmd:
         reasons.append("volatility squeeze")
-    if cmf > 0:
+    if cmf > 0 and "HOLD / NEUTRAL" not in action_cmd:
         reasons.append("positive money flow")
     if vol_ratio >= 1.0:
         reasons.append(f"vol x{vol_ratio:.2f}")
@@ -1114,15 +1117,32 @@ class DecisionMatrix:
                     trend_bonus = SCORE_WEIGHTS["breakout_momentum"]
                     needs_confirmation = True
                 elif (
+                    curr_price < sma50 * ACTION_THRESHOLDS["sell_trend_price_ratio"]
+                    and rsi <= ACTION_THRESHOLDS["sell_trend_rsi_max"]
+                    and cmf <= ACTION_THRESHOLDS["sell_trend_cmf_max"]
+                ):
+                    raw_action = "🛑 SELL / AVOID"
+                    trend_bonus = SCORE_WEIGHTS["sell_avoid"] * 0.6
+                    needs_confirmation = False
+                elif (
                     range_pos_pct <= ACTION_THRESHOLDS["buy_on_dip_range_pos_max"]
                     or rsi <= ACTION_THRESHOLDS["buy_on_dip_rsi_max"]
                 ):
                     raw_action = "⏳ BUY ON DIP"
                     trend_bonus = SCORE_WEIGHTS["buy_on_dip"]
                     needs_confirmation = False
-                else:
+                elif (
+                    range_pos_pct >= ACTION_THRESHOLDS["accumulate_range_pos_min"]
+                    and rsi >= ACTION_THRESHOLDS["accumulate_rsi_min"]
+                    and cmf >= ACTION_THRESHOLDS["accumulate_cmf_min"]
+                    and (curr_price >= ema20 or curr_price >= sma50)
+                ):
                     raw_action = "📈 ACCUMULATE"
                     trend_bonus = SCORE_WEIGHTS["accumulate"]
+                    needs_confirmation = False
+                else:
+                    raw_action = "🟡 HOLD / NEUTRAL"
+                    trend_bonus = SCORE_WEIGHTS["hold_neutral"]
                     needs_confirmation = False
 
                 # Confirmation gates
@@ -1160,9 +1180,12 @@ class DecisionMatrix:
                 else:
                     action_cmd = raw_action
 
-                if cmf >= SCORE_WEIGHTS["cmf_bonus_threshold"] and "SELL" not in action_cmd:
+                if (
+                    cmf >= SCORE_WEIGHTS["cmf_bonus_threshold"]
+                    and any(tag in action_cmd for tag in ("STRONG BUY", "BREAKOUT BUY", "ACCUMULATE", "BUY ON DIP"))
+                ):
                     trend_bonus += SCORE_WEIGHTS["cmf_bonus"]
-                if is_squeezed and "SELL" not in action_cmd:
+                if is_squeezed and any(tag in action_cmd for tag in ("STRONG BUY", "BREAKOUT BUY", "ACCUMULATE", "BUY ON DIP")):
                     action_cmd = f"{action_cmd} [💥 SQUEEZE]"
                     trend_bonus += SCORE_WEIGHTS["squeeze_bonus"]
 

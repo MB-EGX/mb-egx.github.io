@@ -120,7 +120,9 @@ def _write_shards(output_dir: str, payload: dict):
         "chart_history.json": {"last_data_date": payload["last_data_date"], "chart_history": payload["chart_history"]},
         "ticker_sectors.json": {"ticker_sectors": payload["ticker_sectors"]},
         "leaderboard.json": {"leaderboard": payload.get("leaderboard", [])},
-        "paper_trading.json": payload.get("paper_trading", {}),
+        # Paper-trading stays client-side/local only; keep an empty shard
+        # for backward-compatible fetch paths without publishing account state.
+        "paper_trading.json": {},
         "glossary.json": _build_glossary_payload(),
     }
     for filename, shard_payload in shards.items():
@@ -393,11 +395,6 @@ def export_market_matrix():
         # seeing position sizes. See portfolio_risk privacy note above.
         "ticker_sectors": sector_map,
         "leaderboard": dbm.get_leaderboard(limit=25),
-        "paper_trading": {
-            "cash_balance": dbm.get_paper_cash_balance(),
-            "open_positions": dbm.get_paper_open_positions(),
-            "recent_trades": dbm.get_paper_trades(limit=100),
-        },
     }
 
     print("🧹 Sanitizing data payload (removing NaN / Infinity)...")
