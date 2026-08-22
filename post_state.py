@@ -15,18 +15,14 @@ Three kinds of "due":
     "automatic" means it goes out as soon as the data says it happened,
     same posture as the push trigger already gets you for the other 3
     types on a normal day.
-  * track_record — WEEKLY, not daily: fires once per week on
-    TRACK_RECORD_WEEKDAY (Cairo) at TRACK_RECORD_DUE_TIME, PLUS an extra
-    data-presence gate: it only actually becomes due once the data has at
-    least one entry in "session_picks.achieved_history" (see
-    session_picks.py / export_json.py) — i.e. "weekly, if present". A
-    brand-new account with no achieved picks yet simply never posts an
-    empty track record; once the first pick is ever achieved, this starts
-    firing once a week (not every day). Unlike the 3 timed daily posts,
-    it is NOT gated on today's data freshness: TRACK_RECORD_WEEKDAY is
-    Saturday, a non-trading day on EGX, so the freshest data is from the
-    prior session by design — the weekly recap posts using the latest
-    available achieved_history.
+  * track_record — fixed Cairo LOCAL due time (see TRACK_RECORD_DUE_TIME)
+    like market/sectors/tickers, PLUS an extra data-presence gate: it
+    only actually becomes due once today's fresh data has at least one
+    entry in "session_picks.achieved_history" (see session_picks.py /
+    export_json.py) — i.e. "daily, if present". A brand-new account with
+    no achieved picks yet simply never posts an empty track record; once
+    the first pick is ever achieved, this starts firing daily like the
+    other 3 timed posts.
 
 Why track ig/fb separately: if Instagram succeeds for a type but Facebook
 then fails, a retry must only redo Facebook — re-attempting Instagram
@@ -81,22 +77,34 @@ DUE_TIMES = {
 # track_record's own fixed due time — after "tickers" so the day's other
 # 3 posts always go out first. Kept separate from DUE_TIMES (rather than
 # just adding a 4th entry there) because, unlike those 3, it ALSO needs
-# the data-presence gate below AND is weekly, not daily — see cmd_due().
+# the data-presence gate below — see cmd_due().
 TRACK_RECORD_DUE_TIME = (19, 30)
 
-# track_record is WEEKLY, not daily: it only becomes due on this Cairo
-# weekday (5 = Saturday, the weekend recap day — EGX trades Sun-Thu, so
-# Saturday is when the week's achieved picks get their recap post; the
-# workflow's schedule window covers it, see daily-instagram-post.yml).
-# Python's datetime.weekday(): 0=Mon ... 5=Sat, 6=Sun.
-TRACK_RECORD_WEEKDAY = 5  # Saturday
+# "weekly" — Friday recap (top gainers/losers, best/worst sector,
+# EGX30/EGX70 EWI trend) of the week that closed Thursday. Also kept out
+# of DUE_TIMES because, unlike market/sectors/tickers, its due-check
+# needs an extra day-of-week gate (see cmd_due()) instead of firing every
+# day. Egypt's weekend is Friday-Saturday (EGX trades Sun-Thu), so Friday
+# — the day right after the week's last session — is the natural day to
+# post it; no urgency about the exact hour, so this is set comfortably
+# after market-related posts would have gone out on a normal trading day.
+WEEKLY_DUE_TIME = (13, 0)
+WEEKLY_DUE_WEEKDAY = 4  # Python weekday(): Monday=0 ... Friday=4, Sunday=6
+
+# How many days old market_data.json's last_data_date is allowed to be
+# on Friday and still count as "this week's" data (Thursday's close is
+# normally 1 day old by Friday; a couple of extra days of slack covers a
+# missed Thursday publish without ever posting a truly stale, weeks-old
+# recap).
+WEEKLY_MAX_DATA_AGE_DAYS = 6
 
 # "achievement" has no fixed clock time (see module docstring) - it's
 # tracked in the same per-day/per-platform `posted` shape as the other
-# types, just checked differently in cmd_due(). "track_record" does have
-# a fixed time (TRACK_RECORD_DUE_TIME above) but isn't in DUE_TIMES
-# because its due-check needs the extra data-presence condition.
-ALL_TYPES = (*DUE_TIMES.keys(), "achievement", "track_record")
+# types, just checked differently in cmd_due(). "track_record" and
+# "weekly" do have fixed times (TRACK_RECORD_DUE_TIME / WEEKLY_DUE_TIME
+# above) but aren't in DUE_TIMES because their due-checks need extra
+# conditions beyond the plain clock-time gate.
+ALL_TYPES = (*DUE_TIMES.keys(), "achievement", "track_record", "weekly")
 
 
 def _today_str():
@@ -152,7 +160,7 @@ def _achieved_today(today_str):
 def _achieved_history():
     """Full recent track record of achieved Session Picks (see
     session_picks.py / export_json.py's "session_picks.achieved_history"),
-    NOT just today's — this is what gates the track_record post's "weekly,
+    NOT just today's — this is what gates the track_record post's "daily,
     if present" rule: an empty list here means nothing has ever been
     achieved yet, so track_record stays not-due regardless of the clock."""
     try:
@@ -161,6 +169,20 @@ def _achieved_history():
         return data.get("session_picks", {}).get("achieved_history", [])
     except (FileNotFoundError, json.JSONDecodeError):
         return []
+
+
+def _data_age_days(last_data_date, today_str):
+    """How many calendar days old is last_data_date compared to today
+    (Cairo)? Returns None if last_data_date is missing/unparseable —
+    callers treat that as "not recent enough" rather than crashing."""
+    if not last_data_date:
+        return None
+    try:
+        last = datetime.strptime(last_data_date, "%Y-%m-%d").date()
+        today = datetime.strptime(today_str, "%Y-%m-%d").date()
+        return (today - last).days
+    except ValueError:
+        return None
 
 
 def _data_is_fresh_today(today_str):
@@ -205,23 +227,39 @@ def cmd_due(args):
         if achievements and still_needed:
             due_types.append("achievement")
 
-    # track_record — WEEKLY (Saturday), NOT gated on today's data
-    # freshness: Saturday is a non-trading day on EGX, so the freshest
-    # data is from the prior session by design. The weekly recap posts
-    # using the latest available achieved_history (still requires at
-    # least one entry). See module docstring.
-    hh, mm = TRACK_RECORD_DUE_TIME
-    due_time = now.replace(hour=hh, minute=max(0, mm - JITTER_MINUTES), second=0, microsecond=0)
-    status = state["posted"]["track_record"]
-    still_needed = any(not status[p] for p in PLATFORMS)
-    history_present = bool(_achieved_history())
-    if (
-        now.weekday() == TRACK_RECORD_WEEKDAY
-        and now >= due_time
-        and still_needed
-        and history_present
-    ):
-        due_types.append("track_record")
+        # track_record — fixed due time like market/sectors/tickers, PLUS
+        # gated on "if present": only due once achieved_history actually
+        # has at least one entry. See module docstring.
+        hh, mm = TRACK_RECORD_DUE_TIME
+        due_time = now.replace(hour=hh, minute=max(0, mm - JITTER_MINUTES), second=0, microsecond=0)
+        status = state["posted"]["track_record"]
+        still_needed = any(not status[p] for p in PLATFORMS)
+        history_present = bool(_achieved_history())
+        if now >= due_time and still_needed and history_present:
+            due_types.append("track_record")
+
+    # weekly — deliberately OUTSIDE the `if fresh:` block above: "fresh"
+    # means last_data_date == today, which never happens on a Friday
+    # (EGX doesn't trade Fri/Sat, so Friday's market_data.json is still
+    # dated Thursday). This has its own staleness check instead — the
+    # data just needs to be recent enough to be "this week's" (see
+    # WEEKLY_MAX_DATA_AGE_DAYS), not dated exactly today.
+    if now.weekday() == WEEKLY_DUE_WEEKDAY:
+        hh, mm = WEEKLY_DUE_TIME
+        due_time = now.replace(hour=hh, minute=max(0, mm - JITTER_MINUTES), second=0, microsecond=0)
+        status = state["posted"]["weekly"]
+        still_needed = any(not status[p] for p in PLATFORMS)
+        data_age_days = _data_age_days(last_data_date, today_str)
+        data_recent_enough = data_age_days is not None and data_age_days <= WEEKLY_MAX_DATA_AGE_DAYS
+        if now >= due_time and still_needed and data_recent_enough:
+            due_types.append("weekly")
+        elif now >= due_time and still_needed and not data_recent_enough:
+            print(
+                f"HOLDING weekly: market_data.json last_data_date {last_data_date or '(missing)'} "
+                f"is more than {WEEKLY_MAX_DATA_AGE_DAYS} day(s) old — looks like this week's "
+                f"publish.py run never happened. Run publish.py, then re-run this workflow.",
+                file=sys.stderr,
+            )
 
     print(f"Cairo time now: {now.strftime('%Y-%m-%d %H:%M')}", file=sys.stderr)
     print(f"market_data.json last_data_date: {last_data_date or '(missing/unreadable)'}", file=sys.stderr)
@@ -234,20 +272,12 @@ def cmd_due(args):
     # session, not today's." Print a single explicit line on the stale branch so
     # the operator can see the gate tripping in CI logs.
     if not fresh:
-        if "track_record" in due_types:
-            print(
-                f"NOTE: data is for session {last_data_date or '(missing)'}, not today's "
-                f"{today_str} — but the weekly track_record is due today (Saturday recap) "
-                f"and will post using the latest available achieved_history.",
-                file=sys.stderr,
-            )
-        else:
-            print(
-                f"HOLDING: market_data.json is for session {last_data_date or '(missing)'}, "
-                f"NOT today's {today_str} — NOTHING will post until you run publish.py "
-                f"with today's CSV. Run publish.py, then re-run this workflow.",
-                file=sys.stderr,
-            )
+        print(
+            f"HOLDING: market_data.json is for session {last_data_date or '(missing)'}, "
+            f"NOT today's {today_str} — NOTHING will post until you run publish.py "
+            f"with today's CSV. Run publish.py, then re-run this workflow.",
+            file=sys.stderr,
+        )
     print(f"Due now: {due_types or '(none)'}", file=sys.stderr)
 
     _save_state(state)  # persists the day-rollover reset, if one happened
