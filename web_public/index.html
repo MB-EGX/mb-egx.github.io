@@ -1669,6 +1669,7 @@
                 lbl_picks_current: "Current",
                 lbl_picks_since_pick: "since picked",
                 lbl_picks_expected_by: "Expected by",
+                lbl_chart_pattern: "Chart Pattern",
                 hdr_entry_vwap: "Entry (VWAP)", hdr_stop_loss: "Stop-Loss", hdr_shares_risk: "Shares (1% Risk)",
                 hdr_proj_gain: "Proj. Gain %", hdr_pattern_conf: "Pattern Conf %", hdr_trend: "Trend",
                 hdr_vol_zscore: "Vol Z-Score", hdr_bollinger: "Bollinger %B", hdr_avg_vol: "Avg Vol (20D)",
@@ -1915,6 +1916,7 @@
                 lbl_picks_current: "الحالي",
                 lbl_picks_since_pick: "منذ الترشيح",
                 lbl_picks_expected_by: "متوقع بحلول",
+                lbl_chart_pattern: "النمط السعري",
                 hdr_entry_vwap: "سعر الدخول (VWAP)", hdr_stop_loss: "وقف الخسارة", hdr_shares_risk: "الأسهم (مخاطرة 1%)",
                 hdr_proj_gain: "الربح المتوقع %", hdr_pattern_conf: "ثقة النموذج %", hdr_trend: "الاتجاه",
                 hdr_vol_zscore: "انحراف الحجم", hdr_bollinger: "بولينجر %B", hdr_avg_vol: "متوسط الحجم (20 يوم)",
@@ -4829,6 +4831,23 @@
             });
         }
 
+        function bestPatternLabel(patterns) {
+            if (!patterns || !patterns.length) return null;
+            let best = null;
+            patterns.forEach(p => {
+                const q = (typeof p.quality === 'number') ? p.quality : 0;
+                const bull = (String(p.direction || '').toLowerCase() === 'bullish') ? 1 : 0;
+                if (!best || bull > best._bull || (bull === best._bull && q > best._q)) {
+                    best = { p, _bull: bull, _q: q };
+                }
+            });
+            const p = best.p;
+            if (!p.pattern) return null;
+            const dir = String(p.direction || '').toLowerCase();
+            const q = (typeof p.quality === 'number') ? `, ${p.quality.toFixed(2)}` : '';
+            return dir ? `${p.pattern} (${dir}${q})` : p.pattern;
+        }
+
         function renderSessionPicks() {
             const container = document.getElementById('session-picks-container');
             const achievedBody = document.getElementById('tbody-picks-achieved');
@@ -4864,6 +4883,13 @@
                     const expectedStr = (p.expected_from && p.expected_by)
                         ? (p.expected_from === p.expected_by ? p.expected_from : `${p.expected_from} → ${p.expected_by}`)
                         : '-';
+                    // Chart pattern for this pick's ticker, from the same
+                    // chart_history.stocks.<ticker>.patterns the Charts tab
+                    // overlays. chart_history loads lazily, so this is null
+                    // until it lands — prefetchChartHistoryInBackground()
+                    // re-renders this tab once it does.
+                    const stockHist = (globalData.chart_history && globalData.chart_history.stocks) ? globalData.chart_history.stocks[p.ticker] : null;
+                    const pat = stockHist ? bestPatternLabel(stockHist.patterns) : null;
                     // NEW: live alpha vs the benchmark used for this run (see
                     // session_picks.refresh_session_picks / market_regime.py).
                     // alpha_vs_benchmark_pct is None (not 0) whenever benchmark
@@ -4887,6 +4913,7 @@
                                 <span class="text-textmuted font-sans">${tt('hdr_vs_benchmark').replace('{bench}', escapeHtml(benchLabel))}:</span>
                                 <span class="font-bold ${alphaColor}">${alphaStr}</span>
                             </div>
+                            ${pat ? `<div class="text-[11px] text-textmuted font-sans">📐 ${tt('lbl_chart_pattern')}: ${escapeHtml(pat)}</div>` : ''}
                         </div>
                     `;
                 }).join('');
@@ -5347,6 +5374,7 @@
                 // looking at that tab.
                 if (!document.getElementById('tab-charts').classList.contains('hidden')) plotChart();
                 if (!document.getElementById('tab-exits').classList.contains('hidden')) renderPortfolio();
+                if (!document.getElementById('tab-picks').classList.contains('hidden')) renderSessionPicks();
             }).catch(() => { /* already logged in ensureChartHistoryLoaded() */ });
         }
 
@@ -6490,6 +6518,7 @@
             });
         }
     </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>

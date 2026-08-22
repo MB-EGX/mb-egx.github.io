@@ -6,7 +6,7 @@ for the next session, the best medium-term setup, and the best
 long-term/sector pick (post-type "tickers"); a market overview and a
 sectors overview; an "achievement" post the moment a Session Pick crosses
 its horizon's target; and a "track_record" post showing the recent
-history of picks that actually hit their target ("daily, if present" —
+history of picks that actually hit their target ("weekly, if present" —
 see post_state.py). Each with the evidence (score, RSI/ADX, pattern,
 sector strength) straight from the same market_data.json the web
 dashboard already reads.
@@ -145,7 +145,34 @@ def fetch_market_data(pages_base_url: str) -> dict:
 _HORIZON_LABELS = {"short": "next_session", "medium": "medium_term", "long": "long_term"}
 
 
-def _enrich_pick(pick: dict, by_ticker: dict) -> dict:
+def _best_chart_pattern(stock_history: dict | None) -> str | None:
+    """Best (highest-quality, bullish-preferred) chart pattern for a
+    ticker from chart_history.stocks.<ticker>.patterns, as a short label
+    like 'Double Bottom (bullish, 0.88)'. None if the ticker has no
+    patterns (or no chart history)."""
+    if not stock_history:
+        return None
+    patterns = stock_history.get("patterns") or []
+    if not patterns:
+        return None
+
+    def _key(p):
+        bull = 1 if str(p.get("direction", "")).lower() == "bullish" else 0
+        q = p.get("quality")
+        return (bull, float(q) if isinstance(q, (int, float)) else 0.0)
+
+    best = max(patterns, key=_key)
+    name = best.get("pattern")
+    if not name:
+        return None
+    direction = str(best.get("direction", "")).lower()
+    q = best.get("quality")
+    q_str = f", {q:.2f}" if isinstance(q, (int, float)) else ""
+    dir_str = f" ({direction}{q_str})" if direction else ""
+    return f"{name}{dir_str}"
+
+
+def _enrich_pick(pick: dict, by_ticker: dict, patterns_by_ticker: dict | None = None) -> dict:
     """Merge a stored pick (ticker/pick_date/ref_price) with that ticker's
     current matrix row (score, RSI, price, ...) plus the % move since it
     was picked, for display purposes."""
@@ -156,17 +183,23 @@ def _enrich_pick(pick: dict, by_ticker: dict) -> dict:
     if current_price is not None and ref_price:
         pct_since_pick = round((current_price / ref_price - 1.0) * 100.0, 2)
     row.update(pick)
-    row["pct_since_pick"] = pct_since_pick
+    row["pct_since_pick"] = pct_since_pick
+    if patterns_by_ticker:
+        row["chart_pattern"] = _best_chart_pattern(patterns_by_ticker.get(pick.get("ticker")))
     return row
 
 
 def pick_daily_highlights(market_data: dict) -> dict:
     matrix = market_data.get("market_matrix", [])
     by_ticker = {r["Ticker"]: r for r in matrix}
-    session_picks = market_data.get("session_picks", {})
+    session_picks = market_data.get("session_picks", {})
+    # Chart patterns per ticker (chart_history.stocks.<ticker>.patterns) —
+    # the same source the Charts tab overlays, so picks carry their pattern.
+    stocks = (market_data.get("chart_history") or {}).get("stocks", {})
+    patterns_by_ticker = {tk: h for tk, h in stocks.items()}
 
     result = {
-        _HORIZON_LABELS[h]: [_enrich_pick(p, by_ticker) for p in session_picks.get(h, [])]
+        _HORIZON_LABELS[h]: [_enrich_pick(p, by_ticker, patterns_by_ticker) for p in session_picks.get(h, [])]
         for h in ("short", "medium", "long")
     }
     result["last_data_date"] = market_data.get("last_data_date")
@@ -179,7 +212,7 @@ def pick_daily_highlights(market_data: dict) -> dict:
 # Reads session_picks.achieved_history (see export_json.py / session_picks.py
 # / db_manager.get_recent_achieved_picks) — the full recent list of Session
 # Picks that actually hit their horizon's target, not just today's. This is
-# what powers the "daily, if present" track_record post: post_state.py
+# what powers the "weekly, if present" track_record post: post_state.py
 # already refuses to mark it due at all when this list is empty (see that
 # module's docstring), so by the time this runs there's guaranteed to be at
 # least one entry.
@@ -490,7 +523,10 @@ def _draw_pick_row(draw, x, y, w, row_h, pick, fonts):
         bits.append(f"{price} EGP")
     pct = pick.get("pct_since_pick")
     if pct is not None:
-        bits.append(f"{pct:+.2f}% since picked")
+        bits.append(f"{pct:+.2f}% since picked")
+    pat = pick.get("chart_pattern")
+    if pat:
+        bits.append(f"📐 {pat}")
     draw.text((x + 240, y + 16), "  ·  ".join(bits) or "—", font=f_body, fill=TEXT_MUTED)
 
 
@@ -713,7 +749,8 @@ def _pick_lines_en(rows: list[dict]) -> list[str]:
     if not rows:
         return ["  (no active picks right now)"]
     return [
-        f"  • {r.get('Ticker') or r.get('ticker', '—')} — score {r.get('Rank Score', '—')}/100, RSI {r.get('RSI-14', '—')}"
+        f"  • {r.get('Ticker') or r.get('ticker', '—')} — score {r.get('Rank Score', '—')}/100, RSI {r.get('RSI-14', '—')}"
+        + (f", 📐 {r['chart_pattern']}" if r.get("chart_pattern") else "")
         for r in rows
     ]
 
@@ -722,7 +759,8 @@ def _pick_lines_ar(rows: list[dict]) -> list[str]:
     if not rows:
         return ["  (لا توجد ترشيحات نشطة حاليًا)"]
     return [
-        f"  • {r.get('Ticker') or r.get('ticker', '—')} — الدرجة {r.get('Rank Score', '—')}/100، RSI {r.get('RSI-14', '—')}"
+        f"  • {r.get('Ticker') or r.get('ticker', '—')} — الدرجة {r.get('Rank Score', '—')}/100، RSI {r.get('RSI-14', '—')}"
+        + (f", 📐 {r['chart_pattern']}" if r.get("chart_pattern") else "")
         for r in rows
     ]
 

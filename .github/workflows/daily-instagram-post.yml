@@ -6,14 +6,15 @@ name: Daily Instagram + Facebook Post
 # HOW THIS WORKS (catch-up model, not fixed-time-or-skip):
 #   Five posts — market overview, sectors overview, evening tickers, and
 #   track record (each with a fixed Cairo LOCAL due time — see
-#   post_state.py: 16:00, 16:20, 19:00, 19:30), plus a 5th "achievement"
-#   post that is NOT time-gated: it fires as soon as fresh data shows a
-#   Session Pick crossed its horizon's own target gain (see
-#   session_picks.py / export_json.py's "session_picks.achieved_today").
-#   track_record ALSO has an extra "if present" gate on top of its clock
-#   time — it only actually fires once there's at least one entry in
-#   "session_picks.achieved_history"; a brand-new account with no
-#   achieved picks yet simply never posts an empty track record.
+#   post_state.py: 16:00, 16:20, 19:00, and 19:30 on Saturdays only), plus
+#   a 5th "achievement" post that is NOT time-gated: it fires as soon as
+#   fresh data shows a Session Pick crossed its horizon's own target gain
+#   (see session_picks.py / export_json.py's "session_picks.achieved_today").
+#   track_record is WEEKLY (Saturdays, not daily) and ALSO has an extra
+#   "if present" gate on top of its clock time — it only actually fires
+#   once there's at least one entry in "session_picks.achieved_history";
+#   a brand-new account with no achieved picks yet simply never posts an
+#   empty track record.
 #   A run doesn't just fire at a fixed clock time and give up if data
 #   isn't ready; EVERY run (whether triggered by a fresh data push, or the
 #   periodic safety-net check below) asks post_state.py "which due posts
@@ -27,22 +28,23 @@ name: Daily Instagram + Facebook Post
 # TWO TRIGGERS:
 #   1. push — fires the moment publish.py pushes new market_data.json,
 #      so a same-day feed usually posts within seconds/minutes.
-#   2. schedule (every 15 min, 10:00-19:59 UTC, Sun-Thu) — a safety net,
+#   2. schedule (every 15 min, 10:00-19:59 UTC, Sun-Sat) — a safety net,
 #      and the actual mechanism that catches a LATE feed (nothing
 #      triggers a push-based run again until you next run publish.py, so
 #      this periodic check is what notices already-pushed data and posts
 #      the overdue slot(s) without you doing anything).
 #   The 10:00-19:59 UTC window comfortably covers all 4 Cairo due times
-#   (16:00/16:20/19:00/19:30) in both DST offsets (UTC+2 winter / UTC+3
-#   summer) — 19:30 Cairo is 16:30 UTC (summer) or 17:30 UTC (winter),
-#   both well inside the window.
+#   (16:00/16:20/19:00, plus 19:30 on Saturdays for the weekly track
+#   record) in both DST offsets (UTC+2 winter / UTC+3 summer) — 19:30
+#   Cairo is 16:30 UTC (summer) or 17:30 UTC (winter), both well inside
+#   the window.
 on:
   push:
     branches: [main]
     paths:
       - 'web_public/data/market_data.json'
   schedule:
-    - cron: "*/15 10-19 * * 0-4"
+    - cron: "*/15 10-19 * * 0-6"
   workflow_dispatch:
     inputs:
       post_type:

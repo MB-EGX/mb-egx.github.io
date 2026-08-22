@@ -12,6 +12,11 @@ try:
 except ImportError:
     requests = None
 
+try:
+    import offline_pin as _offline_pin
+except Exception:  # pragma: no cover - shipped alongside app_gui.py
+    _offline_pin = None
+
 from config import WATCH_DIR, TRANSACTION_FEE_PCT, PORTFOLIO_RISK_THRESHOLDS, get_logger
 from db_manager import DatabaseManager, DatabaseLockedError, set_language as _set_db_language
 from decision_matrix import DecisionMatrix, set_language as _set_dm_language
@@ -60,6 +65,30 @@ FIRESTORE_BASE = f"https://firestore.googleapis.com/v1/projects/{FIREBASE_PROJEC
 ADMIN_EMAILS = [
     e.strip() for e in os.environ.get("MBEGX_ADMIN_EMAILS", "drmo071990@gmail.com").split(",") if e.strip()
 ]
+
+# =============================================================================
+# CREATOR-ONLY OFFLINE MODE
+# =============================================================================
+# The desktop app normally requires a Firebase sign-in, which needs internet.
+# This enables a private "Continue Offline" path on the login screen so the
+# creator can open the dashboard without any network. It is deliberately NOT
+# a visible toggle for other users: it only activates when BOTH hold —
+#   1) the MBEGX_OFFLINE=1 env var is set (done by the private
+#      launch_offline.bat launcher), AND
+#   2) MBEGX_OFFLINE_KEY hashes to the SHA-256 digest below.
+# Only the hash is stored in the app (never the plaintext key), so a copied
+# launcher alone cannot unlock it — it must carry the matching secret.
+_CREATOR_OFFLINE_KEY_HASH = "edf54766c56510b5594263baa786630c4a077b5a034602cd0ff561d3d67bc2f3"
+
+
+def _creator_offline_enabled() -> bool:
+    import hashlib as _hashlib
+    if os.environ.get("MBEGX_OFFLINE") != "1":
+        return False
+    key = os.environ.get("MBEGX_OFFLINE_KEY", "")
+    if not key:
+        return False
+    return _hashlib.sha256(key.encode()).hexdigest() == _CREATOR_OFFLINE_KEY_HASH
 
 
 def _safe_float(value, default: float = 0.0) -> float:
@@ -195,6 +224,19 @@ AR_TRANSLATIONS = {
         "في تطبيق سطح المكتب، يرجى استخدام البريد الإلكتروني وكلمة المرور. إذا أنشأت حسابك عبر Google على الموقع، اضغط 'نسيت بيانات الدخول؟' لتعيين كلمة مرور لاستخدام سطح المكتب.",
     "Don't have an account?": "ليس لديك حساب؟",
     "Create Account": "إنشاء حساب",
+    "Continue Offline": "متابعة دون اتصال",
+    "Offline Mode": "وضع دون اتصال",
+    "Set Offline PIN": "تعيين رمز PIN دون اتصال",
+    "Create a PIN for offline mode:": "أنشئ رمز PIN لوضع دون الاتصال:",
+    "Confirm Offline PIN": "تأكيد رمز PIN",
+    "Confirm your PIN:": "أكّد رمز PIN الخاص بك:",
+    "PINs did not match. Offline mode not enabled.": "الرموز غير متطابقة. لم يتم تفعيل وضع دون الاتصال.",
+    "Enter Offline PIN": "أدخل رمز PIN",
+    "Enter your PIN to open the dashboard offline:": "أدخل رمز PIN لفتح لوحة التحكم دون اتصال:",
+    "Wrong PIN. Attempts remaining: {n}": "رمز PIN خاطئ. المحاولات المتبقية: {n}",
+    "Too many wrong PINs. Offline mode is locked for 5 minutes.": "محاولات خاطئة كثيرة. قُفل وضع دون الاتصال لمدة 5 دقائق.",
+    "Offline mode is locked. Try again in {m} min {s} sec.": "وضع دون الاتصال مقفل. حاول مجددًا في {m} دقيقة {s} ثانية.",
+    "The offline PIN module is missing. Reinstall offline_pin.py next to app_gui.py.": "وحدة رمز PIN مفقودة. أعد تثبيت offline_pin.py بجوار app_gui.py.",
     "🔒 AES-256 BANK GRADE ENCRYPTION MATRIX ENABLED": "🔒 مصفوفة تشفير AES-256 بمستوى المصارف مُفعّلة",
     "Enter both email and password.": "أدخل البريد الإلكتروني وكلمة المرور.",
     "Password must be at least {n} characters.": "يجب أن تتكون كلمة المرور من {n} أحرف على الأقل.",
@@ -2442,6 +2484,17 @@ class LoginDialog(QDialog):
         create_layout.addStretch()
         f_layout.addLayout(create_layout)
 
+        # --- Creator-only offline launch (hidden unless MBEGX_OFFLINE=1 + key) ---
+        self.btn_offline = QPushButton(tr("Continue Offline"))
+        self.btn_offline.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.btn_offline.setStyleSheet(
+            f"background: transparent; color: {self._PRIMARY}; font-size: 13px; font-weight: bold; "
+            "border: 1px solid #4a5568; border-radius: 8px; padding: 10px;"
+        )
+        self.btn_offline.clicked.connect(self.do_offline)
+        self.btn_offline.setVisible(_creator_offline_enabled())
+        f_layout.addWidget(self.btn_offline)
+
         right_layout.addWidget(form_card)
         content_layout.addWidget(right_col, stretch=1)
         outer.addWidget(content_area, stretch=1)
@@ -2493,6 +2546,7 @@ class LoginDialog(QDialog):
         self.txt_disclaimer.setPlainText(DISCLAIMER_TEXT_AR if CURRENT_LANG == "AR" else DISCLAIMER_TEXT)
         self.chk_consent.setText(tr("I acknowledge and agree to the Terms."))
         self.btn_signin.setText(tr("Sign In  →"))
+        self.btn_offline.setText(tr("Continue Offline"))
         self.lbl_or.setText(tr("OR"))
         self.btn_google.setText(tr("Sign in with Google"))
         self.lbl_no_account.setText(tr("Don't have an account?"))
@@ -2556,6 +2610,87 @@ class LoginDialog(QDialog):
 
     def do_sign_in(self):
         self._attempt(firebase_sign_in)
+
+    def do_offline(self):
+        """Creator-only: open the dashboard without internet / Firebase login.
+        Second factor: a locally-stored PIN (see offline_pin.py) must be
+        entered before the dashboard opens."""
+        if not self._authenticate_offline():
+            return
+        self.user_info = {
+            "uid": "creator-offline",
+            "email": "creator@offline.local",
+            "name": "Creator (Offline)",
+            "idToken": None,
+            "offline": True,
+        }
+        self.accept()
+
+    def _authenticate_offline(self) -> bool:
+        """Gate offline mode behind a PIN. Handles first-run setup, wrong-PIN
+        attempts and the lockout. Returns True if access is granted."""
+        if _offline_pin is None:
+            QMessageBox.critical(
+                self, tr("Offline Mode"),
+                tr("The offline PIN module is missing. Reinstall offline_pin.py next to app_gui.py."),
+            )
+            return False
+
+        remaining = _offline_pin.lockout_remaining()
+        if remaining > 0:
+            QMessageBox.warning(
+                self, tr("Offline Mode"),
+                tr("Offline mode is locked. Try again in {m} min {s} sec.").format(
+                    m=int(remaining // 60), s=int(remaining % 60)),
+            )
+            return False
+
+        # First run: set up a PIN (set + confirm).
+        if not _offline_pin.pin_is_set():
+            pin, ok = QInputDialog.getText(
+                self, tr("Set Offline PIN"),
+                tr("Create a PIN for offline mode:"),
+                echo=QLineEdit.EchoMode.Password,
+            )
+            if not ok or not pin:
+                return False
+            confirm, ok2 = QInputDialog.getText(
+                self, tr("Confirm Offline PIN"),
+                tr("Confirm your PIN:"),
+                echo=QLineEdit.EchoMode.Password,
+            )
+            if not ok2 or confirm != pin:
+                QMessageBox.warning(
+                    self, tr("Offline Mode"),
+                    tr("PINs did not match. Offline mode not enabled."),
+                )
+                return False
+            _offline_pin.set_pin(pin)
+            return True
+
+        # Existing PIN: verify it.
+        pin, ok = QInputDialog.getText(
+            self, tr("Enter Offline PIN"),
+            tr("Enter your PIN to open the dashboard offline:"),
+            echo=QLineEdit.EchoMode.Password,
+        )
+        if not ok or not pin:
+            return False
+        if _offline_pin.verify_pin(pin):
+            _offline_pin.reset_attempts()
+            return True
+        left = _offline_pin.register_failed_attempt()
+        if left <= 0:
+            QMessageBox.warning(
+                self, tr("Offline Mode"),
+                tr("Too many wrong PINs. Offline mode is locked for 5 minutes."),
+            )
+        else:
+            QMessageBox.warning(
+                self, tr("Offline Mode"),
+                tr("Wrong PIN. Attempts remaining: {n}").format(n=left),
+            )
+        return False
 
     def do_sign_up(self):
         self._attempt(firebase_sign_up, min_password_len=8, require_consent=True)
@@ -3005,7 +3140,7 @@ class QuantDashboard(QMainWindow):
         QTimer.singleShot(800, self._show_first_run_tips)
 
     def _run_cloud(self, fn, *args, on_result=None, **kwargs):
-        if requests is None or not self.user_info:
+        if requests is None or not self.user_info or self.user_info.get("offline"):
             return
         worker = _CloudWorker(fn, *args, **kwargs)
         if on_result:
@@ -3015,7 +3150,7 @@ class QuantDashboard(QMainWindow):
         worker.start()
 
     def _start_cloud_session(self):
-        if not self.user_info:
+        if not self.user_info or self.user_info.get("offline"):
             return
         self._run_cloud(
             create_session_doc,
@@ -3062,7 +3197,7 @@ class QuantDashboard(QMainWindow):
         }
 
     def open_analytics_dialog(self):
-        if not self.user_info:
+        if not self.user_info or self.user_info.get("offline"):
             return
         dlg = AnalyticsDialog(self.user_info["idToken"], self)
         dlg.exec()
@@ -4724,7 +4859,7 @@ class QuantDashboard(QMainWindow):
         pr = portfolio_risk or {}
         self._render_risk_banner(pr)
 
-        if self.user_info and _push_cloud_stats:
+        if self.user_info and not self.user_info.get("offline") and _push_cloud_stats:
             stats = self._compute_dealing_stats(exits, closed_trades, fin_stmt)
             self._run_cloud(push_dealing_stats, self.user_info["idToken"], self.user_info["uid"], stats)
 

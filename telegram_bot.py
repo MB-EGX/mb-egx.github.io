@@ -186,6 +186,7 @@ LABELS = {
         "horizon_medium": "📈 Medium-Term",
         "horizon_long": "🏛️ Long-Term",
         "picked": "picked",
+        "live": "live",
         "target": "target",
         "leaderboard_title": "🥇 Leaderboard",
         "leaderboard_empty": "No leaderboard data yet.",
@@ -241,6 +242,7 @@ LABELS = {
         "horizon_medium": "📈 متوسط المدى",
         "horizon_long": "🏛️ طويل المدى",
         "picked": "تاريخ الاختيار",
+        "live": "الحالي",
         "target": "الهدف",
         "leaderboard_title": "🥇 المتصدرين",
         "leaderboard_empty": "لا توجد بيانات متصدرين بعد.",
@@ -349,9 +351,41 @@ def format_sectors(data: dict, arg: str, lang: str) -> str:
     return "\n".join(lines)
 
 
+def _best_chart_pattern(stock_history: dict | None) -> str | None:
+    """Best (highest-quality, bullish-preferred) chart pattern for a
+    ticker from chart_history.stocks.<ticker>.patterns, as a short label
+    like 'Double Bottom (bullish, 0.88)'. None if the ticker has no
+    patterns (or no chart history)."""
+    if not stock_history:
+        return None
+    patterns = stock_history.get("patterns") or []
+    if not patterns:
+        return None
+
+    def _key(p):
+        bull = 1 if str(p.get("direction", "")).lower() == "bullish" else 0
+        q = p.get("quality")
+        return (bull, float(q) if isinstance(q, (int, float)) else 0.0)
+
+    best = max(patterns, key=_key)
+    name = best.get("pattern")
+    if not name:
+        return None
+    direction = str(best.get("direction", "")).lower()
+    q = best.get("quality")
+    q_str = f", {q:.2f}" if isinstance(q, (int, float)) else ""
+    dir_str = f" ({direction}{q_str})" if direction else ""
+    return f"{name}{dir_str}"
+
+
 def format_picks(data: dict, arg: str, lang: str) -> str:
     L = LABELS[lang]
     sp = data.get("session_picks", {})
+    # Live prices come from the same market_matrix the dashboard uses, so
+    # the reply shows the CURRENT move since each pick was made (updated
+    # info) rather than a stale fixed pick date.
+    matrix = {r.get("Ticker"): r for r in data.get("market_matrix", [])}
+    stocks = (data.get("chart_history") or {}).get("stocks", {})
     horizon_titles = {
         "short": L["horizon_short"],
         "medium": L["horizon_medium"],
@@ -366,9 +400,18 @@ def format_picks(data: dict, arg: str, lang: str) -> str:
         any_picks = True
         lines.append(f"\n<b>{title}</b>")
         for p in picks:
+            ticker = str(p.get("ticker", "?"))
+            ref = p.get("ref_price")
+            cur = matrix.get(ticker, {}).get("Current Price")
+            live = None
+            if cur is not None and ref:
+                live = (cur / ref - 1.0) * 100.0
+            live_str = f" · {L['live']} {live:+.2f}%" if live is not None else ""
+            pat = _best_chart_pattern(stocks.get(ticker))
+            pat_str = f" · {_esc(pat)}" if pat else ""
             lines.append(
-                f"• {_esc(str(p.get('ticker', '?')))} — {L['target']} +{p.get('expected_pct', '?')}% "
-                f"({L['picked']} {_esc(str(p.get('pick_date', '')))})"
+                f"• <b>{_esc(ticker)}</b> — {L['target']} +{p.get('expected_pct', '?')}%"
+                f"{live_str}{pat_str}"
             )
     if not any_picks:
         lines.append(L["picks_empty"])
