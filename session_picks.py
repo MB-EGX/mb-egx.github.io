@@ -501,6 +501,54 @@ def _candidate_pool(horizon: str, top10: dict, buys: list, sectors: list, by_tic
 
 
 
+def _achieved_this_week(dbm, as_of_date: str, days: int = 7) -> list:
+
+    """Every Session Pick marked achieved within the trailing ``days``-day
+
+    window ending on ``as_of_date`` (inclusive), newest first. Reuses
+
+    dbm.get_recent_achieved_picks() rather than a new SQL query, so this
+
+    stays correct against however achieved history is actually pruned/
+
+    stored - no assumptions made about the DB schema beyond that method's
+
+    existing contract.
+
+    """
+
+    try:
+
+        as_of = date.fromisoformat(str(as_of_date)[:10])
+
+    except (ValueError, TypeError):
+
+        return []
+
+    cutoff = as_of - timedelta(days=days - 1)
+
+    recent = dbm.get_recent_achieved_picks(limit=MAX_ACHIEVED_HISTORY)
+
+    out = []
+
+    for pick in recent:
+
+        try:
+
+            achieved_on = date.fromisoformat(str(pick["achieved_date"])[:10])
+
+        except (ValueError, TypeError):
+
+            continue
+
+        if cutoff <= achieved_on <= as_of:
+
+            out.append(pick)
+
+    return out
+
+
+
 def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_date: str,
 
                            breakout_watchlist: list | None = None,
@@ -613,6 +661,8 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
         state = {h: _with_expected_window(dbm.get_active_picks(h), h) for h in HORIZONS}
 
         state["achieved_today"] = []
+
+        state["achieved_this_week"] = _achieved_this_week(dbm, today_cairo())
 
         state["session_date"] = session_date
 
@@ -828,6 +878,8 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
             )
 
     state["achieved_today"] = achieved_today
+
+    state["achieved_this_week"] = _achieved_this_week(dbm, session_date)
 
     state["session_date"] = session_date
 

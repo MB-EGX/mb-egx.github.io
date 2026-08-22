@@ -1,0 +1,82 @@
+# ============================================================
+# NEW STANDALONE WORKFLOW — save as .github/workflows/mb-weekly-video.yml
+# Runs once a week (default: Friday) instead of daily, and defaults to a
+# fully free stack: edge-tts for voice + self-hosted SadTalker for lip-sync.
+# Your existing daily-instagram-post.yml (image posts) is untouched.
+# ============================================================
+
+name: MB Weekly Arabic Video (Reels)
+
+on:
+  schedule:
+    - cron: "0 15 * * 5"   # Every Friday ~17:00 Cairo time (UTC+2)
+  workflow_dispatch: {}     # lets you trigger a run manually from the Actions tab
+
+jobs:
+  mb_weekly_video:
+    name: "MB Weekly Arabic Video"
+    runs-on: ubuntu-latest
+    # Repo variable switch — Settings → Variables → New → MB_VIDEO_ENABLED = true
+    if: vars.MB_VIDEO_ENABLED == 'true'
+    timeout-minutes: 45   # SadTalker on CPU is slow; give it room
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python deps (free stack)
+        run: |
+          pip install --quiet requests edge-tts
+
+      # ── Free, self-hosted lip-sync (default path) ────────────────────
+      # Skipped entirely if you've set the MB_LIPSYNC_BACKEND repo variable
+      # to "heygen" or "did" instead (see the commented secrets below).
+      - name: Set up SadTalker (free lip-sync)
+        if: vars.MB_LIPSYNC_BACKEND != 'heygen' && vars.MB_LIPSYNC_BACKEND != 'did'
+        run: |
+          git clone --depth 1 https://github.com/OpenTalker/SadTalker.git
+          pip install --quiet -r SadTalker/requirements.txt
+          bash SadTalker/scripts/download_models.sh
+
+      - name: Generate MB weekly video & post Reels
+        env:
+          # ── TTS: free by default, no key needed ─────────────────────
+          MB_TTS_ENGINE:        "edge"
+
+          # ── Lip-sync backend: "local" (free, default) | "heygen" | "did" ─
+          MB_LIPSYNC_BACKEND:   ${{ vars.MB_LIPSYNC_BACKEND || 'local' }}
+          MB_AVATAR_IMAGE_PATH: "assets/mb_reference.png"   # commit this image to the repo
+
+          # ── Only needed if MB_LIPSYNC_BACKEND is 'heygen' or 'did' ───
+          HEYGEN_API_KEY:       ${{ secrets.HEYGEN_API_KEY }}
+          HEYGEN_AVATAR_ID:     ${{ secrets.HEYGEN_AVATAR_ID }}
+          DID_API_KEY:          ${{ secrets.DID_API_KEY }}
+          MB_AVATAR_IMAGE_URL:  ${{ secrets.MB_AVATAR_IMAGE_URL }}
+
+          # ── Instagram + Facebook (reuse your existing secrets) ───────
+          IG_USER_ID:           ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN:      ${{ secrets.IG_ACCESS_TOKEN }}
+          FB_PAGE_ID:           ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+
+          # ── GitHub Releases — only used when backend is heygen/did ───
+          GH_PAT:               ${{ secrets.GH_PAT }}
+          GITHUB_REPO:          ${{ github.repository }}
+
+        run: |
+          python mb_generate_video.py --type weekly
+
+      - name: Upload debug artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mb-weekly-debug
+          path: |
+            *.mp3
+            *.mp4
+          retention-days: 3
