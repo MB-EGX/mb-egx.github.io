@@ -19,12 +19,12 @@ jobs:
     # Repo variable switch — Settings → Variables → New → MB_VIDEO_ENABLED = true
     if: vars.MB_VIDEO_ENABLED == 'true'
     # SadTalker on a CPU runner is genuinely slow — a full render currently
-    # takes roughly 1.5-1.75 hours end to end. Public repos get unlimited
-    # free Actions minutes, so a generous timeout here is safe; it just caps
+    # takes roughly 2 hours end to end. Public repos get unlimited free
+    # Actions minutes, so a generous timeout here is safe; it just caps
     # worst-case run length, it doesn't cost anything extra to set it high.
     # GitHub's hard ceiling for a single job on hosted runners is 360
     # minutes (6 hours).
-    timeout-minutes: 180
+    timeout-minutes: 240
 
     steps:
       - name: Checkout repo
@@ -47,12 +47,15 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/OpenTalker/SadTalker.git
           pip install --quiet -r SadTalker/requirements.txt
-          # imageio needs this separate plugin package to actually write
-          # .mp4 files — without it, imageio.mimsave() fails at the very
-          # end of the render with an import error inside imageio's plugin
-          # resolution code (SadTalker's requirements.txt doesn't pull it
-          # in reliably on its own).
-          pip install --quiet imageio-ffmpeg
+          # SadTalker's own maintainers pin imageio to this exact version —
+          # newer imageio releases changed how they resolve mp4-writing
+          # plugins, which crashes SadTalker's animate.py call to
+          # imageio.mimsave() with an import error right at the very end of
+          # the render (this is also a documented imageio bug specifically
+          # on Python 3.11). Installing imageio-ffmpeg alone is NOT enough —
+          # imageio itself must be pinned down to a version that still
+          # works the way SadTalker expects.
+          pip install --quiet "imageio==2.19.3" "imageio-ffmpeg==0.4.7"
           bash SadTalker/scripts/download_models.sh
 
       # basicsr (a SadTalker dependency, via GFPGAN) still imports
