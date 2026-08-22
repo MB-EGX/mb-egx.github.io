@@ -18,13 +18,13 @@ jobs:
     runs-on: ubuntu-latest
     # Repo variable switch — Settings → Variables → New → MB_VIDEO_ENABLED = true
     if: vars.MB_VIDEO_ENABLED == 'true'
-    # SadTalker on a CPU runner is genuinely slow — a full render currently
-    # takes roughly 2 hours end to end. Public repos get unlimited free
-    # Actions minutes, so a generous timeout here is safe; it just caps
-    # worst-case run length, it doesn't cost anything extra to set it high.
-    # GitHub's hard ceiling for a single job on hosted runners is 360
-    # minutes (6 hours).
-    timeout-minutes: 240
+    # SadTalker on a CPU runner is genuinely slow and render speed varies
+    # run to run depending on which shared host you land on — observed
+    # anywhere from ~1.5 to ~3+ hours for the face-render stage alone.
+    # Public repos get unlimited free Actions minutes, so a generous
+    # timeout is safe; it just caps worst-case run length. GitHub's hard
+    # ceiling for a single job on hosted runners is 360 minutes (6 hours).
+    timeout-minutes: 300
 
     steps:
       - name: Checkout repo
@@ -47,15 +47,6 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/OpenTalker/SadTalker.git
           pip install --quiet -r SadTalker/requirements.txt
-          # SadTalker's own maintainers pin imageio to this exact version —
-          # newer imageio releases changed how they resolve mp4-writing
-          # plugins, which crashes SadTalker's animate.py call to
-          # imageio.mimsave() with an import error right at the very end of
-          # the render (this is also a documented imageio bug specifically
-          # on Python 3.11). Installing imageio-ffmpeg alone is NOT enough —
-          # imageio itself must be pinned down to a version that still
-          # works the way SadTalker expects.
-          pip install --quiet "imageio==2.19.3" "imageio-ffmpeg==0.4.7"
           bash SadTalker/scripts/download_models.sh
 
       # basicsr (a SadTalker dependency, via GFPGAN) still imports
@@ -77,6 +68,55 @@ jobs:
             echo "basicsr degradations.py not found at $BASICSR_DEGRADATIONS" >&2
             exit 1
           fi
+
+      # SadTalker's animate.py saves the final mp4 via imageio.mimsave(),
+      # which hits a known, longstanding imageio bug (imageio/imageio#817)
+      # on Python 3.11/3.12: when imageio can't cleanly resolve the mp4
+      # write plugin, its own plugin-resolution code calls itself
+      # recursively instead of failing cleanly, until Python's recursion
+      # limit kills it. This isn't fixable by pinning an imageio version —
+      # the bug spans many versions. Instead, this patches animate.py to
+      # write the video with OpenCV's VideoWriter (a library SadTalker
+      # already depends on and uses elsewhere), which has no such bug and
+      # needs no separate ffmpeg plugin resolution. Safe to re-run.
+      - name: Patch SadTalker to use OpenCV instead of imageio for mp4 writing
+        if: vars.MB_LIPSYNC_BACKEND != 'heygen' && vars.MB_LIPSYNC_BACKEND != 'did'
+        run: |
+          python3 - <<'PYEOF'
+          import re
+          import pathlib
+
+          path = pathlib.Path("SadTalker/src/facerender/animate.py")
+          text = path.read_text()
+
+          if "_cv2.VideoWriter" in text:
+              print("Already patched — skipping.")
+          else:
+              pattern = re.compile(
+                  r"([ \t]*)imageio\.mimsave\(path, result,\s*fps=float\(25\)\)"
+              )
+              match = pattern.search(text)
+              if not match:
+                  raise SystemExit(
+                      "Could not find the imageio.mimsave(...) call to patch — "
+                      "SadTalker's animate.py may have changed. Check its "
+                      "contents and update this patch step."
+                  )
+              indent = match.group(1)
+              replacement = (
+                  f"{indent}import cv2 as _cv2\n"
+                  f"{indent}_h, _w = result[0].shape[:2]\n"
+                  f"{indent}_writer = _cv2.VideoWriter(\n"
+                  f"{indent}    path, _cv2.VideoWriter_fourcc(*'mp4v'), 25, (_w, _h)\n"
+                  f"{indent})\n"
+                  f"{indent}for _frame in result:\n"
+                  f"{indent}    _writer.write(_cv2.cvtColor(_frame, _cv2.COLOR_RGB2BGR))\n"
+                  f"{indent}_writer.release()"
+              )
+              text = pattern.sub(replacement, text, count=1)
+              path.write_text(text)
+              print("Patched animate.py to write mp4 via cv2.VideoWriter instead of imageio.mimsave.")
+          PYEOF
 
       - name: Generate MB weekly video & post Reels
         env:
