@@ -18,7 +18,12 @@ jobs:
     runs-on: ubuntu-latest
     # Repo variable switch — Settings → Variables → New → MB_VIDEO_ENABLED = true
     if: vars.MB_VIDEO_ENABLED == 'true'
-    timeout-minutes: 45   # SadTalker on CPU is slow; give it room
+    # SadTalker on a CPU runner is genuinely slow, especially for longer
+    # clips. Public repos get unlimited free Actions minutes, so a generous
+    # timeout here is safe — it just caps worst-case run length, it doesn't
+    # cost anything extra to set it high. GitHub's hard ceiling for a single
+    # job on hosted runners is 360 minutes (6 hours).
+    timeout-minutes: 180
 
     steps:
       - name: Checkout repo

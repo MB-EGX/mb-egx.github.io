@@ -5,8 +5,7 @@ Turns MB's audio into a lip-synced .mp4 of the MB character speaking.
 
 DEFAULT BACKEND — "local" (SadTalker, free, self-hosted):
   - $0 per video, no API key, no monthly cap
-  - Runs on the GitHub Actions runner itself (CPU) — slow (~5-15 min for an
-    11s clip) but free forever
+  - Runs on the GitHub Actions runner itself (CPU) — slow, but free forever
   - Needs: a single front-facing MB reference image checked into the repo
     (e.g. assets/mb_reference.png), and the SadTalker repo + checkpoints set
     up in the same job (see the "Set up SadTalker" step in
@@ -15,12 +14,17 @@ DEFAULT BACKEND — "local" (SadTalker, free, self-hosted):
     faces. MB's stylized anime look (esp. the glowing white eyes) may sync
     less crisply than a photorealistic avatar would on HeyGen/D-ID — worth
     reviewing the first couple of outputs before trusting it unattended.
+  - Speed note: runs with "--preprocess crop" (face-only, not full frame)
+    and "--size 256" (lower render resolution) to keep CPU render time
+    manageable in CI. "--preprocess full" + default 512px size can take
+    well over an hour for a ~30s clip on a GitHub Actions CPU runner —
+    crop+256 is meaningfully faster at a modest quality cost.
 
 OPTIONAL BACKENDS (set MB_LIPSYNC_BACKEND=heygen or MB_LIPSYNC_BACKEND=did):
   - HeyGen: ~$29/mo Starter (120 credits). Needs HEYGEN_API_KEY + HEYGEN_AVATAR_ID.
-  - D-ID: ~$5.90/mo Lite, or 5 free min/month. Needs DID_API_KEY + MB_AVATAR_IMAGE_URL
-    (a *public* URL to MB's reference image — different from the local file
-    path used by the "local" backend).
+  - D-ID: ~$5.90/mo Lite, or a small free trial credit allotment. Needs
+    DID_API_KEY + MB_AVATAR_IMAGE_URL (a *public* URL to MB's reference
+    image — different from the local file path used by the "local" backend).
   Both are async: submit → poll → download, and both need the audio hosted
   at a public URL first (mb_generate_video.py handles that only when one
   of these backends is selected).
@@ -227,6 +231,11 @@ def _local_generate(
     Expects SadTalker to already be cloned + checkpoints downloaded at
     `sadtalker_dir` (falls back to SADTALKER_DIR env var, default "SadTalker").
     See the "Set up SadTalker" step in mb-weekly-video.yml.
+
+    Runs with "--preprocess crop" (face-only crop, not the full frame) and
+    "--size 256" (lower resolution) — both meaningfully cut CPU render time
+    compared to "--preprocess full" at default 512px, which can take well
+    over an hour for a longer clip on a GitHub Actions CPU runner.
     """
     source_image = (
         source_image
@@ -254,9 +263,10 @@ def _local_generate(
         "--source_image", source_image,
         "--result_dir", str(result_dir),
         "--still",
-        "--preprocess", "full",
+        "--preprocess", "crop",
+        "--size", "256",
     ]
-    print(f"🎬 (SadTalker, free/local) Running lip-sync — this can take several minutes…")
+    print(f"🎬 (SadTalker, free/local, crop+256 for speed) Running lip-sync — this can take a while…")
     subprocess.run(cmd, check=True)
 
     produced = sorted(result_dir.glob("*.mp4"), key=lambda p: p.stat().st_mtime)
