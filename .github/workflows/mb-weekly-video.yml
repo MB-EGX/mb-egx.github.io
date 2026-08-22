@@ -43,6 +43,20 @@ jobs:
           pip install --quiet -r SadTalker/requirements.txt
           bash SadTalker/scripts/download_models.sh
 
+      # basicsr (a SadTalker dependency, via GFPGAN) still imports
+      # torchvision.transforms.functional_tensor, which newer torchvision
+      # releases removed. This patches basicsr's own installed copy to use
+      # the current import path instead — a known, widely-hit compatibility
+      # gap between SadTalker's pinned deps and current torchvision, not
+      # anything specific to this repo. Safe to re-run; sed is a no-op once
+      # already patched.
+      - name: Patch basicsr/torchvision compatibility
+        if: vars.MB_LIPSYNC_BACKEND != 'heygen' && vars.MB_LIPSYNC_BACKEND != 'did'
+        run: |
+          BASICSR_DEGRADATIONS=$(python3 -c "import basicsr, os; print(os.path.join(os.path.dirname(basicsr.__file__), 'data', 'degradations.py'))")
+          sed -i 's/from torchvision.transforms.functional_tensor import rgb_to_grayscale/from torchvision.transforms.functional import rgb_to_grayscale/' "$BASICSR_DEGRADATIONS"
+          echo "Patched: $BASICSR_DEGRADATIONS"
+
       - name: Generate MB weekly video & post Reels
         env:
           # ── TTS: free by default, no key needed ─────────────────────
