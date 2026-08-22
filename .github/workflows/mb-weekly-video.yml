@@ -53,9 +53,15 @@ jobs:
       - name: Patch basicsr/torchvision compatibility
         if: vars.MB_LIPSYNC_BACKEND != 'heygen' && vars.MB_LIPSYNC_BACKEND != 'did'
         run: |
-          BASICSR_DEGRADATIONS=$(python3 -c "import basicsr, os; print(os.path.join(os.path.dirname(basicsr.__file__), 'data', 'degradations.py'))")
-          sed -i 's/from torchvision.transforms.functional_tensor import rgb_to_grayscale/from torchvision.transforms.functional import rgb_to_grayscale/' "$BASICSR_DEGRADATIONS"
-          echo "Patched: $BASICSR_DEGRADATIONS"
+          SITE_PACKAGES=$(python3 -c "import sysconfig; print(sysconfig.get_paths()['purelib'])")
+          BASICSR_DEGRADATIONS="$SITE_PACKAGES/basicsr/data/degradations.py"
+          if [ -f "$BASICSR_DEGRADATIONS" ]; then
+            sed -i 's/from torchvision.transforms.functional_tensor import rgb_to_grayscale/from torchvision.transforms.functional import rgb_to_grayscale/' "$BASICSR_DEGRADATIONS"
+            echo "Patched: $BASICSR_DEGRADATIONS"
+          else
+            echo "basicsr degradations.py not found at $BASICSR_DEGRADATIONS" >&2
+            exit 1
+          fi
 
       - name: Generate MB weekly video & post Reels
         env:
