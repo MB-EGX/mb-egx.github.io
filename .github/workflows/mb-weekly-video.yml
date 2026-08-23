@@ -35,6 +35,17 @@ jobs:
         with:
           python-version: "3.11"
 
+      # SadTalker uses pydub (AudioSegment.from_file) to read the driven
+      # audio, which shells out to the real system 'ffprobe'/'ffmpeg'
+      # binaries — not a Python package. Without this, that step fails
+      # with "FileNotFoundError: ... 'ffprobe'". Installed once, up front,
+      # so it's available to every later step (audio reading AND, as a
+      # bonus, OpenCV's video writer can also make use of it).
+      - name: Install system ffmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+
       - name: Install Python deps (free stack)
         run: |
           pip install --quiet requests edge-tts
