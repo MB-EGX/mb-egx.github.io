@@ -187,16 +187,14 @@
         /* Card panels: subtle depth + hairline glow */
         .bg-panelbg { box-shadow: 0 1px 0 0 rgba(255,255,255,0.04) inset, 0 10px 24px -12px rgba(0,0,0,0.5); }
 
-        /* Logo-only brand mark: sits in the empty page margin to the left
-           of the dashboard container. Positioned relative to the page
-           content (not the viewport), so it scrolls and zooms together
-           with the page instead of staying pinned and overlapping content —
-           if there isn't room, the page simply gets a horizontal scrollbar. */
+        /* Logo-only brand mark: floats in the empty page margin to the
+           left of the dashboard container — outside the workspace, not
+           pushing or resizing the header. Just the mark, fixed in place. */
         .brand-logo-fixed {
-            position: absolute;
-            top: 0;
-            left: -96px;
-            z-index: 5;
+            position: fixed;
+            top: 18px;
+            left: 18px;
+            z-index: 40;
             pointer-events: none;
         }
         .brand-logo-fixed img {
@@ -205,17 +203,15 @@
             object-fit: contain;
             filter: drop-shadow(0 0 10px rgba(147,204,255,0.35));
         }
-        /* Below this width there's no side margin left for the logo to sit
-           in without overlapping content, so it drops back into normal
-           document flow, above the header, instead of overlapping anything. */
+        /* Below this width the container fills the viewport and there's no
+           side margin left for the logo to float in without overlapping
+           content, so it shrinks and tucks into the corner instead. */
         @media (max-width: 1400px) {
-            .brand-logo-fixed {
-                position: static;
-                display: flex;
-                justify-content: flex-start;
-                margin-bottom: 0.4rem;
-            }
-            .brand-logo-fixed img { width: 48px; height: 48px; }
+            .brand-logo-fixed { top: 8px; left: 8px; }
+            .brand-logo-fixed img { width: 44px; height: 44px; }
+        }
+        @media (max-width: 500px) {
+            .brand-logo-fixed img { width: 34px; height: 34px; }
         }
 
         /* Buttons: ambient glow + gentle lift */
@@ -290,9 +286,9 @@
         .sig-chip:hover { background: rgba(59, 130, 246, 0.30); color: #bfdbfe; }
     </style>
 </head>
-<body class="bg-darkbg text-textmain font-sans min-h-screen text-xs md:text-sm transition-colors duration-200 pb-16">
+<body class="bg-darkbg text-textmain font-sans min-h-screen text-xs md:text-sm transition-colors duration-200 pb-16 overflow-x-hidden">
 
-    <div class="max-w-[1650px] mx-auto p-3 md:p-5 space-y-4 relative">
+    <div class="max-w-[1650px] mx-auto p-3 md:p-5 space-y-4">
         
         <div class="brand-logo-fixed no-print" aria-label="MB-EGX logo">
             <img src="assets/mb-egx-logo.png" alt="MB-EGX Logo">
