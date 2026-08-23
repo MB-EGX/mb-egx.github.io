@@ -187,30 +187,31 @@
         /* Card panels: subtle depth + hairline glow */
         .bg-panelbg { box-shadow: 0 1px 0 0 rgba(255,255,255,0.04) inset, 0 10px 24px -12px rgba(0,0,0,0.5); }
 
-        /* Logo-only brand mark: sits beside the dashboard header, top-left,
-           outside the header card. Just the mark — no text, no border,
-           no background — so it reads as a signature rather than a widget. */
-        .brand-logo-row {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.9rem;
+        /* Logo-only brand mark: floats in the empty page margin to the
+           left of the dashboard container — outside the workspace, not
+           pushing or resizing the header. Just the mark, fixed in place. */
+        .brand-logo-fixed {
+            position: fixed;
+            top: 18px;
+            left: 18px;
+            z-index: 40;
+            pointer-events: none;
         }
-        .brand-logo-corner {
-            flex: 0 0 auto;
-        }
-        .brand-logo-corner img {
+        .brand-logo-fixed img {
             width: 76px;
             height: 76px;
             object-fit: contain;
             filter: drop-shadow(0 0 10px rgba(147,204,255,0.35));
         }
-        .brand-logo-row > header {
-            flex: 1 1 0%;
-            min-width: 0;
+        /* Below this width the container fills the viewport and there's no
+           side margin left for the logo to float in without overlapping
+           content, so it shrinks and tucks into the corner instead. */
+        @media (max-width: 1400px) {
+            .brand-logo-fixed { top: 8px; left: 8px; }
+            .brand-logo-fixed img { width: 44px; height: 44px; }
         }
-        @media (max-width: 767px) {
-            .brand-logo-row { align-items: center; }
-            .brand-logo-corner img { width: 52px; height: 52px; }
+        @media (max-width: 500px) {
+            .brand-logo-fixed img { width: 34px; height: 34px; }
         }
 
         /* Buttons: ambient glow + gentle lift */
@@ -289,8 +290,7 @@
 
     <div class="max-w-[1650px] mx-auto p-3 md:p-5 space-y-4">
         
-        <div class="brand-logo-row">
-        <div class="brand-logo-corner no-print" aria-label="MB-EGX logo">
+        <div class="brand-logo-fixed no-print" aria-label="MB-EGX logo">
             <img src="assets/mb-egx-logo.png" alt="MB-EGX Logo">
         </div>
 
@@ -368,7 +368,6 @@
                 </div>
             </div>
         </header>
-        </div>
 
         <!-- Welcome toast -->
         <div id="welcome-toast" style="display:none;" class="fixed top-4 right-4 z-[10000] bg-emerald-600 text-white px-4 py-3 rounded-lg shadow-2xl font-semibold text-sm transition-opacity duration-500"></div>
