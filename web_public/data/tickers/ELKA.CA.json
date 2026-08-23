@@ -1,33 +1,33 @@
 {
   "ticker": "ELKA.CA",
-  "last_data_date": "2026-08-20",
+  "last_data_date": "2026-08-23",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "ELKA.CA",
     "Sector": "Real Estate",
-    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Confirmed": true,
     "Long-Term Setup Reasons": [
-      "No confirmed higher-low swing structure yet",
+      "Higher-low swing structure confirmed",
       "Price Channel (Rising) match (quality 0.85)"
     ],
-    "P/E Ratio": 3.18,
-    "EPS": 0.5385,
-    "Beta": 0.18,
+    "P/E Ratio": 3.16,
+    "EPS": 0.5479,
+    "Beta": 0.28,
     "Dividend Yield %": null,
-    "Market Cap": 3180000000.0,
-    "1W Return %": -3.39,
-    "1M Return %": -16.59,
-    "YTD Return %": 15.1,
-    "1Y Return %": 45.27,
-    "3Y Return %": 210.75,
-    "External Rating Consensus": -0.875,
+    "Market Cap": 3230000000.0,
+    "1W Return %": -0.57,
+    "1M Return %": -15.53,
+    "YTD Return %": 17.12,
+    "1Y Return %": 47.1,
+    "3Y Return %": 207.58,
+    "External Rating Consensus": 0.75,
     "External Rating Note": null,
     "Action": "🟡 HOLD / NEUTRAL",
-    "Rank Score": 9.3,
-    "Current Price": 1.71,
-    "Target Entry (VWAP)": 1.7061,
-    "Suggested Stop-Loss": 1.3443,
-    "Take-Profit Target": 1.7562,
+    "Rank Score": 2.9,
+    "Current Price": 1.74,
+    "Target Entry (VWAP)": 1.6906,
+    "Suggested Stop-Loss": 1.3843,
+    "Take-Profit Target": 1.787,
     "Resistance (52W High)": 2.25,
     "Support (52W Low)": 0.96,
     "Nearest Resistance": null,
@@ -41,33 +41,31 @@
     "S1": 1.6733,
     "S2": 1.5967,
     "S3": 1.5133,
-    "Projected Gain (%)": -0.66,
-    "Pattern Conf (%)": 24.64,
-    "Projected Range 95%": "-14.68% to 7.84%",
+    "Projected Gain (%)": -3.75,
+    "Pattern Conf (%)": 18.43,
+    "Projected Range 95%": "-28.53% to 7.25%",
     "Kelly %": 0.0,
-    "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Strong Bullish | no decisive edge",
+    "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Strong Bullish | no decisive edge | weekly aligned",
     "Score Breakdown": {
-      "pattern": 7.39,
-      "projected": -0.99,
-      "range": 2.91,
+      "pattern": 5.53,
+      "projected": -5.62,
+      "range": 3.02,
       "trend_bonus": 0.0,
       "confidence_weight": 1.0
     },
     "Regime": "Volatile Range",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 52.2,
-    "ADX-14": 21.6,
-    "Vol Z-Score": -0.53,
+    "RSI-14": 53.2,
+    "ADX-14": 21.1,
+    "Vol Z-Score": -0.13,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0073,
-    "Bollinger %B": 0.579,
-    "Avg Volume (20D)": 33070003,
+    "MACD Histogram": 0.0065,
+    "Bollinger %B": 0.622,
+    "Avg Volume (20D)": 32577440,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
     "dates": [
-      "2025-08-20 00:00:00",
-      "2025-08-21 00:00:00",
       "2025-08-24 00:00:00",
       "2025-08-25 00:00:00",
       "2025-08-26 00:00:00",
@@ -319,11 +317,10 @@
       "2026-08-17 00:00:00",
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
-      "2026-08-20 00:00:00"
+      "2026-08-20 00:00:00",
+      "2026-08-23 00:00:00"
     ],
     "close": [
-      1.17,
-      1.18,
       1.18,
       1.19,
       1.22,
@@ -575,11 +572,10 @@
       1.74,
       1.72,
       1.73,
-      1.71
+      1.71,
+      1.74
     ],
     "open": [
-      1.18,
-      1.17,
       1.18,
       1.19,
       1.2,
@@ -831,11 +827,10 @@
       1.75,
       1.74,
       1.72,
-      1.73
+      1.73,
+      1.71
     ],
     "high": [
-      1.19,
-      1.19,
       1.2,
       1.21,
       1.24,
@@ -1087,11 +1082,10 @@
       1.77,
       1.75,
       1.79,
-      1.75
+      1.75,
+      1.77
     ],
     "low": [
-      1.17,
-      1.17,
       1.18,
       1.18,
       1.2,
@@ -1343,11 +1337,10 @@
       1.73,
       1.71,
       1.71,
-      1.71
+      1.71,
+      1.72
     ],
     "volume": [
-      3810000,
-      3550000,
       2530000,
       5490000,
       16440000,
@@ -1599,30 +1592,29 @@
       18297899,
       14430909,
       38774138,
-      22604430
+      22604430,
+      30119347
     ],
     "vwap": [
-      1.1767,
-      1.1783,
-      1.1804,
-      1.185,
-      1.2031,
-      1.2446,
-      1.247,
-      1.2453,
-      1.2435,
-      1.2432,
-      1.2426,
-      1.2417,
-      1.2402,
+      1.1867,
+      1.1912,
+      1.2106,
+      1.251,
+      1.2527,
+      1.2505,
+      1.2482,
+      1.2476,
+      1.2468,
+      1.2456,
+      1.2439,
+      1.2423,
+      1.2413,
+      1.2405,
+      1.2399,
       1.2388,
-      1.238,
-      1.2372,
-      1.2367,
-      1.2358,
-      1.2343,
-      1.2331,
-      1.234,
+      1.2373,
+      1.2359,
+      1.2353,
       1.2344,
       1.2339,
       1.2342,
@@ -1855,7 +1847,8 @@
       1.7465,
       1.7305,
       1.7183,
-      1.7061
+      1.7061,
+      1.6906
     ],
     "resistance": 2.25,
     "support": 1.05,
@@ -1872,8 +1865,8 @@
       {
         "pattern": "Descending Triangle",
         "direction": "bearish",
-        "start_index": 93,
-        "end_index": 140,
+        "start_index": 91,
+        "end_index": 138,
         "start_date": "2025-12-31",
         "end_date": "2026-03-06",
         "levels": {
@@ -1883,13 +1876,13 @@
           "apex_price": 1.0451
         },
         "quality": 0.84,
-        "apex_index": 197.2690397510967
+        "apex_index": 195.2690397510967
       },
       {
         "pattern": "Price Channel (Falling)",
         "direction": "bearish",
-        "start_index": 110,
-        "end_index": 154,
+        "start_index": 108,
+        "end_index": 152,
         "start_date": "2026-01-25",
         "end_date": "2026-03-30",
         "levels": {
@@ -1903,8 +1896,8 @@
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 110,
-        "end_index": 178,
+        "start_index": 108,
+        "end_index": 176,
         "start_date": "2026-01-25",
         "end_date": "2026-05-01",
         "levels": {
@@ -1915,13 +1908,13 @@
           "apex_price": 1.1707
         },
         "quality": 0.75,
-        "apex_index": 254.75449017112155
+        "apex_index": 252.75449017112157
       },
       {
         "pattern": "Descending Triangle",
         "direction": "bearish",
-        "start_index": 219,
-        "end_index": 247,
+        "start_index": 217,
+        "end_index": 245,
         "start_date": "2026-07-04",
         "end_date": "2026-08-12",
         "levels": {
@@ -1931,7 +1924,24 @@
           "apex_price": 1.0687
         },
         "quality": 0.84,
-        "apex_index": 282.0913461538462
+        "apex_index": 280.09134615384613
+      },
+      {
+        "pattern": "Symmetrical Triangle",
+        "direction": "neutral",
+        "start_index": 217,
+        "end_index": 251,
+        "start_date": "2026-07-04",
+        "end_date": "2026-08-20",
+        "levels": {
+          "resistance_start": 2.3656,
+          "resistance_end": 1.6667,
+          "support_start": 0.9431,
+          "support_end": 1.5324,
+          "apex_price": 1.5938
+        },
+        "quality": 0.75,
+        "apex_index": 254.54326670173592
       }
     ]
   }

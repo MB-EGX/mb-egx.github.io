@@ -1,6 +1,6 @@
 {
   "ticker": "APPC.CA",
-  "last_data_date": "2026-08-20",
+  "last_data_date": "2026-08-23",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "APPC.CA",
@@ -17,17 +17,17 @@
     "Dividend Yield %": null,
     "Market Cap": 12400000.0,
     "1W Return %": -1.43,
-    "1M Return %": 3.76,
+    "1M Return %": -1.43,
     "YTD Return %": 6.15,
     "1Y Return %": 15.0,
     "3Y Return %": 38.0,
-    "External Rating Consensus": 0.375,
+    "External Rating Consensus": 0.5,
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL",
-    "Rank Score": -19.7,
+    "Rank Score": -20.2,
     "Current Price": 1.38,
     "Target Entry (VWAP)": 1.38,
-    "Suggested Stop-Loss": 1.1814,
+    "Suggested Stop-Loss": 1.1829,
     "Take-Profit Target": 1.4173,
     "Resistance (52W High)": 1.85,
     "Support (52W Low)": 0.85,
@@ -42,14 +42,14 @@
     "S1": 1.3733,
     "S2": 1.3467,
     "S3": 1.2933,
-    "Projected Gain (%)": 0.11,
-    "Pattern Conf (%)": 37.69,
-    "Projected Range 95%": "-7.4% to 6.59%",
+    "Projected Gain (%)": -4.21,
+    "Pattern Conf (%)": 57.41,
+    "Projected Range 95%": "-5.85% to -2.56%",
     "Kelly %": 0.0,
-    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Strong Bullish | no decisive edge | weekly aligned | vol x1.84",
+    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Strong Bullish | no decisive edge | weekly aligned",
     "Score Breakdown": {
-      "pattern": 11.31,
-      "projected": 0.17,
+      "pattern": 17.22,
+      "projected": -6.31,
       "range": 2.65,
       "trend_bonus": -40.0,
       "confidence_weight": 0.76
@@ -57,17 +57,16 @@
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
     "RSI-14": 50.3,
-    "ADX-14": 32.6,
-    "Vol Z-Score": 0.93,
+    "ADX-14": 32.4,
+    "Vol Z-Score": -1.09,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0033,
-    "Bollinger %B": 0.435,
-    "Avg Volume (20D)": 17400,
+    "MACD Histogram": -0.0038,
+    "Bollinger %B": 0.44,
+    "Avg Volume (20D)": 17313,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
     "dates": [
-      "2025-08-20 00:00:00",
       "2025-08-25 00:00:00",
       "2025-08-27 00:00:00",
       "2025-09-01 00:00:00",
@@ -199,10 +198,10 @@
       "2026-08-17 00:00:00",
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
-      "2026-08-20 00:00:00"
+      "2026-08-20 00:00:00",
+      "2026-08-23 00:00:00"
     ],
     "close": [
-      1.2,
       1.2,
       1.2,
       1.17,
@@ -334,10 +333,10 @@
       1.4,
       1.4,
       1.38,
+      1.38,
       1.38
     ],
     "open": [
-      1.23,
       1.19,
       1.22,
       1.2,
@@ -469,10 +468,10 @@
       1.4,
       1.4,
       1.45,
+      1.45,
       1.45
     ],
     "high": [
-      1.23,
       1.25,
       1.24,
       1.23,
@@ -604,10 +603,10 @@
       1.45,
       1.45,
       1.45,
+      1.45,
       1.45
     ],
     "low": [
-      1.19,
       1.19,
       1.2,
       1.17,
@@ -739,10 +738,10 @@
       1.39,
       1.39,
       1.38,
+      1.38,
       1.38
     ],
     "volume": [
-      6150,
       28740,
       18780,
       350,
@@ -874,29 +873,29 @@
       40560,
       0,
       32075,
-      32075
+      32075,
+      0
     ],
     "vwap": [
-      1.2067,
-      1.2122,
-      1.2126,
-      1.2124,
-      1.2102,
-      1.2033,
-      1.2026,
-      1.1917,
-      1.1912,
-      1.1837,
-      1.1779,
-      1.1689,
-      1.1662,
-      1.1602,
-      1.1636,
-      1.1595,
-      1.1591,
-      1.2574,
-      1.2867,
-      1.3975,
+      1.2133,
+      1.2133,
+      1.2132,
+      1.2106,
+      1.2031,
+      1.2024,
+      1.1909,
+      1.1904,
+      1.1826,
+      1.1766,
+      1.1675,
+      1.1649,
+      1.1589,
+      1.1627,
+      1.1587,
+      1.1582,
+      1.2579,
+      1.2874,
+      1.3988,
       1.4034,
       1.4132,
       1.4195,
@@ -1009,7 +1008,8 @@
       1.392,
       1.3972,
       1.4048,
-      1.4048
+      1.4048,
+      1.4049
     ],
     "resistance": 1.85,
     "support": 1.2467,
@@ -1026,8 +1026,8 @@
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 59,
-        "end_index": 68,
+        "start_index": 58,
+        "end_index": 67,
         "start_date": "2026-03-06",
         "end_date": "2026-04-03",
         "levels": {
@@ -1038,7 +1038,7 @@
           "apex_price": 1.2271
         },
         "quality": 0.75,
-        "apex_index": 70.28571428571429
+        "apex_index": 69.28571428571428
       }
     ]
   }

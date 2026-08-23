@@ -1,12 +1,10 @@
 {
   "ticker": ".EGCOCE",
-  "last_data_date": "2026-08-20",
+  "last_data_date": "2026-08-23",
   "sector": "General / Diversified",
   "matrix": null,
   "chart_history": {
     "dates": [
-      "2025-08-20 00:00:00",
-      "2025-08-21 00:00:00",
       "2025-08-24 00:00:00",
       "2025-08-25 00:00:00",
       "2025-08-26 00:00:00",
@@ -234,11 +232,10 @@
       "2026-08-17 00:00:00",
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
-      "2026-08-20 00:00:00"
+      "2026-08-20 00:00:00",
+      "2026-08-23 00:00:00"
     ],
     "close": [
-      3829.96,
-      3845.48,
       3982.23,
       4056.21,
       4055.52,
@@ -466,11 +463,10 @@
       8537.97,
       8373.2,
       8059.23,
-      8199.69
+      8199.69,
+      8533.01
     ],
     "open": [
-      3839.52,
-      3829.96,
       3845.48,
       3982.23,
       4056.21,
@@ -698,11 +694,10 @@
       8384.94,
       8560.19,
       8373.2,
-      8072.51
+      8072.51,
+      8199.69
     ],
     "high": [
-      3890.46,
-      3861.89,
       3983.82,
       4093.03,
       4116.79,
@@ -930,11 +925,10 @@
       8595.24,
       8581.9,
       8386.6,
-      8295.74
+      8295.74,
+      8677.1
     ],
     "low": [
-      3821.69,
-      3829.96,
       3845.48,
       3982.23,
       4028.64,
@@ -1162,10 +1156,10 @@
       8373.92,
       8326.25,
       8021.6,
-      7992.7
+      7992.7,
+      8199.69
     ],
     "volume": [
-      0,
       0,
       0,
       0,
@@ -1397,8 +1391,6 @@
       0
     ],
     "vwap": [
-      3829.96,
-      3845.48,
       3982.23,
       4056.21,
       4055.52,
@@ -1626,9 +1618,10 @@
       8537.97,
       8373.2,
       8059.23,
-      8199.69
+      8199.69,
+      8533.01
     ],
-    "resistance": 8595.24,
+    "resistance": 8677.1,
     "support": 6032.89,
     "pivots": {
       "pp": 8339.0833,
@@ -1643,8 +1636,8 @@
       {
         "pattern": "Price Channel (Rising)",
         "direction": "bullish",
-        "start_index": 6,
-        "end_index": 65,
+        "start_index": 4,
+        "end_index": 63,
         "start_date": "2025-08-28",
         "end_date": "2025-11-23",
         "levels": {
@@ -1658,8 +1651,8 @@
       {
         "pattern": "Double Bottom",
         "direction": "bullish",
-        "start_index": 10,
-        "end_index": 30,
+        "start_index": 8,
+        "end_index": 28,
         "start_date": "2025-09-03",
         "end_date": "2025-10-02",
         "levels": {
@@ -1673,8 +1666,8 @@
       {
         "pattern": "Ascending Triangle",
         "direction": "bullish",
-        "start_index": 48,
-        "end_index": 84,
+        "start_index": 46,
+        "end_index": 82,
         "start_date": "2025-10-29",
         "end_date": "2025-12-16",
         "levels": {
@@ -1684,13 +1677,13 @@
           "apex_price": 5206.4748
         },
         "quality": 0.97,
-        "apex_index": 117.61434371053925
+        "apex_index": 115.61434371053916
       },
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 48,
-        "end_index": 89,
+        "start_index": 46,
+        "end_index": 87,
         "start_date": "2025-10-29",
         "end_date": "2025-12-23",
         "levels": {
@@ -1701,13 +1694,13 @@
           "apex_price": 5002.0665
         },
         "quality": 0.75,
-        "apex_index": 89.43067998278823
+        "apex_index": 87.4306799827882
       },
       {
         "pattern": "Price Channel (Falling)",
         "direction": "bearish",
-        "start_index": 73,
-        "end_index": 116,
+        "start_index": 71,
+        "end_index": 114,
         "start_date": "2025-12-02",
         "end_date": "2026-01-28",
         "levels": {
@@ -1721,8 +1714,8 @@
       {
         "pattern": "Double Bottom",
         "direction": "bullish",
-        "start_index": 96,
-        "end_index": 116,
+        "start_index": 94,
+        "end_index": 114,
         "start_date": "2026-01-02",
         "end_date": "2026-01-28",
         "levels": {
@@ -1736,8 +1729,8 @@
       {
         "pattern": "Double Top",
         "direction": "bearish",
-        "start_index": 122,
-        "end_index": 143,
+        "start_index": 120,
+        "end_index": 141,
         "start_date": "2026-02-06",
         "end_date": "2026-03-06",
         "levels": {
@@ -1751,8 +1744,8 @@
       {
         "pattern": "Descending Triangle",
         "direction": "bearish",
-        "start_index": 122,
-        "end_index": 169,
+        "start_index": 120,
+        "end_index": 167,
         "start_date": "2026-02-06",
         "end_date": "2026-04-15",
         "levels": {
@@ -1762,13 +1755,13 @@
           "apex_price": 4838.8183
         },
         "quality": 0.97,
-        "apex_index": 217.8885213783801
+        "apex_index": 215.8885213783801
       },
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 122,
-        "end_index": 191,
+        "start_index": 120,
+        "end_index": 189,
         "start_date": "2026-02-06",
         "end_date": "2026-05-14",
         "levels": {
@@ -1779,13 +1772,13 @@
           "apex_price": 5294.1668
         },
         "quality": 0.75,
-        "apex_index": 316.2616450162213
+        "apex_index": 314.26164501622134
       },
       {
         "pattern": "Double Bottom",
         "direction": "bullish",
-        "start_index": 140,
-        "end_index": 161,
+        "start_index": 138,
+        "end_index": 159,
         "start_date": "2026-03-03",
         "end_date": "2026-04-03",
         "levels": {
@@ -1799,8 +1792,8 @@
       {
         "pattern": "Price Channel (Flat)",
         "direction": "neutral",
-        "start_index": 140,
-        "end_index": 191,
+        "start_index": 138,
+        "end_index": 189,
         "start_date": "2026-03-03",
         "end_date": "2026-05-14",
         "levels": {
@@ -1814,8 +1807,8 @@
       {
         "pattern": "Price Channel (Rising)",
         "direction": "bullish",
-        "start_index": 161,
-        "end_index": 215,
+        "start_index": 159,
+        "end_index": 213,
         "start_date": "2026-04-03",
         "end_date": "2026-06-22",
         "levels": {

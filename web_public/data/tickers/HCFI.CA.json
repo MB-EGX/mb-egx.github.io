@@ -1,6 +1,6 @@
 {
   "ticker": "HCFI.CA",
-  "last_data_date": "2026-08-20",
+  "last_data_date": "2026-08-23",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "HCFI.CA",
@@ -16,18 +16,18 @@
     "Dividend Yield %": null,
     "Market Cap": 6560000000.0,
     "1W Return %": -3.48,
-    "1M Return %": -5.67,
+    "1M Return %": -6.46,
     "YTD Return %": -13.73,
     "1Y Return %": -6.2,
-    "3Y Return %": 184.62,
+    "3Y Return %": 177.5,
     "External Rating Consensus": -1.75,
     "External Rating Note": null,
     "Action": "🟡 HOLD / NEUTRAL",
-    "Rank Score": 30.5,
+    "Rank Score": 0.3,
     "Current Price": 3.33,
     "Target Entry (VWAP)": 3.33,
-    "Suggested Stop-Loss": 2.8857,
-    "Take-Profit Target": 3.6703,
+    "Suggested Stop-Loss": 2.9014,
+    "Take-Profit Target": 3.4199,
     "Resistance (52W High)": 5.0,
     "Support (52W Low)": 2.01,
     "Nearest Resistance": 4.2,
@@ -41,14 +41,14 @@
     "S1": 3.3333,
     "S2": 3.2167,
     "S3": 3.1333,
-    "Projected Gain (%)": 9.52,
-    "Pattern Conf (%)": 78.27,
-    "Projected Range 95%": "9.52% to 9.52%",
-    "Kelly %": 24.95,
-    "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Consolidation / Neutral | no decisive edge | vol x1.81",
+    "Projected Gain (%)": -8.92,
+    "Pattern Conf (%)": 38.76,
+    "Projected Range 95%": "-8.92% to -8.92%",
+    "Kelly %": 0.0,
+    "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Consolidation / Neutral | no decisive edge",
     "Score Breakdown": {
-      "pattern": 23.48,
-      "projected": 14.28,
+      "pattern": 11.63,
+      "projected": -13.38,
       "range": 2.21,
       "trend_bonus": 0.0,
       "confidence_weight": 0.76
@@ -56,17 +56,16 @@
     "Regime": "Volatile Range",
     "Trend Class": "Consolidation / Neutral",
     "RSI-14": 41.3,
-    "ADX-14": 16.2,
-    "Vol Z-Score": 1.08,
+    "ADX-14": 16.3,
+    "Vol Z-Score": -1.21,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0154,
-    "Bollinger %B": 0.218,
-    "Avg Volume (20D)": 169942,
+    "MACD Histogram": -0.0147,
+    "Bollinger %B": 0.245,
+    "Avg Volume (20D)": 159887,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
     "dates": [
-      "2025-08-20 00:00:00",
       "2025-08-25 00:00:00",
       "2025-08-27 00:00:00",
       "2025-09-01 00:00:00",
@@ -198,10 +197,10 @@
       "2026-08-17 00:00:00",
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
-      "2026-08-20 00:00:00"
+      "2026-08-20 00:00:00",
+      "2026-08-23 00:00:00"
     ],
     "close": [
-      3.55,
       3.45,
       3.2,
       3.01,
@@ -333,10 +332,10 @@
       3.38,
       3.38,
       3.33,
+      3.33,
       3.33
     ],
     "open": [
-      3.65,
       3.56,
       3.4,
       3.12,
@@ -468,10 +467,10 @@
       3.45,
       3.45,
       3.35,
+      3.35,
       3.35
     ],
     "high": [
-      3.69,
       3.63,
       3.4,
       3.2,
@@ -603,10 +602,10 @@
       3.45,
       3.45,
       3.4,
+      3.4,
       3.4
     ],
     "low": [
-      3.38,
       3.35,
       3.0,
       2.92,
@@ -738,10 +737,10 @@
       3.32,
       3.32,
       3.31,
+      3.31,
       3.31
     ],
     "volume": [
-      1060000,
       801620,
       1160000,
       1060000,
@@ -873,29 +872,29 @@
       140432,
       0,
       306798,
-      306798
+      306798,
+      0
     ],
     "vwap": [
-      3.54,
-      3.5127,
-      3.3927,
-      3.3019,
-      3.2513,
-      3.2454,
-      3.2455,
-      3.2431,
-      3.2344,
-      3.2252,
-      3.2161,
-      3.1978,
-      3.1865,
-      3.1846,
-      3.1831,
-      3.1824,
-      3.1831,
-      3.1842,
+      3.4767,
+      3.3131,
+      3.2184,
+      3.1794,
+      3.1802,
+      3.1867,
+      3.1914,
       3.1853,
-      3.1857,
+      3.1768,
+      3.1682,
+      3.1504,
+      3.1411,
+      3.1406,
+      3.1424,
+      3.1424,
+      3.1452,
+      3.1469,
+      3.1488,
+      3.15,
       3.1504,
       3.1233,
       3.1124,
@@ -1008,7 +1007,8 @@
       3.5281,
       3.5293,
       3.5135,
-      3.4963
+      3.4963,
+      3.4929
     ],
     "resistance": 4.2,
     "support": 3.0125,
@@ -1025,8 +1025,8 @@
       {
         "pattern": "Double Bottom",
         "direction": "bullish",
-        "start_index": 24,
-        "end_index": 47,
+        "start_index": 23,
+        "end_index": 46,
         "start_date": "2025-11-12",
         "end_date": "2026-01-28",
         "levels": {
@@ -1040,8 +1040,8 @@
       {
         "pattern": "Descending Triangle",
         "direction": "bearish",
-        "start_index": 24,
-        "end_index": 53,
+        "start_index": 23,
+        "end_index": 52,
         "start_date": "2025-11-12",
         "end_date": "2026-02-16",
         "levels": {
@@ -1051,13 +1051,13 @@
           "apex_price": 3.0405
         },
         "quality": 0.89,
-        "apex_index": 70.60361990950226
+        "apex_index": 69.60361990950227
       },
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 24,
-        "end_index": 67,
+        "start_index": 23,
+        "end_index": 66,
         "start_date": "2025-11-12",
         "end_date": "2026-04-02",
         "levels": {
@@ -1068,7 +1068,7 @@
           "apex_price": 3.4
         },
         "quality": 0.75,
-        "apex_index": 107.00457202916635
+        "apex_index": 106.00457202916635
       }
     ]
   }

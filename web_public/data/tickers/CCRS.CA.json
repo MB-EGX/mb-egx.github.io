@@ -1,33 +1,33 @@
 {
   "ticker": "CCRS.CA",
-  "last_data_date": "2026-08-20",
+  "last_data_date": "2026-08-23",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "CCRS.CA",
     "Sector": "Real Estate",
-    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Confirmed": true,
     "Long-Term Setup Reasons": [
-      "No confirmed higher-low swing structure yet",
+      "Higher-low swing structure confirmed",
       "Double Bottom match (quality 1.00)"
     ],
-    "P/E Ratio": 305.06,
+    "P/E Ratio": 310.13,
     "EPS": 0.0079,
     "Beta": null,
     "Dividend Yield %": null,
-    "Market Cap": 506100000.0,
-    "1W Return %": -1.23,
-    "1M Return %": -7.66,
-    "YTD Return %": 33.89,
-    "1Y Return %": 38.51,
-    "3Y Return %": -82.66,
-    "External Rating Consensus": -1.375,
+    "Market Cap": 512400000.0,
+    "1W Return %": -5.06,
+    "1M Return %": -8.61,
+    "YTD Return %": 35.56,
+    "1Y Return %": 46.11,
+    "3Y Return %": -82.45,
+    "External Rating Consensus": -1.5,
     "External Rating Note": null,
     "Action": "🟡 HOLD / NEUTRAL",
-    "Rank Score": 19.6,
-    "Current Price": 2.41,
-    "Target Entry (VWAP)": 2.1673,
-    "Suggested Stop-Loss": 2.0157,
-    "Take-Profit Target": 2.4751,
+    "Rank Score": 16.9,
+    "Current Price": 2.44,
+    "Target Entry (VWAP)": 2.1587,
+    "Suggested Stop-Loss": 2.0643,
+    "Take-Profit Target": 2.5059,
     "Resistance (52W High)": 2.76,
     "Support (52W Low)": 1.2,
     "Nearest Resistance": 2.52,
@@ -41,33 +41,31 @@
     "S1": 2.4467,
     "S2": 2.3233,
     "S3": 2.2267,
-    "Projected Gain (%)": -1.73,
-    "Pattern Conf (%)": 61.22,
-    "Projected Range 95%": "-4.59% to 0.66%",
+    "Projected Gain (%)": -1.0,
+    "Pattern Conf (%)": 48.21,
+    "Projected Range 95%": "-4.99% to 5.87%",
     "Kelly %": 0.0,
     "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Weak Bullish (Low Trend Strength) | no decisive edge | weekly aligned",
     "Score Breakdown": {
-      "pattern": 18.37,
-      "projected": -2.59,
-      "range": 3.88,
+      "pattern": 14.46,
+      "projected": -1.5,
+      "range": 3.97,
       "trend_bonus": 0.0,
       "confidence_weight": 1.0
     },
     "Regime": "Volatile Range",
     "Trend Class": "Weak Bullish (Low Trend Strength)",
-    "RSI-14": 51.1,
-    "ADX-14": 16.7,
-    "Vol Z-Score": -0.96,
+    "RSI-14": 52.0,
+    "ADX-14": 16.5,
+    "Vol Z-Score": -0.8,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0226,
-    "Bollinger %B": 0.566,
-    "Avg Volume (20D)": 7758777,
+    "MACD Histogram": 0.0175,
+    "Bollinger %B": 0.59,
+    "Avg Volume (20D)": 7689394,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
     "dates": [
-      "2025-08-20 00:00:00",
-      "2025-08-21 00:00:00",
       "2025-08-24 00:00:00",
       "2025-08-25 00:00:00",
       "2025-08-26 00:00:00",
@@ -320,11 +318,10 @@
       "2026-08-17 00:00:00",
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
-      "2026-08-20 00:00:00"
+      "2026-08-20 00:00:00",
+      "2026-08-23 00:00:00"
     ],
     "close": [
-      1.82,
-      1.74,
       1.67,
       1.7,
       1.66,
@@ -577,11 +574,10 @@
       2.5,
       2.49,
       2.44,
-      2.41
+      2.41,
+      2.44
     ],
     "open": [
-      1.97,
-      1.83,
       1.72,
       1.67,
       1.71,
@@ -834,11 +830,10 @@
       2.6,
       2.5,
       2.51,
-      2.44
+      2.44,
+      2.41
     ],
     "high": [
-      1.99,
-      1.87,
       1.74,
       1.76,
       1.77,
@@ -1091,11 +1086,10 @@
       2.63,
       2.53,
       2.55,
-      2.44
+      2.44,
+      2.52
     ],
     "low": [
-      1.61,
-      1.67,
       1.65,
       1.62,
       1.65,
@@ -1348,11 +1342,10 @@
       2.49,
       2.45,
       2.42,
-      2.4
+      2.4,
+      2.42
     ],
     "volume": [
-      4300000,
-      3710000,
       2670000,
       2610000,
       2590000,
@@ -1605,30 +1598,29 @@
       9888184,
       4369051,
       5944936,
-      2658706
+      2658706,
+      3406447
     ],
     "vwap": [
-      1.8067,
-      1.7851,
-      1.7605,
-      1.7473,
-      1.7385,
-      1.7305,
-      1.7242,
-      1.7205,
-      1.7144,
-      1.7208,
-      1.7205,
-      1.7191,
-      1.7182,
-      1.7145,
-      1.7109,
-      1.7097,
-      1.7082,
-      1.7095,
-      1.705,
-      1.7023,
-      1.6904,
+      1.6867,
+      1.69,
+      1.6911,
+      1.6857,
+      1.6805,
+      1.6785,
+      1.6737,
+      1.6925,
+      1.695,
+      1.6952,
+      1.6945,
+      1.6911,
+      1.6884,
+      1.6879,
+      1.6871,
+      1.6918,
+      1.6878,
+      1.6856,
+      1.6841,
       1.682,
       1.6789,
       1.6716,
@@ -1862,7 +1854,8 @@
       2.2251,
       2.2222,
       2.2026,
-      2.1673
+      2.1673,
+      2.1587
     ],
     "resistance": 2.52,
     "support": 1.5,
@@ -1879,8 +1872,8 @@
       {
         "pattern": "Price Channel (Falling)",
         "direction": "bearish",
-        "start_index": 9,
-        "end_index": 74,
+        "start_index": 7,
+        "end_index": 72,
         "start_date": "2025-09-02",
         "end_date": "2025-12-03",
         "levels": {
@@ -1894,8 +1887,8 @@
       {
         "pattern": "Price Channel (Rising)",
         "direction": "bullish",
-        "start_index": 96,
-        "end_index": 220,
+        "start_index": 94,
+        "end_index": 218,
         "start_date": "2026-01-03",
         "end_date": "2026-07-04",
         "levels": {
@@ -1909,8 +1902,8 @@
       {
         "pattern": "Double Bottom",
         "direction": "bullish",
-        "start_index": 139,
-        "end_index": 159,
+        "start_index": 137,
+        "end_index": 157,
         "start_date": "2026-03-04",
         "end_date": "2026-04-03",
         "levels": {
@@ -1920,6 +1913,23 @@
           "target": 3.75
         },
         "quality": 1.0
+      },
+      {
+        "pattern": "Symmetrical Triangle",
+        "direction": "neutral",
+        "start_index": 218,
+        "end_index": 252,
+        "start_date": "2026-07-04",
+        "end_date": "2026-08-20",
+        "levels": {
+          "resistance_start": 2.7437,
+          "resistance_end": 2.5468,
+          "support_start": 1.3349,
+          "support_end": 2.1109,
+          "apex_price": 2.4586
+        },
+        "quality": 0.75,
+        "apex_index": 267.2335051814821
       }
     ]
   }

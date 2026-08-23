@@ -1,6 +1,6 @@
 {
   "ticker": "PACH.CA",
-  "last_data_date": "2026-08-20",
+  "last_data_date": "2026-08-23",
   "sector": "Chemicals",
   "matrix": {
     "Ticker": "PACH.CA",
@@ -17,19 +17,19 @@
     "Dividend Yield %": null,
     "Market Cap": 1950000000.0,
     "1W Return %": 0.14,
-    "1M Return %": -3.44,
+    "1M Return %": 0.14,
     "YTD Return %": 15.66,
     "1Y Return %": -4.74,
     "3Y Return %": 124.0,
     "External Rating Consensus": 0.625,
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL",
-    "Rank Score": -14.2,
+    "Rank Score": -23.8,
     "Current Price": 81.11,
     "Target Entry (VWAP)": 81.11,
-    "Suggested Stop-Loss": 74.5014,
+    "Suggested Stop-Loss": 74.4857,
     "Take-Profit Target": 83.3,
-    "Resistance (52W High)": 115.0,
+    "Resistance (52W High)": 108.1,
     "Support (52W Low)": 65.0,
     "Nearest Resistance": 85.465,
     "Resistance Touches": 4,
@@ -42,15 +42,15 @@
     "S1": 80.9967,
     "S2": 80.9933,
     "S3": 80.9867,
-    "Projected Gain (%)": -1.1,
-    "Pattern Conf (%)": 71.16,
-    "Projected Range 95%": "-1.1% to -1.1%",
+    "Projected Gain (%)": 0.22,
+    "Pattern Conf (%)": 21.22,
+    "Projected Range 95%": "-9.81% to 10.26%",
     "Kelly %": 0.0,
-    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Weak Bullish (Low Trend Strength) | no decisive edge | vol x1.31",
+    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Weak Bullish (Low Trend Strength) | no decisive edge | weekly aligned",
     "Score Breakdown": {
-      "pattern": 21.35,
-      "projected": -1.65,
-      "range": 1.61,
+      "pattern": 6.37,
+      "projected": 0.33,
+      "range": 1.87,
       "trend_bonus": -40.0,
       "confidence_weight": 0.76
     },
@@ -58,16 +58,15 @@
     "Trend Class": "Weak Bullish (Low Trend Strength)",
     "RSI-14": 51.5,
     "ADX-14": 18.3,
-    "Vol Z-Score": 0.23,
+    "Vol Z-Score": -0.72,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0365,
+    "MACD Histogram": -0.0296,
     "Bollinger %B": 0.522,
-    "Avg Volume (20D)": 110,
+    "Avg Volume (20D)": 109,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
     "dates": [
-      "2025-08-20 00:00:00",
       "2025-08-25 00:00:00",
       "2025-08-27 00:00:00",
       "2025-09-01 00:00:00",
@@ -197,10 +196,10 @@
       "2026-08-17 00:00:00",
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
-      "2026-08-20 00:00:00"
+      "2026-08-20 00:00:00",
+      "2026-08-23 00:00:00"
     ],
     "close": [
-      85.15,
       77.0,
       77.5,
       65.0,
@@ -330,10 +329,10 @@
       81.03,
       81.03,
       81.11,
+      81.11,
       81.11
     ],
     "open": [
-      88.39,
       85.0,
       77.0,
       77.5,
@@ -463,10 +462,10 @@
       81.03,
       81.03,
       81.04,
+      81.04,
       81.04
     ],
     "high": [
-      88.39,
       86.43,
       78.1,
       77.6,
@@ -596,10 +595,10 @@
       81.03,
       81.03,
       81.11,
+      81.11,
       81.11
     ],
     "low": [
-      83.52,
       77.0,
       76.0,
       65.0,
@@ -729,10 +728,10 @@
       81.03,
       81.03,
       81.0,
+      81.0,
       81.0
     ],
     "volume": [
-      110,
       160,
       840,
       660,
@@ -862,29 +861,29 @@
       187,
       0,
       145,
-      145
+      145,
+      0
     ],
     "vwap": [
-      85.6867,
-      82.4017,
-      78.4653,
-      75.0104,
-      75.0669,
-      74.3639,
-      74.5916,
-      74.6099,
-      74.6099,
-      74.8943,
-      75.0468,
-      75.0655,
-      75.5843,
-      75.5847,
-      75.5854,
-      75.8705,
-      75.9191,
-      76.2613,
-      76.514,
-      76.9192,
+      80.1433,
+      77.6709,
+      74.303,
+      74.4032,
+      73.883,
+      74.1396,
+      74.1701,
+      74.1701,
+      74.4821,
+      74.6567,
+      74.691,
+      75.2903,
+      75.2915,
+      75.293,
+      75.6052,
+      75.6609,
+      76.0207,
+      76.2908,
+      76.7212,
       76.75,
       76.4344,
       76.4346,
@@ -995,7 +994,8 @@
       81.67,
       81.6674,
       81.6234,
-      81.5901
+      81.5901,
+      81.5928
     ],
     "resistance": 85.465,
     "support": 69.85,
@@ -1012,8 +1012,8 @@
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 17,
-        "end_index": 41,
+        "start_index": 16,
+        "end_index": 40,
         "start_date": "2025-10-20",
         "end_date": "2026-01-06",
         "levels": {
@@ -1024,13 +1024,13 @@
           "apex_price": 77.0058
         },
         "quality": 0.75,
-        "apex_index": 70.33475339996723
+        "apex_index": 69.33475339996725
       },
       {
         "pattern": "Descending Triangle",
         "direction": "bearish",
-        "start_index": 23,
-        "end_index": 73,
+        "start_index": 22,
+        "end_index": 72,
         "start_date": "2025-11-10",
         "end_date": "2026-04-27",
         "levels": {
@@ -1040,13 +1040,13 @@
           "apex_price": 70.0
         },
         "quality": 1.0,
-        "apex_index": 81.41536191073943
+        "apex_index": 80.4153619107394
       },
       {
         "pattern": "Double Bottom",
         "direction": "bullish",
-        "start_index": 27,
-        "end_index": 66,
+        "start_index": 26,
+        "end_index": 65,
         "start_date": "2025-11-24",
         "end_date": "2026-04-03",
         "levels": {
@@ -1060,8 +1060,8 @@
       {
         "pattern": "Double Bottom",
         "direction": "bullish",
-        "start_index": 76,
-        "end_index": 85,
+        "start_index": 75,
+        "end_index": 84,
         "start_date": "2026-05-04",
         "end_date": "2026-06-04",
         "levels": {

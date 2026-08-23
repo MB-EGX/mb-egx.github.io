@@ -1,6 +1,6 @@
 {
   "ticker": "SIPC.CA",
-  "last_data_date": "2026-08-20",
+  "last_data_date": "2026-08-23",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "SIPC.CA",
@@ -10,24 +10,24 @@
       "No confirmed higher-low swing structure yet",
       "Price Channel (Rising) match (quality 0.85)"
     ],
-    "P/E Ratio": 556.47,
+    "P/E Ratio": 594.12,
     "EPS": 0.0085,
     "Beta": 0.5,
     "Dividend Yield %": null,
-    "Market Cap": 1180000000.0,
-    "1W Return %": 1.07,
-    "1M Return %": 23.18,
-    "YTD Return %": 27.15,
-    "1Y Return %": 1.72,
-    "3Y Return %": 463.1,
-    "External Rating Consensus": -0.375,
+    "Market Cap": 1270000000.0,
+    "1W Return %": 0.0,
+    "1M Return %": 32.72,
+    "YTD Return %": 36.29,
+    "1Y Return %": 10.22,
+    "3Y Return %": 506.46,
+    "External Rating Consensus": 2.0,
     "External Rating Note": null,
-    "Action": "🟡 HOLD / NEUTRAL",
-    "Rank Score": 18.5,
-    "Current Price": 4.73,
-    "Target Entry (VWAP)": 4.4959,
-    "Suggested Stop-Loss": 3.59,
-    "Take-Profit Target": 4.8577,
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 40.4,
+    "Current Price": 5.07,
+    "Target Entry (VWAP)": 4.5793,
+    "Suggested Stop-Loss": 3.9414,
+    "Take-Profit Target": 5.2069,
     "Resistance (52W High)": 5.5,
     "Support (52W Low)": 2.62,
     "Nearest Resistance": null,
@@ -41,33 +41,31 @@
     "S1": 4.6067,
     "S2": 4.1433,
     "S3": 3.7767,
-    "Projected Gain (%)": 1.74,
-    "Pattern Conf (%)": 40.59,
-    "Projected Range 95%": "-6.59% to 11.56%",
+    "Projected Gain (%)": 1.75,
+    "Pattern Conf (%)": 41.58,
+    "Projected Range 95%": "-6.04% to 11.56%",
     "Kelly %": 0.0,
-    "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Strong Bullish | no decisive edge | weekly aligned",
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 12.18,
-      "projected": 2.61,
-      "range": 3.66,
-      "trend_bonus": 0.0,
+      "pattern": 12.47,
+      "projected": 2.62,
+      "range": 4.25,
+      "trend_bonus": 21.0,
       "confidence_weight": 1.0
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 56.3,
-    "ADX-14": 33.6,
-    "Vol Z-Score": -0.92,
+    "RSI-14": 60.4,
+    "ADX-14": 34.2,
+    "Vol Z-Score": -0.25,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0325,
-    "Bollinger %B": 0.647,
-    "Avg Volume (20D)": 10456579,
+    "MACD Histogram": 0.032,
+    "Bollinger %B": 0.755,
+    "Avg Volume (20D)": 9631223,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
     "dates": [
-      "2025-08-20 00:00:00",
-      "2025-08-21 00:00:00",
       "2025-08-24 00:00:00",
       "2025-08-25 00:00:00",
       "2025-08-26 00:00:00",
@@ -319,11 +317,10 @@
       "2026-08-17 00:00:00",
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
-      "2026-08-20 00:00:00"
+      "2026-08-20 00:00:00",
+      "2026-08-23 00:00:00"
     ],
     "close": [
-      4.63,
-      4.65,
       4.6,
       4.22,
       3.89,
@@ -575,11 +572,10 @@
       5.09,
       5.05,
       4.76,
-      4.73
+      4.73,
+      5.07
     ],
     "open": [
-      4.55,
-      4.65,
       4.65,
       4.61,
       4.22,
@@ -831,11 +827,10 @@
       5.2,
       5.09,
       5.11,
-      4.81
+      4.81,
+      4.73
     ],
     "high": [
-      4.77,
-      4.9,
       4.73,
       4.65,
       4.29,
@@ -1087,11 +1082,10 @@
       5.5,
       5.25,
       5.11,
-      4.85
+      4.85,
+      5.16
     ],
     "low": [
-      4.46,
-      4.52,
       4.52,
       4.22,
       3.85,
@@ -1343,11 +1337,10 @@
       4.99,
       5.05,
       4.76,
-      4.67
+      4.67,
+      4.8
     ],
     "volume": [
-      6280000,
-      7210000,
       3220000,
       9000000,
       7150000,
@@ -1599,30 +1592,29 @@
       30616225,
       8788219,
       4334327,
-      3007832
+      3007832,
+      7800223
     ],
     "vwap": [
-      4.62,
-      4.6574,
-      4.6496,
-      4.5494,
-      4.432,
-      4.3669,
-      4.3179,
-      4.2795,
-      4.2568,
-      4.2069,
-      4.1923,
-      4.1778,
-      4.1565,
-      4.143,
-      4.1285,
-      4.122,
-      4.11,
-      4.1018,
-      4.0769,
-      4.0491,
-      3.9844,
+      4.6167,
+      4.4301,
+      4.275,
+      4.2134,
+      4.161,
+      4.1251,
+      4.105,
+      4.0668,
+      4.056,
+      4.0448,
+      4.0292,
+      4.0191,
+      4.0093,
+      4.0046,
+      3.9961,
+      3.9894,
+      3.9648,
+      3.9373,
+      3.9176,
       3.8513,
       3.7944,
       3.6572,
@@ -1855,7 +1847,8 @@
       4.4197,
       4.4606,
       4.4829,
-      4.4959
+      4.4959,
+      4.5793
     ],
     "resistance": 5.5,
     "support": 3.44,
@@ -1872,23 +1865,23 @@
       {
         "pattern": "Price Channel (Falling)",
         "direction": "bearish",
-        "start_index": 1,
-        "end_index": 79,
-        "start_date": "2025-08-21",
-        "end_date": "2025-12-11",
+        "start_index": 5,
+        "end_index": 83,
+        "start_date": "2025-08-31",
+        "end_date": "2025-12-21",
         "levels": {
-          "resistance_start": 4.3338,
-          "resistance_end": 2.7015,
-          "support_start": 3.7011,
-          "support_end": 2.1936
+          "resistance_start": 3.848,
+          "resistance_end": 2.7253,
+          "support_start": 3.4596,
+          "support_end": 2.5381
         },
         "quality": 0.85
       },
       {
         "pattern": "Price Channel (Flat)",
         "direction": "neutral",
-        "start_index": 13,
-        "end_index": 96,
+        "start_index": 11,
+        "end_index": 94,
         "start_date": "2025-09-09",
         "end_date": "2026-01-04",
         "levels": {
@@ -1902,8 +1895,8 @@
       {
         "pattern": "Price Channel (Rising)",
         "direction": "bullish",
-        "start_index": 46,
-        "end_index": 108,
+        "start_index": 44,
+        "end_index": 106,
         "start_date": "2025-10-27",
         "end_date": "2026-01-21",
         "levels": {
@@ -1917,8 +1910,8 @@
       {
         "pattern": "Price Channel (Falling)",
         "direction": "bearish",
-        "start_index": 96,
-        "end_index": 178,
+        "start_index": 94,
+        "end_index": 176,
         "start_date": "2026-01-04",
         "end_date": "2026-05-01",
         "levels": {
@@ -1932,8 +1925,8 @@
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 108,
-        "end_index": 201,
+        "start_index": 106,
+        "end_index": 199,
         "start_date": "2026-01-21",
         "end_date": "2026-06-07",
         "levels": {
@@ -1944,13 +1937,13 @@
           "apex_price": 3.6343
         },
         "quality": 0.75,
-        "apex_index": 220.59635364767558
+        "apex_index": 218.59635364767553
       },
       {
         "pattern": "Price Channel (Rising)",
         "direction": "bullish",
-        "start_index": 147,
-        "end_index": 205,
+        "start_index": 145,
+        "end_index": 203,
         "start_date": "2026-03-16",
         "end_date": "2026-06-11",
         "levels": {
@@ -1964,8 +1957,8 @@
       {
         "pattern": "Descending Triangle",
         "direction": "bearish",
-        "start_index": 178,
-        "end_index": 210,
+        "start_index": 176,
+        "end_index": 208,
         "start_date": "2026-05-01",
         "end_date": "2026-06-21",
         "levels": {
@@ -1975,13 +1968,13 @@
           "apex_price": 3.351
         },
         "quality": 0.81,
-        "apex_index": 227.41918699186988
+        "apex_index": 225.4191869918698
       },
       {
         "pattern": "Price Channel (Falling)",
         "direction": "bearish",
-        "start_index": 192,
-        "end_index": 219,
+        "start_index": 190,
+        "end_index": 217,
         "start_date": "2026-05-20",
         "end_date": "2026-07-04",
         "levels": {

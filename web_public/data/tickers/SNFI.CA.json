@@ -1,6 +1,6 @@
 {
   "ticker": "SNFI.CA",
-  "last_data_date": "2026-08-20",
+  "last_data_date": "2026-08-23",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "SNFI.CA",
@@ -17,17 +17,17 @@
     "Dividend Yield %": null,
     "Market Cap": 17690000.0,
     "1W Return %": -2.4,
-    "1M Return %": 9.51,
+    "1M Return %": 9.4,
     "YTD Return %": 10.89,
     "1Y Return %": 58.11,
-    "3Y Return %": 171.43,
+    "3Y Return %": 184.29,
     "External Rating Consensus": 1.875,
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL",
-    "Rank Score": -28.1,
+    "Rank Score": -23.9,
     "Current Price": 11.4,
-    "Target Entry (VWAP)": 10.5855,
-    "Suggested Stop-Loss": 9.7514,
+    "Target Entry (VWAP)": 10.5852,
+    "Suggested Stop-Loss": 9.8529,
     "Take-Profit Target": 11.7078,
     "Resistance (52W High)": 13.0,
     "Support (52W Low)": 6.8,
@@ -42,14 +42,14 @@
     "S1": 11.1067,
     "S2": 10.5333,
     "S3": 10.2367,
-    "Projected Gain (%)": -4.48,
-    "Pattern Conf (%)": 20.46,
-    "Projected Range 95%": "-15.02% to 3.88%",
+    "Projected Gain (%)": -3.81,
+    "Pattern Conf (%)": 35.68,
+    "Projected Range 95%": "-10.7% to 0.33%",
     "Kelly %": 0.0,
     "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Strong Bullish | no decisive edge | weekly aligned",
     "Score Breakdown": {
-      "pattern": 6.14,
-      "projected": -6.72,
+      "pattern": 10.7,
+      "projected": -5.71,
       "range": 3.71,
       "trend_bonus": -40.0,
       "confidence_weight": 0.76
@@ -57,17 +57,16 @@
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
     "RSI-14": 52.2,
-    "ADX-14": 34.4,
-    "Vol Z-Score": -0.17,
+    "ADX-14": 33.7,
+    "Vol Z-Score": -0.39,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0134,
-    "Bollinger %B": 0.571,
-    "Avg Volume (20D)": 5287,
+    "MACD Histogram": -0.0179,
+    "Bollinger %B": 0.555,
+    "Avg Volume (20D)": 5252,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
     "dates": [
-      "2025-08-20 00:00:00",
       "2025-08-25 00:00:00",
       "2025-08-27 00:00:00",
       "2025-09-01 00:00:00",
@@ -199,10 +198,10 @@
       "2026-08-17 00:00:00",
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
-      "2026-08-20 00:00:00"
+      "2026-08-20 00:00:00",
+      "2026-08-23 00:00:00"
     ],
     "close": [
-      7.21,
       8.0,
       7.9,
       7.99,
@@ -334,10 +333,10 @@
       11.12,
       11.12,
       11.4,
+      11.4,
       11.4
     ],
     "open": [
-      7.55,
       7.5,
       8.0,
       7.9,
@@ -469,10 +468,10 @@
       11.2,
       11.2,
       11.49,
+      11.49,
       11.49
     ],
     "high": [
-      7.55,
       8.17,
       8.17,
       7.99,
@@ -604,10 +603,10 @@
       11.64,
       11.64,
       11.49,
+      11.49,
       11.49
     ],
     "low": [
-      7.2,
       7.5,
       7.9,
       7.59,
@@ -739,10 +738,10 @@
       11.1,
       11.1,
       10.9,
+      10.9,
       10.9
     ],
     "volume": [
-      24130,
       43370,
       17010,
       11720,
@@ -874,29 +873,29 @@
       2426,
       0,
       2920,
-      2920
+      2920,
+      0
     ],
     "vwap": [
-      7.32,
-      7.6862,
-      7.7474,
-      7.7607,
-      7.7917,
-      7.7894,
-      7.7948,
-      7.7973,
-      7.7983,
-      7.7986,
-      7.798,
-      7.7976,
-      7.7963,
-      7.7986,
-      7.8078,
-      7.8172,
-      7.8351,
-      7.9258,
-      7.9347,
-      7.9804,
+      7.89,
+      7.9182,
+      7.9082,
+      7.935,
+      7.9222,
+      7.9198,
+      7.9212,
+      7.9205,
+      7.9202,
+      7.9182,
+      7.9149,
+      7.9082,
+      7.9008,
+      7.9007,
+      7.9081,
+      7.9247,
+      8.0194,
+      8.0287,
+      8.0721,
       8.1003,
       8.1726,
       8.1975,
@@ -1009,7 +1008,8 @@
       10.5437,
       10.545,
       10.5667,
-      10.5855
+      10.5855,
+      10.5852
     ],
     "resistance": 12.7825,
     "support": 10.03,
@@ -1024,10 +1024,25 @@
     },
     "patterns": [
       {
+        "pattern": "Double Bottom",
+        "direction": "bullish",
+        "start_index": 4,
+        "end_index": 31,
+        "start_date": "2025-09-08",
+        "end_date": "2025-12-10",
+        "levels": {
+          "first_bottom": 7.65,
+          "second_bottom": 7.66,
+          "neckline": 9.0,
+          "target": 10.345
+        },
+        "quality": 0.96
+      },
+      {
         "pattern": "Price Channel (Rising)",
         "direction": "bullish",
-        "start_index": 18,
-        "end_index": 65,
+        "start_index": 17,
+        "end_index": 64,
         "start_date": "2025-10-22",
         "end_date": "2026-03-30",
         "levels": {
@@ -1041,8 +1056,8 @@
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 32,
-        "end_index": 77,
+        "start_index": 31,
+        "end_index": 76,
         "start_date": "2025-12-10",
         "end_date": "2026-05-01",
         "levels": {
@@ -1053,13 +1068,13 @@
           "apex_price": 10.9861
         },
         "quality": 0.75,
-        "apex_index": 90.69130434782608
+        "apex_index": 89.69130434782608
       },
       {
         "pattern": "Double Bottom",
         "direction": "bullish",
-        "start_index": 65,
-        "end_index": 77,
+        "start_index": 64,
+        "end_index": 76,
         "start_date": "2026-03-30",
         "end_date": "2026-05-01",
         "levels": {
@@ -1073,8 +1088,8 @@
       {
         "pattern": "Price Channel (Flat)",
         "direction": "neutral",
-        "start_index": 77,
-        "end_index": 122,
+        "start_index": 76,
+        "end_index": 121,
         "start_date": "2026-05-01",
         "end_date": "2026-08-06",
         "levels": {
@@ -1088,8 +1103,8 @@
       {
         "pattern": "Double Top",
         "direction": "bearish",
-        "start_index": 79,
-        "end_index": 88,
+        "start_index": 78,
+        "end_index": 87,
         "start_date": "2026-05-06",
         "end_date": "2026-06-05",
         "levels": {
@@ -1103,8 +1118,8 @@
       {
         "pattern": "Double Bottom",
         "direction": "bullish",
-        "start_index": 87,
-        "end_index": 120,
+        "start_index": 86,
+        "end_index": 119,
         "start_date": "2026-06-04",
         "end_date": "2026-08-04",
         "levels": {
