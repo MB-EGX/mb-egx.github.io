@@ -187,33 +187,6 @@
         /* Card panels: subtle depth + hairline glow */
         .bg-panelbg { box-shadow: 0 1px 0 0 rgba(255,255,255,0.04) inset, 0 10px 24px -12px rgba(0,0,0,0.5); }
 
-        /* Logo-only brand mark: floats in the empty page margin to the
-           left of the dashboard container — outside the workspace, not
-           pushing or resizing the header. Just the mark, fixed in place. */
-        .brand-logo-fixed {
-            position: fixed;
-            top: 18px;
-            left: 18px;
-            z-index: 40;
-            pointer-events: none;
-        }
-        .brand-logo-fixed img {
-            width: 76px;
-            height: 76px;
-            object-fit: contain;
-            filter: drop-shadow(0 0 10px rgba(147,204,255,0.35));
-        }
-        /* Below this width the container fills the viewport and there's no
-           side margin left for the logo to float in without overlapping
-           content, so it shrinks and tucks into the corner instead. */
-        @media (max-width: 1400px) {
-            .brand-logo-fixed { top: 8px; left: 8px; }
-            .brand-logo-fixed img { width: 44px; height: 44px; }
-        }
-        @media (max-width: 500px) {
-            .brand-logo-fixed img { width: 34px; height: 34px; }
-        }
-
         /* Buttons: ambient glow + gentle lift */
         header button, .modal-body button { transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease; }
         header button:hover, .modal-body button:hover { transform: translateY(-1px); filter: brightness(1.08); }
@@ -290,28 +263,27 @@
 
     <div class="max-w-[1650px] mx-auto p-3 md:p-5 space-y-4">
         
-        <div class="brand-logo-fixed no-print" aria-label="MB-EGX logo">
-            <img src="assets/mb-egx-logo.png" alt="MB-EGX Logo">
-        </div>
-
         <!-- Header Bar -->
         <header id="main-header" class="bg-panelbg p-4 rounded-xl border border-bordercol shadow-xl flex flex-col lg:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-3 w-full lg:w-auto justify-between">
-                <div>
-                    <h1 id="lbl-title" class="text-sm md:text-base font-headline font-bold text-sky-400 tracking-tight">MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard</h1>
-                    <p class="text-[11px] text-textmuted mt-0.5">📅 <span id="lbl-last-date">Last Data Date:</span> <strong id="val-last-date" class="text-sky-400">—</strong></p>
-                    <!-- NEW: live broad-market regime badge (EGX30 - see decision_matrix's
-                         market-regime block / market_regime.py). Populated by
-                         updateMarketRegimeBadge(), hidden until data with regime info
-                         loads (same "start hidden" pattern as the stale-data banner). -->
-                    <p id="lbl-market-regime" class="text-[11px] font-bold mt-0.5 hidden"></p>
-                    <!-- NEW: sector-rotation (EGX IMCS vs EGX Text Double) and EGX30
-                         EGP-vs-USD divergence badges - see sector_rotation.py /
-                         usd_divergence.py, folded into market_regime.sector_rotation /
-                         market_regime.usd_divergence by decision_matrix.analyze_market().
-                         Same "hidden until available" pattern as the regime badge above. -->
-                    <p id="lbl-sector-rotation" class="text-[11px] font-bold mt-0.5 hidden"></p>
-                    <p id="lbl-usd-divergence" class="text-[11px] font-bold mt-0.5 hidden"></p>
+                <div class="flex items-center gap-3">
+                    <img src="assets/mb-egx-logo.png" alt="MB-EGX Logo" width="48" height="48" class="w-12 h-12 shrink-0 object-contain drop-shadow-[0_0_10px_rgba(147,204,255,0.35)]">
+                    <div class="min-w-0">
+                        <h1 id="lbl-title" class="text-sm md:text-base font-headline font-bold text-sky-400 tracking-tight">MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard</h1>
+                        <p class="text-[11px] text-textmuted mt-0.5">📅 <span id="lbl-last-date">Last Data Date:</span> <strong id="val-last-date" class="text-sky-400">—</strong></p>
+                        <!-- NEW: live broad-market regime badge (EGX30 - see decision_matrix's
+                             market-regime block / market_regime.py). Populated by
+                             updateMarketRegimeBadge(), hidden until data with regime info
+                             loads (same "start hidden" pattern as the stale-data banner). -->
+                        <p id="lbl-market-regime" class="text-[11px] font-bold mt-0.5 hidden"></p>
+                        <!-- NEW: sector-rotation (EGX IMCS vs EGX Text Double) and EGX30
+                             EGP-vs-USD divergence badges - see sector_rotation.py /
+                             usd_divergence.py, folded into market_regime.sector_rotation /
+                             market_regime.usd_divergence by decision_matrix.analyze_market().
+                             Same "hidden until available" pattern as the regime badge above. -->
+                        <p id="lbl-sector-rotation" class="text-[11px] font-bold mt-0.5 hidden"></p>
+                        <p id="lbl-usd-divergence" class="text-[11px] font-bold mt-0.5 hidden"></p>
+                    </div>
                 </div>
                 <!-- Mobile-only toggle for the control buttons below (hidden on desktop — see @media rules in <style>) -->
                 <button id="btn-mobile-menu" onclick="toggleMobileHeaderMenu()" class="hidden bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg font-bold shadow items-center gap-1.5 transition shrink-0">
@@ -6546,7 +6518,6 @@
             });
         }
     </script>
-<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
