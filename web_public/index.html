@@ -187,6 +187,106 @@
         /* Card panels: subtle depth + hairline glow */
         .bg-panelbg { box-shadow: 0 1px 0 0 rgba(255,255,255,0.04) inset, 0 10px 24px -12px rgba(0,0,0,0.5); }
 
+        /* Dedicated brand shelf: keeps the logo outside the dashboard card
+           so the header content gets its width back while the logo becomes
+           a distinct identity anchor above the app. */
+        .brand-identity-shelf {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 0.35rem;
+        }
+        .brand-identity-dock {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.9rem;
+            padding: 0.9rem 1rem;
+            border-radius: 1.1rem;
+            border: 1px solid color-mix(in srgb, var(--accent-text) 28%, var(--border-col));
+            background:
+                radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 48%),
+                linear-gradient(135deg, color-mix(in srgb, var(--bg-panel) 96%, #07111f), color-mix(in srgb, var(--bg-main) 90%, #0b1730));
+            box-shadow:
+                0 10px 30px -18px rgba(56, 189, 248, 0.65),
+                inset 0 1px 0 rgba(255,255,255,0.08);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        .brand-identity-dock::after {
+            content: "";
+            position: absolute;
+            inset: auto -18% -65% auto;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(212,175,55,0.18), transparent 68%);
+            pointer-events: none;
+        }
+        .brand-logo-orb {
+            width: 72px;
+            height: 72px;
+            border-radius: 20px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(145deg, rgba(8,15,30,0.95), rgba(18,36,64,0.88));
+            border: 1px solid rgba(147,204,255,0.32);
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.03) inset, 0 0 28px rgba(56, 189, 248, 0.18);
+            flex: 0 0 auto;
+        }
+        .brand-logo-orb img {
+            width: 56px;
+            height: 56px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 14px rgba(147,204,255,0.28));
+        }
+        .brand-identity-copy {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+            min-width: 0;
+            position: relative;
+            z-index: 1;
+        }
+        .brand-identity-eyebrow {
+            font-size: 10px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: #d4af37;
+            font-family: 'JetBrains Mono', monospace;
+            opacity: 0.95;
+        }
+        .brand-identity-title {
+            font-family: 'Hanken Grotesk', sans-serif;
+            font-weight: 800;
+            font-size: clamp(1rem, 2vw, 1.28rem);
+            line-height: 1.05;
+            color: #f8fbff;
+        }
+        .brand-identity-subtitle {
+            font-size: 12px;
+            color: var(--text-muted);
+            max-width: 320px;
+        }
+        @media (max-width: 767px) {
+            .brand-identity-shelf { justify-content: center; }
+            .brand-identity-dock {
+                width: 100%;
+                justify-content: center;
+                padding: 0.85rem 0.9rem;
+            }
+            .brand-logo-orb {
+                width: 60px;
+                height: 60px;
+                border-radius: 16px;
+            }
+            .brand-logo-orb img {
+                width: 46px;
+                height: 46px;
+            }
+            .brand-identity-subtitle {
+                max-width: none;
+            }
+        }
+
         /* Buttons: ambient glow + gentle lift */
         header button, .modal-body button { transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease; }
         header button:hover, .modal-body button:hover { transform: translateY(-1px); filter: brightness(1.08); }
@@ -263,27 +363,37 @@
 
     <div class="max-w-[1650px] mx-auto p-3 md:p-5 space-y-4">
         
+        <div class="brand-identity-shelf no-print" aria-label="MB-EGX brand identity area">
+            <div class="brand-identity-dock">
+                <div class="brand-logo-orb">
+                    <img src="assets/mb-egx-logo.png" alt="MB-EGX Logo">
+                </div>
+                <div class="brand-identity-copy">
+                    <span class="brand-identity-eyebrow">Brand Identity</span>
+                    <span class="brand-identity-title">MB-EGX</span>
+                    <span class="brand-identity-subtitle">Out-of-Core Trading Intelligence for the Egyptian market</span>
+                </div>
+            </div>
+        </div>
+
         <!-- Header Bar -->
         <header id="main-header" class="bg-panelbg p-4 rounded-xl border border-bordercol shadow-xl flex flex-col lg:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-3 w-full lg:w-auto justify-between">
-                <div class="flex items-center gap-3">
-                    <img src="assets/mb-egx-logo.png" alt="MB-EGX Logo" class="w-12 h-12 object-contain drop-shadow-[0_0_10px_rgba(147,204,255,0.35)]">
-                    <div>
-                        <h1 id="lbl-title" class="text-sm md:text-base font-headline font-bold text-sky-400 tracking-tight">MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard</h1>
-                        <p class="text-[11px] text-textmuted mt-0.5">📅 <span id="lbl-last-date">Last Data Date:</span> <strong id="val-last-date" class="text-sky-400">—</strong></p>
-                        <!-- NEW: live broad-market regime badge (EGX30 - see decision_matrix's
-                             market-regime block / market_regime.py). Populated by
-                             updateMarketRegimeBadge(), hidden until data with regime info
-                             loads (same "start hidden" pattern as the stale-data banner). -->
-                        <p id="lbl-market-regime" class="text-[11px] font-bold mt-0.5 hidden"></p>
-                        <!-- NEW: sector-rotation (EGX IMCS vs EGX Text Double) and EGX30
-                             EGP-vs-USD divergence badges - see sector_rotation.py /
-                             usd_divergence.py, folded into market_regime.sector_rotation /
-                             market_regime.usd_divergence by decision_matrix.analyze_market().
-                             Same "hidden until available" pattern as the regime badge above. -->
-                        <p id="lbl-sector-rotation" class="text-[11px] font-bold mt-0.5 hidden"></p>
-                        <p id="lbl-usd-divergence" class="text-[11px] font-bold mt-0.5 hidden"></p>
-                    </div>
+            <div class="flex items-center gap-3 w-full lg:flex-1 justify-between">
+                <div class="min-w-0">
+                    <h1 id="lbl-title" class="text-sm md:text-lg font-headline font-bold text-sky-400 tracking-tight">MB-EGX — Out-of-Core Trading Matrix & Sector Dashboard</h1>
+                    <p class="text-[11px] text-textmuted mt-0.5">📅 <span id="lbl-last-date">Last Data Date:</span> <strong id="val-last-date" class="text-sky-400">—</strong></p>
+                    <!-- NEW: live broad-market regime badge (EGX30 - see decision_matrix's
+                         market-regime block / market_regime.py). Populated by
+                         updateMarketRegimeBadge(), hidden until data with regime info
+                         loads (same "start hidden" pattern as the stale-data banner). -->
+                    <p id="lbl-market-regime" class="text-[11px] font-bold mt-0.5 hidden"></p>
+                    <!-- NEW: sector-rotation (EGX IMCS vs EGX Text Double) and EGX30
+                         EGP-vs-USD divergence badges - see sector_rotation.py /
+                         usd_divergence.py, folded into market_regime.sector_rotation /
+                         market_regime.usd_divergence by decision_matrix.analyze_market().
+                         Same "hidden until available" pattern as the regime badge above. -->
+                    <p id="lbl-sector-rotation" class="text-[11px] font-bold mt-0.5 hidden"></p>
+                    <p id="lbl-usd-divergence" class="text-[11px] font-bold mt-0.5 hidden"></p>
                 </div>
                 <!-- Mobile-only toggle for the control buttons below (hidden on desktop — see @media rules in <style>) -->
                 <button id="btn-mobile-menu" onclick="toggleMobileHeaderMenu()" class="hidden bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg font-bold shadow items-center gap-1.5 transition shrink-0">
@@ -6518,6 +6628,7 @@
             });
         }
     </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
