@@ -7,7 +7,7 @@ import threading
 import time
 from datetime import date
 from pathlib import Path
-from config import DB_PATH, PAPER_TRADING_DEFAULTS, MAX_ACHIEVED_HISTORY, get_logger
+from config import DB_PATH, PAPER_TRADING_DEFAULTS, MAX_ACHIEVED_HISTORY, TRANSACTION_FEE_PCT, get_logger
 import duckdb
 
 logger = get_logger("db_manager")
@@ -1267,9 +1267,15 @@ class DatabaseManager:
         balance from scratch as:
 
             starting_capital
-            - cost basis of every currently OPEN position (portfolio_owned)
-            - buy cost of every CLOSED trade ever made (portfolio_closed)
-            + sell proceeds of every CLOSED trade ever made (portfolio_closed)
+            - fee-inclusive cost of every currently OPEN position (portfolio_owned)
+            - fee-inclusive buy cost of every CLOSED trade ever made (portfolio_closed)
+            + fee-net sell proceeds of every CLOSED trade ever made (portfolio_closed)
+
+        Must mirror add_owned_stock/record_sale's own fee-inclusive cash
+        math exactly (config.TRANSACTION_FEE_PCT each side) - otherwise
+        this "fix" would just reintroduce a *different* drift the moment
+        it's run, undoing the real brokerage-fee accounting those two
+        functions apply on every ordinary trade.
 
         `starting_capital` is the cash you had BEFORE your very first trade -
         not today's balance. After this runs once, ordinary buys/sells keep
@@ -1282,7 +1288,14 @@ class DatabaseManager:
             open_cost = cur.execute("SELECT COALESCE(SUM(buy_price * shares), 0) FROM portfolio_owned;").fetchone()[0]
             closed_cost = cur.execute("SELECT COALESCE(SUM(buy_price * shares), 0) FROM portfolio_closed;").fetchone()[0]
             closed_proceeds = cur.execute("SELECT COALESCE(SUM(sell_price * shares), 0) FROM portfolio_closed;").fetchone()[0]
-            new_balance = float(starting_capital) - float(open_cost) - float(closed_cost) + float(closed_proceeds)
+            fee_mult_buy = (1.0 + TRANSACTION_FEE_PCT)
+            fee_mult_sell = (1.0 - TRANSACTION_FEE_PCT)
+            new_balance = (
+                float(starting_capital)
+                - float(open_cost) * fee_mult_buy
+                - float(closed_cost) * fee_mult_buy
+                + float(closed_proceeds) * fee_mult_sell
+            )
             conn.execute("INSERT OR REPLACE INTO account_cash (id, balance) VALUES (1, ?);", (new_balance,))
         return new_balance
 
@@ -1323,11 +1336,18 @@ class DatabaseManager:
                         "INSERT INTO portfolio_owned (ticker, buy_price, shares, purchase_date, is_demo) VALUES (?, ?, ?, ?, ?);",
                         (ticker, float(buy_price), float(shares), str(purchase_date), bool(is_demo)),
                     )
-                    # Cash flow: a real buy spends cash - this is what was
-                    # missing before, which is why the balance never moved
-                    # after trades. OVERWRITE mode (data-entry correction)
-                    # deliberately does NOT hit this - see that branch above.
-                    self._adjust_cash_balance(conn, -(float(buy_price) * float(shares)))
+                    # Cash flow: a real buy spends cash AND pays the real
+                    # EGX brokerage fee (config.TRANSACTION_FEE_PCT) - this
+                    # mirrors paper_buy()'s own fee-inclusive debit below, so
+                    # the real-money ledger and the paper-trading simulator
+                    # agree on what a buy actually costs, instead of the real
+                    # ledger silently ignoring the fee paper trading already
+                    # accounts for. Cost basis (buy_price) itself stays as
+                    # the raw fill price, unchanged - only the cash outflow
+                    # includes the fee, the same way a real brokerage
+                    # statement shows commission as a separate line rather
+                    # than folded into your recorded purchase price.
+                    self._adjust_cash_balance(conn, -(float(buy_price) * float(shares) * (1.0 + TRANSACTION_FEE_PCT)))
                     if _LANG == "AR":
                         return (True, f"🛒 تم فتح مركز جديد لـ {ticker}:\n{shares:,.4f} سهم بسعر {buy_price:.4f} جنيه.")
                     return (True, f"🛒 Opened fresh position for {ticker}:\n{shares:,.4f} shares @ {buy_price:.4f} EGP.")
@@ -1340,9 +1360,9 @@ class DatabaseManager:
                         return (False, "⚠️ Error: Combined share quantity cannot be zero or less.")
                     new_p = ((old_s * old_p) + (float(shares) * float(buy_price))) / new_s
                     conn.execute("UPDATE portfolio_owned SET buy_price = ?, shares = ?, purchase_date = ?, is_demo = ? WHERE ticker = ?;", (new_p, new_s, str(purchase_date), bool(is_demo), ticker))
-                    # Cash flow: scaling in spends cash too - same reasoning
-                    # as the fresh-position branch above.
-                    self._adjust_cash_balance(conn, -(float(buy_price) * float(shares)))
+                    # Cash flow: scaling in spends cash and pays the fee too
+                    # - same reasoning as the fresh-position branch above.
+                    self._adjust_cash_balance(conn, -(float(buy_price) * float(shares) * (1.0 + TRANSACTION_FEE_PCT)))
                     if _LANG == "AR":
                         return (True, f"📈 تمت الزيادة في {ticker}! دمج {old_s:,.4f} + {shares:,.4f} سهم.\nالإجمالي الجديد: {new_s:,.4f} سهم | متوسط التكلفة المرجح الجديد: {new_p:.4f} جنيه (كان {old_p:.4f}).")
                     return (True, f"📈 Scaled into {ticker}! Combined {old_s:,.4f} + {shares:,.4f} shares.\nNew Total: {new_s:,.4f} shares | New Weighted Average Cost: {new_p:.4f} EGP (was {old_p:.4f}).")
@@ -1417,8 +1437,18 @@ class DatabaseManager:
                     return (False, f"لا يمكن بيع {shares_to_sell} سهم. أنت تمتلك فقط {current_shares} سهم من {actual_ticker}.")
                 return (False, f"Cannot sell {shares_to_sell} shares. You only own {current_shares} shares of {actual_ticker}.")
             
-            realized_pnl = (sell_price - buy_price) * shares_to_sell
-            pnl_pct = (((sell_price - buy_price) / buy_price) * 100 if buy_price > 0 else 0.0)
+            # Net of round-trip brokerage fees (config.TRANSACTION_FEE_PCT
+            # each side) - matches paper_sell()'s own fee-inclusive P&L and
+            # every projection elsewhere in the app (take-profit targets,
+            # Kelly sizing) that already treats ROUND_TRIP_FEE_PCT as a real
+            # cost. A gross (sell-buy)*shares figure would overstate every
+            # closed trade's true profitability by ~0.7% round-trip -
+            # small per trade, but it compounds into a materially wrong
+            # cumulative "Realized P&L" the more trades a user closes.
+            net_sell_price = sell_price * (1.0 - TRANSACTION_FEE_PCT)
+            net_buy_cost = buy_price * (1.0 + TRANSACTION_FEE_PCT)
+            realized_pnl = (net_sell_price - net_buy_cost) * shares_to_sell
+            pnl_pct = (((net_sell_price - net_buy_cost) / net_buy_cost) * 100 if net_buy_cost > 0 else 0.0)
 
             conn.execute(
                 """
@@ -1438,11 +1468,13 @@ class DatabaseManager:
             else:
                 conn.execute("UPDATE portfolio_owned SET shares = ? WHERE ticker = ?;", (remaining_shares, actual_ticker))
 
-            # Cash flow: a sale returns cash - proceeds = sell_price *
-            # shares actually sold. Same connection/transaction as the
-            # portfolio_closed insert and the portfolio_owned update above,
-            # so the sale and the cash credit always commit together.
-            self._adjust_cash_balance(conn, float(sell_price) * float(shares_to_sell))
+            # Cash flow: a sale returns cash net of the exit brokerage fee -
+            # proceeds = sell_price * shares actually sold, minus the fee,
+            # same as paper_sell()'s own fee-inclusive credit. Same
+            # connection/transaction as the portfolio_closed insert and the
+            # portfolio_owned update above, so the sale and the cash credit
+            # always commit together.
+            self._adjust_cash_balance(conn, float(sell_price) * float(shares_to_sell) * (1.0 - TRANSACTION_FEE_PCT))
         if _LANG == "AR":
             return (True, f"تم تسجيل بيع {shares_to_sell} سهم من {actual_ticker} بسعر {sell_price} جنيه بنجاح.\nالربح/الخسارة المحققة: {realized_pnl:.2f} جنيه ({pnl_pct:.2f}%).")
         return (True, f"Successfully recorded sale of {shares_to_sell} shares of {actual_ticker} @ {sell_price} EGP.\nRealized P&L: {realized_pnl:.2f} EGP ({pnl_pct:.2f}%).")

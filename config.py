@@ -59,6 +59,42 @@ MIN_AVG_VOLUME = 50_000
 MIN_BARS_FOR_PATTERN_TRUST = 25
 RISK_PER_TRADE_PCT = 0.01
 
+# ATR is the app's universal volatility unit - it sizes stops, targets,
+# and trailing exits everywhere (decision_matrix.py, backtester.py,
+# analytics.get_latest_price_and_atr). compute_indicators() always
+# produces a real Wilder atr_14 for any ticker with >=3 bars, so this
+# fallback is NOT a general substitute for real ATR - it exists only
+# for the genuine edge case of an exactly-zero true range (e.g. a
+# thinly-traded stock that printed no price movement at all over its
+# ATR window, so every TR bar is 0 and Wilder ATR legitimately comes
+# out to 0/NaN). A flat 0/NaN ATR would make the stop distance and
+# take-profit target both collapse to the entry price, which is not a
+# usable trade plan - so a small non-zero volatility floor is applied
+# instead. It is intentionally conservative (roughly typical EGX
+# small/mid-cap daily range) rather than tuned to any one name, since
+# by definition there is no real per-ticker signal to use in this case.
+DEFAULT_ATR_PCT_FALLBACK = 0.02  # 2% of price, zero-true-range edge case only
+
+# --- Per-ticker regime classification (analytics.classify_regime) ---
+# Distinct from BENCHMARK_REGIME_* below (bull/bear/neutral on the
+# index itself, from SMA slope). This instead labels an individual
+# ticker's CURRENT trading character - trend strength (ADX) crossed
+# with realized volatility (ATR as % of price) - so downstream code
+# (pattern-match confidence discounting, exit logic, session-picks
+# categorization) can tell "this is a strong clean trend" apart from
+# "this is trending but whipsawing" or "this is just choppy/range-bound".
+# ADX>=25 is Wilder's own published convention for "trend established"
+# (Wilder, "New Concepts in Technical Trading Systems", 1978) - not
+# invented here. The ATR% bands are this app's own volatility cut and
+# are deliberately explicit/tunable (rather than hardcoded in
+# analytics.py) so they can be re-checked against realized EGX
+# small/mid-cap ATR% distributions as more history accumulates.
+TICKER_REGIME_THRESHOLDS = {
+    "adx_trending_min": 25.0,       # Wilder's own "trend established" convention
+    "atr_pct_volatile_min": 2.5,    # ATR% at/above this alongside a trend = "Trending / Volatile"
+    "atr_pct_range_volatile_min": 3.5,  # ATR% at/above this with NO trend = "Volatile Range"
+}
+
 TRANSACTION_FEE_PCT = 0.0035  # 0.35% per side (EGX brokerage)
 ROUND_TRIP_FEE_PCT = TRANSACTION_FEE_PCT * 2
 
@@ -609,10 +645,10 @@ BREAKOUT_WATCH_BEAR_REGIME_PENALTY = -6.0
 # were picked (over any other sub-index pair) because they track a real,
 # distinct macro divergence in this market - domestic digital demand vs
 # EGP-devaluation-driven export competitiveness - not an arbitrary pair.
-# RS_t = Price(Text Double, t) / Price(IMCS, t): RS rising -> IMCS
+# RS_t = Price(IMCS, t) / Price(Text Double, t): RS rising -> IMCS
 # outperforming (rotate toward tech); RS falling -> Text Double
 # outperforming (rotate toward export manufacturers). See
-# sector_rotation.compute_rotation_signal's docstring for the exact
+# sector_rotation.compute_rotation_series's docstring for the exact
 # fast/slow SMA crossover rule this drives.
 SECTOR_ROTATION_PAIR = (".EGIMCS", ".EGTEDU")
 SECTOR_ROTATION_FAST_SMA = 20

@@ -32,12 +32,15 @@ from config import (
     SR_MAX_LEVELS,
     TRADING_DAYS_PER_YEAR,
     ANNUALIZED_RISK_FREE_RATE,
+    DEFAULT_ATR_PCT_FALLBACK,
+    TICKER_REGIME_THRESHOLDS,
 )
 
 import numpy as np
 import pandas as pd
 from numpy.lib.stride_tricks import sliding_window_view
 from scipy.signal import argrelextrema
+from scipy.stats import ttest_1samp
 
 from db_manager import DatabaseManager, clean_sector_name
 
@@ -160,8 +163,23 @@ class QuantitativeEngine:
         df = self.compute_indicators(df)
         latest = df.iloc[-1]
         price = float(latest.get("close", 0.0))
-        atr = float(latest.get("atr_14", price * 0.02))
+        atr = self.estimate_atr(latest, price)
         return price, atr
+
+    @staticmethod
+    def estimate_atr(latest_row, price: float) -> float:
+        """The single source of truth for the "real ATR, or a documented
+        fallback" decision used everywhere in the app that needs a stop/
+        target distance (decision_matrix.py, backtester.py). See
+        config.DEFAULT_ATR_PCT_FALLBACK's docstring: compute_indicators()
+        always produces a real Wilder atr_14 for any ticker with 3+ bars,
+        so this only fires on the genuine zero-true-range edge case
+        (an illiquid name with no observed price movement in its ATR
+        window) - never as a routine substitute for real ATR."""
+        atr = latest_row.get("atr_14", None) if latest_row is not None else None
+        if atr is None or pd.isna(atr) or atr <= 0:
+            return price * DEFAULT_ATR_PCT_FALLBACK
+        return float(atr)
 
     # -------------------------------------------------------------------------
     # Confidence labelling
@@ -186,11 +204,14 @@ class QuantitativeEngine:
         atr = float(latest.get("atr_14", 0.0) or 0.0)
         close = float(latest.get("close", 0.0) or 0.0)
         atr_pct = (atr / close) * 100 if close > 0 else 0.0
-        if adx >= 25 and atr_pct >= 2.5:
+        adx_min = TICKER_REGIME_THRESHOLDS["adx_trending_min"]
+        atr_volatile_min = TICKER_REGIME_THRESHOLDS["atr_pct_volatile_min"]
+        atr_range_volatile_min = TICKER_REGIME_THRESHOLDS["atr_pct_range_volatile_min"]
+        if adx >= adx_min and atr_pct >= atr_volatile_min:
             return "Trending / Volatile"
-        if adx >= 25:
+        if adx >= adx_min:
             return "Trending"
-        if atr_pct >= 3.5:
+        if atr_pct >= atr_range_volatile_min:
             return "Volatile Range"
         return "Range / Consolidation"
 
@@ -991,17 +1012,54 @@ class QuantitativeEngine:
         upper_95 = float(np.percentile(returns, 95)) if returns else 0.0
         perf = QuantitativeEngine.compute_perf_metrics(returns)
         regime = QuantitativeEngine.classify_regime(df)
-        agreement_penalty = max(0.0, 1.0 - min(return_std * 5, 0.5))
+
+        # Actual win rate among the matched analogs - the fraction that
+        # were profitable over the forecast horizon. This is a DIFFERENT
+        # quantity from `confidence` below and must stay that way:
+        # `confidence` answers "how much should the composite Rank Score
+        # trust this pattern" (similarity x statistical significance x
+        # downside-risk discount - a signal-QUALITY weight), while
+        # `win_rate` answers "what fraction of the time did this setup
+        # actually pay off" - the specific probability Kelly sizing (p in
+        # f* = p - q/b) needs. A tight, statistically-significant match
+        # can still have a modest win rate (a few big winners, several
+        # small losers) and vice versa; feeding `confidence` into Kelly
+        # instead of this would size positions off the wrong number.
+        win_rate = float(np.mean([1.0 if r > 0 else 0.0 for r in returns]))
+
+        # Statistical-significance factor, replacing the old ad hoc
+        # "1 - std*5" agreement penalty. The question that actually
+        # matters for "confidence" is: given how few, how dispersed, and
+        # how small these historical analog returns are, how likely is
+        # it that this average forward return is real signal rather than
+        # noise around zero? A one-sample t-test against a population
+        # mean of 0 answers exactly that (H0: the analog windows carry
+        # no real directional edge) - both sample size AND dispersion
+        # feed into it automatically via the standard error term, so a
+        # single freak analog (n=1) or a highly dispersed sample can no
+        # longer produce artificially high confidence just because
+        # return_std happened to look small in the old linear formula.
+        # p-value needs n>=2; with fewer matches there's no way to test
+        # significance at all, so confidence is capped low rather than
+        # guessed.
+        n_matches = len(returns)
+        if n_matches >= 2 and return_std > 1e-9:
+            t_stat, p_value = ttest_1samp(returns, popmean=0.0)
+            significance_factor = float(np.clip(1.0 - p_value, 0.0, 1.0))
+        else:
+            p_value = 1.0
+            significance_factor = 0.15  # single-match analog: can't test, so heavily discounted
 
         downside_sq = [min(0.0, r) ** 2 for r in returns]
         downside_dev = np.sqrt(np.mean(downside_sq)) if len(returns) > 0 else 0.0
         sortino_penalty = max(0.5, 1.0 - (downside_dev * 5.0))
 
-        confidence = float(avg_sim * 100 * agreement_penalty * sortino_penalty)
+        confidence = float(avg_sim * 100 * significance_factor * sortino_penalty)
 
         return {
             "match_found": True,
             "confidence": round(confidence, 2),
+            "win_rate": round(win_rate, 4),
             "projected_change_pct": round(float(avg_return) * 100, 2),
             "sample_size": len(top_k),
             "windows_searched": n_windows,
@@ -1010,6 +1068,8 @@ class QuantitativeEngine:
             "upper_95_pct": round(upper_95 * 100, 2),
             "regime": regime,
             "perf": perf,
+            "p_value": round(float(p_value), 4),
+            "significance_factor": round(significance_factor, 2),
             "sortino_penalty": round(sortino_penalty, 2),
         }
 

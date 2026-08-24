@@ -136,15 +136,13 @@ def _point_in_time_signal(df_upto: pd.DataFrame) -> dict | None:
     vol_ratio = float(latest.get("volume_ratio", 1.0) or 1.0)
     vol_z = float(latest.get("vol_z_score", 0.0) or 0.0)
     avg_volume_20 = float(latest.get("volume_avg", 0.0) or 0.0)
-    atr = float(latest.get("atr_14", curr_price * 0.02) or curr_price * 0.02)
+    atr = QuantitativeEngine.estimate_atr(latest, curr_price)
     vwap = float(latest.get("vwap_20", curr_price) or curr_price)
     cmf = float(latest.get("cmf_20", 0.0) or 0.0)
     is_squeezed = bool(latest.get("bb_kc_squeeze", False))
     w_sma50 = float(latest.get("w_sma_50", curr_price) or curr_price)
     w_rsi = float(latest.get("w_rsi", 50.0) or 50.0)
     weekly_aligned = (curr_price > w_sma50) and (w_rsi >= 50.0)
-    if atr <= 0:
-        atr = curr_price * 0.02
 
     is_liquid = avg_volume_20 >= MIN_AVG_VOLUME
     gap_pct = ((curr_price - prev_close) / prev_close * 100.0) if prev_close > 0 else 0.0

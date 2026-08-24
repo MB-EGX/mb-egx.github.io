@@ -945,9 +945,7 @@ class DecisionMatrix:
                         adx = latest.get("adx_14", 0.0)
                         vwap = latest.get("vwap_20", curr_price)
                         trend_latest = latest.get("trend_class", "Consolidation / Neutral")
-                        atr = latest.get("atr_14", curr_price * 0.02)
-                        if pd.isna(atr) or atr == 0:
-                            atr = curr_price * 0.02
+                        atr = self.qe.estimate_atr(latest, curr_price)
 
                         atr_mult = ACTION_THRESHOLDS["atr_trailing_multiplier"]
                         trailing_stop = curr_price - (atr_mult * atr)
@@ -1059,9 +1057,7 @@ class DecisionMatrix:
                 prev_macd_hist = prev.get("macd_histogram", macd_hist)
                 bb_pct_b = latest.get("bb_percent_b", 0.5)
                 trend_latest = latest.get("trend_class", "Consolidation / Neutral")
-                atr = latest.get("atr_14", curr_price * 0.02)
-                if pd.isna(atr) or atr == 0:
-                    atr = curr_price * 0.02
+                atr = self.qe.estimate_atr(latest, curr_price)
 
                 w_sma50 = latest.get("w_sma_50", curr_price)
                 w_rsi = latest.get("w_rsi", 50.0)
@@ -1643,15 +1639,21 @@ class DecisionMatrix:
                     (max(take_profit_target - curr_price, 0.0) / sizing_stop_distance)
                     if sizing_stop_distance > 0 else 0.0
                 )
-                # Win-rate estimate for Kelly: when a historical-analog match
-                # exists, its confidence is used; otherwise an honest 50/50
-                # prior (config.DEFAULT_WIN_RATE_PRIOR) instead of the old
-                # invented 45% - never fabricate an edge where none is
-                # measured. (The backtester's realized per-action win rates
-                # are the proper source; wiring them in live is a future step
-                # - see backtester.py's R-multiple bookkeeping.)
+                # Win-rate estimate for Kelly: when a historical-analog
+                # match exists, use the ACTUAL fraction of matched analogs
+                # that were profitable (pattern_data["win_rate"]) - not
+                # "confidence", which is a similarity x significance x
+                # downside-risk TRUST weight for the composite score, and
+                # is a different number from win probability (see
+                # analytics.match_historical_patterns' own docstring on
+                # this). Falls back to an honest 50/50 prior
+                # (config.DEFAULT_WIN_RATE_PRIOR) when there's no match -
+                # never fabricate an edge where none is measured. (The
+                # backtester's realized per-action win rates are the
+                # proper source; wiring them in live is a future step -
+                # see backtester.py's R-multiple bookkeeping.)
                 win_rate_est = (
-                    (pattern_data.get("confidence", DEFAULT_WIN_RATE_PRIOR * 100.0) / 100.0)
+                    pattern_data.get("win_rate", DEFAULT_WIN_RATE_PRIOR)
                     if pattern_data.get("match_found")
                     else DEFAULT_WIN_RATE_PRIOR
                 )
