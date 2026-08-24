@@ -288,8 +288,12 @@ class QuantitativeEngine:
             * (plus_di - minus_di).abs()
             / (plus_di + minus_di).replace(0, np.nan)
         )
-        adx = dx.ewm(alpha=wilder_alpha, adjust=False, min_periods=1).mean()
-        return adx.fillna(0)
+        # Returns (adx, plus_di, minus_di) so downstream code can use the
+        # actual Wilder direction (which side is moving the market) rather
+        # than inferring it from price-vs-SMA. +DI > -DI is, by Wilder's
+        # own definition, the bullish crossover; -DI > +DI the bearish.
+        adx = dx.ewm(alpha=wilder_alpha, adjust=False, min_periods=1).mean().fillna(0)
+        return adx, plus_di.fillna(0), minus_di.fillna(0)
 
     # -------------------------------------------------------------------------
     # Master indicator pipeline
@@ -459,31 +463,64 @@ class QuantitativeEngine:
             df["w_sma_50"] = df["sma_50"]
             df["w_rsi"] = df["rsi_14"]
 
-        df["adx_14"] = QuantitativeEngine._compute_adx(df, period=min(14, n))
-
-        c = df["close"]
-        s50 = df["sma_50"]
-        rsi = df["rsi_14"]
-        adx = df["adx_14"]
+        # _compute_adx now returns (adx, plus_di, minus_di) — standard
+        # per Wilder (1978) / Investopedia / TradingView: +DI > -DI is the
+        # bullish crossover. Persist both so the matrix and downstream
+        # breakers can use real Wilder direction instead of guessing via
+        # price-vs-SMA (which the previous code used).
+        adx, plus_di, minus_di = QuantitativeEngine._compute_adx(df, period=min(14, n))
+        df["adx_14"] = adx
+        df["plus_di"] = plus_di
+        df["minus_di"] = minus_di
         trending = adx >= 20
+        rsi = df["rsi_14"]
+
+        # Standard ADX-14 interpretation bands (Wilder 1978, Investopedia,
+        # CMC Markets, TradingView). The previous code collapsed adx 20-25
+        # (Forming) into the "Strong" bucket, and infered direction from
+        # price-vs-SMA200 instead of +DI/-DI — sub-25 names got mislabeled
+        # "Strong Bullish" (e.g. GRCA.CA ADX 21.2, EGAL.CA ADX 24.5).
+        # Direction is now taken from the actual DI cross with a 0.5pp
+        # tolerance band to absorb rounding noise; ties default to
+        # consolidation. Updated band labels are documented in
+        # glossary_content.py separately.
+        strong = adx >= 25
+        di_diff = plus_di - minus_di
+        bullish = di_diff >= 0.5
+        bearish = di_diff <= -0.5
 
         conditions = [
-            (c >= s50) & (rsi >= 45) & trending,
-            (c >= s50) & (rsi >= 45) & ~trending,
-            c >= s50 * 0.95,
+            (adx >= 75) & bullish,
+            (adx >= 75) & bearish,
+            (adx >= 50) & bullish,
+            (adx >= 50) & bearish,
+            (adx >= 25) & bullish,
+            (adx >= 25) & bearish,
+            (adx >= 20) & bullish,
+            (adx >= 20) & bearish,
             (rsi >= 40) & (rsi <= 60),
-            (c < s50) & (rsi < 40) & trending,
-            (c < s50) & (rsi < 40) & ~trending,
         ]
         choices = [
-            "Strong Bullish",
-            "Weak Bullish (Low Trend Strength)",
-            "Weak Bullish",
+            "Extremely Strong Bullish Trend",
+            "Extremely Strong Bearish Trend",
+            "Very Strong Bullish Trend",
+            "Very Strong Bearish Trend",
+            "Strong Bullish Trend",
+            "Strong Bearish Trend",
+            "Weak Bullish (Forming)",
+            "Weak Bearish (Forming)",
             "Consolidation / Neutral",
-            "Strong Bearish",
-            "Weak Bearish (Low Trend Strength)",
         ]
-        df["trend_class"] = np.select(conditions, choices, default="Weak Bearish")
+        # NB: the seven legacy string choices ("Strong Bullish", "Weak
+        # Bullish (Low Trend Strength)", "Weak Bullish", "Consolidation /
+        # Neutral", "Strong Bearish", "Weak Bearish (Low Trend Strength)",
+        # "Weak Bearish") are subsumed by the new band-x-direction labels;
+        # downstream callers only use these as display strings (decision_
+        # matrix.reads trend_class as-is, app_gui/index.html render it
+        # raw) so no consumer break. Glossary entries for the three new
+        # strength-graduated labels ("Extremely/ Very Strong ... Trend")
+        # are a separate cosmetic follow-up.
+        df["trend_class"] = np.select(conditions, choices, default="Range / Consolidation")
         return QuantitativeEngine.validate_indicator_outputs(df)
 
     # -------------------------------------------------------------------------
