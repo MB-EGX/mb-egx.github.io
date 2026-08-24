@@ -62,6 +62,26 @@ RISK_PER_TRADE_PCT = 0.01
 TRANSACTION_FEE_PCT = 0.0035  # 0.35% per side (EGX brokerage)
 ROUND_TRIP_FEE_PCT = TRANSACTION_FEE_PCT * 2
 
+# --- Performance-metric conventions (analytics.compute_perf_metrics) ---
+TRADING_DAYS_PER_YEAR = 252          # EGX trades Sun-Thu, ~252 sessions/year
+ANNUALIZED_RISK_FREE_RATE = 0.0      # EGP risk-free proxy; 0 = ignore (no clean
+                                     # risk-free series is maintained for EGP)
+
+# --- Position sizing & Kelly (decision_matrix) ---
+# Shares = risk_budget / (entry - stop + round-trip fees). The fee term in
+# the denominator makes the 1% risk figure a NET risk (what you actually
+# lose if stopped out after paying both commissions), not a gross estimate.
+POSITION_SIZE_FEE_ADJUST = True
+# Fraction of the full Kelly bet actually used. Half-Kelly is the standard
+# risk-reducing choice - it keeps ~75% of the theoretical growth rate at
+# roughly half the variance (see the Kelly-criterion literature).
+KELLY_FRACTION = 0.5
+KELLY_CAP_FRACTION = 0.25            # never bet more than 25% of equity on one idea
+# Neutral win-rate prior used when no realized backtest win rate exists for
+# an action yet (see decision_matrix._kelly_fraction) - an honest 50/50,
+# not an invented edge.
+DEFAULT_WIN_RATE_PRIOR = 0.5
+
 # --- Multi-factor confirmation matrix scoring weights ---
 SCORE_WEIGHTS = {
     "sell_avoid": -45.0,

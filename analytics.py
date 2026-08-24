@@ -30,6 +30,8 @@ from config import (
     SR_MIN_TOUCHES,
     SR_RECENCY_HALF_LIFE_DAYS,
     SR_MAX_LEVELS,
+    TRADING_DAYS_PER_YEAR,
+    ANNUALIZED_RISK_FREE_RATE,
 )
 
 import numpy as np
@@ -196,7 +198,7 @@ class QuantitativeEngine:
     def compute_perf_metrics(returns: list[float]) -> dict:
         arr = np.array([float(r) for r in returns if pd.notna(r)], dtype=float)
         if arr.size == 0:
-            return {"mean": 0.0, "vol": 0.0, "sharpe": 0.0, "sortino": 0.0, "max_drawdown": 0.0}
+            return {"mean": 0.0, "vol": 0.0, "sharpe": 0.0, "sortino": 0.0, "sharpe_daily": 0.0, "sortino_daily": 0.0, "max_drawdown": 0.0}
         mean = float(arr.mean())
         vol = float(arr.std())
         downside = arr[arr < 0]
@@ -204,11 +206,21 @@ class QuantitativeEngine:
         equity = np.cumprod(1.0 + arr)
         peaks = np.maximum.accumulate(equity)
         drawdown = np.where(peaks > 0, (equity - peaks) / peaks, 0.0)
+        # Annualized Sharpe/Sortino (standard convention): scale the raw
+        # per-bar ratio by sqrt(TRADING_DAYS_PER_YEAR) and subtract the
+        # per-bar risk-free rate. Raw per-bar ratios are kept as *_daily.
+        scale = math.sqrt(TRADING_DAYS_PER_YEAR)
+        rf_daily = (1.0 + ANNUALIZED_RISK_FREE_RATE) ** (1.0 / TRADING_DAYS_PER_YEAR) - 1.0
+        excess = mean - rf_daily
+        sharpe_daily = (excess / vol) if vol > 1e-9 else 0.0
+        sortino_daily = (excess / downside_dev) if downside_dev > 1e-9 else 0.0
         return {
             "mean": round(mean, 6),
             "vol": round(vol, 6),
-            "sharpe": round(mean / vol, 4) if vol > 1e-9 else 0.0,
-            "sortino": round(mean / downside_dev, 4) if downside_dev > 1e-9 else 0.0,
+            "sharpe_daily": round(sharpe_daily, 4),
+            "sortino_daily": round(sortino_daily, 4),
+            "sharpe": round(sharpe_daily * scale, 4),
+            "sortino": round(sortino_daily * scale, 4),
             "max_drawdown": round(float(drawdown.min()) if drawdown.size else 0.0, 6),
         }
 
@@ -317,9 +329,30 @@ class QuantitativeEngine:
         true_range = pd.Series(
             np.maximum(np.maximum(high_low, high_close), low_close), index=df.index
         )
-        df["atr_14"] = (
-            true_range.rolling(window=min(14, n), min_periods=1).mean().fillna(0)
-        )
+        # First true range is NaN (close.shift() at index 0); the textbook
+        # convention sets TR[0] = high - low so the Wilder ATR seed (the SMA
+        # of the first `period` true ranges) is exact.
+        if pd.isna(true_range.iloc[0]):
+            true_range.iloc[0] = float(high_low.iloc[0])
+        # Wilder-smoothed ATR (the textbook implementation, matching
+        # TradingView / TA-Lib / StockCharts): the first ATR is the simple
+        # mean of the first `period` true ranges, then the recursion
+        # ATR_t = (ATR_{t-1}*(period-1) + TR_t)/period. A plain rolling
+        # mean (the old code) under-weights recent true ranges and produces
+        # a lagged, over-smoothed volatility reading. Implemented as an
+        # ewm(alpha=1/period) with the seed corrected to that SMA - exact
+        # Wilder, vectorized.
+        atr_period = min(14, n)
+        if atr_period >= 2 and len(true_range) >= atr_period:
+            alpha = 1.0 / atr_period
+            atr = true_range.ewm(alpha=alpha, adjust=False, min_periods=1).mean()
+            seed = float(true_range.iloc[:atr_period].mean())
+            start = atr_period - 1
+            decay = (1.0 - alpha) ** np.arange(len(true_range) - start)
+            atr.iloc[start:] = atr.iloc[start:].values + (seed - atr.iloc[start]) * decay
+            df["atr_14"] = atr.fillna(0)
+        else:
+            df["atr_14"] = true_range.rolling(window=atr_period, min_periods=1).mean().fillna(0)
 
         bb_mean = df["close"].rolling(window=min(20, n), min_periods=1).mean()
         bb_std = df["close"].rolling(window=min(20, n), min_periods=1).std().fillna(0)

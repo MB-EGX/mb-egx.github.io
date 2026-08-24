@@ -52,6 +52,13 @@ SCOPE / KNOWN SIMPLIFICATIONS
 * Folds are counted per-ticker (ticker A's fold 3 and ticker B's fold 3
   are each that ticker's 3rd out-of-sample test window, not necessarily
   the same calendar dates) - see _aggregate_results docstring.
+* SURVIVORSHIP BIAS: the universe is "every ticker that still has market
+  data today" - names that were delisted / went bust / stopped trading
+  years ago are absent, so historical win rates are likely overstated
+  versus what a trader could actually have done at the time. This is a
+  known, unavoidable limitation of backtesting on a surviving universe
+  and is why every number here is reported with its sample size and a
+  "reliable" flag rather than presented as a validated edge.
 
 USAGE
 -----
@@ -360,6 +367,12 @@ def _simulate_ticker(
                                 "entry_price": round(entry_price, 4),
                                 "stop_loss": sig["stop_loss"],
                                 "take_profit": sig["take_profit"],
+                                # Initial per-share risk = distance from entry
+                                # to stop - the denominator every R-multiple
+                                # below is measured against (see exit branch).
+                                "initial_risk": max(entry_price - sig["stop_loss"], 1e-9),
+                                "min_low": entry_price,
+                                "max_high": entry_price,
                                 "max_exit_idx": min(t + 1 + max_hold_bars, test_end - 1, n - 1),
                                 # Factor snapshot at the bar the signal
                                 # fired (t, not t+1's fill bar - the
@@ -377,6 +390,10 @@ def _simulate_ticker(
                 bar = df_ind.iloc[t]
                 low = float(bar.get("low", bar.get("close")) or 0.0)
                 high = float(bar.get("high", bar.get("close")) or 0.0)
+                # Track the excursion envelope while the trade is open so the
+                # closed record can report MAE/MFE in R (see exit branch).
+                open_trade["min_low"] = min(open_trade["min_low"], low)
+                open_trade["max_high"] = max(open_trade["max_high"], high)
                 exit_price, exit_reason = None, None
                 if low <= open_trade["stop_loss"]:
                     exit_price, exit_reason = open_trade["stop_loss"], "stop_loss"
@@ -389,6 +406,13 @@ def _simulate_ticker(
                 if exit_price is not None:
                     gross_pct = (exit_price / open_trade["entry_price"] - 1.0) * 100.0
                     net_pct = gross_pct - (ROUND_TRIP_FEE_PCT * 100.0)
+                    # R-multiple / MAE / MFE - standard "real trading"
+                    # bookkeeping: every result is a multiple of the initial
+                    # per-share risk (entry-to-stop distance).
+                    risk = open_trade["initial_risk"]
+                    r_multiple = (exit_price - open_trade["entry_price"]) / risk
+                    mae_r = (open_trade["entry_price"] - open_trade["min_low"]) / risk
+                    mfe_r = (open_trade["max_high"] - open_trade["entry_price"]) / risk
                     exit_date_str = str(df_ind.index[t])[:10]
                     bench_ret = pct_change_between(bench_close_by_date, open_trade["entry_date"], exit_date_str)
                     excess_return_pct = round(net_pct - bench_ret, 3) if bench_ret is not None else None
@@ -402,6 +426,9 @@ def _simulate_ticker(
                         "exit_price": round(exit_price, 4),
                         "exit_reason": exit_reason,
                         "return_pct": round(net_pct, 3),
+                        "r_multiple": round(r_multiple, 3),
+                        "mae_r": round(mae_r, 3),
+                        "mfe_r": round(mfe_r, 3),
                         "holding_bars": t - open_trade["entry_idx"],
                         # Factor tags (see market_regime.py / config.
                         # BENCHMARK_TICKERS) - all additive fields, safe
@@ -457,6 +484,13 @@ def _aggregate_results(trades: list[dict], cfg: dict, tickers_run: int) -> dict:
     n_folds = len(fold_summaries)
     all_returns = [t["return_pct"] / 100.0 for t in trades]
     overall_metrics = QuantitativeEngine.compute_perf_metrics(all_returns)
+    # R-multiple bookkeeping (see _simulate_ticker): expectancy = average R
+    # per trade, plus how deep trades went against us (MAE) / for us (MFE).
+    r_multiples = [t["r_multiple"] for t in trades if t.get("r_multiple") is not None]
+    holding_bars = [t["holding_bars"] for t in trades if t.get("holding_bars") is not None]
+    avg_r = (sum(r_multiples) / len(r_multiples)) if r_multiples else None
+    avg_mae = (sum(t.get("mae_r", 0.0) for t in trades) / len(trades)) if trades else None
+    avg_mfe = (sum(t.get("mfe_r", 0.0) for t in trades) / len(trades)) if trades else None
     wins_overall = [r for r in all_returns if r > 0]
     gross_profit = sum(r for r in all_returns if r > 0)
     gross_loss = abs(sum(r for r in all_returns if r <= 0))
@@ -484,6 +518,11 @@ def _aggregate_results(trades: list[dict], cfg: dict, tickers_run: int) -> dict:
         "trade_count": len(trades),
         "win_rate_pct": round(len(wins_overall) / len(all_returns) * 100.0, 1) if all_returns else 0.0,
         "avg_return_pct": round(float(np.mean(all_returns)) * 100.0, 3) if all_returns else 0.0,
+        "avg_r_multiple": round(avg_r, 3) if avg_r is not None else None,
+        "expectancy_r": round(avg_r, 3) if avg_r is not None else None,
+        "avg_mae_r": round(avg_mae, 3) if avg_mae is not None else None,
+        "avg_mfe_r": round(avg_mfe, 3) if avg_mfe is not None else None,
+        "avg_holding_bars": round(sum(holding_bars) / len(holding_bars), 2) if holding_bars else None,
         "profit_factor": profit_factor,
         "overall": overall_metrics,
         "folds": fold_summaries,

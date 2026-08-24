@@ -114,12 +114,24 @@ def _bucket_stats(trades: list[dict], key_fn) -> list[dict]:
         win_rate = (wins / n) if n else 0.0
         ci_lo, ci_hi = _wilson_ci(wins, n)
         excess = [t["excess_return_pct"] for t in group if t.get("excess_return_pct") is not None]
+        # R-multiple bookkeeping (see backtester._simulate_ticker): a
+        # bucket's expectancy = average R per trade, plus how deep trades
+        # went against it (MAE) / for it (MFE) - the "real trading"
+        # measures, not just % return.
+        r_mults = [t["r_multiple"] for t in group if t.get("r_multiple") is not None]
+        mae = [t["mae_r"] for t in group if t.get("mae_r") is not None]
+        mfe = [t["mfe_r"] for t in group if t.get("mfe_r") is not None]
+        avg_r = (sum(r_mults) / len(r_mults)) if r_mults else None
         rows.append({
             "bucket": key,
             "trade_count": n,
             "win_rate_pct": round(win_rate * 100.0, 1),
             "win_rate_95pct_ci": [round(ci_lo * 100.0, 1), round(ci_hi * 100.0, 1)],
             "avg_return_pct": round(sum(returns) / n, 3) if n else 0.0,
+            "avg_r_multiple": round(avg_r, 3) if avg_r is not None else None,
+            "expectancy_r": round(avg_r, 3) if avg_r is not None else None,
+            "avg_mae_r": round(sum(mae) / len(mae), 3) if mae else None,
+            "avg_mfe_r": round(sum(mfe) / len(mfe), 3) if mfe else None,
             "avg_excess_return_vs_benchmark_pct": round(sum(excess) / len(excess), 3) if excess else None,
             "benchmark_coverage": f"{len(excess)}/{n}",
             "reliable": n >= FACTOR_BACKTEST_MIN_TRADES_RELIABLE,

@@ -50,6 +50,10 @@ from config import (
     PATTERN_DETECTION,
     LONG_TERM_SETUP,
     MIN_AVG_VOLUME_LONG_TERM,
+    POSITION_SIZE_FEE_ADJUST,
+    KELLY_FRACTION,
+    KELLY_CAP_FRACTION,
+    DEFAULT_WIN_RATE_PRIOR,
     get_logger,
 )
 
@@ -360,10 +364,19 @@ def _confidence_weight(n_bars: int) -> float:
 
 # Pass connect_db=False so background workers never try to open DuckDB!
 def _kelly_fraction(win_rate: float, payoff_ratio: float) -> float:
+    """Fractional-Kelly position fraction, standard form:
+    f* = (p*b - q) / b  where p=win_rate, q=1-p, b=payoff_ratio
+    (equivalently p - q/b), then scaled by KELLY_FRACTION (half-Kelly by
+    default) and capped at KELLY_CAP_FRACTION. The 0.5/0.25 scaling was
+    previously hardcoded inline; it now lives in config so the risk
+    posture is tunable in one place. Full Kelly is the growth-optimal
+    bet but is far too aggressive for real trading (tiny errors in the
+    win-rate estimate are magnified), which is why the standard practice
+    is to bet a fraction of it."""
     win_rate = max(0.0, min(1.0, float(win_rate)))
     payoff_ratio = max(float(payoff_ratio), 1e-6)
     raw = win_rate - ((1.0 - win_rate) / payoff_ratio)
-    return max(0.0, min(raw * 0.5, 0.25))
+    return max(0.0, min(raw * KELLY_FRACTION, KELLY_CAP_FRACTION))
 
 
 def _graduated_score(value: float, soft_lo: float, lo: float, hi: float, soft_hi: float, max_pts: float) -> float:
@@ -1583,9 +1596,21 @@ class DecisionMatrix:
                     min(curr_price, vwap) if pd.notna(vwap) and vwap > 0 else curr_price
                 )
                 atr_mult = ACTION_THRESHOLDS["atr_trailing_multiplier"]
+                # The displayed stop level is the pure ATR stop (unchanged).
                 stop_distance = atr_mult * atr
                 suggested_stop = round(max(curr_price - stop_distance, 0.0001), 4)
                 risk_budget = cash_balance * RISK_PER_TRADE_PCT
+                # Real position sizing: shares = risk budget / (stop distance
+                # + round-trip fees). Adding the fee drag to the denominator
+                # makes the 1%-risk figure a NET risk (what is actually lost
+                # if stopped out after paying both commissions), not a gross
+                # estimate. The stop LEVEL itself is untouched.
+                if POSITION_SIZE_FEE_ADJUST:
+                    sizing_stop_distance = stop_distance + (
+                        entry_target * ROUND_TRIP_FEE_PCT
+                    )
+                else:
+                    sizing_stop_distance = stop_distance
 
                 # Buy-side take-profit target: same pattern-match / ATR-floor
                 # blend already used for owned-position exits above, just
@@ -1609,10 +1634,27 @@ class DecisionMatrix:
                 max_affordable_shares = (
                     int(cash_balance / effective_entry_cost) if effective_entry_cost > 0 else 0
                 )
-                raw_shares = int(risk_budget / stop_distance) if stop_distance > 0 else 0
+                raw_shares = (
+                    int(risk_budget / sizing_stop_distance)
+                    if sizing_stop_distance > 0 else 0
+                )
                 suggested_shares = min(raw_shares, max_affordable_shares)
-                reward_risk = (max(take_profit_target - curr_price, 0.0) / stop_distance) if stop_distance > 0 else 0.0
-                win_rate_est = (pattern_data.get("confidence", 45.0) / 100.0) if pattern_data.get("match_found") else 0.45
+                reward_risk = (
+                    (max(take_profit_target - curr_price, 0.0) / sizing_stop_distance)
+                    if sizing_stop_distance > 0 else 0.0
+                )
+                # Win-rate estimate for Kelly: when a historical-analog match
+                # exists, its confidence is used; otherwise an honest 50/50
+                # prior (config.DEFAULT_WIN_RATE_PRIOR) instead of the old
+                # invented 45% - never fabricate an edge where none is
+                # measured. (The backtester's realized per-action win rates
+                # are the proper source; wiring them in live is a future step
+                # - see backtester.py's R-multiple bookkeeping.)
+                win_rate_est = (
+                    (pattern_data.get("confidence", DEFAULT_WIN_RATE_PRIOR * 100.0) / 100.0)
+                    if pattern_data.get("match_found")
+                    else DEFAULT_WIN_RATE_PRIOR
+                )
                 kelly_pct = round(_kelly_fraction(win_rate_est, reward_risk) * 100.0, 2)
                 projected_band = (
                     f"{pattern_data.get('lower_95_pct', 'N/A')}% to {pattern_data.get('upper_95_pct', 'N/A')}%"
