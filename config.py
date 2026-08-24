@@ -350,6 +350,22 @@ SESSION_PICKS_EXPECTED_DAYS = {
     "long": (60, 180),
 }
 
+# Session Picks used to stay active FOREVER unless they eventually hit their
+# upside target. That meant a short-term idea could still sit in the tab two
+# weeks later even after its own expected window had already passed and/or the
+# price had rolled over materially. These per-horizon downside invalidation
+# bars fix that: on each matrix run, session_picks.py now retires a pick once
+# it is down at least this much from its stamped ref_price, freeing the slot
+# for a fresher candidate instead of letting stale losers clog the list.
+#
+# Values are absolute downside percentages (positive numbers here; the code
+# compares current return <= -stop_pct).
+SESSION_PICKS_STOP_LOSS_PCT = {
+    "short": 3.0,
+    "medium": 6.0,
+    "long": 10.0,
+}
+
 # --- Hosted/web scale configuration ---
 SUBSCRIPTION_TIERS = {
     "free": {

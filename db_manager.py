@@ -427,10 +427,14 @@ class DatabaseManager:
                     horizon VARCHAR,        -- 'short' | 'medium' | 'long'
                     pick_date DATE,
                     ref_price DOUBLE,
-                    status VARCHAR DEFAULT 'active',  -- 'active' | 'achieved'
+                    status VARCHAR DEFAULT 'active',  -- 'active' | 'achieved' | 'retired'
                     achieved_date DATE,
                     achieved_price DOUBLE,
                     achieved_pct DOUBLE,
+                    retired_date DATE,
+                    retired_price DOUBLE,
+                    retired_pct DOUBLE,
+                    retired_reason VARCHAR,
                     source VARCHAR DEFAULT 'signal'  -- 'signal' (fired STRONG BUY/BREAKOUT
                     -- BUY/sector-leader pool) | 'pre_breakout' (still-coiling Pre-Breakout
                     -- Watchlist fallback — see session_picks._candidate_pool /
@@ -449,8 +453,20 @@ class DatabaseManager:
                 conn.execute(
                     "ALTER TABLE session_picks ADD COLUMN IF NOT EXISTS source VARCHAR DEFAULT 'signal';"
                 )
+                conn.execute(
+                    "ALTER TABLE session_picks ADD COLUMN IF NOT EXISTS retired_date DATE;"
+                )
+                conn.execute(
+                    "ALTER TABLE session_picks ADD COLUMN IF NOT EXISTS retired_price DOUBLE;"
+                )
+                conn.execute(
+                    "ALTER TABLE session_picks ADD COLUMN IF NOT EXISTS retired_pct DOUBLE;"
+                )
+                conn.execute(
+                    "ALTER TABLE session_picks ADD COLUMN IF NOT EXISTS retired_reason VARCHAR;"
+                )
             except Exception as e:
-                logger.warning(f"session_picks.source column migration skipped: {e}")
+                logger.warning(f"session_picks column migration skipped: {e}")
             # Manual-removal memory (see remove_pick / get_excluded_tickers
             # below). Without this, clicking "Remove" just deletes the row
             # and re-runs the matrix - but refresh_session_picks() refills
@@ -625,6 +641,26 @@ class DatabaseManager:
                 "UPDATE session_picks SET status = 'achieved', achieved_date = ?, "
                 "achieved_price = ?, achieved_pct = ? WHERE id = ?;",
                 (str(achieved_date), float(achieved_price), float(achieved_pct), int(pick_id)),
+            )
+
+    def retire_pick(self, pick_id: int, retired_date: str, retired_price: float | None,
+                    retired_pct: float | None, retired_reason: str):
+        """Marks an active Session Pick as retired/invalidated.
+
+        Unlike remove_pick(), this preserves the row as history so stale or
+        failed ideas can be audited later instead of silently disappearing.
+        """
+        with self.get_connection() as conn:
+            conn.execute(
+                "UPDATE session_picks SET status = 'retired', retired_date = ?, "
+                "retired_price = ?, retired_pct = ?, retired_reason = ? WHERE id = ?;",
+                (
+                    str(retired_date),
+                    float(retired_price) if retired_price is not None else None,
+                    float(retired_pct) if retired_pct is not None else None,
+                    str(retired_reason or 'retired'),
+                    int(pick_id),
+                ),
             )
 
     def remove_pick(self, pick_id: int):

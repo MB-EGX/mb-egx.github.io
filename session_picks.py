@@ -70,6 +70,8 @@ from config import (
 
     MAX_ACHIEVED_HISTORY, SESSION_PICKS_PRE_BREAKOUT_MAX_SLOTS, SESSION_PICKS_PRE_BREAKOUT_MIN_SCORE,
 
+    SESSION_PICKS_STOP_LOSS_PCT,
+
 )
 
 from market_regime import pct_change_between
@@ -227,6 +229,67 @@ HORIZON_LABELS = {
 
 
 
+def _parse_iso_date(value: str | None) -> date | None:
+
+    try:
+
+        return date.fromisoformat(str(value)[:10]) if value else None
+
+    except (ValueError, TypeError):
+
+        return None
+
+
+
+def _add_egx_trading_days(start_date: date, sessions: int) -> date:
+
+    """Adds EGX trading sessions, skipping Friday/Saturday weekends."""
+
+    if sessions <= 0:
+
+        return start_date
+
+    d = start_date
+
+    added = 0
+
+    while added < sessions:
+
+        d += timedelta(days=1)
+
+        if d.weekday() not in (4, 5):  # Fri/Sat weekend, Sun-Thu trading
+
+            added += 1
+
+    return d
+
+
+
+def _retirement_reason(pick: dict, horizon: str, session_date: str, current_pct: float | None) -> str | None:
+
+    reasons = []
+
+    stop_pct = float(SESSION_PICKS_STOP_LOSS_PCT.get(horizon, 0.0) or 0.0)
+
+    if current_pct is not None and stop_pct > 0 and current_pct <= -abs(stop_pct):
+
+        reasons.append(f"stop_loss_{stop_pct:g}pct")
+
+    _, expected_by = _expected_window(pick.get("pick_date"), horizon)
+
+    session_d = _parse_iso_date(session_date)
+
+    expected_by_d = _parse_iso_date(expected_by)
+
+    if session_d and expected_by_d and session_d > expected_by_d:
+
+        reasons.append("expired_expected_window")
+
+    return "+".join(reasons) if reasons else None
+
+
+
+
 
 
 def _expected_window(pick_date: str, horizon: str) -> tuple[str | None, str | None]:
@@ -253,7 +316,7 @@ def _expected_window(pick_date: str, horizon: str) -> tuple[str | None, str | No
 
         return None, None
 
-    return (d + timedelta(days=lo)).isoformat(), (d + timedelta(days=hi)).isoformat()
+    return _add_egx_trading_days(d, lo).isoformat(), _add_egx_trading_days(d, hi).isoformat()
 
 
 
@@ -295,11 +358,25 @@ def _with_expected_window(picks: list, horizon: str, session_date: str | None = 
 
     expected_pct = SESSION_PICKS_EXPECTED_PCT.get(horizon)
 
+    session_d = _parse_iso_date(session_date)
+
     for p in picks:
 
         p["expected_from"], p["expected_by"] = _expected_window(p["pick_date"], horizon)
 
         p["expected_pct"] = expected_pct
+
+        p["stop_loss_pct"] = SESSION_PICKS_STOP_LOSS_PCT.get(horizon)
+
+        pick_d = _parse_iso_date(p.get("pick_date"))
+
+        expected_by_d = _parse_iso_date(p.get("expected_by"))
+
+        p["days_active"] = (session_d - pick_d).days if session_d and pick_d else None
+
+        p["days_overdue"] = (session_d - expected_by_d).days if session_d and expected_by_d and session_d > expected_by_d else 0
+
+        p["is_overdue"] = bool(p.get("days_overdue"))
 
         p["benchmark_pct"] = (
 
@@ -699,6 +776,8 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
 
     achieved_today = []
 
+    retired_today = []
+
     for horizon in HORIZONS:
 
         threshold = SESSION_PICKS_EXPECTED_PCT.get(horizon, 3.0)
@@ -758,6 +837,30 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
                 achieved_today.append(event_payload)
 
                 _emit_alert("pick_achieved", event_payload)
+
+                continue
+
+            retirement_reason = _retirement_reason(pick, horizon, session_date, pct)
+
+            if retirement_reason:
+
+                retired_pct = round(pct, 2)
+
+                dbm.retire_pick(pick["id"], session_date, current_price, retired_pct, retirement_reason)
+
+                retired_today.append({
+
+                    **pick,
+
+                    "retired_date": session_date,
+
+                    "retired_price": current_price,
+
+                    "retired_pct": retired_pct,
+
+                    "retired_reason": retirement_reason,
+
+                })
 
 
 
@@ -819,7 +922,7 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
 
                 pre_breakout_fills += 1
 
-            dbm.add_pick(ticker, horizon, session_date, price)
+            dbm.add_pick(ticker, horizon, session_date, price, source="pre_breakout" if row.get("Pre-Breakout Pick") else "signal")
 
             active_tickers.add(ticker)
 
@@ -869,6 +972,8 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
 
             benchmark_pct = p.get("benchmark_pct")
 
+            p["current_pct"] = stock_pct
+
             p["alpha_vs_benchmark_pct"] = (
 
                 round(stock_pct - benchmark_pct, 2)
@@ -878,6 +983,8 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
             )
 
     state["achieved_today"] = achieved_today
+
+    state["retired_today"] = retired_today
 
     state["achieved_this_week"] = _achieved_this_week(dbm, session_date)
 

@@ -1,0 +1,20 @@
+MB-EGX Session Picks logic revision
+
+Files updated:
+- session_picks.py
+- db_manager.py
+- config.py
+
+What changed:
+1. Expected windows now use EGX trading sessions (skip Fri/Sat) instead of raw calendar days.
+2. Active picks now retire when they are materially invalidated:
+   - short: -3%
+   - medium: -6%
+   - long: -10%
+3. Active picks also retire once their expected window has passed.
+4. Retired picks are preserved in DB history with retired_date / retired_price / retired_pct / retired_reason instead of disappearing silently.
+5. State returned to UI/export now includes current_pct, stop_loss_pct, is_overdue, days_overdue, and days_active.
+6. New picks now correctly preserve source=pre_breakout when filled from the breakout watchlist.
+
+Why this fixes your issue:
+Previously a pick stayed active forever unless it hit its upside target. So a short-term pick could remain visible long after its own expected window had expired and even after price had fallen sharply. The revised lifecycle removes stale/failed picks automatically and immediately frees the slot for fresher candidates.
