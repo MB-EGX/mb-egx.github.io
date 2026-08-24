@@ -1,67 +1,67 @@
 {
   "ticker": "ROTO.CA",
-  "last_data_date": "2026-08-23",
+  "last_data_date": "2026-08-24",
   "sector": "Travel & Leisure",
   "matrix": {
     "Ticker": "ROTO.CA",
     "Sector": "Travel & Leisure",
-    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Confirmed": true,
     "Long-Term Setup Reasons": [
-      "No confirmed higher-low swing structure yet",
+      "Higher-low swing structure confirmed",
       "Ascending Triangle match (quality 0.91)"
     ],
-    "P/E Ratio": 22.92,
+    "P/E Ratio": 22.49,
     "EPS": 2.0069,
     "Beta": -0.55,
     "Dividend Yield %": null,
-    "Market Cap": 791150000.0,
-    "1W Return %": -11.28,
-    "1M Return %": 6.28,
-    "YTD Return %": 25.79,
-    "1Y Return %": 77.89,
-    "3Y Return %": 181.23,
-    "External Rating Consensus": -0.875,
+    "Market Cap": 794610000.0,
+    "1W Return %": -9.92,
+    "1M Return %": 6.4,
+    "YTD Return %": 25.93,
+    "1Y Return %": 81.4,
+    "3Y Return %": 181.54,
+    "External Rating Consensus": -0.125,
     "External Rating Note": null,
     "Action": "🟡 HOLD / NEUTRAL",
-    "Rank Score": 5.9,
-    "Current Price": 45.7,
-    "Target Entry (VWAP)": 45.7,
-    "Suggested Stop-Loss": 35.6686,
-    "Take-Profit Target": 46.9339,
+    "Rank Score": 22.8,
+    "Current Price": 45.75,
+    "Target Entry (VWAP)": 45.75,
+    "Suggested Stop-Loss": 35.6971,
+    "Take-Profit Target": 46.9852,
     "Resistance (52W High)": 53.6,
     "Support (52W Low)": 24.91,
     "Nearest Resistance": null,
     "Resistance Touches": null,
     "Nearest Support": 30.9,
     "Support Touches": 2,
-    "Pivot Point": 50.6567,
-    "R1": 54.4533,
-    "R2": 57.3967,
-    "R3": 61.1933,
-    "S1": 47.7133,
-    "S2": 43.9167,
-    "S3": 40.9733,
-    "Projected Gain (%)": -3.4,
-    "Pattern Conf (%)": 24.73,
-    "Projected Range 95%": "-16.5% to 2.8%",
+    "Pivot Point": 47.99,
+    "R1": 50.48,
+    "R2": 55.26,
+    "R3": 57.75,
+    "S1": 43.21,
+    "S2": 40.72,
+    "S3": 35.94,
+    "Projected Gain (%)": 0.2,
+    "Pattern Conf (%)": 62.97,
+    "Projected Range 95%": "-1.39% to 3.26%",
     "Kelly %": 0.0,
-    "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Strong Bullish | no decisive edge | weekly aligned",
+    "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Strong Bullish | no decisive edge | weekly aligned | vol x1.23",
     "Score Breakdown": {
-      "pattern": 7.42,
-      "projected": -5.1,
-      "range": 3.62,
+      "pattern": 18.89,
+      "projected": 0.3,
+      "range": 3.63,
       "trend_bonus": 0.0,
       "confidence_weight": 1.0
     },
     "Regime": "Volatile Range",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 52.0,
-    "ADX-14": 21.5,
-    "Vol Z-Score": -0.35,
-    "MACD Signal": "Bullish",
-    "MACD Histogram": 0.1444,
+    "RSI-14": 52.1,
+    "ADX-14": 20.4,
+    "Vol Z-Score": 0.39,
+    "MACD Signal": "🔴 Bearish Cross",
+    "MACD Histogram": -0.0903,
     "Bollinger %B": 0.567,
-    "Avg Volume (20D)": 414703,
+    "Avg Volume (20D)": 422124,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -318,7 +318,8 @@
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
-      "2026-08-23 00:00:00"
+      "2026-08-23 00:00:00",
+      "2026-08-24 00:00:00"
     ],
     "close": [
       25.69,
@@ -573,7 +574,8 @@
       51.22,
       48.07,
       46.33,
-      45.7
+      45.7,
+      45.75
     ],
     "open": [
       25.61,
@@ -828,7 +830,8 @@
       50.79,
       51.22,
       48.07,
-      46.33
+      46.33,
+      45.7
     ],
     "high": [
       26.1,
@@ -1083,7 +1086,8 @@
       52.0,
       51.8,
       48.49,
-      47.43
+      47.43,
+      46.99
     ],
     "low": [
       25.61,
@@ -1338,7 +1342,8 @@
       49.85,
       48.0,
       46.33,
-      45.5
+      45.5,
+      44.86
     ],
     "volume": [
       253480,
@@ -1593,7 +1598,8 @@
       380507,
       278335,
       319361,
-      328235
+      328235,
+      517956
     ],
     "vwap": [
       25.8,
@@ -1848,18 +1854,19 @@
       45.8467,
       46.2547,
       46.5238,
-      46.5714
+      46.5714,
+      46.6101
     ],
     "resistance": 53.6,
     "support": 30.9,
     "pivots": {
-      "pp": 50.6567,
-      "r1": 54.4533,
-      "r2": 57.3967,
-      "r3": 61.1933,
-      "s1": 47.7133,
-      "s2": 43.9167,
-      "s3": 40.9733
+      "pp": 47.99,
+      "r1": 50.48,
+      "r2": 55.26,
+      "r3": 57.75,
+      "s1": 43.21,
+      "s2": 40.72,
+      "s3": 35.94
     },
     "patterns": [
       {
@@ -1989,6 +1996,21 @@
         },
         "quality": 0.91,
         "apex_index": 230.3357963875205
+      },
+      {
+        "pattern": "Price Channel (Rising)",
+        "direction": "bullish",
+        "start_index": 217,
+        "end_index": 252,
+        "start_date": "2026-07-04",
+        "end_date": "2026-08-23",
+        "levels": {
+          "resistance_start": 41.6571,
+          "resistance_end": 52.1493,
+          "support_start": 30.5222,
+          "support_end": 42.041
+        },
+        "quality": 0.85
       },
       {
         "pattern": "Double Top",

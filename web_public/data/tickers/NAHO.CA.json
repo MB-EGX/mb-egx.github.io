@@ -1,6 +1,6 @@
 {
   "ticker": "NAHO.CA",
-  "last_data_date": "2026-08-23",
+  "last_data_date": "2026-08-24",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "NAHO.CA",
@@ -14,54 +14,54 @@
     "EPS": null,
     "Beta": -0.07,
     "Dividend Yield %": null,
-    "Market Cap": 54790000.0,
-    "1W Return %": 9.02,
-    "1M Return %": 42.16,
-    "YTD Return %": 29.46,
-    "1Y Return %": 13.28,
-    "3Y Return %": 21.85,
-    "External Rating Consensus": 0.625,
+    "Market Cap": 53660000.0,
+    "1W Return %": 4.41,
+    "1M Return %": 39.22,
+    "YTD Return %": 26.79,
+    "1Y Return %": 10.94,
+    "3Y Return %": 19.33,
+    "External Rating Consensus": 0.125,
     "External Rating Note": null,
-    "Action": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned)",
-    "Rank Score": 25.0,
-    "Current Price": 0.145,
-    "Target Entry (VWAP)": 0.145,
+    "Action": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor)",
+    "Rank Score": 24.8,
+    "Current Price": 0.142,
+    "Target Entry (VWAP)": 0.142,
     "Suggested Stop-Loss": 0.0001,
-    "Take-Profit Target": 0.1489,
+    "Take-Profit Target": 0.1458,
     "Resistance (52W High)": 15.09,
     "Support (52W Low)": 0.101,
     "Nearest Resistance": 9.45,
     "Resistance Touches": 2,
     "Nearest Support": null,
     "Support Touches": null,
-    "Pivot Point": 0.1227,
-    "R1": 0.1433,
-    "R2": 0.1537,
-    "R3": 0.1743,
-    "S1": 0.1123,
-    "S2": 0.0917,
-    "S3": 0.0813,
-    "Projected Gain (%)": -2.27,
-    "Pattern Conf (%)": 59.52,
-    "Projected Range 95%": "-4.74% to -0.29%",
+    "Pivot Point": 0.146,
+    "R1": 0.157,
+    "R2": 0.169,
+    "R3": 0.18,
+    "S1": 0.134,
+    "S2": 0.123,
+    "S3": 0.111,
+    "Projected Gain (%)": -0.89,
+    "Pattern Conf (%)": 62.06,
+    "Projected Range 95%": "-2.98% to 1.16%",
     "Kelly %": 0.0,
-    "Signal Reason": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned) | trend=Consolidation / Neutral | awaiting confirmation | positive money flow",
+    "Signal Reason": "⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor) | trend=Consolidation / Neutral | awaiting confirmation | positive money flow",
     "Score Breakdown": {
-      "pattern": 17.86,
-      "projected": -3.41,
+      "pattern": 18.62,
+      "projected": -1.33,
       "range": 0.01,
-      "trend_bonus": 10.5,
+      "trend_bonus": 7.5,
       "confidence_weight": 1.0
     },
     "Regime": "Volatile Range",
     "Trend Class": "Consolidation / Neutral",
     "RSI-14": 45.0,
-    "ADX-14": 17.3,
-    "Vol Z-Score": -0.46,
+    "ADX-14": 16.6,
+    "Vol Z-Score": -0.38,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.1483,
+    "MACD Histogram": -0.1074,
     "Bollinger %B": 0.362,
-    "Avg Volume (20D)": 926728,
+    "Avg Volume (20D)": 944065,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -318,7 +318,8 @@
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
-      "2026-08-23 00:00:00"
+      "2026-08-23 00:00:00",
+      "2026-08-24 00:00:00"
     ],
     "close": [
       7.75,
@@ -573,7 +574,8 @@
       0.147,
       0.144,
       0.146,
-      0.145
+      0.145,
+      0.142
     ],
     "open": [
       7.73,
@@ -828,7 +830,8 @@
       0.136,
       0.144,
       0.145,
-      0.146
+      0.146,
+      0.145
     ],
     "high": [
       7.8,
@@ -1083,7 +1086,8 @@
       0.148,
       0.151,
       0.15,
-      0.147
+      0.147,
+      0.149
     ],
     "low": [
       7.7,
@@ -1338,7 +1342,8 @@
       0.135,
       0.142,
       0.145,
-      0.144
+      0.144,
+      0.142
     ],
     "volume": [
       60550,
@@ -1593,7 +1598,8 @@
       2073704,
       1576788,
       947249,
-      248538
+      248538,
+      392938
     ],
     "vwap": [
       7.75,
@@ -1848,18 +1854,19 @@
       0.9757,
       0.9414,
       0.9124,
-      0.9062
+      0.9062,
+      0.8923
     ],
     "resistance": 9.45,
     "support": 0.101,
     "pivots": {
-      "pp": 0.1227,
-      "r1": 0.1433,
-      "r2": 0.1537,
-      "r3": 0.1743,
-      "s1": 0.1123,
-      "s2": 0.0917,
-      "s3": 0.0813
+      "pp": 0.146,
+      "r1": 0.157,
+      "r2": 0.169,
+      "r3": 0.18,
+      "s1": 0.134,
+      "s2": 0.123,
+      "s3": 0.111
     },
     "patterns": [
       {

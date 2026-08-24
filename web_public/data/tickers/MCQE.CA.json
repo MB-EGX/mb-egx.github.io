@@ -1,67 +1,67 @@
 {
   "ticker": "MCQE.CA",
-  "last_data_date": "2026-08-23",
+  "last_data_date": "2026-08-24",
   "sector": "Building Materials",
   "matrix": {
     "Ticker": "MCQE.CA",
     "Sector": "Building Materials",
-    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Confirmed": true,
     "Long-Term Setup Reasons": [
-      "No confirmed higher-low swing structure yet",
+      "Higher-low swing structure confirmed",
       "Double Bottom match (quality 0.93)"
     ],
-    "P/E Ratio": 8.23,
+    "P/E Ratio": 8.45,
     "EPS": 27.0852,
     "Beta": 0.52,
-    "Dividend Yield %": 4.91,
-    "Market Cap": 21130000000.0,
-    "1W Return %": -12.49,
-    "1M Return %": 16.86,
-    "YTD Return %": 28.73,
-    "1Y Return %": 141.87,
-    "3Y Return %": 1457.68,
-    "External Rating Consensus": -0.5,
+    "Dividend Yield %": 4.95,
+    "Market Cap": 22370000000.0,
+    "1W Return %": -2.92,
+    "1M Return %": 23.71,
+    "YTD Return %": 36.27,
+    "1Y Return %": 159.61,
+    "3Y Return %": 1548.97,
+    "External Rating Consensus": 1.75,
     "External Rating Note": null,
-    "Action": "🟡 HOLD / NEUTRAL",
-    "Rank Score": 25.8,
-    "Current Price": 220.1,
-    "Target Entry (VWAP)": 220.1,
-    "Suggested Stop-Loss": 180.1529,
-    "Take-Profit Target": 232.8218,
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 39.4,
+    "Current Price": 233.0,
+    "Target Entry (VWAP)": 230.6623,
+    "Suggested Stop-Loss": 190.9529,
+    "Take-Profit Target": 242.1336,
     "Resistance (52W High)": 292.32,
     "Support (52W Low)": 69.0,
     "Nearest Resistance": null,
     "Resistance Touches": null,
     "Nearest Support": 186.91,
     "Support Touches": 2,
-    "Pivot Point": 246.96,
-    "R1": 296.86,
-    "R2": 342.22,
-    "R3": 392.12,
-    "S1": 201.6,
-    "S2": 151.7,
-    "S3": 106.34,
-    "Projected Gain (%)": 5.08,
-    "Pattern Conf (%)": 49.26,
-    "Projected Range 95%": "-4.89% to 13.18%",
+    "Pivot Point": 229.0367,
+    "R1": 246.0633,
+    "R2": 272.0267,
+    "R3": 289.0533,
+    "S1": 203.0733,
+    "S2": 186.0467,
+    "S3": 160.0833,
+    "Projected Gain (%)": 3.22,
+    "Pattern Conf (%)": 33.09,
+    "Projected Range 95%": "-10.37% to 10.76%",
     "Kelly %": 0.0,
-    "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Strong Bullish | no decisive edge | weekly aligned",
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x1.80",
     "Score Breakdown": {
-      "pattern": 14.78,
-      "projected": 7.62,
-      "range": 3.38,
-      "trend_bonus": 0.0,
+      "pattern": 9.93,
+      "projected": 4.83,
+      "range": 3.67,
+      "trend_bonus": 21.0,
       "confidence_weight": 1.0
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 55.6,
-    "ADX-14": 30.1,
-    "Vol Z-Score": -0.75,
+    "RSI-14": 60.6,
+    "ADX-14": 30.6,
+    "Vol Z-Score": 0.96,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.1332,
-    "Bollinger %B": 0.601,
-    "Avg Volume (20D)": 250788,
+    "MACD Histogram": 0.0846,
+    "Bollinger %B": 0.692,
+    "Avg Volume (20D)": 273305,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -318,7 +318,8 @@
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
-      "2026-08-23 00:00:00"
+      "2026-08-23 00:00:00",
+      "2026-08-24 00:00:00"
     ],
     "close": [
       91.0,
@@ -573,7 +574,8 @@
       221.5,
       223.99,
       222.0,
-      220.1
+      220.1,
+      233.0
     ],
     "open": [
       83.9,
@@ -828,7 +830,8 @@
       240.0,
       225.0,
       224.0,
-      222.0
+      222.0,
+      220.1
     ],
     "high": [
       92.98,
@@ -1083,7 +1086,8 @@
       244.79,
       236.0,
       227.4,
-      227.0
+      227.0,
+      244.0
     ],
     "low": [
       83.81,
@@ -1338,7 +1342,8 @@
       212.01,
       214.0,
       215.0,
-      219.25
+      219.25,
+      220.6
     ],
     "volume": [
       531970,
@@ -1593,7 +1598,8 @@
       234207,
       343610,
       141605,
-      81935
+      81935,
+      491745
     ],
     "vwap": [
       89.2633,
@@ -1848,18 +1854,19 @@
       229.1043,
       229.5284,
       229.7991,
-      230.1264
+      230.1264,
+      230.6623
     ],
     "resistance": 292.32,
     "support": 186.91,
     "pivots": {
-      "pp": 246.96,
-      "r1": 296.86,
-      "r2": 342.22,
-      "r3": 392.12,
-      "s1": 201.6,
-      "s2": 151.7,
-      "s3": 106.34
+      "pp": 229.0367,
+      "r1": 246.0633,
+      "r2": 272.0267,
+      "r3": 289.0533,
+      "s1": 203.0733,
+      "s2": 186.0467,
+      "s3": 160.0833
     },
     "patterns": [
       {
@@ -1955,6 +1962,21 @@
         },
         "quality": 0.97,
         "apex_index": 452.94367227505495
+      },
+      {
+        "pattern": "Price Channel (Rising)",
+        "direction": "bullish",
+        "start_index": 194,
+        "end_index": 252,
+        "start_date": "2026-06-01",
+        "end_date": "2026-08-23",
+        "levels": {
+          "resistance_start": 185.654,
+          "resistance_end": 258.0751,
+          "support_start": 137.8851,
+          "support_end": 206.498
+        },
+        "quality": 0.85
       },
       {
         "pattern": "Double Bottom",

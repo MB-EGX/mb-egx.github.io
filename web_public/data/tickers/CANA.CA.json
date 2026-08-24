@@ -1,67 +1,67 @@
 {
   "ticker": "CANA.CA",
-  "last_data_date": "2026-08-23",
+  "last_data_date": "2026-08-24",
   "sector": "Banks",
   "matrix": {
     "Ticker": "CANA.CA",
     "Sector": "Banks",
-    "Long-Term Setup Confirmed": true,
+    "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
-      "Higher-low swing structure confirmed",
+      "No confirmed higher-low swing structure yet",
       "Double Bottom match (quality 0.94)"
     ],
-    "P/E Ratio": 6.85,
+    "P/E Ratio": 6.77,
     "EPS": 6.1456,
     "Beta": 0.4,
     "Dividend Yield %": null,
-    "Market Cap": 42020000000.0,
-    "1W Return %": -0.94,
-    "1M Return %": 13.32,
-    "YTD Return %": 72.35,
-    "1Y Return %": 164.58,
-    "3Y Return %": 1009.53,
-    "External Rating Consensus": 1.75,
+    "Market Cap": 41350000000.0,
+    "1W Return %": -2.27,
+    "1M Return %": 11.31,
+    "YTD Return %": 69.28,
+    "1Y Return %": 161.04,
+    "3Y Return %": 989.76,
+    "External Rating Consensus": -0.25,
     "External Rating Note": null,
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 53.6,
-    "Current Price": 42.1,
-    "Target Entry (VWAP)": 40.0257,
-    "Suggested Stop-Loss": 37.3014,
-    "Take-Profit Target": 43.2367,
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 30.9,
+    "Current Price": 41.35,
+    "Target Entry (VWAP)": 40.1552,
+    "Suggested Stop-Loss": 37.3386,
+    "Take-Profit Target": 42.4664,
     "Resistance (52W High)": 50.13,
     "Support (52W Low)": 14.57,
     "Nearest Resistance": null,
     "Resistance Touches": null,
     "Nearest Support": 35.6,
     "Support Touches": 2,
-    "Pivot Point": 42.0067,
-    "R1": 44.3933,
-    "R2": 46.2867,
-    "R3": 48.6733,
-    "S1": 40.1133,
-    "S2": 37.7267,
-    "S3": 35.8333,
-    "Projected Gain (%)": -0.51,
-    "Pattern Conf (%)": 58.42,
-    "Projected Range 95%": "-4.76% to 5.87%",
+    "Pivot Point": 42.2667,
+    "R1": 43.5333,
+    "R2": 44.9667,
+    "R3": 46.2333,
+    "S1": 40.8333,
+    "S2": 39.5667,
+    "S3": 38.1333,
+    "Projected Gain (%)": -0.27,
+    "Pattern Conf (%)": 58.54,
+    "Projected Range 95%": "-4.68% to 5.87%",
     "Kelly %": 0.0,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Weak Bullish (Low Trend Strength) | awaiting confirmation | weekly aligned | positive money flow | vol x1.07",
+    "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish (Low Trend Strength) | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
-      "pattern": 17.53,
-      "projected": -0.77,
-      "range": 3.87,
-      "trend_bonus": 33.0,
+      "pattern": 17.56,
+      "projected": -0.41,
+      "range": 3.77,
+      "trend_bonus": 10.0,
       "confidence_weight": 1.0
     },
     "Regime": "Volatile Range",
     "Trend Class": "Weak Bullish (Low Trend Strength)",
-    "RSI-14": 59.7,
-    "ADX-14": 16.8,
-    "Vol Z-Score": 0.08,
+    "RSI-14": 57.2,
+    "ADX-14": 16.7,
+    "Vol Z-Score": -0.24,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.4362,
-    "Bollinger %B": 0.679,
-    "Avg Volume (20D)": 448050,
+    "MACD Histogram": 0.282,
+    "Bollinger %B": 0.64,
+    "Avg Volume (20D)": 444471,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -318,7 +318,8 @@
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
-      "2026-08-23 00:00:00"
+      "2026-08-23 00:00:00",
+      "2026-08-24 00:00:00"
     ],
     "close": [
       15.91,
@@ -573,7 +574,8 @@
       42.36,
       42.25,
       41.63,
-      42.1
+      42.1,
+      41.35
     ],
     "open": [
       16.09,
@@ -828,7 +830,8 @@
       42.31,
       42.25,
       42.0,
-      41.63
+      41.63,
+      42.1
     ],
     "high": [
       16.09,
@@ -1083,7 +1086,8 @@
       43.7,
       42.35,
       42.1,
-      42.39
+      42.39,
+      42.35
     ],
     "low": [
       15.6,
@@ -1338,7 +1342,8 @@
       42.12,
       41.68,
       41.0,
-      41.53
+      41.53,
+      41.11
     ],
     "volume": [
       140660,
@@ -1593,7 +1598,8 @@
       227696,
       230506,
       395671,
-      478678
+      478678,
+      356156
     ],
     "vwap": [
       15.8667,
@@ -1848,18 +1854,19 @@
       39.2944,
       39.5113,
       39.7477,
-      40.0257
+      40.0257,
+      40.1552
     ],
     "resistance": 50.13,
     "support": 35.6,
     "pivots": {
-      "pp": 42.0067,
-      "r1": 44.3933,
-      "r2": 46.2867,
-      "r3": 48.6733,
-      "s1": 40.1133,
-      "s2": 37.7267,
-      "s3": 35.8333
+      "pp": 42.2667,
+      "r1": 43.5333,
+      "r2": 44.9667,
+      "r3": 46.2333,
+      "s1": 40.8333,
+      "s2": 39.5667,
+      "s3": 38.1333
     },
     "patterns": [
       {
@@ -1956,21 +1963,6 @@
         },
         "quality": 0.75,
         "apex_index": 253.91286816993266
-      },
-      {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 217,
-        "end_index": 251,
-        "start_date": "2026-07-04",
-        "end_date": "2026-08-20",
-        "levels": {
-          "resistance_start": 36.4218,
-          "resistance_end": 43.3583,
-          "support_start": 29.4234,
-          "support_end": 37.6624
-        },
-        "quality": 0.85
       }
     ]
   }

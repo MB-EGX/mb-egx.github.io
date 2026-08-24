@@ -1,67 +1,67 @@
 {
   "ticker": "ATQA.CA",
-  "last_data_date": "2026-08-23",
+  "last_data_date": "2026-08-24",
   "sector": "Basic Resources",
   "matrix": {
     "Ticker": "ATQA.CA",
     "Sector": "Basic Resources",
-    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Confirmed": true,
     "Long-Term Setup Reasons": [
-      "No confirmed higher-low swing structure yet",
+      "Higher-low swing structure confirmed",
       "Double Bottom match (quality 0.96)"
     ],
-    "P/E Ratio": -217.06,
+    "P/E Ratio": -216.47,
     "EPS": -0.051,
     "Beta": -0.06,
     "Dividend Yield %": null,
-    "Market Cap": 13180000000.0,
-    "1W Return %": -0.18,
-    "1M Return %": 11.93,
-    "YTD Return %": 9.04,
-    "1Y Return %": -7.81,
-    "3Y Return %": 500.0,
-    "External Rating Consensus": 0.0,
+    "Market Cap": 13280000000.0,
+    "1W Return %": 0.18,
+    "1M Return %": 12.84,
+    "YTD Return %": 9.93,
+    "1Y Return %": -5.63,
+    "3Y Return %": 504.92,
+    "External Rating Consensus": 0.875,
     "External Rating Note": null,
-    "Action": "🟡 HOLD / NEUTRAL",
-    "Rank Score": 20.2,
-    "Current Price": 10.98,
-    "Target Entry (VWAP)": 10.5104,
-    "Suggested Stop-Loss": 9.9414,
-    "Take-Profit Target": 11.2765,
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 50.2,
+    "Current Price": 11.07,
+    "Target Entry (VWAP)": 10.5449,
+    "Suggested Stop-Loss": 10.1014,
+    "Take-Profit Target": 11.3689,
     "Resistance (52W High)": 11.95,
     "Support (52W Low)": 7.75,
-    "Nearest Resistance": null,
-    "Resistance Touches": null,
+    "Nearest Resistance": 11.74,
+    "Resistance Touches": 2,
     "Nearest Support": 10.145,
     "Support Touches": 2,
-    "Pivot Point": 10.78,
-    "R1": 11.47,
-    "R2": 11.94,
-    "R3": 12.63,
-    "S1": 10.31,
-    "S2": 9.62,
-    "S3": 9.15,
-    "Projected Gain (%)": -0.37,
-    "Pattern Conf (%)": 56.48,
-    "Projected Range 95%": "-6.89% to 2.82%",
-    "Kelly %": 0.0,
-    "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Strong Bullish | no decisive edge | weekly aligned",
+    "Pivot Point": 11.16,
+    "R1": 11.52,
+    "R2": 12.06,
+    "R3": 12.42,
+    "S1": 10.62,
+    "S2": 10.26,
+    "S3": 9.72,
+    "Projected Gain (%)": 1.04,
+    "Pattern Conf (%)": 78.96,
+    "Projected Range 95%": "-0.55% to 2.77%",
+    "Kelly %": 5.39,
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned",
     "Score Breakdown": {
-      "pattern": 16.94,
-      "projected": -0.55,
-      "range": 3.85,
-      "trend_bonus": 0.0,
+      "pattern": 23.69,
+      "projected": 1.56,
+      "range": 3.95,
+      "trend_bonus": 21.0,
       "confidence_weight": 1.0
     },
     "Regime": "Volatile Range",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 59.7,
-    "ADX-14": 23.0,
-    "Vol Z-Score": -0.29,
+    "RSI-14": 60.8,
+    "ADX-14": 23.8,
+    "Vol Z-Score": -0.63,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0691,
-    "Bollinger %B": 0.701,
-    "Avg Volume (20D)": 9291875,
+    "MACD Histogram": 0.0507,
+    "Bollinger %B": 0.71,
+    "Avg Volume (20D)": 9148745,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -318,7 +318,8 @@
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
-      "2026-08-23 00:00:00"
+      "2026-08-23 00:00:00",
+      "2026-08-24 00:00:00"
     ],
     "close": [
       11.91,
@@ -573,7 +574,8 @@
       11.35,
       11.04,
       11.04,
-      10.98
+      10.98,
+      11.07
     ],
     "open": [
       12.2,
@@ -828,7 +830,8 @@
       11.05,
       11.5,
       11.0,
-      11.04
+      11.04,
+      10.98
     ],
     "high": [
       12.23,
@@ -1083,7 +1086,8 @@
       11.38,
       11.7,
       11.1,
-      11.4
+      11.4,
+      11.28
     ],
     "low": [
       11.8,
@@ -1338,7 +1342,8 @@
       11.05,
       10.9,
       10.8,
-      10.98
+      10.98,
+      10.87
     ],
     "volume": [
       24900000,
@@ -1593,7 +1598,8 @@
       11125332,
       17859441,
       5111712,
-      7312546
+      7312546,
+      4785149
     ],
     "vwap": [
       11.98,
@@ -1848,18 +1854,19 @@
       10.3313,
       10.4428,
       10.4754,
-      10.5104
+      10.5104,
+      10.5449
     ],
-    "resistance": 11.95,
+    "resistance": 11.74,
     "support": 10.145,
     "pivots": {
-      "pp": 10.78,
-      "r1": 11.47,
-      "r2": 11.94,
-      "r3": 12.63,
-      "s1": 10.31,
-      "s2": 9.62,
-      "s3": 9.15
+      "pp": 11.16,
+      "r1": 11.52,
+      "r2": 12.06,
+      "r3": 12.42,
+      "s1": 10.62,
+      "s2": 10.26,
+      "s3": 9.72
     },
     "patterns": [
       {
@@ -1988,6 +1995,21 @@
         },
         "quality": 0.75,
         "apex_index": 244.8821701776011
+      },
+      {
+        "pattern": "Price Channel (Rising)",
+        "direction": "bullish",
+        "start_index": 217,
+        "end_index": 252,
+        "start_date": "2026-07-04",
+        "end_date": "2026-08-23",
+        "levels": {
+          "resistance_start": 9.6872,
+          "resistance_end": 11.336,
+          "support_start": 8.4763,
+          "support_end": 10.3568
+        },
+        "quality": 0.85
       }
     ]
   }

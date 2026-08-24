@@ -1,67 +1,67 @@
 {
   "ticker": "CIRA.CA",
-  "last_data_date": "2026-08-23",
+  "last_data_date": "2026-08-24",
   "sector": "Education Services",
   "matrix": {
     "Ticker": "CIRA.CA",
     "Sector": "Education Services",
     "Long-Term Setup Confirmed": true,
     "Long-Term Setup Reasons": [
-      "Not enough history for a long-term setup check",
-      "Substituted provider 1Y return (162.21%) for pattern/swing check - insufficient local history"
+      "Higher-low swing structure confirmed",
+      "Price Channel (Rising) match (quality 0.85)"
     ],
-    "P/E Ratio": 22.57,
+    "P/E Ratio": 22.08,
     "EPS": 1.6302,
     "Beta": 0.38,
-    "Dividend Yield %": 0.91,
-    "Market Cap": 21450000000.0,
-    "1W Return %": -4.62,
-    "1M Return %": 15.84,
-    "YTD Return %": 111.34,
-    "1Y Return %": 162.21,
-    "3Y Return %": 252.98,
-    "External Rating Consensus": -0.375,
+    "Dividend Yield %": 0.92,
+    "Market Cap": 20880000000.0,
+    "1W Return %": -3.94,
+    "1M Return %": 13.06,
+    "YTD Return %": 106.28,
+    "1Y Return %": 155.02,
+    "3Y Return %": 244.52,
+    "External Rating Consensus": -0.625,
     "External Rating Note": null,
     "Action": "🟡 HOLD / NEUTRAL",
-    "Rank Score": 24.3,
-    "Current Price": 36.71,
-    "Target Entry (VWAP)": 36.5978,
-    "Suggested Stop-Loss": 33.7257,
-    "Take-Profit Target": 42.7268,
+    "Rank Score": 1.7,
+    "Current Price": 35.83,
+    "Target Entry (VWAP)": 35.83,
+    "Suggested Stop-Loss": 32.9057,
+    "Take-Profit Target": 39.7362,
     "Resistance (52W High)": 40.8,
     "Support (52W Low)": 27.45,
     "Nearest Resistance": null,
     "Resistance Touches": null,
     "Nearest Support": null,
     "Support Touches": null,
-    "Pivot Point": 38.9967,
-    "R1": 40.2933,
-    "R2": 42.0967,
-    "R3": 43.3933,
-    "S1": 37.1933,
-    "S2": 35.8967,
-    "S3": 34.0933,
-    "Projected Gain (%)": 15.69,
-    "Pattern Conf (%)": 62.66,
-    "Projected Range 95%": "15.69% to 15.69%",
-    "Kelly %": 22.07,
+    "Pivot Point": 37.4,
+    "R1": 38.3,
+    "R2": 39.89,
+    "R3": 40.79,
+    "S1": 35.81,
+    "S2": 34.91,
+    "S3": 33.32,
+    "Projected Gain (%)": "N/A",
+    "Pattern Conf (%)": "N/A",
+    "Projected Range 95%": "N/A",
+    "Kelly %": 1.91,
     "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Strong Bullish | no decisive edge | weekly aligned",
     "Score Breakdown": {
-      "pattern": 18.8,
-      "projected": 23.54,
-      "range": 3.47,
+      "pattern": 0.0,
+      "projected": 0.0,
+      "range": 3.14,
       "trend_bonus": 0.0,
       "confidence_weight": 0.53
     },
-    "Regime": "Trending / Volatile",
+    "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 57.1,
-    "ADX-14": 53.8,
-    "Vol Z-Score": -0.92,
+    "RSI-14": 51.2,
+    "ADX-14": 51.1,
+    "Vol Z-Score": -0.62,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.336,
-    "Bollinger %B": 0.454,
-    "Avg Volume (20D)": 1517639,
+    "MACD Histogram": -0.4412,
+    "Bollinger %B": 0.248,
+    "Avg Volume (20D)": 1352705,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -104,7 +104,8 @@
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
-      "2026-08-23 00:00:00"
+      "2026-08-23 00:00:00",
+      "2026-08-24 00:00:00"
     ],
     "close": [
       28.03,
@@ -145,7 +146,8 @@
       37.45,
       37.64,
       37.18,
-      36.71
+      36.71,
+      35.83
     ],
     "open": [
       29.0,
@@ -186,7 +188,8 @@
       37.3,
       37.5,
       37.68,
-      37.18
+      37.18,
+      36.71
     ],
     "high": [
       29.46,
@@ -227,7 +230,8 @@
       38.66,
       38.0,
       37.68,
-      37.64
+      37.64,
+      36.92
     ],
     "low": [
       27.6,
@@ -268,7 +272,8 @@
       37.33,
       36.95,
       36.7,
-      36.5
+      36.5,
+      35.8
     ],
     "volume": [
       559831,
@@ -309,7 +314,8 @@
       1241474,
       647354,
       355411,
-      373396
+      373396,
+      670508
     ],
     "vwap": [
       28.3633,
@@ -350,19 +356,36 @@
       36.0567,
       36.3794,
       36.5065,
-      36.5978
+      36.5978,
+      37.0371
     ],
     "resistance": 40.8,
     "support": 27.45,
     "pivots": {
-      "pp": 38.9967,
-      "r1": 40.2933,
-      "r2": 42.0967,
-      "r3": 43.3933,
-      "s1": 37.1933,
-      "s2": 35.8967,
-      "s3": 34.0933
+      "pp": 37.4,
+      "r1": 38.3,
+      "r2": 39.89,
+      "r3": 40.79,
+      "s1": 35.81,
+      "s2": 34.91,
+      "s3": 33.32
     },
-    "patterns": []
+    "patterns": [
+      {
+        "pattern": "Price Channel (Rising)",
+        "direction": "bullish",
+        "start_index": 1,
+        "end_index": 30,
+        "start_date": "2026-06-28",
+        "end_date": "2026-08-11",
+        "levels": {
+          "resistance_start": 28.975,
+          "resistance_end": 38.98,
+          "support_start": 27.64,
+          "support_end": 35.5815
+        },
+        "quality": 0.85
+      }
+    ]
   }
 }

@@ -1,6 +1,6 @@
 {
   "ticker": "FERC.CA",
-  "last_data_date": "2026-08-23",
+  "last_data_date": "2026-08-24",
   "sector": "Basic Resources",
   "matrix": {
     "Ticker": "FERC.CA",
@@ -13,55 +13,55 @@
     "P/E Ratio": 17.48,
     "EPS": 4.4246,
     "Beta": null,
-    "Dividend Yield %": 7.62,
-    "Market Cap": 30800000000.0,
-    "1W Return %": -4.2,
-    "1M Return %": -0.38,
-    "YTD Return %": -5.53,
-    "1Y Return %": 3798.0,
-    "3Y Return %": 1135.5,
-    "External Rating Consensus": -0.625,
+    "Dividend Yield %": 7.69,
+    "Market Cap": 31180000000.0,
+    "1W Return %": -1.07,
+    "1M Return %": -0.29,
+    "YTD Return %": -5.44,
+    "1Y Return %": 3801.5,
+    "3Y Return %": 1136.61,
+    "External Rating Consensus": -0.875,
     "External Rating Note": null,
-    "Action": "⚡ BREAKOUT BUY (X-OVER) (Unconfirmed: low ADX/volume, below VWAP) [💥 SQUEEZE]",
-    "Rank Score": 38.2,
-    "Current Price": 77.96,
-    "Target Entry (VWAP)": 77.96,
-    "Suggested Stop-Loss": 69.9586,
-    "Take-Profit Target": 80.0649,
+    "Action": "🟡 HOLD / NEUTRAL",
+    "Rank Score": 16.6,
+    "Current Price": 78.03,
+    "Target Entry (VWAP)": 78.03,
+    "Suggested Stop-Loss": 70.3329,
+    "Take-Profit Target": 80.1368,
     "Resistance (52W High)": 101.0,
     "Support (52W Low)": 2.0,
     "Nearest Resistance": 81.4854,
     "Resistance Touches": 13,
     "Nearest Support": 77.5379,
     "Support Touches": 14,
-    "Pivot Point": 83.2667,
-    "R1": 86.0833,
-    "R2": 90.7867,
-    "R3": 93.6033,
-    "S1": 78.5633,
-    "S2": 75.7467,
-    "S3": 71.0433,
-    "Projected Gain (%)": 1.87,
-    "Pattern Conf (%)": 51.82,
-    "Projected Range 95%": "-2.57% to 8.8%",
+    "Pivot Point": 79.5367,
+    "R1": 82.3733,
+    "R2": 86.7867,
+    "R3": 89.6233,
+    "S1": 75.1233,
+    "S2": 72.2867,
+    "S3": 67.8733,
+    "Projected Gain (%)": -2.88,
+    "Pattern Conf (%)": 56.86,
+    "Projected Range 95%": "-5.36% to -0.43%",
     "Kelly %": 0.0,
-    "Signal Reason": "⚡ BREAKOUT BUY (X-OVER) (Unconfirmed: low ADX/volume, below VWAP) [💥 SQUEEZE] | trend=Strong Bullish | awaiting confirmation | volatility squeeze",
+    "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Strong Bullish | no decisive edge",
     "Score Breakdown": {
-      "pattern": 15.55,
-      "projected": 2.81,
+      "pattern": 17.06,
+      "projected": -4.32,
       "range": 3.84,
-      "trend_bonus": 16.0,
+      "trend_bonus": 0.0,
       "confidence_weight": 1.0
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 48.0,
-    "ADX-14": 26.6,
-    "Vol Z-Score": -0.55,
+    "RSI-14": 48.2,
+    "ADX-14": 26.5,
+    "Vol Z-Score": -0.54,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.4726,
-    "Bollinger %B": 0.362,
-    "Avg Volume (20D)": 339523,
+    "MACD Histogram": -0.4457,
+    "Bollinger %B": 0.365,
+    "Avg Volume (20D)": 342972,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -318,7 +318,8 @@
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
-      "2026-08-23 00:00:00"
+      "2026-08-23 00:00:00",
+      "2026-08-24 00:00:00"
     ],
     "close": [
       2.0,
@@ -573,7 +574,8 @@
       77.5,
       77.73,
       77.0,
-      77.96
+      77.96,
+      78.03
     ],
     "open": [
       10.14,
@@ -828,7 +830,8 @@
       78.87,
       78.0,
       78.21,
-      77.0
+      77.0,
+      77.96
     ],
     "high": [
       2.0,
@@ -1083,7 +1086,8 @@
       79.89,
       83.95,
       78.78,
-      79.78
+      79.78,
+      79.6
     ],
     "low": [
       2.0,
@@ -1338,7 +1342,8 @@
       76.7,
       77.55,
       76.9,
-      77.04
+      77.04,
+      78.02
     ],
     "volume": [
       0,
@@ -1593,7 +1598,8 @@
       331810,
       992293,
       201437,
-      140601
+      140601,
+      147306
     ],
     "vwap": [
       2.0,
@@ -1848,18 +1854,19 @@
       81.8116,
       81.5838,
       81.5316,
-      81.5761
+      81.5761,
+      81.5545
     ],
     "resistance": 81.4854,
     "support": 77.5379,
     "pivots": {
-      "pp": 83.2667,
-      "r1": 86.0833,
-      "r2": 90.7867,
-      "r3": 93.6033,
-      "s1": 78.5633,
-      "s2": 75.7467,
-      "s3": 71.0433
+      "pp": 79.5367,
+      "r1": 82.3733,
+      "r2": 86.7867,
+      "r3": 89.6233,
+      "s1": 75.1233,
+      "s2": 72.2867,
+      "s3": 67.8733
     },
     "patterns": [
       {

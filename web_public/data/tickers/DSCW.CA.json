@@ -1,67 +1,67 @@
 {
   "ticker": "DSCW.CA",
-  "last_data_date": "2026-08-23",
+  "last_data_date": "2026-08-24",
   "sector": "Textiles & Durables",
   "matrix": {
     "Ticker": "DSCW.CA",
     "Sector": "Textiles & Durables",
-    "Long-Term Setup Confirmed": true,
+    "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
-      "Higher-low swing structure confirmed",
+      "No confirmed higher-low swing structure yet",
       "Double Bottom match (quality 1.00)"
     ],
-    "P/E Ratio": 44.93,
+    "P/E Ratio": 43.55,
     "EPS": 0.0434,
     "Beta": 0.25,
     "Dividend Yield %": null,
-    "Market Cap": 5250000000.0,
-    "1W Return %": -5.77,
-    "1M Return %": 0.0,
-    "YTD Return %": 10.73,
-    "1Y Return %": 2.8,
-    "3Y Return %": 425.0,
-    "External Rating Consensus": 0.875,
+    "Market Cap": 5070000000.0,
+    "1W Return %": -5.91,
+    "1M Return %": -2.55,
+    "YTD Return %": 7.91,
+    "1Y Return %": 0.53,
+    "3Y Return %": 411.61,
+    "External Rating Consensus": -0.5,
     "External Rating Note": null,
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 20.5,
-    "Current Price": 1.96,
-    "Target Entry (VWAP)": 1.96,
-    "Suggested Stop-Loss": 1.72,
-    "Take-Profit Target": 2.0129,
+    "Action": "🟡 HOLD / NEUTRAL",
+    "Rank Score": 20.9,
+    "Current Price": 1.91,
+    "Target Entry (VWAP)": 1.91,
+    "Suggested Stop-Loss": 1.6686,
+    "Take-Profit Target": 1.9616,
     "Resistance (52W High)": 2.21,
     "Support (52W Low)": 1.45,
     "Nearest Resistance": 1.985,
     "Resistance Touches": 2,
-    "Nearest Support": 1.91,
-    "Support Touches": 2,
-    "Pivot Point": 2.1133,
-    "R1": 2.1767,
-    "R2": 2.2733,
-    "R3": 2.3367,
-    "S1": 2.0167,
-    "S2": 1.9533,
-    "S3": 1.8567,
-    "Projected Gain (%)": -2.49,
-    "Pattern Conf (%)": 36.23,
-    "Projected Range 95%": "-11.66% to 2.92%",
+    "Nearest Support": 1.72,
+    "Support Touches": 8,
+    "Pivot Point": 1.9867,
+    "R1": 2.0733,
+    "R2": 2.1867,
+    "R3": 2.2733,
+    "S1": 1.8733,
+    "S2": 1.7867,
+    "S3": 1.6733,
+    "Projected Gain (%)": 0.28,
+    "Pattern Conf (%)": 58.33,
+    "Projected Range 95%": "-3.06% to 2.66%",
     "Kelly %": 0.0,
-    "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish (Low Trend Strength) | awaiting confirmation | weekly aligned | positive money flow",
+    "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Weak Bullish (Low Trend Strength) | no decisive edge | weekly aligned | vol x1.81",
     "Score Breakdown": {
-      "pattern": 10.87,
-      "projected": -3.74,
-      "range": 3.36,
-      "trend_bonus": 10.0,
+      "pattern": 17.5,
+      "projected": 0.42,
+      "range": 3.03,
+      "trend_bonus": 0.0,
       "confidence_weight": 1.0
     },
     "Regime": "Volatile Range",
     "Trend Class": "Weak Bullish (Low Trend Strength)",
-    "RSI-14": 49.7,
-    "ADX-14": 16.1,
-    "Vol Z-Score": -0.48,
+    "RSI-14": 46.6,
+    "ADX-14": 15.9,
+    "Vol Z-Score": 1.3,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0162,
-    "Bollinger %B": 0.468,
-    "Avg Volume (20D)": 36189189,
+    "MACD Histogram": -0.0199,
+    "Bollinger %B": 0.381,
+    "Avg Volume (20D)": 38063242,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -318,7 +318,8 @@
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
-      "2026-08-23 00:00:00"
+      "2026-08-23 00:00:00",
+      "2026-08-24 00:00:00"
     ],
     "close": [
       1.907,
@@ -573,7 +574,8 @@
       1.99,
       1.93,
       1.92,
-      1.96
+      1.96,
+      1.91
     ],
     "open": [
       1.887,
@@ -828,7 +830,8 @@
       2.03,
       2.0,
       1.95,
-      1.92
+      1.92,
+      1.96
     ],
     "high": [
       1.933,
@@ -1083,7 +1086,8 @@
       2.05,
       2.0,
       1.97,
-      1.97
+      1.97,
+      2.0
     ],
     "low": [
       1.887,
@@ -1338,7 +1342,8 @@
       1.98,
       1.9,
       1.91,
-      1.92
+      1.92,
+      1.86
     ],
     "volume": [
       31320000,
@@ -1593,7 +1598,8 @@
       35014712,
       55417005,
       32024243,
-      25226400
+      25226400,
+      69037414
     ],
     "vwap": [
       1.909,
@@ -1848,18 +1854,19 @@
       2.0338,
       2.0287,
       2.0271,
-      2.0264
+      2.0264,
+      2.0196
     ],
     "resistance": 1.985,
-    "support": 1.91,
+    "support": 1.72,
     "pivots": {
-      "pp": 2.1133,
-      "r1": 2.1767,
-      "r2": 2.2733,
-      "r3": 2.3367,
-      "s1": 2.0167,
-      "s2": 1.9533,
-      "s3": 1.8567
+      "pp": 1.9867,
+      "r1": 2.0733,
+      "r2": 2.1867,
+      "r3": 2.2733,
+      "s1": 1.8733,
+      "s2": 1.7867,
+      "s3": 1.6733
     },
     "patterns": [
       {
@@ -1986,21 +1993,6 @@
           "target": 2.085
         },
         "quality": 0.81
-      },
-      {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 229,
-        "end_index": 251,
-        "start_date": "2026-07-21",
-        "end_date": "2026-08-20",
-        "levels": {
-          "resistance_start": 1.99,
-          "resistance_end": 2.265,
-          "support_start": 1.6686,
-          "support_end": 1.92
-        },
-        "quality": 0.85
       }
     ]
   }

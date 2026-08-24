@@ -1,6 +1,6 @@
 {
   "ticker": "AMII.CA",
-  "last_data_date": "2026-08-23",
+  "last_data_date": "2026-08-24",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "AMII.CA",
@@ -8,61 +8,61 @@
     "Long-Term Setup Confirmed": true,
     "Long-Term Setup Reasons": [
       "Not enough history for a long-term setup check",
-      "Substituted provider 1Y return (166.78%) for pattern/swing check - insufficient local history"
+      "Substituted provider 1Y return (150.08%) for pattern/swing check - insufficient local history"
     ],
-    "P/E Ratio": 2601.69,
+    "P/E Ratio": 2567.8,
     "EPS": 0.0059,
     "Beta": -0.37,
     "Dividend Yield %": null,
-    "Market Cap": 1160000000.0,
-    "1W Return %": 4.94,
-    "1M Return %": 33.05,
-    "YTD Return %": 89.95,
-    "1Y Return %": 166.78,
-    "3Y Return %": 983.16,
-    "External Rating Consensus": 1.125,
+    "Market Cap": 1150000000.0,
+    "1W Return %": 9.86,
+    "1M Return %": 32.02,
+    "YTD Return %": 88.48,
+    "1Y Return %": 150.08,
+    "3Y Return %": 974.77,
+    "External Rating Consensus": 1.375,
     "External Rating Note": null,
-    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED]",
-    "Rank Score": 12.2,
-    "Current Price": 15.5,
-    "Target Entry (VWAP)": 14.5577,
-    "Suggested Stop-Loss": 13.8471,
-    "Take-Profit Target": 17.6746,
+    "Action": "📈 ACCUMULATE",
+    "Rank Score": 6.6,
+    "Current Price": 15.38,
+    "Target Entry (VWAP)": 14.5681,
+    "Suggested Stop-Loss": 13.7414,
+    "Take-Profit Target": 17.5359,
     "Resistance (52W High)": 17.25,
     "Support (52W Low)": 11.8,
     "Nearest Resistance": null,
     "Resistance Touches": null,
-    "Nearest Support": null,
-    "Support Touches": null,
-    "Pivot Point": 14.47,
-    "R1": 15.29,
-    "R2": 15.81,
-    "R3": 16.63,
-    "S1": 13.95,
-    "S2": 13.13,
-    "S3": 12.61,
+    "Nearest Support": 13.805,
+    "Support Touches": 2,
+    "Pivot Point": 15.09,
+    "R1": 16.51,
+    "R2": 17.52,
+    "R3": 18.94,
+    "S1": 14.08,
+    "S2": 12.66,
+    "S3": 11.65,
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
     "Kelly %": 1.6,
-    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow | vol x1.72",
+    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 3.39,
-      "trend_bonus": 21.0,
+      "range": 3.28,
+      "trend_bonus": 10.0,
       "confidence_weight": 0.5
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 66.7,
-    "ADX-14": 56.2,
-    "Vol Z-Score": 1.01,
-    "MACD Signal": "🟢 Bullish Cross",
-    "MACD Histogram": 0.0196,
-    "Bollinger %B": 0.863,
-    "Avg Volume (20D)": 5780539,
-    "Data Confidence": "Very Low (New/Short History)"
+    "RSI-14": 65.1,
+    "ADX-14": 54.7,
+    "Vol Z-Score": -0.99,
+    "MACD Signal": "Bullish",
+    "MACD Histogram": 0.0381,
+    "Bollinger %B": 0.805,
+    "Avg Volume (20D)": 5564219,
+    "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
     "dates": [
@@ -84,7 +84,8 @@
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
-      "2026-08-23 00:00:00"
+      "2026-08-23 00:00:00",
+      "2026-08-24 00:00:00"
     ],
     "close": [
       12.08,
@@ -105,7 +106,8 @@
       13.91,
       13.9,
       15.18,
-      15.5
+      15.5,
+      15.38
     ],
     "open": [
       12.5,
@@ -126,7 +128,8 @@
       14.0,
       13.95,
       14.03,
-      15.18
+      15.18,
+      15.5
     ],
     "high": [
       13.0,
@@ -147,7 +150,8 @@
       14.09,
       14.14,
       15.3,
-      16.1
+      16.1,
+      15.68
     ],
     "low": [
       12.07,
@@ -168,7 +172,8 @@
       13.83,
       13.67,
       13.9,
-      15.33
+      15.33,
+      15.0
     ],
     "volume": [
       5260726,
@@ -189,7 +194,8 @@
       1179950,
       1557619,
       12811621,
-      9957664
+      9957664,
+      1454151
     ],
     "vwap": [
       12.3833,
@@ -210,18 +216,19 @@
       14.4079,
       14.3989,
       14.4495,
-      14.5577
+      14.5577,
+      14.5681
     ],
     "resistance": 17.25,
-    "support": 11.8,
+    "support": 13.805,
     "pivots": {
-      "pp": 14.47,
-      "r1": 15.29,
-      "r2": 15.81,
-      "r3": 16.63,
-      "s1": 13.95,
-      "s2": 13.13,
-      "s3": 12.61
+      "pp": 15.09,
+      "r1": 16.51,
+      "r2": 17.52,
+      "r3": 18.94,
+      "s1": 14.08,
+      "s2": 12.66,
+      "s3": 11.65
     },
     "patterns": []
   }

@@ -1,67 +1,67 @@
 {
   "ticker": "EXPA.CA",
-  "last_data_date": "2026-08-23",
+  "last_data_date": "2026-08-24",
   "sector": "Banks",
   "matrix": {
     "Ticker": "EXPA.CA",
     "Sector": "Banks",
-    "Long-Term Setup Confirmed": true,
+    "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
-      "Higher-low swing structure confirmed",
+      "No confirmed higher-low swing structure yet",
       "Ascending Triangle match (quality 0.88)"
     ],
-    "P/E Ratio": 3.66,
+    "P/E Ratio": 3.61,
     "EPS": 5.5411,
     "Beta": 0.27,
     "Dividend Yield %": null,
-    "Market Cap": 27570000000.0,
-    "1W Return %": -4.21,
-    "1M Return %": 1.4,
-    "YTD Return %": 31.62,
-    "1Y Return %": 46.22,
-    "3Y Return %": 235.17,
-    "External Rating Consensus": -0.75,
+    "Market Cap": 27190000000.0,
+    "1W Return %": -5.89,
+    "1M Return %": 0.0,
+    "YTD Return %": 29.81,
+    "1Y Return %": 44.13,
+    "3Y Return %": 230.54,
+    "External Rating Consensus": -0.875,
     "External Rating Note": null,
     "Action": "🟡 HOLD / NEUTRAL",
-    "Rank Score": 20.8,
-    "Current Price": 20.27,
-    "Target Entry (VWAP)": 20.0369,
-    "Suggested Stop-Loss": 18.3029,
-    "Take-Profit Target": 20.8173,
+    "Rank Score": 19.7,
+    "Current Price": 19.99,
+    "Target Entry (VWAP)": 19.99,
+    "Suggested Stop-Loss": 18.0429,
+    "Take-Profit Target": 20.5297,
     "Resistance (52W High)": 21.5,
     "Support (52W Low)": 13.54,
     "Nearest Resistance": null,
     "Resistance Touches": null,
     "Nearest Support": 18.525,
     "Support Touches": 2,
-    "Pivot Point": 20.99,
-    "R1": 21.67,
-    "R2": 22.18,
-    "R3": 22.86,
-    "S1": 20.48,
-    "S2": 19.8,
-    "S3": 19.29,
-    "Projected Gain (%)": -1.73,
-    "Pattern Conf (%)": 63.91,
-    "Projected Range 95%": "-5.34% to 0.61%",
+    "Pivot Point": 20.5567,
+    "R1": 21.0133,
+    "R2": 21.7567,
+    "R3": 22.2133,
+    "S1": 19.8133,
+    "S2": 19.3567,
+    "S3": 18.6133,
+    "Projected Gain (%)": -1.72,
+    "Pattern Conf (%)": 60.92,
+    "Projected Range 95%": "-5.14% to 0.61%",
     "Kelly %": 0.0,
-    "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Strong Bullish | no decisive edge | weekly aligned | vol x1.06",
+    "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Strong Bullish | no decisive edge | weekly aligned | vol x1.79",
     "Score Breakdown": {
-      "pattern": 19.17,
-      "projected": -2.59,
-      "range": 4.23,
+      "pattern": 18.28,
+      "projected": -2.58,
+      "range": 4.05,
       "trend_bonus": 0.0,
       "confidence_weight": 1.0
     },
     "Regime": "Volatile Range",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 52.9,
-    "ADX-14": 22.9,
-    "Vol Z-Score": 0.13,
-    "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0407,
-    "Bollinger %B": 0.581,
-    "Avg Volume (20D)": 1684259,
+    "RSI-14": 51.0,
+    "ADX-14": 21.3,
+    "Vol Z-Score": 1.51,
+    "MACD Signal": "🔴 Bearish Cross",
+    "MACD Histogram": -0.025,
+    "Bollinger %B": 0.545,
+    "Avg Volume (20D)": 1778151,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -318,7 +318,8 @@
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
-      "2026-08-23 00:00:00"
+      "2026-08-23 00:00:00",
+      "2026-08-24 00:00:00"
     ],
     "close": [
       13.86,
@@ -573,7 +574,8 @@
       21.15,
       20.96,
       20.21,
-      20.27
+      20.27,
+      19.99
     ],
     "open": [
       13.79,
@@ -828,7 +830,8 @@
       21.24,
       21.15,
       20.73,
-      20.21
+      20.21,
+      20.27
     ],
     "high": [
       13.96,
@@ -1083,7 +1086,8 @@
       21.24,
       21.15,
       20.75,
-      20.6
+      20.6,
+      20.56
     ],
     "low": [
       13.64,
@@ -1338,7 +1342,8 @@
       20.9,
       20.71,
       20.1,
-      20.25
+      20.25,
+      19.8
     ],
     "volume": [
       818170,
@@ -1593,7 +1598,8 @@
       949473,
       1987551,
       3375837,
-      1793058
+      1793058,
+      3176056
     ],
     "vwap": [
       13.82,
@@ -1848,18 +1854,19 @@
       19.9127,
       19.9693,
       20.0114,
-      20.0369
+      20.0369,
+      20.0494
     ],
     "resistance": 21.5,
     "support": 18.525,
     "pivots": {
-      "pp": 20.99,
-      "r1": 21.67,
-      "r2": 22.18,
-      "r3": 22.86,
-      "s1": 20.48,
-      "s2": 19.8,
-      "s3": 19.29
+      "pp": 20.5567,
+      "r1": 21.0133,
+      "r2": 21.7567,
+      "r3": 22.2133,
+      "s1": 19.8133,
+      "s2": 19.3567,
+      "s3": 18.6133
     },
     "patterns": [
       {

@@ -1,6 +1,6 @@
 {
   "ticker": "UASG.CA",
-  "last_data_date": "2026-08-23",
+  "last_data_date": "2026-08-24",
   "sector": "Shipping & Transportation Services",
   "matrix": {
     "Ticker": "UASG.CA",
@@ -14,54 +14,54 @@
     "EPS": -0.1113,
     "Beta": 0.31,
     "Dividend Yield %": null,
-    "Market Cap": 84000000.0,
-    "1W Return %": 2.44,
-    "1M Return %": 0.0,
-    "YTD Return %": -10.64,
-    "1Y Return %": -16.0,
-    "3Y Return %": -51.16,
-    "External Rating Consensus": 0.375,
-    "External Rating Note": null,
+    "Market Cap": 82000000.0,
+    "1W Return %": 0.0,
+    "1M Return %": -2.38,
+    "YTD Return %": -12.77,
+    "1Y Return %": -21.15,
+    "3Y Return %": -52.33,
+    "External Rating Consensus": -2.0,
+    "External Rating Note": "Diverges from external consensus (-2.0/2, bearish)",
     "Action": "⏳ BUY ON DIP [💥 SQUEEZE] (Unconfirmed: weekly trend not aligned, CMF below accumulation floor)",
-    "Rank Score": 15.4,
-    "Current Price": 0.42,
-    "Target Entry (VWAP)": 0.4167,
-    "Suggested Stop-Loss": 0.3857,
-    "Take-Profit Target": 0.4313,
+    "Rank Score": 18.9,
+    "Current Price": 0.41,
+    "Target Entry (VWAP)": 0.41,
+    "Suggested Stop-Loss": 0.3757,
+    "Take-Profit Target": 0.4211,
     "Resistance (52W High)": 0.57,
     "Support (52W Low)": 0.39,
     "Nearest Resistance": null,
     "Resistance Touches": null,
     "Nearest Support": null,
     "Support Touches": null,
-    "Pivot Point": 0.4133,
-    "R1": 0.4267,
-    "R2": 0.4433,
-    "R3": 0.4567,
-    "S1": 0.3967,
-    "S2": 0.3833,
-    "S3": 0.3667,
-    "Projected Gain (%)": -4.44,
-    "Pattern Conf (%)": 54.98,
-    "Projected Range 95%": "-4.44% to -4.44%",
+    "Pivot Point": 0.4167,
+    "R1": 0.4233,
+    "R2": 0.4267,
+    "R3": 0.4333,
+    "S1": 0.4133,
+    "S2": 0.4067,
+    "S3": 0.4033,
+    "Projected Gain (%)": -2.22,
+    "Pattern Conf (%)": 59.91,
+    "Projected Range 95%": "-2.22% to -2.22%",
     "Kelly %": 0.0,
-    "Signal Reason": "⏳ BUY ON DIP [💥 SQUEEZE] (Unconfirmed: weekly trend not aligned, CMF below accumulation floor) | trend=Strong Bullish | awaiting confirmation | volatility squeeze | positive money flow",
+    "Signal Reason": "⏳ BUY ON DIP [💥 SQUEEZE] (Unconfirmed: weekly trend not aligned, CMF below accumulation floor) | trend=Weak Bullish | awaiting confirmation | volatility squeeze | positive money flow | vol x1.40",
     "Score Breakdown": {
-      "pattern": 16.49,
-      "projected": -6.66,
-      "range": 0.83,
+      "pattern": 17.97,
+      "projected": -3.33,
+      "range": 0.56,
       "trend_bonus": 9.5,
       "confidence_weight": 0.76
     },
     "Regime": "Volatile Range",
-    "Trend Class": "Strong Bullish",
-    "RSI-14": 53.3,
-    "ADX-14": 22.2,
-    "Vol Z-Score": -0.87,
+    "Trend Class": "Weak Bullish",
+    "RSI-14": 46.2,
+    "ADX-14": 20.8,
+    "Vol Z-Score": 0.37,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0008,
-    "Bollinger %B": 0.686,
-    "Avg Volume (20D)": 220791,
+    "MACD Histogram": 0.0003,
+    "Bollinger %B": 0.294,
+    "Avg Volume (20D)": 233563,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
@@ -198,7 +198,8 @@
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
-      "2026-08-23 00:00:00"
+      "2026-08-23 00:00:00",
+      "2026-08-24 00:00:00"
     ],
     "close": [
       0.52,
@@ -333,7 +334,8 @@
       0.41,
       0.42,
       0.42,
-      0.42
+      0.42,
+      0.41
     ],
     "open": [
       0.51,
@@ -468,7 +470,8 @@
       0.41,
       0.41,
       0.41,
-      0.41
+      0.41,
+      0.42
     ],
     "high": [
       0.52,
@@ -599,6 +602,7 @@
       0.43,
       0.43,
       0.43,
+      0.42,
       0.42,
       0.42,
       0.42,
@@ -738,7 +742,8 @@
       0.41,
       0.41,
       0.41,
-      0.41
+      0.41,
+      0.4
     ],
     "volume": [
       367050,
@@ -873,7 +878,8 @@
       0,
       116692,
       116692,
-      0
+      0,
+      327218
     ],
     "vwap": [
       0.5133,
@@ -1008,18 +1014,19 @@
       0.4165,
       0.4167,
       0.4167,
-      0.4167
+      0.4167,
+      0.4162
     ],
     "resistance": 0.57,
     "support": 0.39,
     "pivots": {
-      "pp": 0.4133,
-      "r1": 0.4267,
-      "r2": 0.4433,
-      "r3": 0.4567,
-      "s1": 0.3967,
-      "s2": 0.3833,
-      "s3": 0.3667
+      "pp": 0.4167,
+      "r1": 0.4233,
+      "r2": 0.4267,
+      "r3": 0.4333,
+      "s1": 0.4133,
+      "s2": 0.4067,
+      "s3": 0.4033
     },
     "patterns": []
   }

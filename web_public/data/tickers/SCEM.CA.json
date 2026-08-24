@@ -1,67 +1,67 @@
 {
   "ticker": "SCEM.CA",
-  "last_data_date": "2026-08-23",
+  "last_data_date": "2026-08-24",
   "sector": "Building Materials",
   "matrix": {
     "Ticker": "SCEM.CA",
     "Sector": "Building Materials",
-    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Confirmed": true,
     "Long-Term Setup Reasons": [
-      "No confirmed higher-low swing structure yet",
+      "Higher-low swing structure confirmed",
       "Double Bottom match (quality 1.00)"
     ],
-    "P/E Ratio": 7.76,
+    "P/E Ratio": 7.67,
     "EPS": 12.6721,
     "Beta": 0.34,
     "Dividend Yield %": null,
-    "Market Cap": 25300000000.0,
-    "1W Return %": -13.4,
-    "1M Return %": 18.1,
-    "YTD Return %": 54.43,
-    "1Y Return %": 83.07,
-    "3Y Return %": 1559.89,
-    "External Rating Consensus": -0.375,
+    "Market Cap": 25530000000.0,
+    "1W Return %": -10.56,
+    "1M Return %": 18.55,
+    "YTD Return %": 55.02,
+    "1Y Return %": 89.96,
+    "3Y Return %": 1566.28,
+    "External Rating Consensus": -0.25,
     "External Rating Note": null,
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 31.2,
-    "Current Price": 96.13,
-    "Target Entry (VWAP)": 94.1564,
-    "Suggested Stop-Loss": 70.95,
-    "Take-Profit Target": 98.7255,
+    "Action": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED]",
+    "Rank Score": 38.3,
+    "Current Price": 96.5,
+    "Target Entry (VWAP)": 94.9422,
+    "Suggested Stop-Loss": 70.9529,
+    "Take-Profit Target": 99.1055,
     "Resistance (52W High)": 113.0,
     "Support (52W Low)": 46.3,
     "Nearest Resistance": null,
     "Resistance Touches": null,
     "Nearest Support": 65.725,
     "Support Touches": 2,
-    "Pivot Point": 101.6667,
-    "R1": 122.3333,
-    "R2": 133.6667,
-    "R3": 154.3333,
-    "S1": 90.3333,
-    "S2": 69.6667,
-    "S3": 58.3333,
-    "Projected Gain (%)": -0.74,
-    "Pattern Conf (%)": 61.81,
-    "Projected Range 95%": "-5.13% to 3.0%",
+    "Pivot Point": 100.71,
+    "R1": 107.42,
+    "R2": 118.71,
+    "R3": 125.42,
+    "S1": 89.42,
+    "S2": 82.71,
+    "S3": 71.42,
+    "Projected Gain (%)": -2.62,
+    "Pattern Conf (%)": 58.27,
+    "Projected Range 95%": "-6.48% to 1.2%",
     "Kelly %": 0.0,
-    "Signal Reason": "📈 ACCUMULATE | trend=Strong Bullish | awaiting confirmation | weekly aligned | positive money flow",
+    "Signal Reason": "⚡ BREAKOUT BUY (MOMENTUM) (Unconfirmed: low ADX/volume, no squeeze release) [👑 WEEKLY ALIGNED] | trend=Strong Bullish | awaiting confirmation | weekly aligned | vol x1.31",
     "Score Breakdown": {
-      "pattern": 18.54,
-      "projected": -1.11,
-      "range": 3.74,
-      "trend_bonus": 10.0,
+      "pattern": 17.48,
+      "projected": -3.93,
+      "range": 3.76,
+      "trend_bonus": 21.0,
       "confidence_weight": 1.0
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 57.4,
-    "ADX-14": 34.9,
-    "Vol Z-Score": -0.24,
+    "RSI-14": 57.6,
+    "ADX-14": 35.2,
+    "Vol Z-Score": 0.35,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 1.1751,
-    "Bollinger %B": 0.666,
-    "Avg Volume (20D)": 2258339,
+    "MACD Histogram": 0.593,
+    "Bollinger %B": 0.662,
+    "Avg Volume (20D)": 2287999,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -318,7 +318,8 @@
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
-      "2026-08-23 00:00:00"
+      "2026-08-23 00:00:00",
+      "2026-08-24 00:00:00"
     ],
     "close": [
       52.51,
@@ -573,7 +574,8 @@
       100.0,
       99.89,
       100.0,
-      96.13
+      96.13,
+      96.5
     ],
     "open": [
       53.5,
@@ -828,7 +830,8 @@
       107.89,
       100.0,
       101.45,
-      100.0
+      100.0,
+      96.13
     ],
     "high": [
       54.38,
@@ -1083,7 +1086,8 @@
       112.0,
       104.89,
       103.0,
-      101.94
+      101.94,
+      103.0
     ],
     "low": [
       51.21,
@@ -1338,7 +1342,8 @@
       99.1,
       94.0,
       95.5,
-      96.13
+      96.13,
+      96.5
     ],
     "volume": [
       2210000,
@@ -1593,7 +1598,8 @@
       3075517,
       1772636,
       1522262,
-      1778686
+      1778686,
+      3008340
     ],
     "vwap": [
       52.7,
@@ -1848,18 +1854,19 @@
       92.6908,
       93.3301,
       93.813,
-      94.1564
+      94.1564,
+      94.9422
     ],
     "resistance": 113.0,
     "support": 65.725,
     "pivots": {
-      "pp": 101.6667,
-      "r1": 122.3333,
-      "r2": 133.6667,
-      "r3": 154.3333,
-      "s1": 90.3333,
-      "s2": 69.6667,
-      "s3": 58.3333
+      "pp": 100.71,
+      "r1": 107.42,
+      "r2": 118.71,
+      "r3": 125.42,
+      "s1": 89.42,
+      "s2": 82.71,
+      "s3": 71.42
     },
     "patterns": [
       {

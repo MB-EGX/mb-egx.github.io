@@ -1,67 +1,67 @@
 {
   "ticker": "EHDR.CA",
-  "last_data_date": "2026-08-23",
+  "last_data_date": "2026-08-24",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "EHDR.CA",
     "Sector": "Real Estate",
-    "Long-Term Setup Confirmed": true,
+    "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
-      "Higher-low swing structure confirmed",
-      "Price Channel (Rising) match (quality 0.85)"
+      "No confirmed higher-low swing structure yet",
+      "No bullish pattern match at required quality"
     ],
-    "P/E Ratio": 29.73,
+    "P/E Ratio": 29.23,
     "EPS": 0.0999,
     "Beta": -0.17,
-    "Dividend Yield %": 3.37,
-    "Market Cap": 2000000000.0,
-    "1W Return %": -4.5,
-    "1M Return %": 3.85,
-    "YTD Return %": 18.33,
-    "1Y Return %": 62.3,
-    "3Y Return %": 129.34,
-    "External Rating Consensus": 0.625,
+    "Dividend Yield %": 3.38,
+    "Market Cap": 1960000000.0,
+    "1W Return %": -7.3,
+    "1M Return %": 2.1,
+    "YTD Return %": 16.33,
+    "1Y Return %": 57.41,
+    "3Y Return %": 125.48,
+    "External Rating Consensus": -0.625,
     "External Rating Note": null,
     "Action": "🟡 HOLD / NEUTRAL",
-    "Rank Score": 19.9,
-    "Current Price": 2.97,
-    "Target Entry (VWAP)": 2.9195,
-    "Suggested Stop-Loss": 2.5829,
-    "Take-Profit Target": 3.0502,
+    "Rank Score": 10.5,
+    "Current Price": 2.92,
+    "Target Entry (VWAP)": 2.9199,
+    "Suggested Stop-Loss": 2.5286,
+    "Take-Profit Target": 2.9988,
     "Resistance (52W High)": 3.2,
     "Support (52W Low)": 0.363,
     "Nearest Resistance": null,
     "Resistance Touches": null,
     "Nearest Support": 2.155,
     "Support Touches": 2,
-    "Pivot Point": 3.0667,
-    "R1": 3.2333,
-    "R2": 3.3567,
-    "R3": 3.5233,
-    "S1": 2.9433,
-    "S2": 2.7767,
-    "S3": 2.6533,
-    "Projected Gain (%)": -0.17,
-    "Pattern Conf (%)": 51.95,
-    "Projected Range 95%": "-5.64% to 7.42%",
+    "Pivot Point": 3.02,
+    "R1": 3.15,
+    "R2": 3.33,
+    "R3": 3.46,
+    "S1": 2.84,
+    "S2": 2.71,
+    "S3": 2.53,
+    "Projected Gain (%)": -0.85,
+    "Pattern Conf (%)": 24.3,
+    "Projected Range 95%": "-14.67% to 13.04%",
     "Kelly %": 0.0,
     "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Strong Bullish | no decisive edge | weekly aligned",
     "Score Breakdown": {
-      "pattern": 15.59,
-      "projected": -0.26,
-      "range": 4.59,
+      "pattern": 7.29,
+      "projected": -1.27,
+      "range": 4.51,
       "trend_bonus": 0.0,
       "confidence_weight": 1.0
     },
     "Regime": "Volatile Range",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 54.6,
-    "ADX-14": 22.7,
-    "Vol Z-Score": -0.76,
+    "RSI-14": 52.7,
+    "ADX-14": 21.8,
+    "Vol Z-Score": -0.42,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0131,
-    "Bollinger %B": 0.623,
-    "Avg Volume (20D)": 12783804,
+    "MACD Histogram": 0.0023,
+    "Bollinger %B": 0.586,
+    "Avg Volume (20D)": 12641881,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -319,7 +319,8 @@
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
-      "2026-08-23 00:00:00"
+      "2026-08-23 00:00:00",
+      "2026-08-24 00:00:00"
     ],
     "close": [
       1.83,
@@ -575,7 +576,8 @@
       3.14,
       2.97,
       2.96,
-      2.97
+      2.97,
+      2.92
     ],
     "open": [
       1.84,
@@ -831,7 +833,8 @@
       3.15,
       3.14,
       2.97,
-      2.96
+      2.96,
+      2.97
     ],
     "high": [
       1.85,
@@ -1087,7 +1090,8 @@
       3.2,
       3.15,
       3.02,
-      3.04
+      3.04,
+      3.0
     ],
     "low": [
       1.83,
@@ -1343,7 +1347,8 @@
       3.08,
       2.97,
       2.89,
-      2.93
+      2.93,
+      2.88
     ],
     "volume": [
       1050000,
@@ -1599,7 +1604,8 @@
       9263186,
       8759196,
       9130041,
-      5588742
+      5588742,
+      8696034
     ],
     "vwap": [
       1.8367,
@@ -1855,18 +1861,19 @@
       2.9168,
       2.9214,
       2.9229,
-      2.9195
+      2.9195,
+      2.9199
     ],
     "resistance": 3.2,
     "support": 2.155,
     "pivots": {
-      "pp": 3.0667,
-      "r1": 3.2333,
-      "r2": 3.3567,
-      "r3": 3.5233,
-      "s1": 2.9433,
-      "s2": 2.7767,
-      "s3": 2.6533
+      "pp": 3.02,
+      "r1": 3.15,
+      "r2": 3.33,
+      "r3": 3.46,
+      "s1": 2.84,
+      "s2": 2.71,
+      "s3": 2.53
     },
     "patterns": [
       {
@@ -1916,21 +1923,6 @@
         },
         "quality": 0.75,
         "apex_index": 207.32839838492603
-      },
-      {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 178,
-        "end_index": 252,
-        "start_date": "2026-05-02",
-        "end_date": "2026-08-20",
-        "levels": {
-          "resistance_start": 2.6515,
-          "resistance_end": 3.1711,
-          "support_start": 2.0711,
-          "support_end": 2.59
-        },
-        "quality": 0.85
       }
     ]
   }

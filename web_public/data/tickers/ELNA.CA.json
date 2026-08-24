@@ -1,6 +1,6 @@
 {
   "ticker": "ELNA.CA",
-  "last_data_date": "2026-08-23",
+  "last_data_date": "2026-08-24",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "ELNA.CA",
@@ -11,7 +11,7 @@
       "Ascending Triangle match (quality 0.90)",
       "Avg volume below 100,000 long-term floor"
     ],
-    "P/E Ratio": -132.85,
+    "P/E Ratio": -132.31,
     "EPS": -0.277,
     "Beta": null,
     "Dividend Yield %": null,
@@ -19,50 +19,50 @@
     "1W Return %": -1.75,
     "1M Return %": -4.59,
     "YTD Return %": -7.75,
-    "1Y Return %": 4.4,
+    "1Y Return %": -0.56,
     "3Y Return %": 82.14,
-    "External Rating Consensus": -1.625,
-    "External Rating Note": "Diverges from external consensus (-1.6/2, bearish)",
+    "External Rating Consensus": -0.875,
+    "External Rating Note": null,
     "Action": "🚫 ILLIQUID - ⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor)",
-    "Rank Score": -20.4,
+    "Rank Score": -10.0,
     "Current Price": 37.01,
     "Target Entry (VWAP)": 37.01,
-    "Suggested Stop-Loss": 34.3929,
-    "Take-Profit Target": 38.0093,
+    "Suggested Stop-Loss": 34.6086,
+    "Take-Profit Target": 39.4008,
     "Resistance (52W High)": 51.7,
     "Support (52W Low)": 33.73,
     "Nearest Resistance": 39.69,
     "Resistance Touches": 4,
     "Nearest Support": 36.7333,
     "Support Touches": 6,
-    "Pivot Point": 37.6267,
-    "R1": 38.2433,
-    "R2": 38.8167,
-    "R3": 39.4333,
-    "S1": 37.0533,
-    "S2": 36.4367,
-    "S3": 35.8633,
-    "Projected Gain (%)": -0.18,
-    "Pattern Conf (%)": 38.34,
-    "Projected Range 95%": "-5.36% to 7.79%",
+    "Pivot Point": 37.17,
+    "R1": 38.24,
+    "R2": 39.47,
+    "R3": 40.54,
+    "S1": 35.94,
+    "S2": 34.87,
+    "S3": 33.64,
+    "Projected Gain (%)": 5.76,
+    "Pattern Conf (%)": 43.22,
+    "Projected Range 95%": "-2.15% to 13.69%",
     "Kelly %": 0.0,
-    "Signal Reason": "🚫 ILLIQUID - ⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor) | trend=Weak Bullish | awaiting confirmation | vol x1.24",
+    "Signal Reason": "🚫 ILLIQUID - ⏳ BUY ON DIP (Unconfirmed: weekly trend not aligned, CMF below accumulation floor) | trend=Weak Bullish | awaiting confirmation",
     "Score Breakdown": {
-      "pattern": 11.5,
-      "projected": -0.27,
+      "pattern": 12.97,
+      "projected": 8.64,
       "range": 0.91,
       "trend_bonus": -32.5,
       "confidence_weight": 1.0
     },
-    "Regime": "Volatile Range",
+    "Regime": "Range / Consolidation",
     "Trend Class": "Weak Bullish",
     "RSI-14": 46.0,
-    "ADX-14": 9.8,
-    "Vol Z-Score": 0.26,
+    "ADX-14": 9.4,
+    "Vol Z-Score": -0.92,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.1565,
-    "Bollinger %B": 0.333,
-    "Avg Volume (20D)": 11608,
+    "MACD Histogram": -0.1245,
+    "Bollinger %B": 0.349,
+    "Avg Volume (20D)": 11479,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -319,7 +319,8 @@
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
-      "2026-08-23 00:00:00"
+      "2026-08-23 00:00:00",
+      "2026-08-24 00:00:00"
     ],
     "close": [
       35.45,
@@ -574,6 +575,7 @@
       37.67,
       36.14,
       36.45,
+      37.01,
       37.01
     ],
     "open": [
@@ -829,7 +831,8 @@
       37.67,
       37.6,
       36.2,
-      36.45
+      36.45,
+      37.01
     ],
     "high": [
       35.45,
@@ -1084,7 +1087,8 @@
       38.4,
       38.14,
       37.18,
-      37.89
+      37.89,
+      37.01
     ],
     "low": [
       33.1,
@@ -1339,7 +1343,8 @@
       37.51,
       36.1,
       36.16,
-      36.3
+      36.3,
+      36.45
     ],
     "volume": [
       67450,
@@ -1594,7 +1599,8 @@
       3502,
       33966,
       28726,
-      14348
+      14348,
+      1590
     ],
     "vwap": [
       34.6667,
@@ -1849,18 +1855,19 @@
       38.3878,
       38.1138,
       37.8733,
-      37.7872
+      37.7872,
+      37.763
     ],
     "resistance": 39.69,
     "support": 36.7333,
     "pivots": {
-      "pp": 37.6267,
-      "r1": 38.2433,
-      "r2": 38.8167,
-      "r3": 39.4333,
-      "s1": 37.0533,
-      "s2": 36.4367,
-      "s3": 35.8633
+      "pp": 37.17,
+      "r1": 38.24,
+      "r2": 39.47,
+      "r3": 40.54,
+      "s1": 35.94,
+      "s2": 34.87,
+      "s3": 33.64
     },
     "patterns": [
       {

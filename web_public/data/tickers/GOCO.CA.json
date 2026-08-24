@@ -1,13 +1,14 @@
 {
   "ticker": "GOCO.CA",
-  "last_data_date": "2026-08-23",
+  "last_data_date": "2026-08-24",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "GOCO.CA",
     "Sector": "Real Estate",
     "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
-      "Not enough history for a long-term setup check",
+      "No confirmed higher-low swing structure yet",
+      "No bullish pattern match at required quality",
       "Avg volume below 100,000 long-term floor"
     ],
     "P/E Ratio": -101.66,
@@ -23,7 +24,7 @@
     "External Rating Consensus": -2.0,
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL",
-    "Rank Score": -20.7,
+    "Rank Score": -20.8,
     "Current Price": 0.8,
     "Target Entry (VWAP)": 0.8,
     "Suggested Stop-Loss": 0.3,
@@ -104,9 +105,11 @@
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
-      "2026-08-23 00:00:00"
+      "2026-08-23 00:00:00",
+      "2026-08-24 00:00:00"
     ],
     "close": [
+      0.8,
       0.8,
       0.8,
       0.8,
@@ -186,9 +189,11 @@
       1.0,
       1.0,
       1.0,
+      1.0,
       1.0
     ],
     "high": [
+      1.0,
       1.0,
       1.0,
       1.0,
@@ -268,6 +273,7 @@
       0.75,
       0.75,
       0.75,
+      0.75,
       0.75
     ],
     "volume": [
@@ -309,9 +315,11 @@
       0,
       0,
       0,
+      0,
       0
     ],
     "vwap": [
+      0.8,
       0.8,
       0.8,
       0.8,

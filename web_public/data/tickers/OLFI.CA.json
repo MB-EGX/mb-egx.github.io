@@ -1,67 +1,67 @@
 {
   "ticker": "OLFI.CA",
-  "last_data_date": "2026-08-23",
+  "last_data_date": "2026-08-24",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "OLFI.CA",
     "Sector": "Food, Beverages & Tobacco",
-    "Long-Term Setup Confirmed": true,
+    "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
-      "Higher-low swing structure confirmed",
+      "No confirmed higher-low swing structure yet",
       "Double Bottom match (quality 0.92)"
     ],
-    "P/E Ratio": 12.91,
+    "P/E Ratio": 12.56,
     "EPS": 1.8784,
     "Beta": 0.45,
-    "Dividend Yield %": 7.35,
-    "Market Cap": 9700000000.0,
-    "1W Return %": -3.81,
-    "1M Return %": 3.46,
-    "YTD Return %": -3.0,
-    "1Y Return %": 13.75,
-    "3Y Return %": 188.23,
-    "External Rating Consensus": 1.375,
-    "External Rating Note": null,
+    "Dividend Yield %": 7.3,
+    "Market Cap": 9500000000.0,
+    "1W Return %": -6.04,
+    "1M Return %": 0.26,
+    "YTD Return %": -6.0,
+    "1Y Return %": 11.38,
+    "3Y Return %": 179.31,
+    "External Rating Consensus": -1.0,
+    "External Rating Note": "Diverges from external consensus (-1.0/2, bearish)",
     "Action": "📈 ACCUMULATE",
-    "Rank Score": 27.3,
-    "Current Price": 24.24,
-    "Target Entry (VWAP)": 24.24,
-    "Suggested Stop-Loss": 20.7829,
-    "Take-Profit Target": 24.8945,
+    "Rank Score": 27.8,
+    "Current Price": 23.49,
+    "Target Entry (VWAP)": 23.49,
+    "Suggested Stop-Loss": 20.0271,
+    "Take-Profit Target": 24.1242,
     "Resistance (52W High)": 26.5,
     "Support (52W Low)": 19.05,
-    "Nearest Resistance": null,
-    "Resistance Touches": null,
-    "Nearest Support": 23.885,
-    "Support Touches": 2,
-    "Pivot Point": 24.95,
-    "R1": 26.25,
-    "R2": 27.3,
-    "R3": 28.6,
-    "S1": 23.9,
-    "S2": 22.6,
-    "S3": 21.55,
-    "Projected Gain (%)": -1.42,
-    "Pattern Conf (%)": 53.07,
-    "Projected Range 95%": "-3.84% to 1.96%",
+    "Nearest Resistance": 24.12,
+    "Resistance Touches": 4,
+    "Nearest Support": 21.7817,
+    "Support Touches": 6,
+    "Pivot Point": 24.1133,
+    "R1": 25.3267,
+    "R2": 26.4133,
+    "R3": 27.6267,
+    "S1": 23.0267,
+    "S2": 21.8133,
+    "S3": 20.7267,
+    "Projected Gain (%)": -1.16,
+    "Pattern Conf (%)": 55.14,
+    "Projected Range 95%": "-2.21% to -0.12%",
     "Kelly %": 0.0,
     "Signal Reason": "📈 ACCUMULATE | trend=Weak Bullish (Low Trend Strength) | awaiting confirmation | weekly aligned | positive money flow",
     "Score Breakdown": {
-      "pattern": 15.92,
-      "projected": -2.13,
-      "range": 3.48,
+      "pattern": 16.54,
+      "projected": -1.74,
+      "range": 2.98,
       "trend_bonus": 10.0,
       "confidence_weight": 1.0
     },
     "Regime": "Volatile Range",
     "Trend Class": "Weak Bullish (Low Trend Strength)",
-    "RSI-14": 52.4,
-    "ADX-14": 18.1,
-    "Vol Z-Score": -0.36,
+    "RSI-14": 48.8,
+    "ADX-14": 16.9,
+    "Vol Z-Score": -0.27,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0437,
-    "Bollinger %B": 0.576,
-    "Avg Volume (20D)": 1864252,
+    "MACD Histogram": -0.1074,
+    "Bollinger %B": 0.432,
+    "Avg Volume (20D)": 1877010,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -318,7 +318,8 @@
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
-      "2026-08-23 00:00:00"
+      "2026-08-23 00:00:00",
+      "2026-08-24 00:00:00"
     ],
     "close": [
       21.31,
@@ -573,7 +574,8 @@
       24.53,
       23.82,
       23.98,
-      24.24
+      24.24,
+      23.49
     ],
     "open": [
       21.55,
@@ -828,7 +830,8 @@
       25.0,
       24.99,
       23.94,
-      23.98
+      23.98,
+      24.24
     ],
     "high": [
       21.7,
@@ -1082,6 +1085,7 @@
       25.2,
       25.1,
       25.0,
+      24.5,
       24.5,
       24.5
     ],
@@ -1338,7 +1342,8 @@
       24.4,
       22.9,
       23.5,
-      23.8
+      23.8,
+      23.45
     ],
     "volume": [
       189430,
@@ -1593,7 +1598,8 @@
       555520,
       796139,
       239571,
-      184797
+      184797,
+      622081
     ],
     "vwap": [
       21.4167,
@@ -1848,18 +1854,19 @@
       24.5023,
       24.5667,
       24.5976,
-      24.6256
+      24.6256,
+      24.6249
     ],
-    "resistance": 26.5,
-    "support": 23.885,
+    "resistance": 24.12,
+    "support": 21.7817,
     "pivots": {
-      "pp": 24.95,
-      "r1": 26.25,
-      "r2": 27.3,
-      "r3": 28.6,
-      "s1": 23.9,
-      "s2": 22.6,
-      "s3": 21.55
+      "pp": 24.1133,
+      "r1": 25.3267,
+      "r2": 26.4133,
+      "r3": 27.6267,
+      "s1": 23.0267,
+      "s2": 21.8133,
+      "s3": 20.7267
     },
     "patterns": [
       {
@@ -1998,21 +2005,6 @@
           "resistance_end": 23.1357,
           "support_start": 20.9632,
           "support_end": 20.6943
-        },
-        "quality": 0.85
-      },
-      {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 204,
-        "end_index": 250,
-        "start_date": "2026-06-14",
-        "end_date": "2026-08-19",
-        "levels": {
-          "resistance_start": 22.3361,
-          "resistance_end": 26.0257,
-          "support_start": 19.0922,
-          "support_end": 22.9843
         },
         "quality": 0.85
       }

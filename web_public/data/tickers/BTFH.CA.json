@@ -1,67 +1,67 @@
 {
   "ticker": "BTFH.CA",
-  "last_data_date": "2026-08-23",
+  "last_data_date": "2026-08-24",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "BTFH.CA",
     "Sector": "Non-Bank Financial Services",
-    "Long-Term Setup Confirmed": true,
+    "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
-      "Higher-low swing structure confirmed",
+      "No confirmed higher-low swing structure yet",
       "Cup & Handle match (quality 0.90)"
     ],
-    "P/E Ratio": 23.76,
+    "P/E Ratio": 23.37,
     "EPS": 0.1271,
     "Beta": -0.52,
     "Dividend Yield %": null,
-    "Market Cap": 32260000000.0,
-    "1W Return %": -3.22,
-    "1M Return %": -2.59,
-    "YTD Return %": -11.99,
-    "1Y Return %": -2.59,
-    "3Y Return %": -5.94,
-    "External Rating Consensus": -1.5,
+    "Market Cap": 31830000000.0,
+    "1W Return %": -4.81,
+    "1M Return %": -3.88,
+    "YTD Return %": -13.16,
+    "1Y Return %": -4.19,
+    "3Y Return %": -7.19,
+    "External Rating Consensus": -1.75,
     "External Rating Note": null,
     "Action": "🟡 HOLD / NEUTRAL",
-    "Rank Score": 20.4,
-    "Current Price": 3.01,
-    "Target Entry (VWAP)": 3.01,
-    "Suggested Stop-Loss": 2.8271,
-    "Take-Profit Target": 3.0913,
+    "Rank Score": 23.4,
+    "Current Price": 2.97,
+    "Target Entry (VWAP)": 2.97,
+    "Suggested Stop-Loss": 2.7857,
+    "Take-Profit Target": 3.0502,
     "Resistance (52W High)": 3.66,
     "Support (52W Low)": 2.65,
     "Nearest Resistance": 3.1513,
     "Resistance Touches": 16,
     "Nearest Support": 2.855,
     "Support Touches": 4,
-    "Pivot Point": 3.12,
-    "R1": 3.17,
-    "R2": 3.23,
-    "R3": 3.28,
-    "S1": 3.06,
-    "S2": 3.01,
-    "S3": 2.95,
-    "Projected Gain (%)": 0.06,
-    "Pattern Conf (%)": 61.69,
-    "Projected Range 95%": "-1.18% to 1.3%",
-    "Kelly %": 0.0,
+    "Pivot Point": 3.0433,
+    "R1": 3.1067,
+    "R2": 3.2033,
+    "R3": 3.2667,
+    "S1": 2.9467,
+    "S2": 2.8833,
+    "S3": 2.7867,
+    "Projected Gain (%)": 0.33,
+    "Pattern Conf (%)": 71.21,
+    "Projected Range 95%": "0.33% to 0.33%",
+    "Kelly %": 2.53,
     "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Weak Bullish | no decisive edge",
     "Score Breakdown": {
-      "pattern": 18.51,
-      "projected": 0.09,
-      "range": 1.78,
+      "pattern": 21.36,
+      "projected": 0.49,
+      "range": 1.58,
       "trend_bonus": 0.0,
       "confidence_weight": 1.0
     },
     "Regime": "Range / Consolidation",
     "Trend Class": "Weak Bullish",
-    "RSI-14": 46.2,
-    "ADX-14": 15.0,
-    "Vol Z-Score": -0.82,
+    "RSI-14": 43.7,
+    "ADX-14": 14.3,
+    "Vol Z-Score": -1.03,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0111,
-    "Bollinger %B": 0.297,
-    "Avg Volume (20D)": 56436510,
+    "MACD Histogram": -0.0137,
+    "Bollinger %B": 0.199,
+    "Avg Volume (20D)": 51845286,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -318,7 +318,8 @@
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
-      "2026-08-23 00:00:00"
+      "2026-08-23 00:00:00",
+      "2026-08-24 00:00:00"
     ],
     "close": [
       3.09,
@@ -573,7 +574,8 @@
       3.08,
       3.01,
       2.98,
-      3.01
+      3.01,
+      2.97
     ],
     "open": [
       3.06,
@@ -828,7 +830,8 @@
       3.12,
       3.09,
       3.01,
-      2.98
+      2.98,
+      3.01
     ],
     "high": [
       3.13,
@@ -1083,6 +1086,7 @@
       3.14,
       3.09,
       3.02,
+      3.03,
       3.03
     ],
     "low": [
@@ -1338,7 +1342,8 @@
       3.08,
       3.01,
       2.98,
-      2.99
+      2.99,
+      2.96
     ],
     "volume": [
       81510000,
@@ -1593,7 +1598,8 @@
       45413238,
       105916302,
       69151795,
-      30851380
+      30851380,
+      22122722
     ],
     "vwap": [
       3.0933,
@@ -1848,18 +1854,19 @@
       3.1086,
       3.1024,
       3.0969,
-      3.0946
+      3.0946,
+      3.0888
     ],
     "resistance": 3.1513,
     "support": 2.855,
     "pivots": {
-      "pp": 3.12,
-      "r1": 3.17,
-      "r2": 3.23,
-      "r3": 3.28,
-      "s1": 3.06,
-      "s2": 3.01,
-      "s3": 2.95
+      "pp": 3.0433,
+      "r1": 3.1067,
+      "r2": 3.2033,
+      "r3": 3.2667,
+      "s1": 2.9467,
+      "s2": 2.8833,
+      "s3": 2.7867
     },
     "patterns": [
       {
@@ -2110,22 +2117,6 @@
           "support_end": 2.8604
         },
         "quality": 0.85
-      },
-      {
-        "pattern": "Ascending Triangle",
-        "direction": "bullish",
-        "start_index": 217,
-        "end_index": 251,
-        "start_date": "2026-07-04",
-        "end_date": "2026-08-20",
-        "levels": {
-          "resistance": 3.19,
-          "support_start": 2.8215,
-          "support_end": 2.9645,
-          "apex_price": 3.3626
-        },
-        "quality": 0.9,
-        "apex_index": 345.7117437722422
       },
       {
         "pattern": "Double Top",

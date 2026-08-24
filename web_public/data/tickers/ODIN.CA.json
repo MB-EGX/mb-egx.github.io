@@ -1,67 +1,67 @@
 {
   "ticker": "ODIN.CA",
-  "last_data_date": "2026-08-23",
+  "last_data_date": "2026-08-24",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "ODIN.CA",
     "Sector": "Non-Bank Financial Services",
-    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Confirmed": true,
     "Long-Term Setup Reasons": [
-      "No confirmed higher-low swing structure yet",
+      "Higher-low swing structure confirmed",
       "Ascending Triangle match (quality 0.92)"
     ],
-    "P/E Ratio": 13.7,
+    "P/E Ratio": 13.62,
     "EPS": 0.2284,
     "Beta": -0.05,
-    "Dividend Yield %": 2.25,
+    "Dividend Yield %": 2.34,
     "Market Cap": 1870000000.0,
-    "1W Return %": -7.44,
-    "1M Return %": 17.36,
-    "YTD Return %": 38.22,
-    "1Y Return %": 90.8,
-    "3Y Return %": 78.12,
+    "1W Return %": -6.02,
+    "1M Return %": 17.74,
+    "YTD Return %": 38.67,
+    "1Y Return %": 92.59,
+    "3Y Return %": 78.69,
     "External Rating Consensus": -0.5,
     "External Rating Note": null,
     "Action": "🟡 HOLD / NEUTRAL",
-    "Rank Score": 7.5,
-    "Current Price": 3.11,
-    "Target Entry (VWAP)": 3.11,
-    "Suggested Stop-Loss": 2.1571,
-    "Take-Profit Target": 3.194,
+    "Rank Score": 23.3,
+    "Current Price": 3.12,
+    "Target Entry (VWAP)": 3.12,
+    "Suggested Stop-Loss": 2.1657,
+    "Take-Profit Target": 3.2042,
     "Resistance (52W High)": 3.92,
     "Support (52W Low)": 1.59,
     "Nearest Resistance": null,
     "Resistance Touches": null,
     "Nearest Support": 1.88,
     "Support Touches": 2,
-    "Pivot Point": 3.3667,
-    "R1": 3.9133,
-    "R2": 4.4667,
-    "R3": 5.0133,
-    "S1": 2.8133,
-    "S2": 2.2667,
-    "S3": 1.7133,
-    "Projected Gain (%)": -2.98,
-    "Pattern Conf (%)": 28.89,
-    "Projected Range 95%": "-15.17% to 4.55%",
+    "Pivot Point": 3.3233,
+    "R1": 3.5367,
+    "R2": 3.9633,
+    "R3": 4.1767,
+    "S1": 2.8967,
+    "S2": 2.6833,
+    "S3": 2.2567,
+    "Projected Gain (%)": 1.23,
+    "Pattern Conf (%)": 60.63,
+    "Projected Range 95%": "-2.15% to 6.53%",
     "Kelly %": 0.0,
     "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Strong Bullish | no decisive edge | weekly aligned",
     "Score Breakdown": {
-      "pattern": 8.67,
-      "projected": -4.47,
-      "range": 3.26,
+      "pattern": 18.19,
+      "projected": 1.84,
+      "range": 3.28,
       "trend_bonus": 0.0,
       "confidence_weight": 1.0
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish",
-    "RSI-14": 54.0,
-    "ADX-14": 30.9,
-    "Vol Z-Score": -0.33,
-    "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0149,
-    "Bollinger %B": 0.6,
-    "Avg Volume (20D)": 11678165,
+    "RSI-14": 54.2,
+    "ADX-14": 30.6,
+    "Vol Z-Score": -0.26,
+    "MACD Signal": "🔴 Bearish Cross",
+    "MACD Histogram": -0.0054,
+    "Bollinger %B": 0.593,
+    "Avg Volume (20D)": 12012781,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -318,7 +318,8 @@
       "2026-08-18 00:00:00",
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
-      "2026-08-23 00:00:00"
+      "2026-08-23 00:00:00",
+      "2026-08-24 00:00:00"
     ],
     "close": [
       1.63,
@@ -573,7 +574,8 @@
       3.59,
       3.34,
       3.21,
-      3.11
+      3.11,
+      3.12
     ],
     "open": [
       1.65,
@@ -828,7 +830,8 @@
       3.32,
       3.64,
       3.33,
-      3.21
+      3.21,
+      3.11
     ],
     "high": [
       1.65,
@@ -1083,7 +1086,8 @@
       3.75,
       3.7,
       3.33,
-      3.29
+      3.29,
+      3.27
     ],
     "low": [
       1.63,
@@ -1338,7 +1342,8 @@
       3.34,
       3.3,
       3.18,
-      3.11
+      3.11,
+      3.1
     ],
     "volume": [
       1110000,
@@ -1593,7 +1598,8 @@
       17357709,
       11698145,
       10502850,
-      7895597
+      7895597,
+      9027306
     ],
     "vwap": [
       1.6367,
@@ -1848,18 +1854,19 @@
       3.1324,
       3.1811,
       3.1942,
-      3.204
+      3.204,
+      3.2081
     ],
     "resistance": 3.92,
     "support": 1.88,
     "pivots": {
-      "pp": 3.3667,
-      "r1": 3.9133,
-      "r2": 4.4667,
-      "r3": 5.0133,
-      "s1": 2.8133,
-      "s2": 2.2667,
-      "s3": 1.7133
+      "pp": 3.3233,
+      "r1": 3.5367,
+      "r2": 3.9633,
+      "r3": 4.1767,
+      "s1": 2.8967,
+      "s2": 2.6833,
+      "s3": 2.2567
     },
     "patterns": [
       {
