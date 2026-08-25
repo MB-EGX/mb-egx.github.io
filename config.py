@@ -136,6 +136,15 @@ SCORE_WEIGHTS = {
     "range_position_weight": 0.05,
     "pattern_confidence_weight": 0.3,
     "pattern_projected_gain_weight": 1.5,
+    # BUGFIX: reward:risk (take-profit distance / stop distance) was computed
+    # for Kelly position-sizing but never fed back into Rank Score, so a row
+    # with a great pattern/trend but a terrible payoff (e.g. RR=0.2 - risking
+    # 5x what you stand to gain) could still rank #1 in Top-10/Session Picks.
+    # This weight lets a strong RR meaningfully lift a score (a 2:1 setup
+    # gets +20) without letting one outlier RR value dominate the rest of
+    # the score (see reward_risk_score_cap below).
+    "reward_risk_weight": 10.0,
+    "reward_risk_score_cap": 3.0,  # cap the RR component's input so a huge/degenerate RR can't blow out the score
 }
 
 # --- Action classification thresholds (formerly hard-coded in decision_matrix) ---
@@ -187,6 +196,14 @@ ACTION_THRESHOLDS = {
     # a dip with net distribution (CMF below this) is not a low-risk pullback
     # in an established trend, it's a stock still being sold.
     "medium_term_cmf_min": 0.15,
+    # BUGFIX: minimum acceptable reward:risk for a buy-type recommendation
+    # (STRONG BUY / BREAKOUT BUY / ACCUMULATE / BUY ON DIP). Below this floor
+    # a name is reclassified to HOLD/NEUTRAL - same treatment as an
+    # unconfirmed signal - so it can't reach Top-10/Session Picks. 0.8 means
+    # you're risking at most 25% more than you stand to gain; this app's own
+    # exported data showed a median buy-side RR of ~0.27 before this floor
+    # existed, i.e. risking ~3.7x the potential gain on the typical "buy".
+    "min_reward_risk": 0.8,
     # Trailing stop and take-profit
     "atr_trailing_multiplier": 2.0,
     "cut_loss_pnl_pct": -8.0,
@@ -452,6 +469,22 @@ WALK_FORWARD_BACKTEST_DEFAULTS = {
     # (ATR trailing stop / take-profit, not "hold forever").
     "max_hold_bars": 60,
 }
+
+# --- Backtested win-rate cache (wires REAL, out-of-sample-tested win rates
+# into live Kelly sizing + the "Backtested Win Rate" column, instead of the
+# 50/50 DEFAULT_WIN_RATE_PRIOR fallback for every ticker with no pattern
+# match). Written by backtester.save_win_rate_cache() (call
+# refresh_win_rate_cache.py periodically - this is NOT re-run on every
+# publish.py pass since a full 260-ticker walk-forward backtest is too slow
+# to run on every publish; a stale-but-recent cache is fine, an absent one
+# just falls back to the 50/50 prior it always used before).
+BACKTEST_WIN_RATE_CACHE_PATH = "web_public/data/backtest_win_rates.json"
+# A per-action win rate is only trusted live once it has at least this many
+# real out-of-sample trades behind it - below this, fall back to
+# DEFAULT_WIN_RATE_PRIOR rather than sizing off a handful of lucky/unlucky
+# trades (same "don't fabricate an edge that isn't measured" principle as
+# DEFAULT_WIN_RATE_PRIOR's own docstring).
+MIN_BACKTEST_TRADES_FOR_LIVE_WIN_RATE = 20
 
 # --- Benchmark / index data (EGX30, EGX70 EWI, EGX sector indices, ...) ---
 # These tickers represent EGX INDEX LEVELS - not individual tradeable

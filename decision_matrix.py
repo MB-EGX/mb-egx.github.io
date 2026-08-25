@@ -54,6 +54,7 @@ from config import (
     KELLY_FRACTION,
     KELLY_CAP_FRACTION,
     DEFAULT_WIN_RATE_PRIOR,
+    MIN_BACKTEST_TRADES_FOR_LIVE_WIN_RATE,
     get_logger,
 )
 
@@ -63,6 +64,7 @@ from analytics import QuantitativeEngine
 from chart_patterns import PatternDetector
 from db_manager import DatabaseManager
 from session_picks import refresh_session_picks, emit_alert
+from backtester import load_win_rate_cache, _action_family
 from market_regime import (
     normalized_benchmark_set,
     load_all_benchmark_indicators,
@@ -75,6 +77,34 @@ from sector_rotation import live_rotation_snapshot
 from usd_divergence import live_divergence_snapshot
 
 logger = get_logger("decision_matrix")
+
+# Module-level cache for the backtested per-action win rates (see
+# backtester.save_win_rate_cache / refresh_win_rate_cache.py). Loaded once
+# per process (a fresh analyze_market() call within the same process reuses
+# it - the cache file itself only changes when refresh_win_rate_cache.py is
+# re-run, not every session) rather than re-reading the JSON file once per
+# ticker in the scoring loop.
+_WIN_RATE_CACHE: dict | None = None
+
+
+def _get_backtested_win_rate(raw_action: str) -> tuple[float | None, int | None, bool]:
+    """(win_rate_fraction, trade_count, is_reliable) for the action family
+    ``raw_action`` belongs to, from the REAL out-of-sample backtest cache -
+    or (None, None, False) if the cache hasn't been generated yet
+    (refresh_win_rate_cache.py has never run) or this family doesn't have
+    enough trades yet (config.MIN_BACKTEST_TRADES_FOR_LIVE_WIN_RATE).
+    Callers must fall back to DEFAULT_WIN_RATE_PRIOR in either case - never
+    fabricate a win rate that wasn't actually measured."""
+    global _WIN_RATE_CACHE
+    if _WIN_RATE_CACHE is None:
+        _WIN_RATE_CACHE = load_win_rate_cache()
+    by_action = _WIN_RATE_CACHE.get("by_action", {})
+    family = _action_family(raw_action)
+    stats = by_action.get(family)
+    if not stats or not stats.get("is_reliable"):
+        return None, (stats.get("trade_count") if stats else None), False
+    return stats["win_rate_pct"] / 100.0, stats["trade_count"], True
+
 
 # =============================================================================
 # Optional display-language for the small set of scan-progress messages
@@ -1205,8 +1235,22 @@ class DecisionMatrix:
                         unmet.append("below VWAP")
                     if not squeeze_ok:
                         unmet.append("no squeeze release")
-                    action_cmd = f"{raw_action} (Unconfirmed: {', '.join(unmet)})"
-                    trend_bonus *= SCORE_WEIGHTS["unconfirmed_scale"]
+                    # BUGFIX: an unconfirmed STRONG BUY / BREAKOUT BUY must NOT
+                    # be recommended. It used to stay in the matrix with the
+                    # label "...(Unconfirmed: ...)" and a quartered score, but the
+                    # Top-10 and Session Picks filters match on the action
+                    # substring ("STRONG BUY" / "BREAKOUT BUY"), so these
+                    # failed signals still leaked into the actionable
+                    # recommendations and got picked as Session Picks - the
+                    # exact "recommendation that loses money" failure. The
+                    # backtester (backtester._point_in_time_signal) already
+                    # treats an unconfirmed signal as NO TRADE; the live matrix
+                    # must match it. Reclassify to HOLD/NEUTRAL so it can't
+                    # appear in Top-10 / Session Picks, while the reason stays
+                    # visible in Signal Reason.
+                    raw_action = "🟡 HOLD / NEUTRAL"
+                    action_cmd = f"{raw_action} (Signal unconfirmed: {', '.join(unmet)})"
+                    trend_bonus = SCORE_WEIGHTS["hold_neutral"]
                 else:
                     action_cmd = raw_action
 
@@ -1236,8 +1280,19 @@ class DecisionMatrix:
                             unmet.append("weekly trend not aligned")
                         if cmf < ACTION_THRESHOLDS["medium_term_cmf_min"]:
                             unmet.append("CMF below accumulation floor")
-                        action_cmd = f"{action_cmd} (Unconfirmed: {', '.join(unmet)})"
-                        trend_bonus *= SCORE_WEIGHTS["unconfirmed_scale"]
+                        # BUGFIX: an unconfirmed "dip" is a falling stock, not a
+                        # dip - a name below its weekly trend with no accumulation
+                        # (CMF) is exactly what the backtester refuses to trade
+                        # (it returns None for an unconfirmed BUY ON DIP). The
+                        # live matrix used to keep it as "⏳ BUY ON DIP
+                        # (Unconfirmed: ...)", and because Top-10 / Session Picks
+                        # match on the "BUY ON DIP" substring, these falling
+                        # stocks were picked as medium-term Session Picks and
+                        # recommended to buy. Reclassify to HOLD/NEUTRAL so it
+                        # can't leak into Top-10 / Session Picks.
+                        raw_action = "🟡 HOLD / NEUTRAL"
+                        action_cmd = f"{raw_action} (Dip unconfirmed: {', '.join(unmet)})"
+                        trend_bonus = SCORE_WEIGHTS["hold_neutral"]
 
                 if weekly_aligned and (
                     "STRONG BUY" in action_cmd or "BREAKOUT BUY" in action_cmd
@@ -1569,25 +1624,14 @@ class DecisionMatrix:
                 except Exception as e:
                     logger.warning(f"{norm_ticker}: pre-breakout screening failed ({e}) - skipping watchlist for this ticker only")
 
-                pattern_component = (
-                    pattern_data["confidence"] * SCORE_WEIGHTS["pattern_confidence_weight"]
-                    if pattern_data["match_found"]
-                    else 0.0
-                )
-                projected_component = (
-                    pattern_data["projected_change_pct"] * SCORE_WEIGHTS["pattern_projected_gain_weight"]
-                    if pattern_data["match_found"]
-                    else 0.0
-                )
-
-                raw_score = (
-                    pattern_component
-                    + projected_component
-                    + (range_pos_pct * SCORE_WEIGHTS["range_position_weight"])
-                    + trend_bonus
-                )
-                score = raw_score * conf_weight
-
+                # --- Stop / take-profit / reward:risk, computed BEFORE the
+                # score so a poor payoff can (a) gate the action itself and
+                # (b) factor into Rank Score. This used to run AFTER score
+                # was finalized, which meant reward:risk only ever reached
+                # Kelly position-sizing - never Rank Score, and never had a
+                # chance to veto the action - so a row with a great pattern
+                # match but a terrible payoff (risking several times what it
+                # could gain) could still rank #1 in Top-10/Session Picks.
                 entry_target = (
                     min(curr_price, vwap) if pd.notna(vwap) and vwap > 0 else curr_price
                 )
@@ -1639,24 +1683,78 @@ class DecisionMatrix:
                     (max(take_profit_target - curr_price, 0.0) / sizing_stop_distance)
                     if sizing_stop_distance > 0 else 0.0
                 )
-                # Win-rate estimate for Kelly: when a historical-analog
-                # match exists, use the ACTUAL fraction of matched analogs
-                # that were profitable (pattern_data["win_rate"]) - not
-                # "confidence", which is a similarity x significance x
-                # downside-risk TRUST weight for the composite score, and
-                # is a different number from win probability (see
-                # analytics.match_historical_patterns' own docstring on
-                # this). Falls back to an honest 50/50 prior
-                # (config.DEFAULT_WIN_RATE_PRIOR) when there's no match -
-                # never fabricate an edge where none is measured. (The
-                # backtester's realized per-action win rates are the
-                # proper source; wiring them in live is a future step -
-                # see backtester.py's R-multiple bookkeeping.)
-                win_rate_est = (
-                    pattern_data.get("win_rate", DEFAULT_WIN_RATE_PRIOR)
-                    if pattern_data.get("match_found")
-                    else DEFAULT_WIN_RATE_PRIOR
+
+                # BUGFIX: gate out buy-type actions whose reward:risk falls
+                # below ACTION_THRESHOLDS["min_reward_risk"] - same treatment
+                # as an unconfirmed signal (reclassify to HOLD/NEUTRAL so it
+                # can't reach Top-10/Session Picks, reason stays visible in
+                # Signal Reason). Real, non-fabricated data from this app
+                # showed a median buy-side RR of ~0.27 before this existed -
+                # i.e. the typical "buy" risked ~3.7x what it stood to gain,
+                # which is a losing proposition even at a good win rate.
+                is_buy_type_action = any(
+                    tag in raw_action for tag in ("STRONG BUY", "BREAKOUT BUY", "ACCUMULATE", "BUY ON DIP")
                 )
+                min_rr = ACTION_THRESHOLDS["min_reward_risk"]
+                if is_buy_type_action and reward_risk < min_rr:
+                    raw_action = "🟡 HOLD / NEUTRAL"
+                    action_cmd = f"{raw_action} (Poor reward:risk {reward_risk:.2f}x < {min_rr:.2f}x floor)"
+                    trend_bonus = SCORE_WEIGHTS["hold_neutral"]
+
+                pattern_component = (
+                    pattern_data["confidence"] * SCORE_WEIGHTS["pattern_confidence_weight"]
+                    if pattern_data["match_found"]
+                    else 0.0
+                )
+                projected_component = (
+                    pattern_data["projected_change_pct"] * SCORE_WEIGHTS["pattern_projected_gain_weight"]
+                    if pattern_data["match_found"]
+                    else 0.0
+                )
+                # BUGFIX: reward:risk now contributes to the score itself
+                # (not just the gate above), so that among rows that DO clear
+                # the floor, better asymmetry is rewarded rather than ranking
+                # purely on pattern/trend. Capped so one outlier RR (e.g. a
+                # near-zero stop distance) can't dominate the rest of the score.
+                reward_risk_component = (
+                    min(reward_risk, ACTION_THRESHOLDS.get("reward_risk_score_cap", 3.0))
+                    * SCORE_WEIGHTS["reward_risk_weight"]
+                )
+
+                raw_score = (
+                    pattern_component
+                    + projected_component
+                    + (range_pos_pct * SCORE_WEIGHTS["range_position_weight"])
+                    + trend_bonus
+                    + reward_risk_component
+                )
+                score = raw_score * conf_weight
+                # Win-rate estimate for Kelly - priority order:
+                #   1. A historical-analog pattern match's ACTUAL win rate
+                #      (pattern_data["win_rate"]) - not "confidence", which
+                #      is a similarity x significance x downside-risk TRUST
+                #      weight for the composite score, a different number
+                #      from win probability (see analytics.
+                #      match_historical_patterns' own docstring).
+                #   2. BUGFIX (was a "future step"): the backtester's REAL,
+                #      out-of-sample walk-forward win rate for this action
+                #      family (backtester.save_win_rate_cache /
+                #      refresh_win_rate_cache.py), when the cache has enough
+                #      trades behind it (config.
+                #      MIN_BACKTEST_TRADES_FOR_LIVE_WIN_RATE) to trust.
+                #   3. The honest 50/50 prior (config.DEFAULT_WIN_RATE_PRIOR)
+                #      when neither of the above is available - never
+                #      fabricate an edge that isn't measured.
+                bt_win_rate, bt_trade_count, bt_reliable = _get_backtested_win_rate(raw_action)
+                if pattern_data.get("match_found"):
+                    win_rate_est = pattern_data.get("win_rate", DEFAULT_WIN_RATE_PRIOR)
+                    win_rate_source = "pattern_match"
+                elif bt_reliable:
+                    win_rate_est = bt_win_rate
+                    win_rate_source = "backtest"
+                else:
+                    win_rate_est = DEFAULT_WIN_RATE_PRIOR
+                    win_rate_source = "prior_50_50"
                 kelly_pct = round(_kelly_fraction(win_rate_est, reward_risk) * 100.0, 2)
                 projected_band = (
                     f"{pattern_data.get('lower_95_pct', 'N/A')}% to {pattern_data.get('upper_95_pct', 'N/A')}%"
@@ -1726,6 +1824,10 @@ class DecisionMatrix:
                         "Position": "🔁 OWNED - Scale-In Candidate" if is_owned else "New Candidate",
                         "Action": action_cmd,
                         "Rank Score": round(score, 1),
+                        "Reward:Risk": round(reward_risk, 2),
+                        "Win Rate Estimate (%)": round(win_rate_est * 100.0, 1),
+                        "Win Rate Source": win_rate_source,
+                        "Backtested Sample Size": bt_trade_count,
                         "Current Price": round(curr_price, 4),
                         "Target Entry (VWAP)": round(entry_target, 4),
                         "Suggested Stop-Loss": suggested_stop,

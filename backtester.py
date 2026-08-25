@@ -448,6 +448,90 @@ def _simulate_ticker(
     return trades
 
 
+def _action_family(action: str) -> str:
+    """Collapses a specific backtest action label ('BREAKOUT BUY (X-OVER +
+    MOMENTUM)', etc.) to the same family decision_matrix.py's live rows key
+    off (it matches on these exact substrings - see e.g. its
+    ``any(tag in raw_action for tag in ("STRONG BUY", "BREAKOUT BUY", ...))``
+    checks), so a win rate computed here lines up with a live row's action
+    without needing the exact parenthetical variant to match."""
+    for family in ("STRONG BUY", "BREAKOUT BUY", "BUY ON DIP", "ACCUMULATE"):
+        if family in action:
+            return family
+    return action
+
+
+def _aggregate_by_action(trades: list[dict]) -> dict:
+    """{action_family: {trade_count, win_rate_pct, avg_r_multiple,
+    is_reliable}} - the REAL, out-of-sample-tested counterpart to the live
+    matrix's DEFAULT_WIN_RATE_PRIOR 50/50 fallback. ``is_reliable`` follows
+    config.MIN_BACKTEST_TRADES_FOR_LIVE_WIN_RATE - decision_matrix.py should
+    only use a family's win rate live when this is True, and fall back to
+    the prior otherwise (never size off a handful of trades)."""
+    from config import MIN_BACKTEST_TRADES_FOR_LIVE_WIN_RATE
+
+    by_family = defaultdict(list)
+    for tr in trades:
+        by_family[_action_family(tr["action"])].append(tr)
+
+    out = {}
+    for family, fam_trades in by_family.items():
+        returns = [t["return_pct"] / 100.0 for t in fam_trades]
+        wins = [r for r in returns if r > 0]
+        r_multiples = [t["r_multiple"] for t in fam_trades if t.get("r_multiple") is not None]
+        out[family] = {
+            "trade_count": len(fam_trades),
+            "win_rate_pct": round(len(wins) / len(returns) * 100.0, 1) if returns else 0.0,
+            "avg_r_multiple": round(sum(r_multiples) / len(r_multiples), 3) if r_multiples else None,
+            "is_reliable": len(fam_trades) >= MIN_BACKTEST_TRADES_FOR_LIVE_WIN_RATE,
+        }
+    return out
+
+
+def save_win_rate_cache(by_action: dict, as_of: str | None = None) -> str:
+    """Writes ``by_action`` (see ``_aggregate_by_action``) to
+    config.BACKTEST_WIN_RATE_CACHE_PATH as JSON, so decision_matrix.py's
+    live run can load REAL, measured win rates without re-running a full
+    walk-forward backtest on every call (that takes minutes across ~260
+    tickers; a live matrix run needs to be fast). Returns the path written.
+    Call this from refresh_win_rate_cache.py, not from every publish.py
+    pass - see config.py's own comment on why."""
+    import json
+    import os
+    from datetime import datetime, timezone
+    from config import BACKTEST_WIN_RATE_CACHE_PATH
+
+    payload = {
+        "as_of": as_of or datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+        "by_action": by_action,
+    }
+    os.makedirs(os.path.dirname(BACKTEST_WIN_RATE_CACHE_PATH) or ".", exist_ok=True)
+    with open(BACKTEST_WIN_RATE_CACHE_PATH, "w", encoding="utf-8") as fh:
+        json.dump(payload, fh, indent=2)
+    return BACKTEST_WIN_RATE_CACHE_PATH
+
+
+def load_win_rate_cache() -> dict:
+    """Counterpart to ``save_win_rate_cache`` - returns {"as_of": ...,
+    "by_action": {...}}, or {"as_of": None, "by_action": {}} if the cache
+    hasn't been generated yet (first run, or refresh_win_rate_cache.py has
+    never been run) - decision_matrix.py should treat a missing/empty
+    result the same as "no backtested win rate available yet, use the
+    prior", never as an error."""
+    import json
+    import os
+    from config import BACKTEST_WIN_RATE_CACHE_PATH
+
+    if not os.path.exists(BACKTEST_WIN_RATE_CACHE_PATH):
+        return {"as_of": None, "by_action": {}}
+    try:
+        with open(BACKTEST_WIN_RATE_CACHE_PATH, "r", encoding="utf-8") as fh:
+            return json.load(fh)
+    except (json.JSONDecodeError, OSError) as e:
+        logger.warning(f"Win-rate cache unreadable ({e}) - live scoring will use the 50/50 prior instead.")
+        return {"as_of": None, "by_action": {}}
+
+
 def _aggregate_results(trades: list[dict], cfg: dict, tickers_run: int) -> dict:
     """Rolls per-trade results up into per-fold and overall statistics.
 
@@ -524,6 +608,7 @@ def _aggregate_results(trades: list[dict], cfg: dict, tickers_run: int) -> dict:
         "profit_factor": profit_factor,
         "overall": overall_metrics,
         "folds": fold_summaries,
+        "by_action": _aggregate_by_action(trades),
         "trades": trades,
     }
 
