@@ -1,6 +1,6 @@
 {
   "ticker": "SAIB.CA",
-  "last_data_date": "2026-08-24",
+  "last_data_date": "2026-08-25",
   "sector": "Banks",
   "matrix": {
     "Ticker": "SAIB.CA",
@@ -11,11 +11,11 @@
       "No bullish pattern match at required quality",
       "Avg volume below 100,000 long-term floor"
     ],
-    "P/E Ratio": 4.78,
+    "P/E Ratio": 3.99,
     "EPS": 0.6333,
     "Beta": 0.16,
-    "Dividend Yield %": 14.22,
-    "Market Cap": 100300000.0,
+    "Dividend Yield %": 11.86,
+    "Market Cap": 83750000.0,
     "1W Return %": 19.91,
     "1M Return %": 19.91,
     "YTD Return %": 19.91,
@@ -31,8 +31,8 @@
     "Backtested Sample Size": null,
     "Current Price": 2.53,
     "Target Entry (VWAP)": 2.53,
-    "Suggested Stop-Loss": 2.3519,
-    "Take-Profit Target": 2.7703,
+    "Suggested Stop-Loss": 2.2932,
+    "Take-Profit Target": 2.8437,
     "Resistance (52W High)": 3.03,
     "Support (52W Low)": 2.11,
     "Nearest Resistance": null,
@@ -49,7 +49,7 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 4.63,
+    "Kelly %": 4.72,
     "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL (Signal unconfirmed: low ADX/volume, below VWAP, no squeeze release) | trend=Extremely Strong Bullish Trend | no decisive edge | weekly aligned",
     "Score Breakdown": {
       "pattern": 0.0,
@@ -61,17 +61,16 @@
     "Regime": "N/A",
     "Trend Class": "Extremely Strong Bullish Trend",
     "RSI-14": 100.0,
-    "ADX-14": 87.9,
+    "ADX-14": 88.7,
     "Vol Z-Score": -0.17,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0421,
-    "Bollinger %B": 1.231,
-    "Avg Volume (20D)": 186,
+    "MACD Histogram": 0.0494,
+    "Bollinger %B": 1.08,
+    "Avg Volume (20D)": 188,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
     "dates": [
-      "2025-08-24 00:00:00",
       "2025-08-25 00:00:00",
       "2025-08-26 00:00:00",
       "2025-08-27 00:00:00",
@@ -328,7 +327,8 @@
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
       "2026-08-23 00:00:00",
-      "2026-08-24 00:00:00"
+      "2026-08-24 00:00:00",
+      "2026-08-25 00:00:00"
     ],
     "close": [
       2.11,
@@ -586,7 +586,7 @@
       2.11,
       2.11,
       2.11,
-      2.11,
+      2.53,
       2.53,
       2.53
     ],
@@ -612,7 +612,6 @@
       2.11,
       2.11,
       2.11,
-      2.11,
       2.53,
       2.11,
       2.53,
@@ -848,6 +847,7 @@
       2.11,
       2.11,
       2.11,
+      2.53,
       2.53
     ],
     "high": [
@@ -872,7 +872,6 @@
       2.11,
       2.11,
       2.11,
-      2.11,
       2.53,
       2.11,
       2.11,
@@ -1108,6 +1107,7 @@
       2.11,
       2.11,
       2.53,
+      3.03,
       3.03
     ],
     "low": [
@@ -1132,7 +1132,6 @@
       2.11,
       2.11,
       2.11,
-      2.11,
       2.53,
       2.11,
       2.11,
@@ -1367,11 +1366,11 @@
       2.11,
       2.11,
       2.11,
+      2.53,
       2.53,
       2.53
     ],
     "volume": [
-      0,
       0,
       0,
       0,
@@ -1628,10 +1627,10 @@
       0,
       0,
       3673,
-      48
+      48,
+      50
     ],
     "vwap": [
-      2.11,
       2.11,
       2.11,
       2.11,
@@ -1888,7 +1887,8 @@
       2.11,
       2.11,
       2.53,
-      2.5321
+      2.5321,
+      2.5343
     ],
     "resistance": 3.03,
     "support": 2.11,

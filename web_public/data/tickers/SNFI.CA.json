@@ -1,6 +1,6 @@
 {
   "ticker": "SNFI.CA",
-  "last_data_date": "2026-08-24",
+  "last_data_date": "2026-08-25",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "SNFI.CA",
@@ -24,15 +24,15 @@
     "External Rating Consensus": -1.5,
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - 🛑 SELL / AVOID",
-    "Rank Score": -41.9,
-    "Reward:Risk": 0.18,
+    "Rank Score": -27.2,
+    "Reward:Risk": 0.39,
     "Win Rate Estimate (%)": 60.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 10.42,
     "Target Entry (VWAP)": 10.42,
-    "Suggested Stop-Loss": 8.9672,
-    "Take-Profit Target": 10.7013,
+    "Suggested Stop-Loss": 8.9996,
+    "Take-Profit Target": 11.0077,
     "Resistance (52W High)": 13.0,
     "Support (52W Low)": 6.8,
     "Nearest Resistance": 12.7825,
@@ -46,27 +46,27 @@
     "S1": 10.9867,
     "S2": 10.5733,
     "S3": 10.2467,
-    "Projected Gain (%)": -1.69,
-    "Pattern Conf (%)": 33.17,
-    "Projected Range 95%": "-6.89% to 1.48%",
+    "Projected Gain (%)": 4.94,
+    "Pattern Conf (%)": 57.34,
+    "Projected Range 95%": "-0.17% to 13.15%",
     "Kelly %": 0.0,
-    "Signal Reason": "🚫 ILLIQUID - 🛑 SELL / AVOID | trend=Strong Bullish Trend | awaiting confirmation | weekly aligned | vol x2.18",
+    "Signal Reason": "🚫 ILLIQUID - 🛑 SELL / AVOID | trend=Strong Bullish Trend | awaiting confirmation | weekly aligned | vol x2.03",
     "Score Breakdown": {
-      "pattern": 9.95,
-      "projected": -2.54,
+      "pattern": 17.2,
+      "projected": 7.41,
       "range": 2.92,
       "trend_bonus": -67.0,
-      "confidence_weight": 0.76
+      "confidence_weight": 0.77
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish Trend",
     "RSI-14": 41.8,
-    "ADX-14": 31.8,
-    "Vol Z-Score": 0.49,
+    "ADX-14": 30.0,
+    "Vol Z-Score": 0.46,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0839,
-    "Bollinger %B": 0.192,
-    "Avg Volume (20D)": 5660,
+    "MACD Histogram": -0.1221,
+    "Bollinger %B": 0.199,
+    "Avg Volume (20D)": 6068,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
@@ -204,7 +204,8 @@
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
       "2026-08-23 00:00:00",
-      "2026-08-24 00:00:00"
+      "2026-08-24 00:00:00",
+      "2026-08-25 00:00:00"
     ],
     "close": [
       8.0,
@@ -340,6 +341,7 @@
       11.4,
       11.4,
       11.4,
+      10.42,
       10.42
     ],
     "open": [
@@ -476,7 +478,8 @@
       11.49,
       11.49,
       11.49,
-      11.4
+      11.4,
+      10.92
     ],
     "high": [
       8.17,
@@ -612,6 +615,7 @@
       11.49,
       11.49,
       11.49,
+      10.92,
       10.92
     ],
     "low": [
@@ -748,6 +752,7 @@
       10.9,
       10.9,
       10.9,
+      10.42,
       10.42
     ],
     "volume": [
@@ -884,6 +889,7 @@
       2920,
       2920,
       0,
+      12320,
       12320
     ],
     "vwap": [
@@ -1020,7 +1026,8 @@
       10.5667,
       10.5855,
       10.5852,
-      10.5744
+      10.5744,
+      10.565
     ],
     "resistance": 12.7825,
     "support": 10.03,

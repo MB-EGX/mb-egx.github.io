@@ -1,6 +1,6 @@
 {
   "ticker": "GTHE.CA",
-  "last_data_date": "2026-08-24",
+  "last_data_date": "2026-08-25",
   "sector": "IT, Media & Communication Services",
   "matrix": {
     "Ticker": "GTHE.CA",
@@ -21,18 +21,18 @@
     "YTD Return %": 107.55,
     "1Y Return %": 84.87,
     "3Y Return %": 144.44,
-    "External Rating Consensus": 0.625,
+    "External Rating Consensus": 2.0,
     "External Rating Note": null,
-    "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL (Signal unconfirmed: low ADX/volume)",
-    "Rank Score": -2.9,
-    "Reward:Risk": 0.25,
-    "Win Rate Estimate (%)": 80.0,
+    "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL (Signal unconfirmed: low ADX/volume, no squeeze release)",
+    "Rank Score": -24.1,
+    "Reward:Risk": 0.09,
+    "Win Rate Estimate (%)": 60.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 4.4,
-    "Target Entry (VWAP)": 3.7104,
-    "Suggested Stop-Loss": 2.9824,
-    "Take-Profit Target": 4.7648,
+    "Target Entry (VWAP)": 3.7124,
+    "Suggested Stop-Loss": 3.0436,
+    "Take-Profit Target": 4.5188,
     "Resistance (52W High)": 4.9,
     "Support (52W Low)": 1.74,
     "Nearest Resistance": null,
@@ -46,14 +46,14 @@
     "S1": 3.96,
     "S2": 3.6,
     "S3": 3.13,
-    "Projected Gain (%)": 7.59,
-    "Pattern Conf (%)": 60.4,
-    "Projected Range 95%": "-1.2% to 16.17%",
-    "Kelly %": 0.43,
-    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL (Signal unconfirmed: low ADX/volume) | trend=Strong Bullish Trend | no decisive edge | weekly aligned",
+    "Projected Gain (%)": 0.75,
+    "Pattern Conf (%)": 8.32,
+    "Projected Range 95%": "-9.18% to 8.85%",
+    "Kelly %": 0.0,
+    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL (Signal unconfirmed: low ADX/volume, no squeeze release) | trend=Strong Bullish Trend | no decisive edge | weekly aligned",
     "Score Breakdown": {
-      "pattern": 18.12,
-      "projected": 11.38,
+      "pattern": 2.5,
+      "projected": 1.12,
       "range": 4.21,
       "trend_bonus": -40.0,
       "confidence_weight": 0.77
@@ -62,11 +62,11 @@
     "Trend Class": "Strong Bullish Trend",
     "RSI-14": 58.0,
     "ADX-14": 33.2,
-    "Vol Z-Score": -0.67,
+    "Vol Z-Score": -0.64,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0152,
-    "Bollinger %B": 0.689,
-    "Avg Volume (20D)": 26158,
+    "MACD Histogram": 0.0122,
+    "Bollinger %B": 0.673,
+    "Avg Volume (20D)": 25270,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
@@ -205,7 +205,8 @@
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
       "2026-08-23 00:00:00",
-      "2026-08-24 00:00:00"
+      "2026-08-24 00:00:00",
+      "2026-08-25 00:00:00"
     ],
     "close": [
       2.38,
@@ -342,6 +343,7 @@
       4.32,
       4.32,
       4.32,
+      4.4,
       4.4
     ],
     "open": [
@@ -479,6 +481,7 @@
       4.3,
       4.3,
       4.3,
+      4.32,
       4.32
     ],
     "high": [
@@ -616,6 +619,7 @@
       4.9,
       4.9,
       4.9,
+      4.4,
       4.4
     ],
     "low": [
@@ -753,6 +757,7 @@
       4.07,
       4.07,
       4.07,
+      4.12,
       4.12
     ],
     "volume": [
@@ -890,6 +895,7 @@
       68214,
       68214,
       0,
+      1257,
       1257
     ],
     "vwap": [
@@ -1027,7 +1033,8 @@
       3.6187,
       3.7117,
       3.7085,
-      3.7104
+      3.7104,
+      3.7124
     ],
     "resistance": 4.9,
     "support": 2.1267,

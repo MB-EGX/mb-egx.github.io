@@ -1,6 +1,6 @@
 {
   "ticker": "EITP.CA",
-  "last_data_date": "2026-08-24",
+  "last_data_date": "2026-08-25",
   "sector": "Trade & Distributors",
   "matrix": {
     "Ticker": "EITP.CA",
@@ -24,15 +24,15 @@
     "External Rating Consensus": -1.75,
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL",
-    "Rank Score": -18.2,
-    "Reward:Risk": 0.24,
+    "Rank Score": -19.5,
+    "Reward:Risk": 1.23,
     "Win Rate Estimate (%)": 50.0,
-    "Win Rate Source": "pattern_match",
+    "Win Rate Source": "prior_50_50",
     "Backtested Sample Size": null,
     "Current Price": 8.71,
     "Target Entry (VWAP)": 8.71,
-    "Suggested Stop-Loss": 7.7775,
-    "Take-Profit Target": 8.953,
+    "Suggested Stop-Loss": 7.8441,
+    "Take-Profit Target": 9.8533,
     "Resistance (52W High)": 12.77,
     "Support (52W Low)": 5.7,
     "Nearest Resistance": 10.61,
@@ -46,27 +46,27 @@
     "S1": 8.6433,
     "S2": 8.5767,
     "S3": 8.4433,
-    "Projected Gain (%)": 2.09,
-    "Pattern Conf (%)": 28.25,
-    "Projected Range 95%": "-3.19% to 9.19%",
-    "Kelly %": 0.0,
+    "Projected Gain (%)": "N/A",
+    "Pattern Conf (%)": "N/A",
+    "Projected Range 95%": "N/A",
+    "Kelly %": 4.73,
     "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Strong Bullish Trend | no decisive edge",
     "Score Breakdown": {
-      "pattern": 8.47,
-      "projected": 3.13,
+      "pattern": 0.0,
+      "projected": 0.0,
       "range": 2.13,
       "trend_bonus": -40.0,
       "confidence_weight": 0.76
     },
-    "Regime": "Trending / Volatile",
+    "Regime": "N/A",
     "Trend Class": "Strong Bullish Trend",
     "RSI-14": 47.1,
-    "ADX-14": 41.2,
-    "Vol Z-Score": -0.71,
+    "ADX-14": 42.1,
+    "Vol Z-Score": -0.68,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.007,
-    "Bollinger %B": 0.398,
-    "Avg Volume (20D)": 716,
+    "MACD Histogram": -0.0044,
+    "Bollinger %B": 0.394,
+    "Avg Volume (20D)": 545,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
@@ -203,7 +203,8 @@
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
       "2026-08-23 00:00:00",
-      "2026-08-24 00:00:00"
+      "2026-08-24 00:00:00",
+      "2026-08-25 00:00:00"
     ],
     "close": [
       10.45,
@@ -328,6 +329,7 @@
       8.65,
       8.75,
       8.65,
+      8.71,
       8.71,
       8.71,
       8.71,
@@ -473,6 +475,7 @@
       8.71,
       8.71,
       8.71,
+      8.71,
       8.71
     ],
     "high": [
@@ -608,6 +611,7 @@
       8.71,
       8.71,
       8.71,
+      8.71,
       8.71
     ],
     "low": [
@@ -735,6 +739,7 @@
       8.65,
       8.7,
       8.7,
+      8.71,
       8.71,
       8.71,
       8.71,
@@ -878,6 +883,7 @@
       1,
       1,
       0,
+      0,
       0
     ],
     "vwap": [
@@ -1013,7 +1019,8 @@
       8.8912,
       8.8689,
       8.8451,
-      8.8918
+      8.8918,
+      8.9677
     ],
     "resistance": 12.77,
     "support": 5.7,

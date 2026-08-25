@@ -1,6 +1,6 @@
 {
   "ticker": "TWSA.CA",
-  "last_data_date": "2026-08-24",
+  "last_data_date": "2026-08-25",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "TWSA.CA",
@@ -15,27 +15,27 @@
     "Beta": null,
     "Dividend Yield %": null,
     "Market Cap": null,
-    "1W Return %": 1.1,
-    "1M Return %": -4.45,
-    "YTD Return %": 114.67,
-    "1Y Return %": 544.0,
+    "1W Return %": -0.63,
+    "1M Return %": -6.23,
+    "YTD Return %": 110.67,
+    "1Y Return %": 532.0,
     "3Y Return %": null,
-    "External Rating Consensus": 0.375,
+    "External Rating Consensus": -1.125,
     "External Rating Note": null,
     "Action": "🟡 HOLD / NEUTRAL",
-    "Rank Score": -12.6,
-    "Reward:Risk": 0.17,
-    "Win Rate Estimate (%)": 40.0,
+    "Rank Score": 28.5,
+    "Reward:Risk": 0.47,
+    "Win Rate Estimate (%)": 66.7,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
-    "Current Price": 6.44,
-    "Target Entry (VWAP)": 5.8026,
-    "Suggested Stop-Loss": 5.4548,
-    "Take-Profit Target": 6.6139,
+    "Current Price": 6.32,
+    "Target Entry (VWAP)": 5.751,
+    "Suggested Stop-Loss": 5.3794,
+    "Take-Profit Target": 6.7826,
     "Resistance (52W High)": 7.8,
     "Support (52W Low)": 1.0,
-    "Nearest Resistance": 6.6033,
-    "Resistance Touches": 3,
+    "Nearest Resistance": 6.33,
+    "Resistance Touches": 2,
     "Nearest Support": 2.86,
     "Support Touches": 2,
     "Pivot Point": 6.54,
@@ -45,32 +45,31 @@
     "S1": 6.19,
     "S2": 5.81,
     "S3": 5.46,
-    "Projected Gain (%)": -16.92,
-    "Pattern Conf (%)": 23.78,
-    "Projected Range 95%": "-56.79% to 23.0%",
+    "Projected Gain (%)": 6.62,
+    "Pattern Conf (%)": 32.99,
+    "Projected Range 95%": "-4.54% to 14.92%",
     "Kelly %": 0.0,
     "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Consolidation / Neutral | no decisive edge | weekly aligned",
     "Score Breakdown": {
-      "pattern": 7.13,
-      "projected": -25.38,
-      "range": 4.0,
+      "pattern": 9.9,
+      "projected": 9.93,
+      "range": 3.91,
       "trend_bonus": 0.0,
       "confidence_weight": 1.0
     },
     "Regime": "Volatile Range",
     "Trend Class": "Consolidation / Neutral",
-    "RSI-14": 53.4,
-    "ADX-14": 14.5,
-    "Vol Z-Score": -0.43,
+    "RSI-14": 52.0,
+    "ADX-14": 14.4,
+    "Vol Z-Score": -1.07,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0584,
-    "Bollinger %B": 0.629,
-    "Avg Volume (20D)": 617129,
+    "MACD Histogram": 0.0418,
+    "Bollinger %B": 0.606,
+    "Avg Volume (20D)": 583406,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
     "dates": [
-      "2025-08-24 00:00:00",
       "2025-08-25 00:00:00",
       "2025-08-26 00:00:00",
       "2025-08-27 00:00:00",
@@ -320,10 +319,10 @@
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
       "2026-08-23 00:00:00",
-      "2026-08-24 00:00:00"
+      "2026-08-24 00:00:00",
+      "2026-08-25 00:00:00"
     ],
     "close": [
-      1.0,
       1.0,
       1.0,
       1.0,
@@ -573,10 +572,10 @@
       6.25,
       6.25,
       6.57,
-      6.44
+      6.44,
+      6.32
     ],
     "open": [
-      1.0,
       1.0,
       1.0,
       1.0,
@@ -826,10 +825,10 @@
       6.35,
       6.28,
       6.25,
-      6.57
+      6.57,
+      6.44
     ],
     "high": [
-      1.0,
       1.0,
       1.0,
       1.0,
@@ -1079,10 +1078,10 @@
       6.39,
       6.45,
       6.89,
-      6.7
+      6.7,
+      6.45
     ],
     "low": [
-      1.0,
       1.0,
       1.0,
       1.0,
@@ -1332,10 +1331,10 @@
       6.19,
       6.16,
       6.26,
-      6.32
+      6.32,
+      6.27
     ],
     "volume": [
-      0,
       0,
       0,
       0,
@@ -1585,10 +1584,10 @@
       264045,
       355185,
       1504782,
-      470165
+      470165,
+      215945
     ],
     "vwap": [
-      1.0,
       1.0,
       1.0,
       1.0,
@@ -1838,9 +1837,10 @@
       5.8775,
       5.8654,
       5.9257,
-      5.8026
+      5.8026,
+      5.751
     ],
-    "resistance": 6.6033,
+    "resistance": 6.33,
     "support": 2.86,
     "pivots": {
       "pp": 6.54,
@@ -1855,8 +1855,8 @@
       {
         "pattern": "Price Channel (Rising)",
         "direction": "bullish",
-        "start_index": 117,
-        "end_index": 156,
+        "start_index": 116,
+        "end_index": 155,
         "start_date": "2026-02-06",
         "end_date": "2026-04-03",
         "levels": {
@@ -1870,8 +1870,8 @@
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 127,
-        "end_index": 166,
+        "start_index": 126,
+        "end_index": 165,
         "start_date": "2026-02-19",
         "end_date": "2026-04-19",
         "levels": {
@@ -1882,13 +1882,13 @@
           "apex_price": 4.3501
         },
         "quality": 1.0,
-        "apex_index": 184.18826885362805
+        "apex_index": 183.18826885362807
       },
       {
         "pattern": "Price Channel (Falling)",
         "direction": "bearish",
-        "start_index": 156,
-        "end_index": 179,
+        "start_index": 155,
+        "end_index": 178,
         "start_date": "2026-04-03",
         "end_date": "2026-05-04",
         "levels": {
@@ -1902,8 +1902,8 @@
       {
         "pattern": "Price Channel (Rising)",
         "direction": "bullish",
-        "start_index": 179,
-        "end_index": 213,
+        "start_index": 178,
+        "end_index": 212,
         "start_date": "2026-05-04",
         "end_date": "2026-07-01",
         "levels": {

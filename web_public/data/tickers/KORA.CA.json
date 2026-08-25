@@ -1,6 +1,6 @@
 {
   "ticker": "KORA.CA",
-  "last_data_date": "2026-08-24",
+  "last_data_date": "2026-08-25",
   "sector": "Construction & Engineering",
   "matrix": {
     "Ticker": "KORA.CA",
@@ -14,24 +14,24 @@
     "EPS": null,
     "Beta": null,
     "Dividend Yield %": null,
-    "Market Cap": 7700000000.0,
-    "1W Return %": 2.1,
-    "1M Return %": 1.19,
-    "YTD Return %": 1600.0,
-    "1Y Return %": 1600.0,
+    "Market Cap": 7650000000.0,
+    "1W Return %": -1.17,
+    "1M Return %": 0.9,
+    "YTD Return %": 1590.0,
+    "1Y Return %": 1590.0,
     "3Y Return %": null,
-    "External Rating Consensus": 1.5,
+    "External Rating Consensus": 1.25,
     "External Rating Note": null,
-    "Action": "🟡 HOLD / NEUTRAL (Poor reward:risk 0.16x < 0.80x floor)",
-    "Rank Score": -53.2,
-    "Reward:Risk": 0.16,
-    "Win Rate Estimate (%)": 25.0,
+    "Action": "🟡 HOLD / NEUTRAL (Poor reward:risk 0.17x < 0.80x floor)",
+    "Rank Score": 22.3,
+    "Reward:Risk": 0.17,
+    "Win Rate Estimate (%)": 100.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
-    "Current Price": 3.4,
-    "Target Entry (VWAP)": 3.3727,
-    "Suggested Stop-Loss": 2.8666,
-    "Take-Profit Target": 3.4918,
+    "Current Price": 3.38,
+    "Target Entry (VWAP)": 3.3663,
+    "Suggested Stop-Loss": 2.8747,
+    "Take-Profit Target": 3.4713,
     "Resistance (52W High)": 3.87,
     "Support (52W Low)": 0.2,
     "Nearest Resistance": null,
@@ -45,32 +45,31 @@
     "S1": 3.3333,
     "S2": 3.2467,
     "S3": 3.1833,
-    "Projected Gain (%)": -46.77,
-    "Pattern Conf (%)": 36.45,
-    "Projected Range 95%": "-94.03% to 2.47%",
-    "Kelly %": 0.0,
-    "Signal Reason": "🟡 HOLD / NEUTRAL (Poor reward:risk 0.16x < 0.80x floor) | trend=Weak Bullish (Forming) | no decisive edge | weekly aligned",
+    "Projected Gain (%)": 1.81,
+    "Pattern Conf (%)": 45.14,
+    "Projected Range 95%": "0.45% to 3.16%",
+    "Kelly %": 25.0,
+    "Signal Reason": "🟡 HOLD / NEUTRAL (Poor reward:risk 0.17x < 0.80x floor) | trend=Weak Bullish (Forming) | no decisive edge | weekly aligned | vol x1.05",
     "Score Breakdown": {
-      "pattern": 10.94,
-      "projected": -70.16,
-      "range": 4.36,
+      "pattern": 13.54,
+      "projected": 2.71,
+      "range": 4.33,
       "trend_bonus": 0.0,
       "confidence_weight": 1.0
     },
     "Regime": "Volatile Range",
     "Trend Class": "Weak Bullish (Forming)",
-    "RSI-14": 56.9,
-    "ADX-14": 24.8,
-    "Vol Z-Score": -0.28,
+    "RSI-14": 56.5,
+    "ADX-14": 24.1,
+    "Vol Z-Score": 0.06,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0631,
-    "Bollinger %B": 0.634,
-    "Avg Volume (20D)": 18297870,
+    "MACD Histogram": 0.048,
+    "Bollinger %B": 0.63,
+    "Avg Volume (20D)": 15556062,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
     "dates": [
-      "2025-08-24 00:00:00",
       "2025-08-25 00:00:00",
       "2025-08-26 00:00:00",
       "2025-08-27 00:00:00",
@@ -319,10 +318,10 @@
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
       "2026-08-23 00:00:00",
-      "2026-08-24 00:00:00"
+      "2026-08-24 00:00:00",
+      "2026-08-25 00:00:00"
     ],
     "close": [
-      0.2,
       0.2,
       0.2,
       0.2,
@@ -571,10 +570,10 @@
       3.35,
       3.39,
       3.42,
-      3.4
+      3.4,
+      3.38
     ],
     "open": [
-      0.2,
       0.2,
       0.2,
       0.2,
@@ -823,10 +822,10 @@
       3.41,
       3.35,
       3.39,
-      3.42
+      3.42,
+      3.4
     ],
     "high": [
-      0.2,
       0.2,
       0.2,
       0.2,
@@ -1075,10 +1074,10 @@
       3.42,
       3.4,
       3.45,
-      3.43
+      3.43,
+      3.4
     ],
     "low": [
-      0.2,
       0.2,
       0.2,
       0.2,
@@ -1327,10 +1326,10 @@
       3.33,
       3.32,
       3.36,
-      3.38
+      3.38,
+      3.33
     ],
     "volume": [
-      0,
       0,
       0,
       0,
@@ -1579,10 +1578,10 @@
       16946158,
       22755334,
       18534730,
-      13238846
+      13238846,
+      16349204
     ],
     "vwap": [
-      0.2,
       0.2,
       0.2,
       0.2,
@@ -1831,7 +1830,8 @@
       3.3789,
       3.3798,
       3.3829,
-      3.3727
+      3.3727,
+      3.3663
     ],
     "resistance": 3.87,
     "support": 0.2,

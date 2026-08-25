@@ -1,6 +1,6 @@
 {
   "ticker": "PACH.CA",
-  "last_data_date": "2026-08-24",
+  "last_data_date": "2026-08-25",
   "sector": "Chemicals",
   "matrix": {
     "Ticker": "PACH.CA",
@@ -24,15 +24,15 @@
     "External Rating Consensus": 0.5,
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL",
-    "Rank Score": -31.2,
-    "Reward:Risk": 0.45,
-    "Win Rate Estimate (%)": 0.0,
-    "Win Rate Source": "pattern_match",
+    "Rank Score": -19.8,
+    "Reward:Risk": 1.22,
+    "Win Rate Estimate (%)": 50.0,
+    "Win Rate Source": "prior_50_50",
     "Backtested Sample Size": null,
     "Current Price": 81.03,
     "Target Entry (VWAP)": 81.03,
-    "Suggested Stop-Loss": 76.7668,
-    "Take-Profit Target": 83.2178,
+    "Suggested Stop-Loss": 77.0556,
+    "Take-Profit Target": 86.5653,
     "Resistance (52W High)": 108.1,
     "Support (52W Low)": 65.0,
     "Nearest Resistance": 85.465,
@@ -46,27 +46,27 @@
     "S1": 81.0367,
     "S2": 80.9633,
     "S3": 80.9267,
-    "Projected Gain (%)": -10.42,
-    "Pattern Conf (%)": 27.4,
-    "Projected Range 95%": "-13.01% to -7.84%",
-    "Kelly %": 0.0,
-    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Consolidation / Neutral | no decisive edge | weekly aligned | vol x4.73",
+    "Projected Gain (%)": "N/A",
+    "Pattern Conf (%)": "N/A",
+    "Projected Range 95%": "N/A",
+    "Kelly %": 4.49,
+    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Consolidation / Neutral | no decisive edge | weekly aligned | vol x3.83",
     "Score Breakdown": {
-      "pattern": 8.22,
-      "projected": -15.63,
+      "pattern": 0.0,
+      "projected": 0.0,
       "range": 1.86,
       "trend_bonus": -40.0,
       "confidence_weight": 0.76
     },
-    "Regime": "Range / Consolidation",
+    "Regime": "N/A",
     "Trend Class": "Consolidation / Neutral",
     "RSI-14": 51.4,
-    "ADX-14": 18.3,
-    "Vol Z-Score": 2.74,
+    "ADX-14": 18.2,
+    "Vol Z-Score": 2.22,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0327,
+    "MACD Histogram": -0.0366,
     "Bollinger %B": 0.517,
-    "Avg Volume (20D)": 143,
+    "Avg Volume (20D)": 177,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
@@ -202,7 +202,8 @@
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
       "2026-08-23 00:00:00",
-      "2026-08-24 00:00:00"
+      "2026-08-24 00:00:00",
+      "2026-08-25 00:00:00"
     ],
     "close": [
       77.0,
@@ -336,6 +337,7 @@
       81.11,
       81.11,
       81.11,
+      81.03,
       81.03
     ],
     "open": [
@@ -470,6 +472,7 @@
       81.04,
       81.04,
       81.04,
+      81.11,
       81.11
     ],
     "high": [
@@ -601,6 +604,7 @@
       81.01,
       81.03,
       81.03,
+      81.11,
       81.11,
       81.11,
       81.11,
@@ -738,6 +742,7 @@
       81.0,
       81.0,
       81.0,
+      81.0,
       81.0
     ],
     "volume": [
@@ -872,6 +877,7 @@
       145,
       145,
       0,
+      681,
       681
     ],
     "vwap": [
@@ -1006,7 +1012,8 @@
       81.6234,
       81.5901,
       81.5928,
-      81.4636
+      81.4636,
+      81.3838
     ],
     "resistance": 85.465,
     "support": 69.85,

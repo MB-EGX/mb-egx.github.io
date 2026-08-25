@@ -1,6 +1,6 @@
 {
   "ticker": "DIFC.CA",
-  "last_data_date": "2026-08-24",
+  "last_data_date": "2026-08-25",
   "sector": "Trade & Distributors",
   "matrix": {
     "Ticker": "DIFC.CA",
@@ -21,18 +21,18 @@
     "YTD Return %": 10.74,
     "1Y Return %": 91.16,
     "3Y Return %": 570.0,
-    "External Rating Consensus": 0.75,
+    "External Rating Consensus": -0.5,
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL",
-    "Rank Score": -9.9,
-    "Reward:Risk": 0.15,
-    "Win Rate Estimate (%)": 50.0,
+    "Rank Score": -26.2,
+    "Reward:Risk": 0.06,
+    "Win Rate Estimate (%)": 0.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 13.4,
     "Target Entry (VWAP)": 13.4,
-    "Suggested Stop-Loss": 7.0398,
-    "Take-Profit Target": 14.3393,
+    "Suggested Stop-Loss": 7.2398,
+    "Take-Profit Target": 13.7618,
     "Resistance (52W High)": 35.0,
     "Support (52W Low)": 7.0,
     "Nearest Resistance": null,
@@ -46,14 +46,14 @@
     "S1": 12.6133,
     "S2": 11.8267,
     "S3": 10.6533,
-    "Projected Gain (%)": 6.31,
-    "Pattern Conf (%)": 49.87,
-    "Projected Range 95%": "-0.42% to 15.83%",
+    "Projected Gain (%)": -5.83,
+    "Pattern Conf (%)": 42.71,
+    "Projected Range 95%": "-7.92% to -1.7%",
     "Kelly %": 0.0,
     "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Strong Bullish Trend | no decisive edge | weekly aligned",
     "Score Breakdown": {
-      "pattern": 14.96,
-      "projected": 9.46,
+      "pattern": 12.81,
+      "projected": -8.75,
       "range": 1.14,
       "trend_bonus": -40.0,
       "confidence_weight": 0.76
@@ -61,12 +61,12 @@
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish Trend",
     "RSI-14": 48.5,
-    "ADX-14": 49.1,
-    "Vol Z-Score": -0.33,
+    "ADX-14": 49.3,
+    "Vol Z-Score": -0.34,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.3332,
-    "Bollinger %B": 0.358,
-    "Avg Volume (20D)": 2815,
+    "MACD Histogram": -0.292,
+    "Bollinger %B": 0.373,
+    "Avg Volume (20D)": 2839,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
@@ -203,7 +203,8 @@
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
       "2026-08-23 00:00:00",
-      "2026-08-24 00:00:00"
+      "2026-08-24 00:00:00",
+      "2026-08-25 00:00:00"
     ],
     "close": [
       7.01,
@@ -335,6 +336,7 @@
       13.45,
       13.51,
       13.51,
+      13.4,
       13.4,
       13.4,
       13.4,
@@ -473,7 +475,8 @@
       13.51,
       13.51,
       13.51,
-      13.4
+      13.4,
+      13.5
     ],
     "high": [
       7.5,
@@ -608,6 +611,7 @@
       14.5,
       14.5,
       14.5,
+      15.18,
       15.18
     ],
     "low": [
@@ -743,6 +747,7 @@
       13.0,
       13.0,
       13.0,
+      13.4,
       13.4
     ],
     "volume": [
@@ -878,6 +883,7 @@
       1506,
       1506,
       0,
+      1688,
       1688
     ],
     "vwap": [
@@ -1013,7 +1019,8 @@
       15.6905,
       15.7281,
       15.8356,
-      15.7883
+      15.7883,
+      15.7419
     ],
     "resistance": 35.0,
     "support": 9.9633,

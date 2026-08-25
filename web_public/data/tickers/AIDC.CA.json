@@ -1,6 +1,6 @@
 {
   "ticker": "AIDC.CA",
-  "last_data_date": "2026-08-24",
+  "last_data_date": "2026-08-25",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "AIDC.CA",
@@ -15,23 +15,23 @@
     "Beta": null,
     "Dividend Yield %": null,
     "Market Cap": 1060000000.0,
-    "1W Return %": -2.02,
-    "1M Return %": -7.73,
-    "YTD Return %": 56.32,
-    "1Y Return %": 151.85,
+    "1W Return %": 5.8,
+    "1M Return %": -1.62,
+    "YTD Return %": 67.82,
+    "1Y Return %": 176.52,
     "3Y Return %": null,
-    "External Rating Consensus": 0.0,
+    "External Rating Consensus": 2.0,
     "External Rating Note": null,
-    "Action": "🟡 HOLD / NEUTRAL",
-    "Rank Score": 3.1,
-    "Reward:Risk": 0.2,
-    "Win Rate Estimate (%)": 40.0,
+    "Action": "🟡 HOLD / NEUTRAL (Signal unconfirmed: low ADX/volume, no squeeze release)",
+    "Rank Score": 22.0,
+    "Reward:Risk": 0.29,
+    "Win Rate Estimate (%)": 50.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
-    "Current Price": 0.68,
-    "Target Entry (VWAP)": 0.6609,
-    "Suggested Stop-Loss": 0.5914,
-    "Take-Profit Target": 0.6984,
+    "Current Price": 0.73,
+    "Target Entry (VWAP)": 0.6706,
+    "Suggested Stop-Loss": 0.6392,
+    "Take-Profit Target": 0.758,
     "Resistance (52W High)": 0.78,
     "Support (52W Low)": 0.25,
     "Nearest Resistance": null,
@@ -45,32 +45,31 @@
     "S1": 0.6433,
     "S2": 0.6067,
     "S3": 0.5633,
-    "Projected Gain (%)": -4.13,
-    "Pattern Conf (%)": 10.73,
-    "Projected Range 95%": "-35.97% to 17.44%",
+    "Projected Gain (%)": 3.13,
+    "Pattern Conf (%)": 32.72,
+    "Projected Range 95%": "0.31% to 5.94%",
     "Kelly %": 0.0,
-    "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Consolidation / Neutral | no decisive edge | weekly aligned",
+    "Signal Reason": "🟡 HOLD / NEUTRAL (Signal unconfirmed: low ADX/volume, no squeeze release) | trend=Consolidation / Neutral | no decisive edge | weekly aligned | vol x4.88",
     "Score Breakdown": {
-      "pattern": 3.22,
-      "projected": -6.2,
-      "range": 4.06,
+      "pattern": 9.82,
+      "projected": 4.7,
+      "range": 4.53,
       "trend_bonus": 0.0,
       "confidence_weight": 1.0
     },
     "Regime": "Volatile Range",
     "Trend Class": "Consolidation / Neutral",
-    "RSI-14": 51.8,
-    "ADX-14": 12.0,
-    "Vol Z-Score": -0.16,
+    "RSI-14": 57.9,
+    "ADX-14": 11.9,
+    "Vol Z-Score": 3.31,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0022,
-    "Bollinger %B": 0.584,
-    "Avg Volume (20D)": 21798411,
+    "MACD Histogram": 0.0045,
+    "Bollinger %B": 0.694,
+    "Avg Volume (20D)": 26844649,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
     "dates": [
-      "2025-08-24 00:00:00",
       "2025-08-25 00:00:00",
       "2025-08-26 00:00:00",
       "2025-08-27 00:00:00",
@@ -320,10 +319,10 @@
       "2026-08-19 00:00:00",
       "2026-08-20 00:00:00",
       "2026-08-23 00:00:00",
-      "2026-08-24 00:00:00"
+      "2026-08-24 00:00:00",
+      "2026-08-25 00:00:00"
     ],
     "close": [
-      0.27,
       0.27,
       0.26,
       0.26,
@@ -573,10 +572,10 @@
       0.69,
       0.68,
       0.68,
-      0.68
+      0.68,
+      0.73
     ],
     "open": [
-      0.28,
       0.27,
       0.27,
       0.27,
@@ -826,10 +825,10 @@
       0.7,
       0.69,
       0.68,
+      0.68,
       0.68
     ],
     "high": [
-      0.28,
       0.28,
       0.27,
       0.27,
@@ -1079,10 +1078,10 @@
       0.73,
       0.7,
       0.7,
-      0.69
+      0.69,
+      0.74
     ],
     "low": [
-      0.27,
       0.27,
       0.26,
       0.26,
@@ -1332,10 +1331,10 @@
       0.69,
       0.65,
       0.68,
-      0.67
+      0.67,
+      0.68
     ],
     "volume": [
-      14300000,
       16340000,
       11260000,
       11540000,
@@ -1585,28 +1584,28 @@
       92498554,
       22959992,
       16499053,
-      18644053
+      18644053,
+      130983458
     ],
     "vwap": [
       0.2733,
-      0.2733,
-      0.2706,
-      0.2691,
-      0.2726,
-      0.2717,
-      0.2705,
-      0.2761,
-      0.2766,
-      0.2769,
-      0.2776,
+      0.2693,
+      0.2675,
+      0.2725,
+      0.2715,
+      0.2702,
+      0.2763,
+      0.2768,
+      0.2771,
+      0.2778,
+      0.2772,
       0.277,
       0.2768,
       0.2767,
-      0.2765,
-      0.2761,
-      0.2758,
-      0.2755,
-      0.2753,
+      0.2762,
+      0.2759,
+      0.2756,
+      0.2754,
       0.2752,
       0.2746,
       0.2739,
@@ -1838,7 +1837,8 @@
       0.6933,
       0.6853,
       0.6797,
-      0.6609
+      0.6609,
+      0.6706
     ],
     "resistance": 0.78,
     "support": 0.25,
@@ -1855,8 +1855,8 @@
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 111,
-        "end_index": 160,
+        "start_index": 110,
+        "end_index": 159,
         "start_date": "2026-01-28",
         "end_date": "2026-04-08",
         "levels": {
@@ -1867,7 +1867,7 @@
           "apex_price": 0.439
         },
         "quality": 1.0,
-        "apex_index": 162.72240802675586
+        "apex_index": 161.72240802675583
       }
     ]
   }
