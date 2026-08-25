@@ -1877,21 +1877,6 @@
     },
     "patterns": [
       {
-        "pattern": "Price Channel (Flat)",
-        "direction": "neutral",
-        "start_index": 39,
-        "end_index": 150,
-        "start_date": "2025-10-19",
-        "end_date": "2026-03-25",
-        "levels": {
-          "resistance_start": 2.5972,
-          "resistance_end": 2.6321,
-          "support_start": 2.1791,
-          "support_end": 2.1631
-        },
-        "quality": 0.85
-      },
-      {
         "pattern": "Double Bottom",
         "direction": "bullish",
         "start_index": 94,
@@ -1935,24 +1920,24 @@
           "support_start": 2.1034,
           "support_end": 2.4257
         },
-        "quality": 0.85
+        "quality": 0.76
       },
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
         "start_index": 157,
-        "end_index": 200,
+        "end_index": 187,
         "start_date": "2026-04-03",
-        "end_date": "2026-06-07",
+        "end_date": "2026-05-14",
         "levels": {
-          "resistance_start": 3.396,
-          "resistance_end": 2.7685,
-          "support_start": 2.1822,
-          "support_end": 2.7313,
-          "apex_price": 2.7486
+          "resistance_start": 3.755,
+          "resistance_end": 2.83,
+          "support_start": 2.22,
+          "support_end": 2.43,
+          "apex_price": 2.504
         },
-        "quality": 0.75,
-        "apex_index": 201.35857165051326
+        "quality": 1.0,
+        "apex_index": 197.57268722466964
       },
       {
         "pattern": "Ascending Triangle",
@@ -1969,21 +1954,6 @@
         },
         "quality": 1.0,
         "apex_index": 201.80555555555554
-      },
-      {
-        "pattern": "Price Channel (Flat)",
-        "direction": "neutral",
-        "start_index": 177,
-        "end_index": 218,
-        "start_date": "2026-05-01",
-        "end_date": "2026-07-04",
-        "levels": {
-          "resistance_start": 2.83,
-          "resistance_end": 2.83,
-          "support_start": 2.4902,
-          "support_end": 2.4625
-        },
-        "quality": 0.85
       }
     ]
   }

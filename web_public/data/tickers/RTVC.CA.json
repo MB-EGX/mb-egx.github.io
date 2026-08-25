@@ -8,7 +8,7 @@
     "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
       "No confirmed higher-low swing structure yet",
-      "Ascending Triangle match (quality 0.88)"
+      "Price Channel (Rising) match (quality 0.94)"
     ],
     "P/E Ratio": 0.34,
     "EPS": 11.3914,
@@ -1872,66 +1872,51 @@
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 2,
+        "start_index": 9,
         "end_index": 69,
-        "start_date": "2025-08-26",
+        "start_date": "2025-09-07",
         "end_date": "2025-12-01",
         "levels": {
-          "resistance_start": 4.124,
+          "resistance_start": 4.11,
           "resistance_end": 3.99,
-          "support_start": 3.4967,
-          "support_end": 3.7272,
-          "apex_price": 3.8934
+          "support_start": 3.2971,
+          "support_end": 3.78,
+          "apex_price": 3.9482
         },
-        "quality": 0.75,
-        "apex_index": 117.31426883626004
-      },
-      {
-        "pattern": "Price Channel (Flat)",
-        "direction": "neutral",
-        "start_index": 2,
-        "end_index": 93,
-        "start_date": "2025-08-26",
-        "end_date": "2026-01-03",
-        "levels": {
-          "resistance_start": 4.1091,
-          "resistance_end": 4.0154,
-          "support_start": 3.5811,
-          "support_end": 3.4751
-        },
-        "quality": 0.85
-      },
-      {
-        "pattern": "Price Channel (Falling)",
-        "direction": "bearish",
-        "start_index": 69,
-        "end_index": 111,
-        "start_date": "2025-12-01",
-        "end_date": "2026-01-28",
-        "levels": {
-          "resistance_start": 4.1424,
-          "resistance_end": 3.7079,
-          "support_start": 3.7022,
-          "support_end": 3.3162
-        },
-        "quality": 0.85
+        "quality": 1.0,
+        "apex_index": 89.89805825242713
       },
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
         "start_index": 76,
-        "end_index": 156,
+        "end_index": 111,
         "start_date": "2025-12-10",
-        "end_date": "2026-04-03",
+        "end_date": "2026-01-28",
         "levels": {
-          "resistance_start": 4.0291,
-          "resistance_end": 3.6321,
-          "support_start": 3.3039,
-          "support_end": 3.4544,
-          "apex_price": 3.5032
+          "resistance_start": 4.07,
+          "resistance_end": 3.7079,
+          "support_start": 3.1867,
+          "support_end": 3.42,
+          "apex_price": 3.5328
         },
-        "quality": 0.75,
-        "apex_index": 181.98221809640776
+        "quality": 1.0,
+        "apex_index": 127.92567567567563
+      },
+      {
+        "pattern": "Price Channel (Rising)",
+        "direction": "bullish",
+        "start_index": 93,
+        "end_index": 121,
+        "start_date": "2026-01-03",
+        "end_date": "2026-02-11",
+        "levels": {
+          "resistance_start": 3.6875,
+          "resistance_end": 3.88,
+          "support_start": 3.3,
+          "support_end": 3.4867
+        },
+        "quality": 0.94
       },
       {
         "pattern": "Double Bottom",
@@ -1949,21 +1934,6 @@
         "quality": 0.81
       },
       {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 121,
-        "end_index": 193,
-        "start_date": "2026-02-11",
-        "end_date": "2026-05-25",
-        "levels": {
-          "resistance_start": 3.9062,
-          "resistance_end": 4.5206,
-          "support_start": 3.1148,
-          "support_end": 3.718
-        },
-        "quality": 0.85
-      },
-      {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
         "start_index": 173,
@@ -1977,23 +1947,8 @@
           "support_end": 3.885,
           "apex_price": 3.966
         },
-        "quality": 0.75,
+        "quality": 1.0,
         "apex_index": 206.18211559432933
-      },
-      {
-        "pattern": "Price Channel (Falling)",
-        "direction": "bearish",
-        "start_index": 177,
-        "end_index": 238,
-        "start_date": "2026-05-02",
-        "end_date": "2026-08-03",
-        "levels": {
-          "resistance_start": 4.2608,
-          "resistance_end": 4.0606,
-          "support_start": 3.6381,
-          "support_end": 3.4335
-        },
-        "quality": 0.85
       }
     ]
   }

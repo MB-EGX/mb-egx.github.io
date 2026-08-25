@@ -1632,22 +1632,37 @@
           "support_start": 14280.9306,
           "support_end": 13978.15
         },
-        "quality": 0.85
+        "quality": 1.0
       },
       {
         "pattern": "Price Channel (Rising)",
         "direction": "bullish",
-        "start_index": 5,
-        "end_index": 83,
-        "start_date": "2025-08-31",
-        "end_date": "2025-12-18",
+        "start_index": 4,
+        "end_index": 80,
+        "start_date": "2025-08-28",
+        "end_date": "2025-12-15",
         "levels": {
-          "resistance_start": 14175.2824,
-          "resistance_end": 17476.891,
-          "support_start": 13901.2471,
-          "support_end": 17026.7024
+          "resistance_start": 14332.7702,
+          "resistance_end": 17293.7779,
+          "support_start": 13864.4488,
+          "support_end": 16893.5115
         },
-        "quality": 0.85
+        "quality": 0.92
+      },
+      {
+        "pattern": "Price Channel (Flat)",
+        "direction": "neutral",
+        "start_index": 83,
+        "end_index": 99,
+        "start_date": "2025-12-18",
+        "end_date": "2026-01-11",
+        "levels": {
+          "resistance_start": 17492.84,
+          "resistance_end": 17373.8,
+          "support_start": 17030.36,
+          "support_end": 16749.7491
+        },
+        "quality": 1.0
       },
       {
         "pattern": "Double Top",
@@ -1681,21 +1696,6 @@
         "apex_index": 121.35596703223075
       },
       {
-        "pattern": "Price Channel (Flat)",
-        "direction": "neutral",
-        "start_index": 108,
-        "end_index": 150,
-        "start_date": "2026-01-22",
-        "end_date": "2026-03-25",
-        "levels": {
-          "resistance_start": 19139.3884,
-          "resistance_end": 19547.7227,
-          "support_start": 16710.9996,
-          "support_end": 17225.2595
-        },
-        "quality": 0.85
-      },
-      {
         "pattern": "Double Bottom",
         "direction": "bullish",
         "start_index": 112,
@@ -1709,6 +1709,21 @@
           "target": 25269.025
         },
         "quality": 0.98
+      },
+      {
+        "pattern": "Price Channel (Flat)",
+        "direction": "neutral",
+        "start_index": 112,
+        "end_index": 139,
+        "start_date": "2026-01-28",
+        "end_date": "2026-03-06",
+        "levels": {
+          "resistance_start": 21031.68,
+          "resistance_end": 21117.72,
+          "support_start": 16827.71,
+          "support_end": 16839.6514
+        },
+        "quality": 1.0
       },
       {
         "pattern": "Double Top",
@@ -1742,23 +1757,6 @@
         "apex_index": 254.46744196996127
       },
       {
-        "pattern": "Symmetrical Triangle",
-        "direction": "neutral",
-        "start_index": 118,
-        "end_index": 150,
-        "start_date": "2026-02-06",
-        "end_date": "2026-03-25",
-        "levels": {
-          "resistance_start": 21527.7645,
-          "resistance_end": 18788.5986,
-          "support_start": 16220.08,
-          "support_end": 17454.8,
-          "apex_price": 17869.2225
-        },
-        "quality": 0.75,
-        "apex_index": 160.74050852648503
-      },
-      {
         "pattern": "Cup & Handle",
         "direction": "bullish",
         "start_index": 118,
@@ -1774,6 +1772,23 @@
           "target": 25234.15
         },
         "quality": 0.9
+      },
+      {
+        "pattern": "Symmetrical Triangle",
+        "direction": "neutral",
+        "start_index": 134,
+        "end_index": 150,
+        "start_date": "2026-03-01",
+        "end_date": "2026-03-25",
+        "levels": {
+          "resistance_start": 22590.3064,
+          "resistance_end": 17878.03,
+          "support_start": 16837.44,
+          "support_end": 17454.8,
+          "apex_price": 17503.825
+        },
+        "quality": 1.0,
+        "apex_index": 151.2705707365333
       },
       {
         "pattern": "Descending Triangle",
@@ -1804,7 +1819,7 @@
           "support_start": 16868.345,
           "support_end": 21201.2093
         },
-        "quality": 0.85
+        "quality": 0.87
       }
     ]
   }

@@ -1886,23 +1886,6 @@
         "apex_index": 27.339773646050727
       },
       {
-        "pattern": "Symmetrical Triangle",
-        "direction": "neutral",
-        "start_index": 11,
-        "end_index": 56,
-        "start_date": "2025-09-09",
-        "end_date": "2025-11-12",
-        "levels": {
-          "resistance_start": 320.4699,
-          "resistance_end": 301.341,
-          "support_start": 262.6481,
-          "support_end": 276.4789,
-          "apex_price": 286.9117
-        },
-        "quality": 0.75,
-        "apex_index": 89.94434627252966
-      },
-      {
         "pattern": "Price Channel (Rising)",
         "direction": "bullish",
         "start_index": 49,
@@ -1915,22 +1898,41 @@
           "support_start": 289.7477,
           "support_end": 343.3862
         },
-        "quality": 0.85
+        "quality": 0.75
       },
       {
-        "pattern": "Price Channel (Flat)",
+        "pattern": "Symmetrical Triangle",
+        "direction": "neutral",
+        "start_index": 56,
+        "end_index": 80,
+        "start_date": "2025-11-12",
+        "end_date": "2025-12-16",
+        "levels": {
+          "resistance_start": 409.6967,
+          "resistance_end": 357.8727,
+          "support_start": 301.8596,
+          "support_end": 343.3862,
+          "apex_price": 349.8304
+        },
+        "quality": 0.83,
+        "apex_index": 83.72441417973913
+      },
+      {
+        "pattern": "Symmetrical Triangle",
         "direction": "neutral",
         "start_index": 87,
-        "end_index": 146,
+        "end_index": 111,
         "start_date": "2025-12-25",
-        "end_date": "2026-03-17",
+        "end_date": "2026-01-28",
         "levels": {
-          "resistance_start": 372.5121,
-          "resistance_end": 362.9485,
-          "support_start": 307.8974,
-          "support_end": 303.7968
+          "resistance_start": 381.87,
+          "resistance_end": 357.114,
+          "support_start": 278.2433,
+          "support_end": 334.03,
+          "apex_price": 350.0188
         },
-        "quality": 0.85
+        "quality": 1.0,
+        "apex_index": 117.87854056649066
       },
       {
         "pattern": "Ascending Triangle",
@@ -1949,6 +1951,21 @@
         "apex_index": 121.55975539504588
       },
       {
+        "pattern": "Price Channel (Flat)",
+        "direction": "neutral",
+        "start_index": 93,
+        "end_index": 133,
+        "start_date": "2026-01-03",
+        "end_date": "2026-03-01",
+        "levels": {
+          "resistance_start": 363.802,
+          "resistance_end": 356.482,
+          "support_start": 307.4804,
+          "support_end": 304.7003
+        },
+        "quality": 0.76
+      },
+      {
         "pattern": "Double Top",
         "direction": "bearish",
         "start_index": 107,
@@ -1964,36 +1981,68 @@
         "quality": 0.83
       },
       {
+        "pattern": "Price Channel (Rising)",
+        "direction": "bullish",
+        "start_index": 117,
+        "end_index": 156,
+        "start_date": "2026-02-06",
+        "end_date": "2026-04-03",
+        "levels": {
+          "resistance_start": 359.41,
+          "resistance_end": 373.4634,
+          "support_start": 285.9917,
+          "support_end": 301.1
+        },
+        "quality": 0.85
+      },
+      {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 117,
-        "end_index": 167,
-        "start_date": "2026-02-06",
-        "end_date": "2026-04-20",
+        "start_index": 133,
+        "end_index": 165,
+        "start_date": "2026-03-01",
+        "end_date": "2026-04-16",
         "levels": {
-          "resistance_start": 366.249,
-          "resistance_end": 342.686,
-          "support_start": 275.8207,
-          "support_end": 318.7102,
-          "apex_price": 334.1846
+          "resistance_start": 394.95,
+          "resistance_end": 333.19,
+          "support_start": 292.19,
+          "support_end": 304.5865,
+          "apex_price": 309.3681
         },
-        "quality": 0.75,
-        "apex_index": 185.0397808906836
+        "quality": 1.0,
+        "apex_index": 177.34296435272046
       },
       {
         "pattern": "Price Channel (Rising)",
         "direction": "bullish",
-        "start_index": 156,
-        "end_index": 203,
-        "start_date": "2026-04-03",
-        "end_date": "2026-06-11",
+        "start_index": 165,
+        "end_index": 198,
+        "start_date": "2026-04-16",
+        "end_date": "2026-06-05",
         "levels": {
-          "resistance_start": 344.5633,
-          "resistance_end": 396.5051,
-          "support_start": 306.6811,
-          "support_end": 357.3994
+          "resistance_start": 354.5096,
+          "resistance_end": 390.9794,
+          "support_start": 322.0769,
+          "support_end": 357.7677
         },
         "quality": 0.85
+      },
+      {
+        "pattern": "Symmetrical Triangle",
+        "direction": "neutral",
+        "start_index": 167,
+        "end_index": 198,
+        "start_date": "2026-04-20",
+        "end_date": "2026-06-05",
+        "levels": {
+          "resistance_start": 401.1726,
+          "resistance_end": 381.71,
+          "support_start": 324.24,
+          "support_end": 357.7677,
+          "apex_price": 372.9163
+        },
+        "quality": 1.0,
+        "apex_index": 212.00655449031495
       },
       {
         "pattern": "Descending Triangle",
@@ -2024,7 +2073,7 @@
           "support_start": 374.6174,
           "support_end": 330.922
         },
-        "quality": 0.85
+        "quality": 0.8
       },
       {
         "pattern": "Double Bottom",
@@ -2042,21 +2091,6 @@
         "quality": 0.92
       },
       {
-        "pattern": "Price Channel (Flat)",
-        "direction": "neutral",
-        "start_index": 193,
-        "end_index": 230,
-        "start_date": "2026-05-25",
-        "end_date": "2026-07-22",
-        "levels": {
-          "resistance_start": 374.946,
-          "resistance_end": 375.9632,
-          "support_start": 347.9585,
-          "support_end": 348.2951
-        },
-        "quality": 0.85
-      },
-      {
         "pattern": "Cup & Handle",
         "direction": "bullish",
         "start_index": 198,
@@ -2072,21 +2106,6 @@
           "target": 436.88
         },
         "quality": 0.89
-      },
-      {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 209,
-        "end_index": 230,
-        "start_date": "2026-06-22",
-        "end_date": "2026-07-22",
-        "levels": {
-          "resistance_start": 361.47,
-          "resistance_end": 406.578,
-          "support_start": 308.8431,
-          "support_end": 360.18
-        },
-        "quality": 0.85
       }
     ]
   }

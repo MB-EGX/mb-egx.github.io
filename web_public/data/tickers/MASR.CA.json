@@ -1873,31 +1873,31 @@
         "pattern": "Price Channel (Rising)",
         "direction": "bullish",
         "start_index": 14,
-        "end_index": 79,
+        "end_index": 70,
         "start_date": "2025-09-14",
-        "end_date": "2025-12-15",
+        "end_date": "2025-12-02",
         "levels": {
-          "resistance_start": 4.0715,
-          "resistance_end": 4.3182,
+          "resistance_start": 4.0624,
+          "resistance_end": 4.3063,
           "support_start": 3.8685,
-          "support_end": 4.1344
+          "support_end": 4.0976
         },
-        "quality": 0.85
+        "quality": 0.82
       },
       {
         "pattern": "Price Channel (Flat)",
         "direction": "neutral",
         "start_index": 48,
-        "end_index": 85,
+        "end_index": 79,
         "start_date": "2025-11-02",
-        "end_date": "2025-12-23",
+        "end_date": "2025-12-15",
         "levels": {
           "resistance_start": 4.2806,
-          "resistance_end": 4.3037,
-          "support_start": 4.0873,
-          "support_end": 4.036
+          "resistance_end": 4.3,
+          "support_start": 4.09,
+          "support_end": 4.0336
         },
-        "quality": 0.85
+        "quality": 1.0
       },
       {
         "pattern": "Double Top",
@@ -1943,23 +1943,8 @@
           "support_end": 5.1625,
           "apex_price": 6.6705
         },
-        "quality": 0.75,
+        "quality": 1.0,
         "apex_index": 192.83745583038865
-      },
-      {
-        "pattern": "Price Channel (Flat)",
-        "direction": "neutral",
-        "start_index": 95,
-        "end_index": 195,
-        "start_date": "2026-01-05",
-        "end_date": "2026-06-02",
-        "levels": {
-          "resistance_start": 7.0703,
-          "resistance_end": 7.1182,
-          "support_start": 4.3512,
-          "support_end": 4.34
-        },
-        "quality": 0.85
       },
       {
         "pattern": "Bull Flag",
@@ -1976,21 +1961,6 @@
           "measured_move_target": 10.82
         },
         "quality": 0.75
-      },
-      {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 176,
-        "end_index": 227,
-        "start_date": "2026-05-01",
-        "end_date": "2026-07-19",
-        "levels": {
-          "resistance_start": 6.3176,
-          "resistance_end": 8.3511,
-          "support_start": 4.4631,
-          "support_end": 6.8841
-        },
-        "quality": 0.85
       }
     ]
   }

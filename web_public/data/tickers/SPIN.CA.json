@@ -1870,21 +1870,6 @@
     },
     "patterns": [
       {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 1,
-        "end_index": 34,
-        "start_date": "2025-08-25",
-        "end_date": "2025-10-13",
-        "levels": {
-          "resistance_start": 10.169,
-          "resistance_end": 10.631,
-          "support_start": 9.7331,
-          "support_end": 10.1296
-        },
-        "quality": 0.85
-      },
-      {
         "pattern": "Ascending Triangle",
         "direction": "bullish",
         "start_index": 9,
@@ -1903,17 +1888,17 @@
       {
         "pattern": "Price Channel (Flat)",
         "direction": "neutral",
-        "start_index": 23,
-        "end_index": 58,
-        "start_date": "2025-09-25",
-        "end_date": "2025-11-16",
+        "start_index": 24,
+        "end_index": 53,
+        "start_date": "2025-09-28",
+        "end_date": "2025-11-09",
         "levels": {
-          "resistance_start": 10.504,
-          "resistance_end": 10.5166,
-          "support_start": 9.921,
-          "support_end": 10.1375
+          "resistance_start": 10.77,
+          "resistance_end": 10.596,
+          "support_start": 9.9272,
+          "support_end": 10.1066
         },
-        "quality": 0.85
+        "quality": 1.0
       },
       {
         "pattern": "Double Top",
@@ -1933,17 +1918,17 @@
       {
         "pattern": "Price Channel (Falling)",
         "direction": "bearish",
-        "start_index": 44,
+        "start_index": 53,
         "end_index": 82,
-        "start_date": "2025-10-27",
+        "start_date": "2025-11-09",
         "end_date": "2025-12-18",
         "levels": {
-          "resistance_start": 10.6319,
-          "resistance_end": 10.0107,
-          "support_start": 10.1908,
+          "resistance_start": 10.4376,
+          "resistance_end": 10.0453,
+          "support_start": 10.0645,
           "support_end": 9.6575
         },
-        "quality": 0.85
+        "quality": 0.91
       },
       {
         "pattern": "Descending Triangle",
@@ -1965,16 +1950,16 @@
         "pattern": "Price Channel (Rising)",
         "direction": "bullish",
         "start_index": 75,
-        "end_index": 138,
+        "end_index": 114,
         "start_date": "2025-12-09",
-        "end_date": "2026-03-06",
+        "end_date": "2026-02-03",
         "levels": {
-          "resistance_start": 10.7567,
-          "resistance_end": 15.2302,
-          "support_start": 9.5404,
-          "support_end": 14.5117
+          "resistance_start": 10.14,
+          "resistance_end": 14.6709,
+          "support_start": 8.8141,
+          "support_end": 13.75
         },
-        "quality": 0.85
+        "quality": 0.82
       },
       {
         "pattern": "Symmetrical Triangle",
@@ -1990,7 +1975,7 @@
           "support_end": 13.84,
           "apex_price": 13.9824
         },
-        "quality": 0.75,
+        "quality": 1.0,
         "apex_index": 150.67517401392115
       },
       {
@@ -2009,6 +1994,21 @@
         "quality": 0.88
       },
       {
+        "pattern": "Price Channel (Flat)",
+        "direction": "neutral",
+        "start_index": 147,
+        "end_index": 165,
+        "start_date": "2026-03-18",
+        "end_date": "2026-04-16",
+        "levels": {
+          "resistance_start": 14.73,
+          "resistance_end": 14.67,
+          "support_start": 13.84,
+          "support_end": 13.74
+        },
+        "quality": 1.0
+      },
+      {
         "pattern": "Cup & Handle",
         "direction": "bullish",
         "start_index": 153,
@@ -2024,21 +2024,6 @@
           "target": 19.255
         },
         "quality": 0.98
-      },
-      {
-        "pattern": "Price Channel (Flat)",
-        "direction": "neutral",
-        "start_index": 153,
-        "end_index": 202,
-        "start_date": "2026-03-31",
-        "end_date": "2026-06-10",
-        "levels": {
-          "resistance_start": 14.6943,
-          "resistance_end": 14.6914,
-          "support_start": 12.4071,
-          "support_end": 12.7525
-        },
-        "quality": 0.85
       },
       {
         "pattern": "Inverse Head & Shoulders",

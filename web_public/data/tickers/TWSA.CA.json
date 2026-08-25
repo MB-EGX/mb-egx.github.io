@@ -8,7 +8,7 @@
     "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
       "No confirmed higher-low swing structure yet",
-      "Price Channel (Rising) match (quality 0.85)"
+      "Price Channel (Rising) match (quality 0.95)"
     ],
     "P/E Ratio": null,
     "EPS": null,
@@ -1851,34 +1851,34 @@
       {
         "pattern": "Price Channel (Rising)",
         "direction": "bullish",
-        "start_index": 101,
+        "start_index": 117,
         "end_index": 156,
-        "start_date": "2026-01-14",
+        "start_date": "2026-02-06",
         "end_date": "2026-04-03",
         "levels": {
-          "resistance_start": 5.9943,
+          "resistance_start": 6.36,
           "resistance_end": 7.2514,
-          "support_start": 2.5632,
-          "support_end": 3.6091
+          "support_start": 2.7052,
+          "support_end": 3.66
         },
-        "quality": 0.85
+        "quality": 0.86
       },
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 101,
-        "end_index": 177,
-        "start_date": "2026-01-14",
-        "end_date": "2026-05-02",
+        "start_index": 127,
+        "end_index": 166,
+        "start_date": "2026-02-19",
+        "end_date": "2026-04-19",
         "levels": {
-          "resistance_start": 6.8893,
-          "resistance_end": 5.8388,
-          "support_start": 2.7777,
-          "support_end": 3.2468,
-          "apex_price": 4.047
+          "resistance_start": 8.2171,
+          "resistance_end": 5.58,
+          "support_start": 2.95,
+          "support_end": 3.9048,
+          "apex_price": 4.3501
         },
-        "quality": 0.75,
-        "apex_index": 306.63008969211995
+        "quality": 1.0,
+        "apex_index": 184.18826885362805
       },
       {
         "pattern": "Price Channel (Falling)",
@@ -1893,7 +1893,7 @@
           "support_start": 3.66,
           "support_end": 2.7729
         },
-        "quality": 0.85
+        "quality": 0.91
       },
       {
         "pattern": "Price Channel (Rising)",
@@ -1908,7 +1908,7 @@
           "support_start": 3.915,
           "support_end": 5.785
         },
-        "quality": 0.85
+        "quality": 0.95
       }
     ]
   }

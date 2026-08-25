@@ -423,16 +423,22 @@ class PatternDetector:
     def _fit_bilateral(self, window, peaks, troughs):
         """Fit resistance (peaks) & support (troughs) lines for one
         candidate window and return the shared geometry used by every
-        triangle/channel rule."""
-        peak_slope, peak_intercept, _ = _fit_line([p.index for p in peaks], [p.price for p in peaks])
-        trough_slope, trough_intercept, _ = _fit_line([t.index for t in troughs], [t.price for t in troughs])
+        triangle/channel rule. ``peak_r``/``trough_r`` are each line's
+        Pearson r (from ``_fit_line``, already computed there but
+        previously discarded here) - a real goodness-of-fit measure
+        used by ``detect_symmetrical_triangle``/``detect_price_channel``
+        for their quality scores, since neither of those two patterns
+        has a flat reference line to measure point deviation against
+        the way ``_quality_from_diffs`` does for the other patterns."""
+        peak_slope, peak_intercept, peak_r = _fit_line([p.index for p in peaks], [p.price for p in peaks])
+        trough_slope, trough_intercept, trough_r = _fit_line([t.index for t in troughs], [t.price for t in troughs])
         avg_price = float(np.mean([s.price for s in window]))
         span = float(window[-1].index - window[0].index)
         peak_class = self._slope_class(peak_slope, span, avg_price)
         trough_class = self._slope_class(trough_slope, span, avg_price)
         return {
-            "peak_slope": peak_slope, "peak_intercept": peak_intercept,
-            "trough_slope": trough_slope, "trough_intercept": trough_intercept,
+            "peak_slope": peak_slope, "peak_intercept": peak_intercept, "peak_r": peak_r,
+            "trough_slope": trough_slope, "trough_intercept": trough_intercept, "trough_r": trough_r,
             "avg_price": avg_price, "span": span,
             "peak_class": peak_class, "trough_class": trough_class,
         }
@@ -519,7 +525,16 @@ class PatternDetector:
                     "support_end": _line_value(geo["trough_slope"], geo["trough_intercept"], window[-1].index),
                     "apex_price": apex_y,
                 },
-                quality=min(1.0, abs(geo["peak_slope"] - geo["trough_slope"]) / (geo["avg_price"] * self.epsilon + 1e-9) * 0 + 0.75),
+                # Average |Pearson r| of the peak-line and trough-line fits -
+                # how well the swing highs actually sit on one straight line
+                # and the swing lows on another, which is exactly what
+                # "symmetrical triangle" claims geometrically. (Previously a
+                # dead expression multiplied by 0 and always evaluated to a
+                # flat 0.75 regardless of fit - every match reported
+                # identical quality, which also silently defeated
+                # _dedupe_overlapping's quality-based tie-break for this
+                # pattern.)
+                quality=(abs(geo["peak_r"]) + abs(geo["trough_r"])) / 2.0,
                 extra={"apex_index": apex_x},
             ))
         return results
@@ -538,6 +553,27 @@ class PatternDetector:
                 continue  # lines diverging/converging too much to call parallel
 
             direction = {"rising": "bullish", "falling": "bearish", "flat": "neutral"}[geo["peak_class"]]
+            # Real quality, not a flat constant: how tightly parallel the
+            # two lines actually are (relative to the same tolerance band
+            # already used to accept/reject the pattern above) blended with
+            # how well each line fits its own swing points (|Pearson r|).
+            # A channel where the lines are barely inside the parallelism
+            # tolerance and/or the swings are scattered around their fitted
+            # lines is a much weaker read than one where both are tight -
+            # this now reports that difference instead of every channel
+            # scoring identically. (Previously a hardcoded 0.85 for every
+            # match, which also silently defeated _dedupe_overlapping's
+            # quality-based tie-break for this pattern.) Horizontal (flat)
+            # channels skip the ratio the same way the acceptance gate
+            # above does - slope_scale collapses toward the 1e-9 floor for
+            # two near-zero slopes and the ratio becomes numerically
+            # meaningless, not just numerically noisy.
+            if geo["peak_class"] == "flat":
+                parallelism_quality = 1.0
+            else:
+                parallelism_quality = max(0.0, 1.0 - (slope_gap / slope_scale) / (self.epsilon * 4))
+            fit_quality = (abs(geo["peak_r"]) + abs(geo["trough_r"])) / 2.0
+            quality = (parallelism_quality + fit_quality) / 2.0
             results.append(self._result(
                 f"Price Channel ({geo['peak_class'].capitalize()})",
                 window[0].index, window[-1].index, direction,
@@ -547,7 +583,7 @@ class PatternDetector:
                     "support_start": _line_value(geo["trough_slope"], geo["trough_intercept"], window[0].index),
                     "support_end": _line_value(geo["trough_slope"], geo["trough_intercept"], window[-1].index),
                 },
-                quality=0.85,
+                quality=quality,
             ))
         return results
 

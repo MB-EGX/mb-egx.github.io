@@ -8,7 +8,7 @@
     "Long-Term Setup Confirmed": true,
     "Long-Term Setup Reasons": [
       "Higher-low swing structure confirmed",
-      "Ascending Triangle match (quality 0.96)"
+      "Price Channel (Rising) match (quality 0.99)"
     ],
     "P/E Ratio": 29.36,
     "EPS": 0.2476,
@@ -1873,18 +1873,18 @@
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
         "start_index": 80,
-        "end_index": 111,
+        "end_index": 105,
         "start_date": "2025-12-16",
-        "end_date": "2026-01-28",
+        "end_date": "2026-01-20",
         "levels": {
           "resistance_start": 3.4827,
-          "resistance_end": 3.119,
-          "support_start": 2.6894,
-          "support_end": 3.0718,
-          "apex_price": 3.096
+          "resistance_end": 3.1894,
+          "support_start": 2.4688,
+          "support_end": 3.125,
+          "apex_price": 3.1695
         },
-        "quality": 0.75,
-        "apex_index": 112.96106890227928
+        "quality": 1.0,
+        "apex_index": 106.69518987341772
       },
       {
         "pattern": "Descending Triangle",
@@ -1945,22 +1945,7 @@
           "support_start": 2.7257,
           "support_end": 2.8
         },
-        "quality": 0.85
-      },
-      {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 138,
-        "end_index": 207,
-        "start_date": "2026-03-06",
-        "end_date": "2026-06-17",
-        "levels": {
-          "resistance_start": 4.0358,
-          "resistance_end": 7.3969,
-          "support_start": 1.6211,
-          "support_end": 5.2862
-        },
-        "quality": 0.85
+        "quality": 0.75
       },
       {
         "pattern": "Ascending Triangle",
@@ -1979,6 +1964,23 @@
         "apex_index": 291.1621621621627
       },
       {
+        "pattern": "Symmetrical Triangle",
+        "direction": "neutral",
+        "start_index": 156,
+        "end_index": 189,
+        "start_date": "2026-04-03",
+        "end_date": "2026-05-19",
+        "levels": {
+          "resistance_start": 5.1814,
+          "resistance_end": 5.04,
+          "support_start": 2.5772,
+          "support_end": 4.3301,
+          "apex_price": 4.987
+        },
+        "quality": 0.93,
+        "apex_index": 201.36660422799042
+      },
+      {
         "pattern": "Double Top",
         "direction": "bearish",
         "start_index": 175,
@@ -1994,21 +1996,19 @@
         "quality": 0.8
       },
       {
-        "pattern": "Symmetrical Triangle",
-        "direction": "neutral",
-        "start_index": 189,
-        "end_index": 251,
-        "start_date": "2026-05-19",
-        "end_date": "2026-08-20",
+        "pattern": "Price Channel (Rising)",
+        "direction": "bullish",
+        "start_index": 177,
+        "end_index": 207,
+        "start_date": "2026-05-02",
+        "end_date": "2026-06-17",
         "levels": {
-          "resistance_start": 9.0075,
-          "resistance_end": 7.4641,
-          "support_start": 3.8373,
-          "support_end": 5.1936,
-          "apex_price": 6.2556
+          "resistance_start": 4.384,
+          "resistance_end": 8.5,
+          "support_start": 3.08,
+          "support_end": 7.18
         },
-        "quality": 0.75,
-        "apex_index": 299.5488221760718
+        "quality": 0.99
       },
       {
         "pattern": "Price Channel (Falling)",
@@ -2023,7 +2023,24 @@
           "support_start": 3.62,
           "support_end": 2.5129
         },
-        "quality": 0.85
+        "quality": 0.97
+      },
+      {
+        "pattern": "Symmetrical Triangle",
+        "direction": "neutral",
+        "start_index": 229,
+        "end_index": 251,
+        "start_date": "2026-07-21",
+        "end_date": "2026-08-20",
+        "levels": {
+          "resistance_start": 8.14,
+          "resistance_end": 7.3642,
+          "support_start": -0.1138,
+          "support_end": 7.18,
+          "apex_price": 7.3465
+        },
+        "quality": 1.0,
+        "apex_index": 251.50220750551878
       }
     ]
   }

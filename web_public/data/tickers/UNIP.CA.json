@@ -8,7 +8,7 @@
     "Long-Term Setup Confirmed": true,
     "Long-Term Setup Reasons": [
       "Higher-low swing structure confirmed",
-      "Price Channel (Rising) match (quality 0.85)"
+      "Price Channel (Rising) match (quality 0.84)"
     ],
     "P/E Ratio": 48.42,
     "EPS": 0.0076,
@@ -1877,6 +1877,38 @@
     },
     "patterns": [
       {
+        "pattern": "Symmetrical Triangle",
+        "direction": "neutral",
+        "start_index": 11,
+        "end_index": 65,
+        "start_date": "2025-09-09",
+        "end_date": "2025-11-24",
+        "levels": {
+          "resistance_start": 0.282,
+          "resistance_end": 0.2471,
+          "support_start": 0.2242,
+          "support_end": 0.241,
+          "apex_price": 0.243
+        },
+        "quality": 1.0,
+        "apex_index": 71.32838983050857
+      },
+      {
+        "pattern": "Price Channel (Rising)",
+        "direction": "bullish",
+        "start_index": 11,
+        "end_index": 89,
+        "start_date": "2025-09-09",
+        "end_date": "2025-12-28",
+        "levels": {
+          "resistance_start": 0.2703,
+          "resistance_end": 0.294,
+          "support_start": 0.2242,
+          "support_end": 0.2484
+        },
+        "quality": 0.84
+      },
+      {
         "pattern": "Price Channel (Falling)",
         "direction": "bearish",
         "start_index": 89,
@@ -1889,39 +1921,24 @@
           "support_start": 0.2693,
           "support_end": 0.2553
         },
-        "quality": 0.85
+        "quality": 0.78
       },
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
         "start_index": 94,
-        "end_index": 191,
+        "end_index": 122,
         "start_date": "2026-01-03",
-        "end_date": "2026-05-20",
+        "end_date": "2026-02-11",
         "levels": {
-          "resistance_start": 0.3135,
-          "resistance_end": 0.2934,
-          "support_start": 0.2644,
-          "support_end": 0.2752,
-          "apex_price": 0.2816
+          "resistance_start": 0.3233,
+          "resistance_end": 0.299,
+          "support_start": 0.263,
+          "support_end": 0.2811,
+          "apex_price": 0.2887
         },
-        "quality": 0.75,
-        "apex_index": 247.51942908707215
-      },
-      {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 99,
-        "end_index": 209,
-        "start_date": "2026-01-11",
-        "end_date": "2026-06-21",
-        "levels": {
-          "resistance_start": 0.307,
-          "resistance_end": 0.3189,
-          "support_start": 0.2667,
-          "support_end": 0.2763
-        },
-        "quality": 0.85
+        "quality": 1.0,
+        "apex_index": 133.79089376053957
       },
       {
         "pattern": "Price Channel (Flat)",
@@ -1936,7 +1953,7 @@
           "support_start": 0.2678,
           "support_end": 0.2747
         },
-        "quality": 0.85
+        "quality": 0.82
       },
       {
         "pattern": "Ascending Triangle",
@@ -1955,19 +1972,19 @@
         "apex_index": 211.06050029086683
       },
       {
-        "pattern": "Price Channel (Falling)",
-        "direction": "bearish",
-        "start_index": 218,
-        "end_index": 245,
-        "start_date": "2026-07-04",
-        "end_date": "2026-08-11",
+        "pattern": "Price Channel (Rising)",
+        "direction": "bullish",
+        "start_index": 209,
+        "end_index": 252,
+        "start_date": "2026-06-21",
+        "end_date": "2026-08-20",
         "levels": {
-          "resistance_start": 0.4276,
-          "resistance_end": 0.415,
-          "support_start": 0.271,
-          "support_end": 0.2607
+          "resistance_start": 0.3488,
+          "resistance_end": 0.4459,
+          "support_start": 0.2342,
+          "support_end": 0.3345
         },
-        "quality": 0.85
+        "quality": 0.84
       },
       {
         "pattern": "Symmetrical Triangle",
@@ -1983,7 +2000,7 @@
           "support_end": 0.3345,
           "apex_price": 0.3989
         },
-        "quality": 0.75,
+        "quality": 0.87,
         "apex_index": 279.57806789216016
       }
     ]

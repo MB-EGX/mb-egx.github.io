@@ -8,7 +8,7 @@
     "Long-Term Setup Confirmed": true,
     "Long-Term Setup Reasons": [
       "Higher-low swing structure confirmed",
-      "Price Channel (Rising) match (quality 0.85)"
+      "Price Channel (Rising) match (quality 0.91)"
     ],
     "P/E Ratio": 18.69,
     "EPS": 3.6532,
@@ -1872,49 +1872,34 @@
       {
         "pattern": "Price Channel (Rising)",
         "direction": "bullish",
-        "start_index": 75,
-        "end_index": 173,
-        "start_date": "2025-12-09",
-        "end_date": "2026-04-28",
+        "start_index": 10,
+        "end_index": 80,
+        "start_date": "2025-09-08",
+        "end_date": "2025-12-16",
         "levels": {
-          "resistance_start": 30.0837,
-          "resistance_end": 47.7704,
-          "support_start": 22.2472,
-          "support_end": 38.6838
+          "resistance_start": 17.8879,
+          "resistance_end": 27.4454,
+          "support_start": 14.6966,
+          "support_end": 24.2687
         },
-        "quality": 0.85
+        "quality": 1.0
       },
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
         "start_index": 95,
-        "end_index": 176,
+        "end_index": 173,
         "start_date": "2026-01-05",
-        "end_date": "2026-05-01",
+        "end_date": "2026-04-28",
         "levels": {
           "resistance_start": 46.7426,
-          "resistance_end": 44.5903,
-          "support_start": 26.2516,
-          "support_end": 29.8425,
-          "apex_price": 39.0634
+          "resistance_end": 44.67,
+          "support_start": 24.5,
+          "support_end": 39.2689,
+          "apex_price": 44.0053
         },
-        "quality": 0.75,
-        "apex_index": 383.99946394572936
-      },
-      {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 176,
-        "end_index": 234,
-        "start_date": "2026-05-01",
-        "end_date": "2026-07-29",
-        "levels": {
-          "resistance_start": 41.4074,
-          "resistance_end": 58.6772,
-          "support_start": 29.5437,
-          "support_end": 50.5854
-        },
-        "quality": 0.85
+        "quality": 1.0,
+        "apex_index": 198.01507657599035
       }
     ]
   }

@@ -24,8 +24,8 @@
         "ar": "مثل المتوسط البسيط لكنه يمنح وزناً أكبر للأيام الأخيرة، لذلك يتفاعل بشكل أسرع مع حركة السعر الجديدة."
       },
       "why_it_matters": {
-        "en": "Price closing above EMA-20 with RSI ≥ 52 is the 'momentum' half of the Breakout Buy signal.",
-        "ar": "إغلاق السعر فوق EMA-20 مع مؤشر RSI أكبر من أو يساوي 52 يمثل النصف 'الزخمي' من إشارة شراء الاختراق."
+        "en": "Price closing above EMA-20 with RSI ≥ 55 is the 'momentum' half of the Breakout Buy signal.",
+        "ar": "إغلاق السعر فوق EMA-20 مع مؤشر RSI أكبر من أو يساوي 55 يمثل النصف 'الزخمي' من إشارة شراء الاختراق."
       }
     },
     {
@@ -38,8 +38,8 @@
         "ar": "مقياس زخم من 0 إلى 100 مبني على حجم الحركات الصاعدة مقابل الهابطة مؤخراً. فوق 70 تُعتبر تقليدياً 'ذروة شراء'، وتحت 30 'ذروة بيع'."
       },
       "why_it_matters": {
-        "en": "Strong Buy requires RSI 55-75 (bullish but not euphoric); Buy on Dip triggers under 38; Sell/Avoid requires under 28.",
-        "ar": "إشارة الشراء القوي تتطلب RSI بين 55-75 (صاعد دون نشوة)؛ الشراء عند الانخفاض يُفعّل تحت 38؛ البيع/التجنب يتطلب أقل من 28."
+        "en": "Strong Buy requires RSI 58-72 (bullish but not euphoric); Buy on Dip triggers under 35; Sell/Avoid requires under 28.",
+        "ar": "إشارة الشراء القوي تتطلب RSI بين 58-72 (صاعد دون نشوة)؛ الشراء عند الانخفاض يُفعّل تحت 35؛ البيع/التجنب يتطلب أقل من 28."
       }
     },
     {
@@ -52,8 +52,8 @@
         "ar": "يقيس قوة الاتجاه (وليس اتجاهه) باستخدام تنعيم وايلدر الصحيح. ADX مرتفع = ترند حقيقي وقوي؛ ADX منخفض = حركة عشوائية بلا اتجاه."
       },
       "why_it_matters": {
-        "en": "A confirmation gate: Strong Buy / Breakout signals with weak ADX get their score cut to ~35% and are flagged 'Unconfirmed'.",
-        "ar": "بوابة تأكيد: إشارات الشراء القوي/الاختراق ذات ADX الضعيف تُخفَّض نقاطها لنحو 35% وتُوسَم بـ 'غير مؤكدة'."
+        "en": "A confirmation gate: Strong Buy / Breakout signals with weak ADX get their score cut to ~25% and are flagged 'Unconfirmed'.",
+        "ar": "بوابة تأكيد: إشارات الشراء القوي/الاختراق ذات ADX الضعيف تُخفَّض نقاطها لنحو 25% وتُوسَم بـ 'غير مؤكدة'."
       }
     },
     {
@@ -80,8 +80,8 @@
         "ar": "يُرجّح حجم كل يوم حسب موقع الإغلاق ضمن نطاق أعلى/أدنى سعر لذلك اليوم — موجب عندما يهيمن ضغط الشراء، وسالب عندما يهيمن ضغط البيع."
       },
       "why_it_matters": {
-        "en": "A +15 score bonus when positive and above threshold — confirms buying is happening on strength, not just price drifting up on light volume.",
-        "ar": "مكافأة +15 نقطة عندما يكون موجباً وفوق العتبة — يؤكد أن الشراء يحدث بقوة حقيقية، وليس مجرد ارتفاع سعر على حجم تداول ضعيف."
+        "en": "A +12 score bonus when positive and above threshold — confirms buying is happening on strength, not just price drifting up on light volume.",
+        "ar": "مكافأة +12 نقطة عندما يكون موجباً وفوق العتبة — يؤكد أن الشراء يحدث بقوة حقيقية، وليس مجرد ارتفاع سعر على حجم تداول ضعيف."
       }
     },
     {
@@ -108,8 +108,8 @@
         "ar": "انضغاط نطاقات بولينجر (نطاقات التقلب السعري) داخل قنوات كيلتنر (نطاقات مبنية على ATR) — إعداد كلاسيكي لـ 'الهدوء الذي يسبق العاصفة'."
       },
       "why_it_matters": {
-        "en": "Volatility clusters — a quiet period often precedes a bigger move. Shown as a [💥 SQUEEZE] marker and a modest +10 score bonus.",
-        "ar": "التقلب يميل للتجمع — فترة الهدوء غالباً ما تسبق حركة أكبر. يظهر كعلامة [💥 SQUEEZE] ومكافأة متواضعة +10 نقاط."
+        "en": "Volatility clusters — a quiet period often precedes a bigger move. Shown as a [💥 SQUEEZE] marker and a modest +8 score bonus.",
+        "ar": "التقلب يميل للتجمع — فترة الهدوء غالباً ما تسبق حركة أكبر. يظهر كعلامة [💥 SQUEEZE] ومكافأة متواضعة +8 نقاط."
       }
     },
     {
@@ -164,8 +164,8 @@
         "ar": "موقع سعر اليوم بين أعلى وأدنى إغلاق خلال آخر 250 يوم تداول، كنسبة مئوية (0% = عند القاع، 100% = عند القمة)."
       },
       "why_it_matters": {
-        "en": "Strong Buy requires being in the top 15% of the range; Buy on Dip requires being in the bottom 25%.",
-        "ar": "الشراء القوي يتطلب التواجد ضمن أعلى 15% من النطاق؛ الشراء عند الانخفاض يتطلب التواجد ضمن أدنى 25%."
+        "en": "Strong Buy requires being in the top 12% of the range; Buy on Dip requires being in the bottom 20%.",
+        "ar": "الشراء القوي يتطلب التواجد ضمن أعلى 12% من النطاق؛ الشراء عند الانخفاض يتطلب التواجد ضمن أدنى 20%."
       }
     },
     {
@@ -178,8 +178,8 @@
         "ar": "المتوسط المتحرك 50 أسبوعاً ومؤشر RSI الأسبوعي، محسوبان من آخر أسبوع مكتمل فقط — وليس من الأسبوع الجاري."
       },
       "why_it_matters": {
-        "en": "The single largest score bonus (+20), reserved for when the daily signal and the higher weekly timeframe genuinely agree — the strongest filter against false starts.",
-        "ar": "أكبر مكافأة نقاط منفردة (+20)، مخصصة لحالة توافق الإشارة اليومية الحقيقي مع الإطار الزمني الأسبوعي الأعلى — أقوى فلتر ضد الانطلاقات الكاذبة."
+        "en": "The single largest score bonus (+15), reserved for when the daily signal and the higher weekly timeframe genuinely agree — the strongest filter against false starts.",
+        "ar": "أكبر مكافأة نقاط منفردة (+15)، مخصصة لحالة توافق الإشارة اليومية الحقيقي مع الإطار الزمني الأسبوعي الأعلى — أقوى فلتر ضد الانطلاقات الكاذبة."
       }
     },
     {
@@ -393,8 +393,8 @@
       },
       "bias": "bullish",
       "definition": {
-        "en": "Near the top of its 52-week range, RSI in the bullish-but-not-euphoric 55-75 zone, no down-gap.",
-        "ar": "قرب قمة نطاق 52 أسبوعاً، RSI ضمن نطاق 55-75 الصاعد دون نشوة، بدون فجوة هبوطية."
+        "en": "Near the top of its 52-week range, RSI in the bullish-but-not-euphoric 58-72 zone, no down-gap.",
+        "ar": "قرب قمة نطاق 52 أسبوعاً، RSI ضمن نطاق 58-72 الصاعد دون نشوة، بدون فجوة هبوطية."
       },
       "why_it_matters": {
         "en": "The highest-conviction bullish label the system produces.",
@@ -438,8 +438,8 @@
       },
       "bias": "bullish",
       "definition": {
-        "en": "Only the EMA20 + RSI≥52 momentum component fired.",
-        "ar": "تفعّل مكوّن الزخم EMA20 + RSI≥52 فقط."
+        "en": "Only the EMA20 + RSI≥55 momentum component fired.",
+        "ar": "تفعّل مكوّن الزخم EMA20 + RSI≥55 فقط."
       },
       "why_it_matters": {
         "en": "Fresh short-term momentum, without a confirmed longer-term structural cross yet.",
@@ -453,8 +453,8 @@
       },
       "bias": "bullish",
       "definition": {
-        "en": "In the bottom 25% of the 52-week range with RSI under 38 — oversold but not in a Sell/Avoid breakdown.",
-        "ar": "ضمن أدنى 25% من نطاق 52 أسبوعاً مع RSI أقل من 38 — ذروة بيع لكن ليس ضمن انهيار البيع/التجنب."
+        "en": "In the bottom 20% of the 52-week range with RSI under 35 — oversold but not in a Sell/Avoid breakdown.",
+        "ar": "ضمن أدنى 20% من نطاق 52 أسبوعاً مع RSI أقل من 35 — ذروة بيع لكن ليس ضمن انهيار البيع/التجنب."
       },
       "why_it_matters": {
         "en": "Flags potential value entries in a pullback, distinct from a stock in genuine breakdown.",
@@ -513,8 +513,8 @@
       },
       "bias": null,
       "definition": {
-        "en": "Appended when a base signal fired but ADX and volume didn't confirm it. Score is cut to ~35% of normal.",
-        "ar": "يُضاف عندما تُفعَّل الإشارة الأساسية لكن ADX والحجم لم يؤكداها. تُخفَّض الدرجة إلى نحو 35% من قيمتها الطبيعية."
+        "en": "Appended when a base signal fired but ADX and volume didn't confirm it. Score is cut to ~25% of normal.",
+        "ar": "يُضاف عندما تُفعَّل الإشارة الأساسية لكن ADX والحجم لم يؤكداها. تُخفَّض الدرجة إلى نحو 25% من قيمتها الطبيعية."
       },
       "why_it_matters": {
         "en": "Tells you the setup looks right but the market hasn't committed to it with real trend strength and volume yet.",
@@ -528,8 +528,8 @@
       },
       "bias": "bearish",
       "definition": {
-        "en": "Average trading volume is under the minimum liquidity floor. A 22-40 point penalty is applied on top of the base score.",
-        "ar": "متوسط حجم التداول أقل من الحد الأدنى للسيولة. تُطبَّق عقوبة من 22-40 نقطة فوق الدرجة الأساسية."
+        "en": "Average trading volume is under the minimum liquidity floor. A flat 40-point penalty is applied on top of the base score.",
+        "ar": "متوسط حجم التداول أقل من الحد الأدنى للسيولة. تُطبَّق عقوبة ثابتة قدرها 40 نقطة فوق الدرجة الأساسية."
       },
       "why_it_matters": {
         "en": "A perfect-looking setup on a stock nobody trades is a trap — you may not be able to enter or exit at a fair price.",
@@ -562,8 +562,8 @@
         "ar": "المتوسط الأسبوعي SMA-50 وRSI الأسبوعي (من آخر أسبوع مكتمل) يتوافقان مع الإشارة اليومية."
       },
       "why_it_matters": {
-        "en": "Only appears on Strong Buy and Breakout Buy — the single largest score bonus (+20), and the strongest filter against false starts.",
-        "ar": "يظهر فقط على الشراء القوي وشراء الاختراق — أكبر مكافأة نقاط منفردة (+20)، وأقوى فلتر ضد الانطلاقات الكاذبة."
+        "en": "Only appears on Strong Buy and Breakout Buy — the single largest score bonus (+15), and the strongest filter against false starts.",
+        "ar": "يظهر فقط على الشراء القوي وشراء الاختراق — أكبر مكافأة نقاط منفردة (+15)، وأقوى فلتر ضد الانطلاقات الكاذبة."
       }
     },
     {

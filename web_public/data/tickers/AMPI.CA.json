@@ -1886,6 +1886,21 @@
         "quality": 0.83
       },
       {
+        "pattern": "Price Channel (Flat)",
+        "direction": "neutral",
+        "start_index": 35,
+        "end_index": 73,
+        "start_date": "2025-10-14",
+        "end_date": "2025-12-07",
+        "levels": {
+          "resistance_start": 2.6785,
+          "resistance_end": 2.7077,
+          "support_start": 2.4659,
+          "support_end": 2.4294
+        },
+        "quality": 0.8
+      },
+      {
         "pattern": "Double Top",
         "direction": "bearish",
         "start_index": 37,
@@ -1934,83 +1949,38 @@
         "apex_index": 98.29608938547483
       },
       {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 57,
-        "end_index": 85,
-        "start_date": "2025-11-13",
-        "end_date": "2025-12-23",
-        "levels": {
-          "resistance_start": 2.6291,
-          "resistance_end": 2.96,
-          "support_start": 2.34,
-          "support_end": 2.6025
-        },
-        "quality": 0.85
-      },
-      {
-        "pattern": "Price Channel (Flat)",
-        "direction": "neutral",
-        "start_index": 57,
-        "end_index": 110,
-        "start_date": "2025-11-13",
-        "end_date": "2026-01-27",
-        "levels": {
-          "resistance_start": 2.7708,
-          "resistance_end": 2.7691,
-          "support_start": 2.3915,
-          "support_end": 2.3632
-        },
-        "quality": 0.85
-      },
-      {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 85,
+        "start_index": 93,
         "end_index": 117,
-        "start_date": "2025-12-23",
+        "start_date": "2026-01-03",
         "end_date": "2026-02-06",
         "levels": {
-          "resistance_start": 2.9071,
-          "resistance_end": 2.4938,
-          "support_start": 2.2624,
+          "resistance_start": 2.6816,
+          "resistance_end": 2.53,
+          "support_start": 2.3,
           "support_end": 2.4129,
-          "apex_price": 2.4345
+          "apex_price": 2.4629
         },
-        "quality": 0.75,
-        "apex_index": 121.58750617602199
+        "quality": 1.0,
+        "apex_index": 127.6207865168539
       },
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 133,
-        "end_index": 215,
-        "start_date": "2026-03-01",
-        "end_date": "2026-06-30",
-        "levels": {
-          "resistance_start": 2.8005,
-          "resistance_end": 2.6041,
-          "support_start": 2.3293,
-          "support_end": 2.5015,
-          "apex_price": 2.5494
-        },
-        "quality": 0.75,
-        "apex_index": 237.8341840506506
-      },
-      {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
         "start_index": 156,
-        "end_index": 229,
+        "end_index": 202,
         "start_date": "2026-04-03",
-        "end_date": "2026-07-21",
+        "end_date": "2026-06-10",
         "levels": {
-          "resistance_start": 2.6298,
-          "resistance_end": 2.9676,
-          "support_start": 2.3629,
-          "support_end": 2.7009
+          "resistance_start": 2.7276,
+          "resistance_end": 2.64,
+          "support_start": 2.4,
+          "support_end": 2.5095,
+          "apex_price": 2.582
         },
-        "quality": 0.85
+        "quality": 1.0,
+        "apex_index": 232.4444444444443
       },
       {
         "pattern": "Descending Triangle",
@@ -2027,6 +1997,21 @@
         },
         "quality": 0.8,
         "apex_index": 265.19534883720945
+      },
+      {
+        "pattern": "Price Channel (Rising)",
+        "direction": "bullish",
+        "start_index": 160,
+        "end_index": 233,
+        "start_date": "2026-04-08",
+        "end_date": "2026-07-28",
+        "levels": {
+          "resistance_start": 2.6265,
+          "resistance_end": 3.0621,
+          "support_start": 2.3075,
+          "support_end": 2.7411
+        },
+        "quality": 0.87
       },
       {
         "pattern": "Symmetrical Triangle",

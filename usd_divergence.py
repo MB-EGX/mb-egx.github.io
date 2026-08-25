@@ -24,12 +24,20 @@ CLASSIC BULLISH DIVERGENCE (rarer): EGX30 (EGP) makes a lower high
 while EGX30 (USD) makes a HIGHER high -> local-currency weakness is
 masking real underlying strength.
 
-METHOD: scipy.signal.argrelextrema on each series' close (same tool
-chart_patterns.py already uses elsewhere in this codebase - not a new
-dependency), comparing the slope between each series' own last two
-local maxima. ``config.USD_DIVERGENCE_PEAK_ORDER`` sets how many bars on
-each side must be lower for a bar to count as a peak (larger = fewer,
-more structurally significant peaks; smaller = more, noisier peaks).
+METHOD: scipy.signal.argrelextrema on the EGP leg's close ONLY (same
+tool chart_patterns.py already uses elsewhere in this codebase - not a
+new dependency), then the USD leg is read at those SAME two peak
+dates rather than having its own peaks found independently. This is
+deliberate: EGX30 (EGP) is the series a trader actually watches on
+the price chart, so its last two structural highs are the two market
+events being asked about; reading USD's close AT those exact dates is
+what "did the dollar confirm this EGP high" means, matching how every
+other divergence check in classical TA works (compare an indicator's
+value at the price's own peaks, not the indicator's own separately-
+found peaks). ``config.USD_DIVERGENCE_PEAK_ORDER`` sets how many bars
+on each side must be strictly lower for a bar to count as a peak
+(larger = fewer, more structurally significant peaks; smaller = more,
+noisier peaks).
 
 Both legs are aligned on shared trading dates first (inner join) - a
 peak is only compared when both series actually have a bar on that
@@ -80,7 +88,7 @@ def detect_divergence(frame_egp: pd.DataFrame, frame_usd: pd.DataFrame,
 
     "available": False (with a "reason") if either leg isn't ingested
     yet, there isn't enough shared history (config.
-    USD_DIVERGENCE_MIN_BARS), or either leg doesn't yet have 2 local
+    USD_DIVERGENCE_MIN_BARS), or EGX30 (EGP) doesn't yet have 2 local
     peaks to compare - never a guessed/fabricated verdict.
     """
     joined = _aligned_closes(frame_egp, frame_usd)
@@ -93,17 +101,32 @@ def detect_divergence(frame_egp: pd.DataFrame, frame_usd: pd.DataFrame,
     usd = joined["usd_close"].values
     dates = joined.index.astype(str).str[:10].values
 
-    peaks_egp = argrelextrema(egp, np.greater_equal, order=order)[0]
-    peaks_usd = argrelextrema(usd, np.greater_equal, order=order)[0]
+    # Peaks are found on the EGP leg ONLY - the series a trader actually
+    # watches on the price chart - and the USD twin is read at those SAME
+    # two dates, rather than independently finding USD's own local peaks
+    # (the previous approach). Finding peaks separately on each leg risks
+    # comparing two structurally unrelated market moves the moment FX
+    # volatility shifts one leg's local extrema off the other's dates -
+    # EGP and USD closes are related by a slowly-moving FX divisor, so
+    # their peaks usually land close together, but "usually" isn't a
+    # guarantee, and a genuine mismatch would silently produce a
+    # "divergence" that doesn't describe the same price move in both
+    # currencies. Reading USD at EGP's own peak dates is what "did the
+    # dollar confirm this EGP high" actually means, and matches how every
+    # other divergence check in classical TA works (compare an indicator's
+    # value AT the price's own peaks, e.g. RSI/MACD divergence, not the
+    # indicator's own separately-found peaks). Strict np.greater (not
+    # np.greater_equal) also matches chart_patterns.py's own swing-point
+    # convention - np.greater_equal would flag every point on a flat
+    # price plateau as its own "peak", which is a real risk on an index
+    # series that can print an unchanged close on a quiet session.
+    peaks_egp = argrelextrema(egp, np.greater, order=order)[0]
+    if len(peaks_egp) < 2:
+        return {"available": False, "reason": "Not enough structural peaks yet in EGX30 (EGP)."}
 
-    if len(peaks_egp) < 2 or len(peaks_usd) < 2:
-        return {"available": False, "reason": "Not enough structural peaks yet in one or both legs."}
-
-    last2_egp = peaks_egp[-2:]
-    last2_usd = peaks_usd[-2:]
-
-    egp_slope = float(egp[last2_egp[1]] - egp[last2_egp[0]])
-    usd_slope = float(usd[last2_usd[1]] - usd[last2_usd[0]])
+    last2 = peaks_egp[-2:]
+    egp_slope = float(egp[last2[1]] - egp[last2[0]])
+    usd_slope = float(usd[last2[1]] - usd[last2[0]])
 
     if egp_slope > 0 and usd_slope < 0:
         divergence = "bearish"
@@ -119,10 +142,10 @@ def detect_divergence(frame_egp: pd.DataFrame, frame_usd: pd.DataFrame,
         "available": True,
         "divergence": divergence,
         "egp_peaks": [
-            {"date": str(dates[i]), "close": round(float(egp[i]), 4)} for i in last2_egp
+            {"date": str(dates[i]), "close": round(float(egp[i]), 4)} for i in last2
         ],
         "usd_peaks": [
-            {"date": str(dates[i]), "close": round(float(usd[i]), 4)} for i in last2_usd
+            {"date": str(dates[i]), "close": round(float(usd[i]), 4)} for i in last2
         ],
         "note": note,
     }

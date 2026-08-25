@@ -8,7 +8,7 @@
     "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
       "No confirmed higher-low swing structure yet",
-      "Price Channel (Rising) match (quality 0.85)",
+      "Price Channel (Rising) match (quality 0.90)",
       "Avg volume below 100,000 long-term floor"
     ],
     "P/E Ratio": 6.93,
@@ -1521,21 +1521,6 @@
     },
     "patterns": [
       {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 1,
-        "end_index": 75,
-        "start_date": "2025-08-25",
-        "end_date": "2025-12-09",
-        "levels": {
-          "resistance_start": 101.1337,
-          "resistance_end": 122.3862,
-          "support_start": 89.1827,
-          "support_end": 113.9791
-        },
-        "quality": 0.85
-      },
-      {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
         "start_index": 5,
@@ -1549,40 +1534,23 @@
           "support_end": 104.9318,
           "apex_price": 105.2013
         },
-        "quality": 0.75,
+        "quality": 1.0,
         "apex_index": 48.80443212625386
       },
       {
-        "pattern": "Price Channel (Falling)",
-        "direction": "bearish",
-        "start_index": 90,
-        "end_index": 167,
-        "start_date": "2025-12-30",
-        "end_date": "2026-07-01",
+        "pattern": "Price Channel (Rising)",
+        "direction": "bullish",
+        "start_index": 29,
+        "end_index": 90,
+        "start_date": "2025-10-05",
+        "end_date": "2025-12-30",
         "levels": {
-          "resistance_start": 138.6106,
-          "resistance_end": 108.6462,
-          "support_start": 115.3133,
-          "support_end": 90.8259
+          "resistance_start": 106.0769,
+          "resistance_end": 127.1923,
+          "support_start": 98.6187,
+          "support_end": 121.3213
         },
         "quality": 0.85
-      },
-      {
-        "pattern": "Symmetrical Triangle",
-        "direction": "neutral",
-        "start_index": 108,
-        "end_index": 167,
-        "start_date": "2026-01-26",
-        "end_date": "2026-07-01",
-        "levels": {
-          "resistance_start": 131.606,
-          "resistance_end": 108.6462,
-          "support_start": 89.9398,
-          "support_end": 96.7958,
-          "apex_price": 99.5208
-        },
-        "quality": 0.75,
-        "apex_index": 190.44961206946942
       },
       {
         "pattern": "Price Channel (Rising)",
@@ -1597,7 +1565,7 @@
           "support_start": 90.0,
           "support_end": 113.3333
         },
-        "quality": 0.85
+        "quality": 0.9
       }
     ]
   }

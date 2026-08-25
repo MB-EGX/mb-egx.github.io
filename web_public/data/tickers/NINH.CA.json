@@ -5,10 +5,10 @@
   "matrix": {
     "Ticker": "NINH.CA",
     "Sector": "Health Care & Pharmaceuticals",
-    "Long-Term Setup Confirmed": true,
+    "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
       "Higher-low swing structure confirmed",
-      "Price Channel (Rising) match (quality 0.85)"
+      "No bullish pattern match at required quality"
     ],
     "P/E Ratio": 41.18,
     "EPS": 0.5374,
@@ -1883,25 +1883,25 @@
           "support_end": 7.29,
           "apex_price": 7.4536
         },
-        "quality": 0.75,
+        "quality": 1.0,
         "apex_index": 40.26890756302522
       },
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
         "start_index": 111,
-        "end_index": 177,
+        "end_index": 138,
         "start_date": "2026-01-28",
-        "end_date": "2026-05-02",
+        "end_date": "2026-03-06",
         "levels": {
-          "resistance_start": 20.1279,
-          "resistance_end": 11.3643,
-          "support_start": 8.3038,
-          "support_end": 8.7397,
-          "apex_price": 8.8641
+          "resistance_start": 18.5957,
+          "resistance_end": 18.12,
+          "support_start": 7.3,
+          "support_end": 9.6469,
+          "apex_price": 16.692
         },
-        "quality": 0.75,
-        "apex_index": 195.8296663822506
+        "quality": 1.0,
+        "apex_index": 219.04940434477936
       },
       {
         "pattern": "Descending Triangle",
@@ -1918,38 +1918,6 @@
         },
         "quality": 0.77,
         "apex_index": 187.96261682242994
-      },
-      {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 156,
-        "end_index": 203,
-        "start_date": "2026-04-03",
-        "end_date": "2026-06-11",
-        "levels": {
-          "resistance_start": 13.0979,
-          "resistance_end": 20.8471,
-          "support_start": 8.2369,
-          "support_end": 17.1493
-        },
-        "quality": 0.85
-      },
-      {
-        "pattern": "Symmetrical Triangle",
-        "direction": "neutral",
-        "start_index": 217,
-        "end_index": 252,
-        "start_date": "2026-07-04",
-        "end_date": "2026-08-23",
-        "levels": {
-          "resistance_start": 23.4065,
-          "resistance_end": 22.5987,
-          "support_start": 7.9086,
-          "support_end": 18.7336,
-          "apex_price": 22.3303
-        },
-        "quality": 0.75,
-        "apex_index": 263.6290094944829
       }
     ]
   }

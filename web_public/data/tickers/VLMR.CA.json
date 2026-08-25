@@ -1901,49 +1901,19 @@
         "quality": 0.81
       },
       {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 88,
-        "end_index": 173,
-        "start_date": "2025-12-28",
-        "end_date": "2026-04-28",
-        "levels": {
-          "resistance_start": 0.7032,
-          "resistance_end": 0.7282,
-          "support_start": 0.6637,
-          "support_end": 0.6934
-        },
-        "quality": 0.85
-      },
-      {
-        "pattern": "Price Channel (Flat)",
-        "direction": "neutral",
-        "start_index": 117,
-        "end_index": 193,
-        "start_date": "2026-02-06",
-        "end_date": "2026-05-25",
-        "levels": {
-          "resistance_start": 0.7117,
-          "resistance_end": 0.7196,
-          "support_start": 0.6821,
-          "support_end": 0.6757
-        },
-        "quality": 0.85
-      },
-      {
         "pattern": "Price Channel (Falling)",
         "direction": "bearish",
-        "start_index": 154,
+        "start_index": 169,
         "end_index": 231,
-        "start_date": "2026-04-01",
+        "start_date": "2026-04-22",
         "end_date": "2026-07-26",
         "levels": {
-          "resistance_start": 0.7313,
+          "resistance_start": 0.7233,
           "resistance_end": 0.6902,
-          "support_start": 0.6953,
-          "support_end": 0.6456
+          "support_start": 0.6825,
+          "support_end": 0.647
         },
-        "quality": 0.85
+        "quality": 0.76
       },
       {
         "pattern": "Double Top",
@@ -1959,6 +1929,21 @@
           "target": 0.6175
         },
         "quality": 0.76
+      },
+      {
+        "pattern": "Price Channel (Flat)",
+        "direction": "neutral",
+        "start_index": 177,
+        "end_index": 231,
+        "start_date": "2026-05-02",
+        "end_date": "2026-07-26",
+        "levels": {
+          "resistance_start": 0.705,
+          "resistance_end": 0.6982,
+          "support_start": 0.6642,
+          "support_end": 0.65
+        },
+        "quality": 1.0
       }
     ]
   }

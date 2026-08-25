@@ -1685,16 +1685,16 @@
         "pattern": "Price Channel (Rising)",
         "direction": "bullish",
         "start_index": 1,
-        "end_index": 94,
+        "end_index": 68,
         "start_date": "2025-08-25",
-        "end_date": "2026-01-03",
+        "end_date": "2025-11-27",
         "levels": {
-          "resistance_start": 40.451,
-          "resistance_end": 52.1569,
-          "support_start": 37.9001,
-          "support_end": 47.9219
+          "resistance_start": 41.02,
+          "resistance_end": 48.038,
+          "support_start": 37.7014,
+          "support_end": 45.55
         },
-        "quality": 0.85
+        "quality": 0.77
       },
       {
         "pattern": "Double Bottom",
@@ -1725,23 +1725,8 @@
           "support_end": 51.6592,
           "apex_price": 52.0622
         },
-        "quality": 0.75,
+        "quality": 1.0,
         "apex_index": 157.53507937911075
-      },
-      {
-        "pattern": "Price Channel (Flat)",
-        "direction": "neutral",
-        "start_index": 96,
-        "end_index": 177,
-        "start_date": "2026-01-05",
-        "end_date": "2026-05-01",
-        "levels": {
-          "resistance_start": 59.0604,
-          "resistance_end": 59.0172,
-          "support_start": 48.1102,
-          "support_end": 49.5833
-        },
-        "quality": 0.85
       },
       {
         "pattern": "Descending Triangle",
@@ -1787,7 +1772,7 @@
           "support_start": 48.7129,
           "support_end": 57.1362
         },
-        "quality": 0.85
+        "quality": 0.76
       },
       {
         "pattern": "Ascending Triangle",
@@ -1819,23 +1804,8 @@
           "support_end": 60.481,
           "apex_price": 61.0767
         },
-        "quality": 0.75,
+        "quality": 0.88,
         "apex_index": 205.48109908409657
-      },
-      {
-        "pattern": "Price Channel (Falling)",
-        "direction": "bearish",
-        "start_index": 189,
-        "end_index": 209,
-        "start_date": "2026-05-18",
-        "end_date": "2026-06-21",
-        "levels": {
-          "resistance_start": 62.71,
-          "resistance_end": 60.61,
-          "support_start": 59.94,
-          "support_end": 57.4067
-        },
-        "quality": 0.85
       }
     ]
   }

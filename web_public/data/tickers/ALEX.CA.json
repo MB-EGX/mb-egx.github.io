@@ -8,7 +8,7 @@
     "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
       "Higher-low swing structure confirmed",
-      "Price Channel (Rising) match (quality 0.85)",
+      "Double Bottom match (quality 0.78)",
       "Avg volume below 100,000 long-term floor"
     ],
     "P/E Ratio": null,
@@ -1031,36 +1031,21 @@
     },
     "patterns": [
       {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 12,
-        "end_index": 52,
-        "start_date": "2025-10-06",
-        "end_date": "2026-02-16",
-        "levels": {
-          "resistance_start": 21.7055,
-          "resistance_end": 25.3479,
-          "support_start": 11.3198,
-          "support_end": 15.8215
-        },
-        "quality": 0.85
-      },
-      {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 14,
-        "end_index": 58,
-        "start_date": "2025-10-13",
-        "end_date": "2026-03-06",
+        "start_index": 2,
+        "end_index": 21,
+        "start_date": "2025-09-01",
+        "end_date": "2025-11-05",
         "levels": {
-          "resistance_start": 23.1309,
-          "resistance_end": 20.3608,
-          "support_start": 11.7736,
-          "support_end": 16.3835,
-          "apex_price": 18.868
+          "resistance_start": 15.0,
+          "resistance_end": 13.1792,
+          "support_start": 10.1922,
+          "support_end": 12.05,
+          "apex_price": 12.6203
         },
-        "quality": 0.75,
-        "apex_index": 81.71291497636768
+        "quality": 1.0,
+        "apex_index": 26.83213773314204
       },
       {
         "pattern": "Descending Triangle",
@@ -1106,7 +1091,7 @@
           "support_start": 15.5669,
           "support_end": 13.8114
         },
-        "quality": 0.85
+        "quality": 0.83
       }
     ]
   }

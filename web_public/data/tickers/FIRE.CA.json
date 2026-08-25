@@ -8,7 +8,7 @@
     "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
       "No confirmed higher-low swing structure yet",
-      "Price Channel (Rising) match (quality 0.85)"
+      "Price Channel (Rising) match (quality 0.81)"
     ],
     "P/E Ratio": null,
     "EPS": null,
@@ -1870,21 +1870,6 @@
     },
     "patterns": [
       {
-        "pattern": "Price Channel (Falling)",
-        "direction": "bearish",
-        "start_index": 23,
-        "end_index": 116,
-        "start_date": "2025-09-25",
-        "end_date": "2026-02-05",
-        "levels": {
-          "resistance_start": 2.9109,
-          "resistance_end": 2.3358,
-          "support_start": 2.5677,
-          "support_end": 1.9098
-        },
-        "quality": 0.85
-      },
-      {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
         "start_index": 28,
@@ -1898,23 +1883,23 @@
           "support_end": 2.13,
           "apex_price": 2.2763
         },
-        "quality": 0.75,
+        "quality": 1.0,
         "apex_index": 125.61561079925157
       },
       {
         "pattern": "Price Channel (Rising)",
         "direction": "bullish",
-        "start_index": 93,
-        "end_index": 198,
-        "start_date": "2026-01-03",
-        "end_date": "2026-06-05",
+        "start_index": 156,
+        "end_index": 212,
+        "start_date": "2026-04-03",
+        "end_date": "2026-06-25",
         "levels": {
-          "resistance_start": 2.6703,
-          "resistance_end": 3.7634,
-          "support_start": 1.669,
-          "support_end": 2.9521
+          "resistance_start": 2.2741,
+          "resistance_end": 4.7606,
+          "support_start": 1.7684,
+          "support_end": 4.0643
         },
-        "quality": 0.85
+        "quality": 0.81
       },
       {
         "pattern": "Symmetrical Triangle",
@@ -1930,7 +1915,7 @@
           "support_end": 4.3209,
           "apex_price": 4.4355
         },
-        "quality": 0.75,
+        "quality": 1.0,
         "apex_index": 213.5564853556485
       }
     ]

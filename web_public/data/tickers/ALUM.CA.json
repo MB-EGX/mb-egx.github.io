@@ -1886,21 +1886,6 @@
         "apex_index": 29.147086031452332
       },
       {
-        "pattern": "Price Channel (Flat)",
-        "direction": "neutral",
-        "start_index": 2,
-        "end_index": 55,
-        "start_date": "2025-08-26",
-        "end_date": "2025-11-11",
-        "levels": {
-          "resistance_start": 17.6232,
-          "resistance_end": 17.5488,
-          "support_start": 15.8061,
-          "support_end": 15.9402
-        },
-        "quality": 0.85
-      },
-      {
         "pattern": "Ascending Triangle",
         "direction": "bullish",
         "start_index": 55,
@@ -1929,7 +1914,7 @@
           "support_start": 16.2472,
           "support_end": 19.0151
         },
-        "quality": 0.85
+        "quality": 0.89
       },
       {
         "pattern": "Double Top",
@@ -1959,24 +1944,24 @@
           "support_start": 18.58,
           "support_end": 19.0
         },
-        "quality": 0.85
+        "quality": 1.0
       },
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 96,
-        "end_index": 157,
-        "start_date": "2026-01-06",
-        "end_date": "2026-04-05",
+        "start_index": 117,
+        "end_index": 168,
+        "start_date": "2026-02-06",
+        "end_date": "2026-04-21",
         "levels": {
-          "resistance_start": 23.7999,
-          "resistance_end": 22.8113,
-          "support_start": 18.4693,
-          "support_end": 19.2797,
-          "apex_price": 20.8707
+          "resistance_start": 24.6211,
+          "resistance_end": 21.5834,
+          "support_start": 17.8387,
+          "support_end": 20.2362,
+          "apex_price": 20.8305
         },
-        "quality": 0.75,
-        "apex_index": 276.7512575441012
+        "quality": 0.76,
+        "apex_index": 180.64075004853674
       },
       {
         "pattern": "Descending Triangle",
@@ -1995,36 +1980,6 @@
         "apex_index": 166.06239790918005
       },
       {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 157,
-        "end_index": 201,
-        "start_date": "2026-04-05",
-        "end_date": "2026-06-09",
-        "levels": {
-          "resistance_start": 21.8131,
-          "resistance_end": 26.1473,
-          "support_start": 19.128,
-          "support_end": 22.736
-        },
-        "quality": 0.85
-      },
-      {
-        "pattern": "Price Channel (Flat)",
-        "direction": "neutral",
-        "start_index": 186,
-        "end_index": 224,
-        "start_date": "2026-05-14",
-        "end_date": "2026-07-14",
-        "levels": {
-          "resistance_start": 25.5271,
-          "resistance_end": 25.5827,
-          "support_start": 22.3344,
-          "support_end": 21.6573
-        },
-        "quality": 0.85
-      },
-      {
         "pattern": "Inverse Head & Shoulders",
         "direction": "bullish",
         "start_index": 198,
@@ -2039,6 +1994,21 @@
           "target": 30.74
         },
         "quality": 0.89
+      },
+      {
+        "pattern": "Price Channel (Flat)",
+        "direction": "neutral",
+        "start_index": 198,
+        "end_index": 224,
+        "start_date": "2026-06-05",
+        "end_date": "2026-07-14",
+        "levels": {
+          "resistance_start": 25.6088,
+          "resistance_end": 25.5324,
+          "support_start": 22.1206,
+          "support_end": 21.6573
+        },
+        "quality": 0.8
       },
       {
         "pattern": "Double Top",
@@ -2084,22 +2054,7 @@
           "support_start": 20.3028,
           "support_end": 25.1681
         },
-        "quality": 0.85
-      },
-      {
-        "pattern": "Price Channel (Falling)",
-        "direction": "bearish",
-        "start_index": 218,
-        "end_index": 237,
-        "start_date": "2026-07-06",
-        "end_date": "2026-08-02",
-        "levels": {
-          "resistance_start": 25.55,
-          "resistance_end": 22.5273,
-          "support_start": 23.7538,
-          "support_end": 20.29
-        },
-        "quality": 0.85
+        "quality": 0.79
       }
     ]
   }

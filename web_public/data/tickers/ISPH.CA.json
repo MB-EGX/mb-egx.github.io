@@ -1877,51 +1877,21 @@
     },
     "patterns": [
       {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 4,
-        "end_index": 92,
-        "start_date": "2025-08-28",
-        "end_date": "2025-12-31",
-        "levels": {
-          "resistance_start": 11.0902,
-          "resistance_end": 11.8076,
-          "support_start": 10.0822,
-          "support_end": 10.932
-        },
-        "quality": 0.85
-      },
-      {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
         "start_index": 8,
-        "end_index": 83,
+        "end_index": 64,
         "start_date": "2025-09-03",
-        "end_date": "2025-12-18",
+        "end_date": "2025-11-23",
         "levels": {
           "resistance_start": 12.3469,
-          "resistance_end": 11.1055,
-          "support_start": 10.1209,
-          "support_end": 10.8451,
-          "apex_price": 10.9411
+          "resistance_end": 11.42,
+          "support_start": 10.15,
+          "support_end": 10.5614,
+          "apex_price": 10.8254
         },
-        "quality": 0.75,
-        "apex_index": 92.93655264801174
-      },
-      {
-        "pattern": "Price Channel (Flat)",
-        "direction": "neutral",
-        "start_index": 8,
-        "end_index": 103,
-        "start_date": "2025-09-03",
-        "end_date": "2026-01-15",
-        "levels": {
-          "resistance_start": 11.8602,
-          "resistance_end": 11.5527,
-          "support_start": 10.267,
-          "support_end": 10.5888
-        },
-        "quality": 0.85
+        "quality": 1.0,
+        "apex_index": 99.92550058892819
       },
       {
         "pattern": "Descending Triangle",
@@ -1967,20 +1937,20 @@
           "support_start": 12.1513,
           "support_end": 9.7
         },
-        "quality": 0.85
+        "quality": 0.87
       },
       {
         "pattern": "Price Channel (Rising)",
         "direction": "bullish",
-        "start_index": 150,
+        "start_index": 157,
         "end_index": 200,
-        "start_date": "2026-03-25",
+        "start_date": "2026-04-03",
         "end_date": "2026-06-07",
         "levels": {
-          "resistance_start": 10.9453,
-          "resistance_end": 13.0388,
-          "support_start": 9.5965,
-          "support_end": 11.5166
+          "resistance_start": 11.4804,
+          "resistance_end": 12.9577,
+          "support_start": 9.9312,
+          "support_end": 11.49
         },
         "quality": 0.85
       },
@@ -1988,16 +1958,16 @@
         "pattern": "Price Channel (Flat)",
         "direction": "neutral",
         "start_index": 160,
-        "end_index": 219,
+        "end_index": 218,
         "start_date": "2026-04-07",
-        "end_date": "2026-07-06",
+        "end_date": "2026-07-04",
         "levels": {
-          "resistance_start": 12.7684,
-          "resistance_end": 12.6801,
+          "resistance_start": 12.7991,
+          "resistance_end": 12.6409,
           "support_start": 10.3854,
-          "support_end": 10.4665
+          "support_end": 10.4652
         },
-        "quality": 0.85
+        "quality": 0.76
       },
       {
         "pattern": "Inverse Head & Shoulders",
@@ -2049,32 +2019,17 @@
       {
         "pattern": "Price Channel (Rising)",
         "direction": "bullish",
-        "start_index": 218,
+        "start_index": 231,
         "end_index": 251,
-        "start_date": "2026-07-04",
+        "start_date": "2026-07-22",
         "end_date": "2026-08-19",
         "levels": {
-          "resistance_start": 11.9717,
-          "resistance_end": 14.492,
-          "support_start": 10.1564,
-          "support_end": 12.3534
+          "resistance_start": 11.73,
+          "resistance_end": 16.0685,
+          "support_start": 8.2727,
+          "support_end": 13.0
         },
-        "quality": 0.85
-      },
-      {
-        "pattern": "Price Channel (Falling)",
-        "direction": "bearish",
-        "start_index": 219,
-        "end_index": 240,
-        "start_date": "2026-07-06",
-        "end_date": "2026-08-04",
-        "levels": {
-          "resistance_start": 12.69,
-          "resistance_end": 11.01,
-          "support_start": 11.87,
-          "support_end": 10.4
-        },
-        "quality": 0.85
+        "quality": 0.82
       }
     ]
   }

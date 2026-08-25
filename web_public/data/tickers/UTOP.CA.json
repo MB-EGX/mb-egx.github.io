@@ -8,7 +8,7 @@
     "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
       "Higher-low swing structure confirmed",
-      "Price Channel (Rising) match (quality 0.85)",
+      "No bullish pattern match at required quality",
       "Avg volume below 100,000 long-term floor"
     ],
     "P/E Ratio": null,
@@ -1883,7 +1883,7 @@
           "support_start": 94.9027,
           "support_end": 71.7751
         },
-        "quality": 0.85
+        "quality": 0.76
       },
       {
         "pattern": "Descending Triangle",
@@ -1915,23 +1915,8 @@
           "support_end": 81.6418,
           "apex_price": 83.8778
         },
-        "quality": 0.75,
+        "quality": 1.0,
         "apex_index": 227.0179537914939
-      },
-      {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 224,
-        "end_index": 251,
-        "start_date": "2026-07-14",
-        "end_date": "2026-08-20",
-        "levels": {
-          "resistance_start": 85.08,
-          "resistance_end": 212.8479,
-          "support_start": -40.0143,
-          "support_end": 111.88
-        },
-        "quality": 0.85
       }
     ]
   }

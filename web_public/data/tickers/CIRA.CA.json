@@ -5,10 +5,10 @@
   "matrix": {
     "Ticker": "CIRA.CA",
     "Sector": "Education Services",
-    "Long-Term Setup Confirmed": true,
+    "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
       "Higher-low swing structure confirmed",
-      "Price Channel (Rising) match (quality 0.85)"
+      "No bullish pattern match at required quality"
     ],
     "P/E Ratio": 22.08,
     "EPS": 1.6302,
@@ -370,22 +370,6 @@
       "s2": 34.91,
       "s3": 33.32
     },
-    "patterns": [
-      {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 1,
-        "end_index": 30,
-        "start_date": "2026-06-28",
-        "end_date": "2026-08-11",
-        "levels": {
-          "resistance_start": 28.975,
-          "resistance_end": 38.98,
-          "support_start": 27.64,
-          "support_end": 35.5815
-        },
-        "quality": 0.85
-      }
-    ]
+    "patterns": []
   }
 }

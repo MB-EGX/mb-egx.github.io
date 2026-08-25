@@ -5,10 +5,10 @@
   "matrix": {
     "Ticker": "AIDC.CA",
     "Sector": "Non-Bank Financial Services",
-    "Long-Term Setup Confirmed": true,
+    "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
       "Higher-low swing structure confirmed",
-      "Price Channel (Rising) match (quality 0.85)"
+      "No bullish pattern match at required quality"
     ],
     "P/E Ratio": null,
     "EPS": null,
@@ -1851,34 +1851,19 @@
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 73,
-        "end_index": 177,
-        "start_date": "2025-12-07",
-        "end_date": "2026-05-02",
+        "start_index": 111,
+        "end_index": 160,
+        "start_date": "2026-01-28",
+        "end_date": "2026-04-08",
         "levels": {
-          "resistance_start": 0.5537,
-          "resistance_end": 0.5255,
-          "support_start": 0.3492,
-          "support_end": 0.4242,
-          "apex_price": 0.4979
+          "resistance_start": 0.8386,
+          "resistance_end": 0.46,
+          "support_start": 0.37,
+          "support_end": 0.4353,
+          "apex_price": 0.439
         },
-        "quality": 0.75,
-        "apex_index": 279.061428436348
-      },
-      {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 73,
-        "end_index": 205,
-        "start_date": "2025-12-07",
-        "end_date": "2026-06-15",
-        "levels": {
-          "resistance_start": 0.5167,
-          "resistance_end": 0.6251,
-          "support_start": 0.3492,
-          "support_end": 0.4444
-        },
-        "quality": 0.85
+        "quality": 1.0,
+        "apex_index": 162.72240802675586
       }
     ]
   }

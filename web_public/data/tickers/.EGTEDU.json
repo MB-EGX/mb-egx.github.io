@@ -1662,7 +1662,7 @@
           "support_start": 4415.535,
           "support_end": 4291.91
         },
-        "quality": 0.85
+        "quality": 1.0
       },
       {
         "pattern": "Price Channel (Rising)",
@@ -1677,22 +1677,7 @@
           "support_start": 4291.91,
           "support_end": 4696.7506
         },
-        "quality": 0.85
-      },
-      {
-        "pattern": "Price Channel (Flat)",
-        "direction": "neutral",
-        "start_index": 108,
-        "end_index": 168,
-        "start_date": "2026-01-20",
-        "end_date": "2026-04-16",
-        "levels": {
-          "resistance_start": 4811.1251,
-          "resistance_end": 4867.0049,
-          "support_start": 4572.2499,
-          "support_end": 4438.8384
-        },
-        "quality": 0.85
+        "quality": 0.88
       },
       {
         "pattern": "Double Top",
@@ -1708,6 +1693,21 @@
           "target": 3981.695
         },
         "quality": 0.81
+      },
+      {
+        "pattern": "Price Channel (Flat)",
+        "direction": "neutral",
+        "start_index": 120,
+        "end_index": 159,
+        "start_date": "2026-02-06",
+        "end_date": "2026-04-03",
+        "levels": {
+          "resistance_start": 4926.24,
+          "resistance_end": 4873.9614,
+          "support_start": 4417.1909,
+          "support_end": 4489.68
+        },
+        "quality": 1.0
       },
       {
         "pattern": "Cup & Handle",
@@ -1777,17 +1777,17 @@
       {
         "pattern": "Price Channel (Flat)",
         "direction": "neutral",
-        "start_index": 179,
-        "end_index": 218,
-        "start_date": "2026-05-01",
-        "end_date": "2026-08-01",
+        "start_index": 194,
+        "end_index": 217,
+        "start_date": "2026-05-21",
+        "end_date": "2026-07-06",
         "levels": {
-          "resistance_start": 4934.0398,
-          "resistance_end": 4891.5426,
-          "support_start": 4479.8761,
-          "support_end": 4553.1699
+          "resistance_start": 4934.4189,
+          "resistance_end": 4887.39,
+          "support_start": 4703.75,
+          "support_end": 4792.6642
         },
-        "quality": 0.85
+        "quality": 1.0
       }
     ]
   }

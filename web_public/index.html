@@ -3708,9 +3708,14 @@
             const startingCapital = sanitizeNumber(document.getElementById('input-cash-starting').value, null);
             if (startingCapital == null || startingCapital < 0) { alert(tt("alert_starting_capital_required")); return; }
 
-            const openCost = userPortfolio.reduce((sum, p) => sum + (p.buyPrice * p.shares), 0);
-            const closedCost = userHistory.reduce((sum, h) => sum + (h.buyPrice * h.shares), 0);
-            const closedProceeds = userHistory.reduce((sum, h) => sum + (h.sellPrice * h.shares), 0);
+            // Fee-inclusive, mirroring db_manager.recalculate_cash_from_history()'s
+            // own fix: a real buy/sell always pays the 0.35%-per-side EGX
+            // brokerage fee (TRANSACTION_FEE_PCT), so rebuilding cash from
+            // raw price*shares alone (no fee) would reintroduce the exact
+            // drift this recalculation exists to fix.
+            const openCost = userPortfolio.reduce((sum, p) => sum + (p.buyPrice * p.shares * (1 + TRANSACTION_FEE_PCT)), 0);
+            const closedCost = userHistory.reduce((sum, h) => sum + (h.buyPrice * h.shares * (1 + TRANSACTION_FEE_PCT)), 0);
+            const closedProceeds = userHistory.reduce((sum, h) => sum + (h.sellPrice * h.shares * (1 - TRANSACTION_FEE_PCT)), 0);
 
             userCash = startingCapital - openCost - closedCost + closedProceeds;
             if (userCash > 1e12) { alert(tt("alert_cash_limit")); return; }
@@ -3738,18 +3743,23 @@
                 const total = existing.shares + shares;
                 existing.buyPrice = ((existing.shares * existing.buyPrice) + (shares * price)) / total;
                 existing.shares = total;
-                // Cash flow: scaling in spends cash - this was missing before,
-                // which is why the balance never moved after a buy (sells
-                // already credited cash back below in sellPosition).
-                userCash -= (price * shares);
+                // Cash flow: scaling in spends cash AND pays the real EGX
+                // brokerage fee - mirrors paperBuy()'s own fee-inclusive
+                // debit below and db_manager.add_owned_stock()'s desktop-app
+                // fix, so this real-money ledger and the paper simulator
+                // agree on what a buy actually costs. Cost basis (buyPrice)
+                // stays the raw fill price - only the cash outflow includes
+                // the fee.
+                userCash -= (price * shares * (1 + TRANSACTION_FEE_PCT));
             } else if (existing && mode === 'overwrite') {
                 // Data-entry correction, not a real trade - deliberately does
                 // NOT touch cash, same as the desktop app's OVERWRITE mode.
                 existing.buyPrice = price; existing.shares = shares;
             } else {
                 userPortfolio.push({ ticker, buyPrice: price, shares, date: new Date().toISOString().split('T')[0] });
-                // Cash flow: opening a fresh position spends cash too.
-                userCash -= (price * shares);
+                // Cash flow: opening a fresh position spends cash and pays
+                // the fee too - see reasoning above.
+                userCash -= (price * shares * (1 + TRANSACTION_FEE_PCT));
             }
             localStorage.setItem('quant_portfolio', JSON.stringify(userPortfolio));
             syncUserData();
@@ -3764,13 +3774,24 @@
                 const found = globalData.market_matrix.find(m => m.Ticker === ticker);
                 if (found) cp = found["Current Price"];
             }
-            const pnl = (cp - pos.buyPrice) * pos.shares;
-            const pnlPct = ((cp - pos.buyPrice) / pos.buyPrice) * 100;
+            // Net of round-trip brokerage fees (both sides) - mirrors
+            // db_manager.record_sale()'s own fix and paperSell()'s
+            // fee-inclusive P&L below, and matches every projection
+            // elsewhere in the app that already treats the round-trip fee
+            // as a real cost. A gross (cp-buyPrice)*shares figure would
+            // overstate every closed trade's true profitability by ~0.7%
+            // round-trip.
+            const netSellPrice = cp * (1 - TRANSACTION_FEE_PCT);
+            const netBuyCost = pos.buyPrice * (1 + TRANSACTION_FEE_PCT);
+            const pnl = (netSellPrice - netBuyCost) * pos.shares;
+            const pnlPct = netBuyCost > 0 ? ((netSellPrice - netBuyCost) / netBuyCost) * 100 : 0;
             userHistory.unshift({
                 ticker: pos.ticker, shares: pos.shares, buyPrice: pos.buyPrice, sellPrice: cp,
                 realizedPnl: pnl, pnlPct: pnlPct, buyDate: pos.date, sellDate: new Date().toISOString().split('T')[0]
             });
-            userPortfolio.splice(idx, 1); userCash += (cp * pos.shares);
+            // Cash flow: a sale returns cash net of the exit brokerage fee -
+            // see reasoning above.
+            userPortfolio.splice(idx, 1); userCash += (cp * pos.shares * (1 - TRANSACTION_FEE_PCT));
             syncUserData();
             renderPortfolio(); renderHistory(); renderAccountBar();
         }
@@ -3841,8 +3862,15 @@
             price = sanitizeNumber(price) || getCurrentPrice(ticker) || pos.buyPrice;
             const fee = price * shares * TRANSACTION_FEE_PCT;
             const proceeds = price * shares - fee;
-            const pnl = (price - pos.buyPrice) * shares - fee;
-            const pnlPct = pos.buyPrice > 0 ? ((price - pos.buyPrice) / pos.buyPrice) * 100 : 0;
+            // pnl/pnlPct net BOTH sides' fee, not just this sale's exit fee -
+            // the entry fee already reduced paperCash back in paperBuy() but
+            // was never reflected in the displayed per-trade P&L, which
+            // understated the true round-trip cost and disagreed with the
+            // real-portfolio convention in sellPosition() above.
+            const buyFee = pos.buyPrice * shares * TRANSACTION_FEE_PCT;
+            const netBuyCost = pos.buyPrice * (1 + TRANSACTION_FEE_PCT);
+            const pnl = (price - pos.buyPrice) * shares - fee - buyFee;
+            const pnlPct = netBuyCost > 0 ? (((price * (1 - TRANSACTION_FEE_PCT)) - netBuyCost) / netBuyCost) * 100 : 0;
             if (shares >= openShares - 1e-6) {
                 paperPortfolio.splice(idx, 1);
             } else {

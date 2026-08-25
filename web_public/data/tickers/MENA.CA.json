@@ -5,10 +5,10 @@
   "matrix": {
     "Ticker": "MENA.CA",
     "Sector": "Real Estate",
-    "Long-Term Setup Confirmed": true,
+    "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
       "Higher-low swing structure confirmed",
-      "Price Channel (Rising) match (quality 0.85)"
+      "No bullish pattern match at required quality"
     ],
     "P/E Ratio": -1555.56,
     "EPS": -0.0045,
@@ -1870,21 +1870,6 @@
     },
     "patterns": [
       {
-        "pattern": "Price Channel (Falling)",
-        "direction": "bearish",
-        "start_index": 5,
-        "end_index": 24,
-        "start_date": "2025-08-31",
-        "end_date": "2025-09-28",
-        "levels": {
-          "resistance_start": 4.9271,
-          "resistance_end": 4.67,
-          "support_start": 4.58,
-          "support_end": 4.3629
-        },
-        "quality": 0.85
-      },
-      {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
         "start_index": 7,
@@ -1898,38 +1883,8 @@
           "support_end": 4.56,
           "apex_price": 4.5608
         },
-        "quality": 0.75,
+        "quality": 1.0,
         "apex_index": 32.072625698323996
-      },
-      {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 7,
-        "end_index": 73,
-        "start_date": "2025-09-02",
-        "end_date": "2025-12-07",
-        "levels": {
-          "resistance_start": 4.8734,
-          "resistance_end": 5.1764,
-          "support_start": 4.4073,
-          "support_end": 4.6794
-        },
-        "quality": 0.85
-      },
-      {
-        "pattern": "Price Channel (Falling)",
-        "direction": "bearish",
-        "start_index": 69,
-        "end_index": 113,
-        "start_date": "2025-12-01",
-        "end_date": "2026-02-02",
-        "levels": {
-          "resistance_start": 5.0643,
-          "resistance_end": 4.6871,
-          "support_start": 4.5486,
-          "support_end": 4.2084
-        },
-        "quality": 0.85
       },
       {
         "pattern": "Symmetrical Triangle",
@@ -1945,40 +1900,25 @@
           "support_end": 4.33,
           "apex_price": 4.5177
         },
-        "quality": 0.75,
+        "quality": 1.0,
         "apex_index": 132.7628458498024
       },
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 117,
-        "end_index": 195,
-        "start_date": "2026-02-06",
-        "end_date": "2026-06-02",
+        "start_index": 133,
+        "end_index": 177,
+        "start_date": "2026-03-01",
+        "end_date": "2026-05-02",
         "levels": {
-          "resistance_start": 7.0477,
-          "resistance_end": 6.7803,
-          "support_start": 4.038,
-          "support_end": 4.5711,
-          "apex_price": 6.0424
+          "resistance_start": 7.2224,
+          "resistance_end": 5.7052,
+          "support_start": 4.1474,
+          "support_end": 4.4481,
+          "apex_price": 4.656
         },
-        "quality": 0.75,
-        "apex_index": 410.28927944147654
-      },
-      {
-        "pattern": "Price Channel (Rising)",
-        "direction": "bullish",
-        "start_index": 156,
-        "end_index": 217,
-        "start_date": "2026-04-03",
-        "end_date": "2026-07-04",
-        "levels": {
-          "resistance_start": 5.9046,
-          "resistance_end": 7.4122,
-          "support_start": 4.3298,
-          "support_end": 5.5404
-        },
-        "quality": 0.85
+        "quality": 1.0,
+        "apex_index": 207.42579711310358
       },
       {
         "pattern": "Price Channel (Falling)",
@@ -1993,7 +1933,7 @@
           "support_start": 5.9442,
           "support_end": 5.18
         },
-        "quality": 0.85
+        "quality": 0.98
       }
     ]
   }
