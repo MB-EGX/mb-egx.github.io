@@ -705,6 +705,31 @@ class DecisionMatrix:
         # volume (and the indicator recompute cost) substantially without
         # changing any signal.
         market_data_bulk = self.qe.get_all_market_data_bulk(days=MATRIX_LOOKBACK_DAYS)
+
+        # Single source of truth for "what session is this run FOR" - the
+        # same value the dashboard's "Last Data Date" badge and every
+        # freshness.py-gated publish channel already treat as THE session
+        # date (db_manager.get_latest_market_date() = MAX(date) across
+        # market_data). Computed ONCE here and threaded through the rest of
+        # this method instead of being re-queried later (previously called
+        # again at two separate points below) - both for efficiency and so
+        # every staleness comparison in this run agrees on the same "today".
+        #
+        # ROOT-CAUSE FIX (per-ticker staleness): MAX(date) is a GLOBAL
+        # value - it only tells you the freshest bar of ANY ticker, not
+        # that a GIVEN ticker actually has a bar for that date. A ticker
+        # whose own feed stopped updating days/weeks ago (delisted,
+        # suspended, thin/no source data) still has old bars sitting in
+        # market_data, and every place below that blindly read
+        # df_ind.iloc[-1]/iloc[-2] as "today vs yesterday" had no way to
+        # tell the difference - a stale ticker's last real (multi-session)
+        # move got silently mislabeled as today's 1-day return, action, and
+        # score. `session_date_str` is what lets the per-ticker loop below
+        # tell "this ticker actually traded in the session this run is
+        # FOR" apart from "this ticker's last bar happens to be old, but
+        # nothing here checked."
+        session_date_str = self.dbm.get_latest_market_date()
+
         # Exclude EGX30/EGX70/... benchmark-index feeds from the
         # tradeable/scored universe (see config.BENCHMARK_TICKERS) - an
         # index LEVEL is not something you place a buy/sell order on the
@@ -838,7 +863,7 @@ class DecisionMatrix:
                 "warnings": [],
             }
             session_picks = refresh_session_picks(
-                self.dbm, buy_recommendations, {}, [], self.dbm.get_latest_market_date(),
+                self.dbm, buy_recommendations, {}, [], session_date_str,
                 bench_close_by_date=primary_bench_close_by_date,
                 benchmark_label=benchmark_label(PRIMARY_BENCHMARK_TICKER),
             )
@@ -906,6 +931,14 @@ class DecisionMatrix:
             df_ind_pre, _ = precomputed.get(ticker, (pd.DataFrame(), None))
             if df_ind_pre.empty or len(df_ind_pre) < 6:
                 continue
+            # Skip tickers with no bar for this session (see session_date_str
+            # note above) - a stale ticker's own last "5-day" move is really
+            # however many calendar days it's been since it last traded, and
+            # letting it into a sector's average return would quietly drag
+            # every OTHER (genuinely fresh) ticker's relative-strength
+            # comparison off a number that doesn't describe this session.
+            if str(df_ind_pre.index[-1])[:10] != session_date_str:
+                continue
             try:
                 c_now = df_ind_pre["close"].iloc[-1]
                 c_5d_ago = df_ind_pre["close"].iloc[-6]
@@ -932,6 +965,25 @@ class DecisionMatrix:
             if df_ind.empty and not is_owned:
                 continue
             processed_tickers_dict[norm_ticker] = df_ind
+
+            # Per-ticker staleness (see session_date_str note above): does
+            # this ticker actually have a bar for the session this run is
+            # FOR, or is its last bar older (suspended/delisted/no fresh
+            # feed)? "N/A"/None session_date_str (empty database) never
+            # counts as stale - nothing to compare against yet.
+            ticker_last_bar_date = str(df_ind.index[-1])[:10] if not df_ind.empty else None
+            is_stale = bool(
+                ticker_last_bar_date
+                and session_date_str
+                and session_date_str != "N/A"
+                and ticker_last_bar_date != session_date_str
+            )
+            days_stale = None
+            if is_stale:
+                try:
+                    days_stale = (date.fromisoformat(session_date_str) - date.fromisoformat(ticker_last_bar_date)).days
+                except ValueError:
+                    days_stale = None
 
             try:
                 if is_owned:
@@ -1025,9 +1077,21 @@ class DecisionMatrix:
                         df_ind, p_date, buy_price, curr_price, trailing_stop,
                         pnl_egp, pnl_pct, invested_val, curr_val,
                     )
+                    # Portfolio valuation still marks-to-last-trade for a
+                    # held position (there is nothing fresher to value it
+                    # at) - that convention is unchanged. But silently
+                    # showing an exit action as if it were computed from
+                    # today's session, with no indication the name has gone
+                    # quiet, hid exactly the situation an owner most needs
+                    # to notice. Surface it plainly instead of overriding
+                    # the exit logic itself.
+                    if is_stale:
+                        action_cmd = f"⏸️ [STALE {days_stale}d] {action_cmd}"
                     exit_strategies.append(
                         {
                             "Ticker": norm_ticker,
+                            "Last Bar Date": ticker_last_bar_date,
+                            "Days Stale": days_stale if is_stale else 0,
                             "Shares": round(shares, 4),
                             "Buy Price": round(buy_price, 4),
                             "Current Price": round(curr_price, 4),
@@ -1328,7 +1392,7 @@ class DecisionMatrix:
                 # take the watchlist entry down with it.
                 # -------------------------------------------------------------
                 try:
-                    if is_liquid and n_bars >= 20:
+                    if is_liquid and n_bars >= 20 and not is_stale:
                         bw_score = 0.0
                         bw_reasons = []
                         at = ACTION_THRESHOLDS
@@ -1762,6 +1826,30 @@ class DecisionMatrix:
                 )
                 signal_reason = _build_signal_reason(action_cmd, trend_latest, confirmed, weekly_aligned, is_squeezed, cmf, vol_ratio)
 
+                # ROOT-CAUSE FIX: a stale (non-owned) candidate's entire
+                # classification above was computed from its last real bar,
+                # which is NOT this session's data - "curr_price"/"gap_pct"/
+                # RSI/ADX/etc. all silently describe some earlier date, not
+                # today. Overriding here (rather than skipping the ticker
+                # outright) keeps it visible in the Action Matrix - a
+                # trader still needs to see "this name went quiet" - while
+                # guaranteeing it can NEVER read as a live STRONG BUY /
+                # BREAKOUT BUY / ACCUMULATE / BUY ON DIP, and forcing its
+                # score to the floor so it can never surface in Top-10 or
+                # get picked as a Session Pick (both of those filters key
+                # off the Action string and Rank Score - see the BUGFIX
+                # comments elsewhere in this file for why that matching
+                # discipline matters).
+                if is_stale and not is_owned:
+                    action_cmd = (
+                        f"⏸️ STALE - NO NEW DATA ({days_stale}d, last: {ticker_last_bar_date})"
+                    )
+                    signal_reason = (
+                        f"{action_cmd} - no bar for this session; the figures on this row "
+                        f"reflect {ticker_last_bar_date}, not today"
+                    )
+                    score = 0.0
+
                 # Long-term Session Picks quality gate (see config.
                 # LONG_TERM_SETUP / MIN_AVG_VOLUME_LONG_TERM): computed for
                 # every ticker (cheap - reuses the geometric detector already
@@ -1817,6 +1905,8 @@ class DecisionMatrix:
                 buy_recommendations.append(
                     {
                         "Ticker": norm_ticker,
+                        "Last Bar Date": ticker_last_bar_date,
+                        "Days Stale": days_stale if is_stale else 0,
                         "Sector": sector_map.get(norm_ticker, sector_map.get(ticker, "General / Diversified")),
                         "Long-Term Setup Confirmed": long_term_confirmed_final,
                         "Long-Term Setup Reasons": long_term_reasons_final,
@@ -1974,7 +2064,7 @@ class DecisionMatrix:
             "Cash Drag (%)": portfolio_risk["cash_drag_pct"],
         }
 
-        sector_summary = self.qe.compute_sector_analytics(processed_tickers_dict, sector_map)
+        sector_summary = self.qe.compute_sector_analytics(processed_tickers_dict, sector_map, session_date_str=session_date_str)
 
         # Confirmed/High-Confidence entries (score >= breakout_watch_min_score)
         # are the primary list, capped at breakout_watch_max_results as
@@ -1994,7 +2084,7 @@ class DecisionMatrix:
         )[: ACTION_THRESHOLDS["breakout_watch_fallback_top_n"]]
         breakout_watchlist = confirmed_bw + watching_bw
 
-        session_date = self.dbm.get_latest_market_date()
+        session_date = session_date_str  # same value computed once at the top of this method
 
         # Persist today's Breakout Score for every watchlist entry so its
         # actual predictive power can eventually be checked against real

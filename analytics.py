@@ -548,7 +548,7 @@ class QuantitativeEngine:
     # Sector roll-up
     # -------------------------------------------------------------------------
     def compute_sector_analytics(
-        self, processed_tickers_data: dict, sector_map: dict
+        self, processed_tickers_data: dict, sector_map: dict, session_date_str: str | None = None
     ) -> list:
         from config import ACTION_THRESHOLDS  # local import to avoid cycles at module load
 
@@ -556,6 +556,20 @@ class QuantitativeEngine:
 
         for norm_ticker, df in processed_tickers_data.items():
             if df.empty or len(df) < 5:
+                continue
+
+            # ROOT-CAUSE FIX: a ticker whose feed stopped updating days/
+            # weeks ago still sits in processed_tickers_data with old bars.
+            # df.iloc[-1]/iloc[-2] below don't know that - without this
+            # check, a stale ticker's real (multi-session) move gets
+            # counted as this sector's "1D Return", can crown it "Sector
+            # Leader", and drags the sector's breadth/CMF average off a
+            # number that has nothing to do with this session. Skipped
+            # entirely from the sector's stats (not just zeroed) so it
+            # can't quietly pull the average toward itself either.
+            # session_date_str is optional (None = old caller, no
+            # filtering) so this stays backward compatible.
+            if session_date_str and session_date_str != "N/A" and str(df.index[-1])[:10] != session_date_str:
                 continue
 
             raw_ticker = norm_ticker.replace(".CA", "").strip().upper()

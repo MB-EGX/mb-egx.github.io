@@ -387,6 +387,8 @@ def compute_market_overview(market_data: dict) -> dict:
 
     stocks = market_data.get("chart_history", {}).get("stocks", {})
 
+    last_data_date = market_data.get("last_data_date")
+
     movers = []
 
     for ticker, hist in stocks.items():
@@ -394,6 +396,22 @@ def compute_market_overview(market_data: dict) -> dict:
         closes = [c for c in hist.get("close", []) if c is not None]
 
         if len(closes) < 2 or not closes[-2]:
+
+            continue
+
+        # ROOT-CAUSE FIX: a ticker whose feed stopped updating (delisted,
+        # suspended, no fresh data for days/weeks) still has its last two
+        # real bars sitting here - closes[-1]/closes[-2] on their own don't
+        # know those two bars might be from three weeks ago, not "today
+        # vs yesterday". Left unchecked, that stale multi-session move
+        # gets posted as today's return and can even win "Top Gainer" -
+        # exactly what happened with a stock whose last trade was weeks
+        # before this ran. Only a ticker whose own last bar date matches
+        # today's published session date is a genuine 1-day return.
+
+        dates = hist.get("dates", [])
+
+        if not dates or not last_data_date or str(dates[-1])[:10] != str(last_data_date)[:10]:
 
             continue
 
@@ -709,10 +727,18 @@ def compute_weekly_overview(market_data: dict, top_n: int = 3) -> dict:
     compute_market_overview's tracked-stocks average, which explicitly
     is NOT the official index."""
     stocks = market_data.get("chart_history", {}).get("stocks", {})
+    last_data_date = market_data.get("last_data_date")
     movers = []
     for ticker, hist in stocks.items():
         closes = [c for c in hist.get("close", []) if c is not None]
         if len(closes) < 6 or not closes[-6]:
+            continue
+        # Same staleness guard as compute_market_overview above: a ticker
+        # whose last bar predates this week's session isn't giving a real
+        # "5-day return" for the week just closed - it's an older, longer
+        # move mislabeled as this week's.
+        dates = hist.get("dates", [])
+        if not dates or not last_data_date or str(dates[-1])[:10] != str(last_data_date)[:10]:
             continue
         ret_5d = (closes[-1] / closes[-6] - 1) * 100
         movers.append({"ticker": ticker, "ret_5d": ret_5d})
@@ -918,6 +944,8 @@ def pick_chart_tile_tickers(market_data: dict, limit: int = 30) -> list[str]:
 
     stocks = market_data.get("chart_history", {}).get("stocks", {})
 
+    last_data_date = market_data.get("last_data_date")
+
     ranked = []
 
     for ticker, hist in stocks.items():
@@ -925,6 +953,17 @@ def pick_chart_tile_tickers(market_data: dict, limit: int = 30) -> list[str]:
         closes = [c for c in hist.get("close", []) if c is not None]
 
         if len(closes) < 2 or not closes[-2]:
+
+            continue
+
+        # Same staleness guard as compute_market_overview: without it, a
+        # ticker that's gone quiet for weeks can rank #1 by |1D return|
+        # (its last real, multi-session move looks huge) and win a tile
+        # slot with a headline return that isn't from today at all.
+
+        dates = hist.get("dates", [])
+
+        if not dates or not last_data_date or str(dates[-1])[:10] != str(last_data_date)[:10]:
 
             continue
 
