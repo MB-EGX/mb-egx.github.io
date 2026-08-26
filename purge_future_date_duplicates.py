@@ -113,7 +113,7 @@ def main():
     # bulk-delete.
     from collections import Counter
     pair_counts = Counter((bad_date.isoformat(), swapped.isoformat()) for _, bad_date, _, swapped, _ in collisions)
-    print(f"Grouped by (corrupted date -> real date that already exists):")
+    print("Grouped by (corrupted date -> real date that already exists):")
     for (bad_iso, real_iso), count in sorted(pair_counts.items(), key=lambda kv: -kv[1]):
         print(f"  {bad_iso}  ->  {real_iso}   ({count} ticker(s))")
     if len(pair_counts) == 1:
@@ -136,7 +136,7 @@ def main():
             print(f"  {ticker:<14}{str(bad_close):<14}{str(real_close):<14}")
 
     if not args.fix:
-        print(f"\nThis was a DRY RUN - nothing was deleted.")
+        print("\nThis was a DRY RUN - nothing was deleted.")
         print("  Check the sample above: 'Bad close' and 'Real close' should be close/identical")
         print("  (same session, duplicated) - that's the sign this is safe to delete.")
         print("  If it looks right, re-run with --fix to delete all the duplicate rows.")

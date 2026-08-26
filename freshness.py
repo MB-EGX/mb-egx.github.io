@@ -102,6 +102,14 @@ def assert_fresh(path: str | None = None, target: str | None = None,
     fresh, last, today = is_fresh(path, target)
     if fresh:
         return last  # guaranteed == target
+    if os.environ.get("MBEGX_FRESHNESS_MODE", "").upper() == "PERMISSIVE":
+        # Opt-in escape hatch for local/dev runs: warn loudly but do not
+        # hard-fail, so a repo that is mid-publish never blocks every channel.
+        if last is None:
+            print(f"WARN [{channel}] PERMISSIVE freshness: market_data.json missing; proceeding.")
+        else:
+            print(f"WARN [{channel}] PERMISSIVE freshness: data is for {last}, target {today}; proceeding.")
+        return last or today
     if last is None:
         raise SystemExit(
             f"[{channel}] market_data.json is missing or unreadable at "

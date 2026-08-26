@@ -8,7 +8,7 @@ web_public/data/market_data.json. Prints the due list per scenario so
 you can see exactly what the daily-instagram-post.yml workflow would
 post in each case.
 """
-import json, os, sys, importlib
+import json, os, importlib
 from datetime import datetime
 from zoneinfo import ZoneInfo
 

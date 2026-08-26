@@ -19,7 +19,6 @@ import glob
 import json
 import os
 import subprocess
-import sys
 from datetime import date, datetime
 from pathlib import Path
 

@@ -54,7 +54,6 @@ from config import (
     KELLY_FRACTION,
     KELLY_CAP_FRACTION,
     DEFAULT_WIN_RATE_PRIOR,
-    MIN_BACKTEST_TRADES_FOR_LIVE_WIN_RATE,
     get_logger,
 )
 
@@ -1205,7 +1204,6 @@ class DecisionMatrix:
                 # see analytics.compute_support_resistance's own docstring for
                 # why this is a different, more accurate concept than range_high.
                 nearest_resistance = (sr["resistance"]["level"] if sr and sr.get("resistance") else range_high)
-                nearest_support = (sr["support"]["level"] if sr and sr.get("support") else range_low)
                 if macd_hist > 0 and prev_macd_hist <= 0:
                     macd_state = "🟢 Bullish Cross"
                 elif macd_hist < 0 and prev_macd_hist >= 0:

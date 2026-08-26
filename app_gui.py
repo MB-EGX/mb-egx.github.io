@@ -30,7 +30,7 @@ from PyQt6.QtWidgets import (
     QFileDialog, QFormLayout, QHBoxLayout, QHeaderView, QInputDialog, QLabel,
     QLineEdit, QMainWindow, QMessageBox, QProgressBar, QPushButton, QScrollArea,
     QTableWidget, QTableWidgetItem, QTableView, QTabWidget, QVBoxLayout, QWidget,
-    QCheckBox, QTextEdit, QSizePolicy, QRadioButton, QFrame, QTextBrowser,
+    QCheckBox, QTextEdit, QSizePolicy, QFrame, QTextBrowser,
     QSystemTrayIcon
 )
 
@@ -1231,7 +1231,7 @@ class MatrixTableModel(QAbstractTableModel):
         self._columns   = [(t, tip) for (t, tip, _k) in self._ACTION_MATRIX_SCHEMA]
         self._col_keys  = [_k for (_t, _tip, _k) in self._ACTION_MATRIX_SCHEMA]
         assert len(self._columns) == len(self._col_keys) == 28, (
-            f"ACTION_MATRIX_SCHEMA projection mismatch"
+            "ACTION_MATRIX_SCHEMA projection mismatch"
         )
 
 
@@ -3102,34 +3102,7 @@ class PaperTradingDialog(QDialog):
         self.btn_refresh = QPushButton(tr("🔄 Refresh"))
         self.btn_buy.clicked.connect(self._paper_buy)
 
-    # ------------------------------------------------------------------
-    # SAFE PAPER-BUY WRAPPER
-    # ------------------------------------------------------------------
-    # Old revisions of db_manager named this method "add_owned_stock"; newer
-    # ones renamed it to "paper_buy" / "paper_place_buy" / "add_paper_position"
-    # during the post-refactor cleanup. This wrapper tries the canonical name
-    # first, then every historical alias, and returns a friendly error if the
-    # underlying object has none of them — instead of AttributeError crashing
-    # the GUI mid-click. Keeps the call site a one-liner.
-    def _safe_paper_buy(self, ticker, price, shares, note):
-        if not self.dbm:
-            return False, "DatabaseManager not initialised."
-        for _name in ("paper_buy", "paper_place_buy", "add_paper_position"):
-            fn = getattr(self.dbm, _name, None)
-            if callable(fn):
-                try:
-                    return fn(ticker, price, shares, note)
-                except TypeError:
-                    # Wrong arity — try the legacy 5-arg "add_owned_stock" shape
-                    continue
-        fn = getattr(self.dbm, "add_owned_stock", None)
-        if callable(fn):
-            from datetime import date as _date
-            try:
-                return fn(ticker, price, shares, _date.today().isoformat(), "ADD_SCALE"), "ok"
-            except Exception as _e:
-                return False, f"add_owned_stock fallback failed: {_e}"
-        return False, f"DatabaseManager has no paper-buy method (tried: paper_buy, paper_place_buy, add_paper_position, add_owned_stock)"
+
         self.btn_sell.clicked.connect(self._paper_sell)
         self.btn_refresh.clicked.connect(self._refresh)
         for w in [self.cmb_ticker, self.spn_price, self.spn_shares, self.txt_note, self.btn_buy, self.btn_sell, self.btn_refresh]:
@@ -3158,6 +3131,35 @@ class PaperTradingDialog(QDialog):
         btn_close.clicked.connect(self.accept)
         btn_row.addWidget(btn_close)
         layout.addLayout(btn_row)
+
+    # ------------------------------------------------------------------
+    # SAFE PAPER-BUY WRAPPER
+    # ------------------------------------------------------------------
+    # Old revisions of db_manager named this method "add_owned_stock"; newer
+    # ones renamed it to "paper_buy" / "paper_place_buy" / "add_paper_position"
+    # during the post-refactor cleanup. This wrapper tries the canonical name
+    # first, then every historical alias, and returns a friendly error if the
+    # underlying object has none of them — instead of AttributeError crashing
+    # the GUI mid-click. Keeps the call site a one-liner.
+    def _safe_paper_buy(self, ticker, price, shares, note):
+        if not self.dbm:
+            return False, "DatabaseManager not initialised."
+        for _name in ("paper_buy", "paper_place_buy", "add_paper_position"):
+            fn = getattr(self.dbm, _name, None)
+            if callable(fn):
+                try:
+                    return fn(ticker, price, shares, note)
+                except TypeError:
+                    # Wrong arity — try the legacy 5-arg "add_owned_stock" shape
+                    continue
+        fn = getattr(self.dbm, "add_owned_stock", None)
+        if callable(fn):
+            from datetime import date as _date
+            try:
+                return fn(ticker, price, shares, _date.today().isoformat(), "ADD_SCALE"), "ok"
+            except Exception as _e:
+                return False, f"add_owned_stock fallback failed: {_e}"
+        return False, "DatabaseManager has no paper-buy method (tried: paper_buy, paper_place_buy, add_paper_position, add_owned_stock)"
 
     def _paper_buy(self):
         # FIX (was AttributeError on revs without 'paper_buy'): route through the
@@ -3480,7 +3482,7 @@ class QuantDashboard(QMainWindow):
                 self.btn_manage_portfolio.setStyleSheet(f"background-color: #9d174d; {btn_base_style}")
                 self.btn_calc.setStyleSheet(f"background-color: #e11d48; {btn_base_style}")
                 self.btn_set_cash.setStyleSheet(f"background-color: #831843; {btn_base_style}")
-                self.btn_settings.setStyleSheet(f"background-color: #f472b6; color: #500724; font-weight: bold; border-radius: 6px; padding: 6px 14px; font-size: 12px;")
+                self.btn_settings.setStyleSheet("background-color: #f472b6; color: #500724; font-weight: bold; border-radius: 6px; padding: 6px 14px; font-size: 12px;")
                 self.btn_top10.setStyleSheet(f"background-color: #be185d; {btn_base_style}")
                 self.lbl_account_header.setStyleSheet("font-size: 13px; font-weight: bold; background-color: #fce7f3; color: #831843; padding: 8px; border-radius: 8px; border: 1px solid #fbcfe8;")
                 
@@ -3492,9 +3494,9 @@ class QuantDashboard(QMainWindow):
                 self.btn_ingest.setStyleSheet(f"background-color: #e11d48; {btn_base_style}")
                 self.btn_analyze.setStyleSheet(f"background-color: #be185d; {btn_base_style}")
                 self.btn_manage_portfolio.setStyleSheet(f"background-color: #9f1239; {btn_base_style}")
-                self.btn_calc.setStyleSheet(f"background-color: #fb7185; color: #20131a; font-weight: bold; border-radius: 6px; padding: 6px 14px; font-size: 12px;")
+                self.btn_calc.setStyleSheet("background-color: #fb7185; color: #20131a; font-weight: bold; border-radius: 6px; padding: 6px 14px; font-size: 12px;")
                 self.btn_set_cash.setStyleSheet(f"background-color: #881337; {btn_base_style}")
-                self.btn_settings.setStyleSheet(f"background-color: #4c1d32; color: #ffe4e6; border-radius: 6px; padding: 6px 14px; font-size: 12px;")
+                self.btn_settings.setStyleSheet("background-color: #4c1d32; color: #ffe4e6; border-radius: 6px; padding: 6px 14px; font-size: 12px;")
                 self.btn_top10.setStyleSheet(f"background-color: #e11d48; {btn_base_style}")
                 self.lbl_account_header.setStyleSheet("font-size: 13px; font-weight: bold; background-color: #311825; color: #fb7185; padding: 8px; border-radius: 8px; border: 1px solid #9f1239;")
                 

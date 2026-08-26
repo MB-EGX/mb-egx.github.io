@@ -12,7 +12,7 @@ USAGE:
 """
 import argparse
 from collections import Counter
-from datetime import date, datetime
+from datetime import date
 
 import duckdb
 

@@ -1,4 +1,3 @@
-import html
 import re
 
 import numpy as np
@@ -6,7 +5,7 @@ import pandas as pd
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QComboBox, QLabel, 
-    QRadioButton, QButtonGroup, QPushButton, QScrollArea, QFrame, QFileDialog,
+    QRadioButton, QButtonGroup, QPushButton, QFrame, QFileDialog,
     QDialog, QMessageBox
 )
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas

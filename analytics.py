@@ -493,7 +493,6 @@ class QuantitativeEngine:
         df["adx_14"] = adx
         df["plus_di"] = plus_di
         df["minus_di"] = minus_di
-        trending = adx >= 20
         rsi = df["rsi_14"]
 
         # Standard ADX-14 interpretation bands (Wilder 1978, Investopedia,
@@ -505,7 +504,6 @@ class QuantitativeEngine:
         # tolerance band to absorb rounding noise; ties default to
         # consolidation. Updated band labels are documented in
         # glossary_content.py separately.
-        strong = adx >= 25
         di_diff = plus_di - minus_di
         bullish = di_diff >= 0.5
         bearish = di_diff <= -0.5

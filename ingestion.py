@@ -1,4 +1,3 @@
-import os
 
 # MUST be imported before pandas (below) - sets OPENBLAS/MKL/OMP/NUMEXPR
 # thread caps as a module-level side effect; those only take effect if
@@ -8,7 +7,6 @@ from config import WATCH_DIR, MAX_WORKERS, CHUNK_SIZE, get_logger
 from freshness import today_cairo
 
 import re
-import glob
 import pandas as pd
 from pathlib import Path
 from concurrent.futures import ProcessPoolExecutor, as_completed

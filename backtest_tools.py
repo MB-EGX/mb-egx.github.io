@@ -21,7 +21,6 @@ import json
 import os
 import sys
 from datetime import datetime, timezone
-from typing import Iterable
 
 import config  # noqa: F401  (thread-cap env vars; see config.py docstring)
 from analytics import QuantitativeEngine

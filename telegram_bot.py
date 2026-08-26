@@ -101,7 +101,7 @@ import argparse
 import json
 import os
 import re
-import sys
+
 from html import escape as _esc
 
 import requests
