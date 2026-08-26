@@ -1184,19 +1184,55 @@ class MatrixTableModel(QAbstractTableModel):
             ("S2", "Second pivot support level"),
             ("S3", "Third (furthest) pivot support level"),
         ]
-        self._col_keys = [
-            "Ticker", "Position", "Action", "Rank Score", "Current Price", "Target Entry (VWAP)",
-            "Suggested Stop-Loss", "Suggested Shares (1% Risk)", "Projected Gain (%)",
-            "Pattern Conf (%)", "Trend Class", "RSI-14", "ADX-14", "Vol Z-Score",
-            "MACD Signal", "MACD Histogram", "Bollinger %B",
-            "Avg Volume (20D)", "Data Confidence",
-            "Take-Profit Target", "R1", "R2", "R3", "S1", "S2", "S3",
-            "Kelly %", "Signal Reason",
+
+        # FIX (mis-located columns: 961286 under Bollinger %B, "High (1Y+)"
+        # under Avg Vol (20D), etc. — see user screenshot).
+        # Root cause: _columns (header text + tooltip) and _col_keys
+        # (dict key .data() reads) were two INDEPENDENT lists. When
+        # decision_matrix.analyze_market() was restructured to add
+        # enrichment / Score Breakdown / Regime / Projected Range 95%,
+        # the two lists drifted, so headers past the drift point were
+        # paired with values from the wrong row key.
+        #
+        # Fix: ONE master schema of (HEADER, TOOLTIP, DICT_KEY) tuples.
+        # self._columns and self._col_keys are both PROJECTED from the
+        # same schema at the same ordinal index — header at position N
+        # is now mathematically guaranteed to read row[DICT_KEY_N].
+        self._ACTION_MATRIX_SCHEMA = [
+            ("Ticker",                       "Stock ticker symbol.",                                          "Ticker"),
+            ("Position",                     "Owned / candidate status.",                                     "Position"),
+            ("Action",                       "Decision-matrix action label.",                                 "Action"),
+            ("Rank Score",                   "Composite conviction score.",                                   "Rank Score"),
+            ("Current Price",                "Latest close.",                                                 "Current Price"),
+            ("Target Entry (VWAP)",          "Suggested entry price (VWAP).",                                 "Target Entry (VWAP)"),
+            ("Suggested Stop-Loss",          "Price stop below this.",                                        "Suggested Stop-Loss"),
+            ("Suggested Shares (1% Risk)",   "Position size for 1% account risk.",                            "Suggested Shares (1% Risk)"),
+            ("Projected Gain (%)",           "Pattern-derived projected gain %.",                             "Projected Gain (%)"),
+            ("Pattern Conf (%)",             "Chart-pattern match confidence (%).",                           "Pattern Conf (%)"),
+            ("Trend Class",                  "Bullish / bearish / bullish-forming classification.",           "Trend Class"),
+            ("RSI-14",                       "14-day Relative Strength Index.",                               "RSI-14"),
+            ("ADX-14",                       "14-day Average Directional Index.",                             "ADX-14"),
+            ("Vol Z-Score",                  "Volume Z-Score vs 20D average.",                                "Vol Z-Score"),
+            ("MACD Signal",                  "MACD line vs. signal line state.",                              "MACD Signal"),
+            ("MACD Histogram",               "MACD - signal line.",                                           "MACD Histogram"),
+            ("Bollinger %B",                 "%B position vs. Bollinger Bands.",                              "Bollinger %B"),
+            ("Avg Volume (20D)",             "20-day mean volume (shares).",                                  "Avg Volume (20D)"),
+            ("Data Confidence",              "Tier of data confidence.",                                      "Data Confidence"),
+            ("Take-Profit Target",           "Computed target exit price.",                                   "Take-Profit Target"),
+            ("R1",                           "Nearest pivot resistance.",                                     "R1"),
+            ("R2",                           "Second pivot resistance.",                                      "R2"),
+            ("R3",                           "Third pivot resistance.",                                       "R3"),
+            ("S1",                           "Nearest pivot support.",                                        "S1"),
+            ("S2",                           "Second pivot support.",                                         "S2"),
+            ("S3",                           "Third pivot support.",                                          "S3"),
+            ("Kelly %",                      "Position-size fraction (Kelly, half-Kelly capped).",            "Kelly %"),
+            ("Signal Reason",                "Plain-language evidence behind the action.",                     "Signal Reason"),
         ]
-        self._columns = self._columns + [
-            ("Kelly %", "Position-size fraction suggested by the Kelly criterion (half-Kelly capped)."),
-            ("Signal Reason", "Plain-language evidence behind the action, straight from the decision matrix."),
-        ]
+        self._columns   = [(t, tip) for (t, tip, _k) in self._ACTION_MATRIX_SCHEMA]
+        self._col_keys  = [_k for (_t, _tip, _k) in self._ACTION_MATRIX_SCHEMA]
+        assert len(self._columns) == len(self._col_keys) == 28, (
+            f"ACTION_MATRIX_SCHEMA projection mismatch"
+        )
 
 
     def rowCount(self, parent=QModelIndex()):
@@ -1279,6 +1315,25 @@ class MatrixTableModel(QAbstractTableModel):
     def update_data(self, new_data):
         self.beginResetModel()
         self._data = new_data
+        # Diagnostic: warn into quant_app.log if any column key the model
+        # asks for is missing from rows. If this fires, decision_matrix.
+        # analyze_market() is no longer emitting a key this UI shows —
+        # re-align the schema to match the row-builder.
+        try:
+            if new_data and isinstance(self._col_keys, list):
+                _have = set()
+                for _r in new_data:
+                    if isinstance(_r, dict):
+                        _have.update(_r.keys())
+                _miss = [k for k in self._col_keys if k not in _have]
+                if _miss:
+                    import logging as _lg
+                    _lg.getLogger("app_gui").warning(
+                        f"Action matrix: column key(s) requested but no row carries them: "
+                        f"{_miss[:8]}{chr(46)*3 if len(_miss)>8 else chr(32)*0}"
+                    )
+        except Exception:
+            pass
         self.endResetModel()
 
 
