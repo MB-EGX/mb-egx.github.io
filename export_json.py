@@ -64,7 +64,7 @@ import numpy as np
 # (below) - config.py sets OPENBLAS/MKL/OMP/NUMEXPR thread caps as a
 # module-level side effect, which only takes effect if set before
 # numpy/pandas load anywhere in this process.
-from config import CACHE_CONTROL_HEADER, CHART_HISTORY_DAYS, PATTERN_DETECTION
+from config import CACHE_CONTROL_HEADER, CHART_HISTORY_DAYS, MAX_WEB_ACHIEVED_HISTORY, PATTERN_DETECTION
 
 import pandas as pd
 
@@ -72,6 +72,7 @@ from decision_matrix import DecisionMatrix
 from db_manager import DatabaseManager, strip_private_export_fields
 from chart_patterns import PatternDetector
 from glossary_content import ACTION_LABELS as GLOSSARY_ACTIONS, CHART_PATTERNS as GLOSSARY_PATTERNS, TERMS as GLOSSARY_TERMS
+from top_movers import compute_daily_movers
 
 def _strip_private_row_fields(rows):
     """Remove account-derived fields from a list of signal-row dicts."""
@@ -120,6 +121,7 @@ def _write_shards(output_dir: str, payload: dict):
         "chart_history.json": {"last_data_date": payload["last_data_date"], "chart_history": payload["chart_history"]},
         "ticker_sectors.json": {"ticker_sectors": payload["ticker_sectors"]},
         "leaderboard.json": {"leaderboard": payload.get("leaderboard", [])},
+        "movers.json": {"last_data_date": payload["last_data_date"], "daily_movers": payload.get("daily_movers")},
         # Paper-trading stays client-side/local only; keep an empty shard
         # for backward-compatible fetch paths without publishing account state.
         "paper_trading.json": {},
@@ -367,7 +369,7 @@ def export_market_matrix():
     # "track record" post/tab has something to show on days when nothing
     # newly achieved. Capped so the payload doesn't grow unbounded over
     # the life of the account.
-    session_picks["achieved_history"] = dbm.get_recent_achieved_picks(limit=50)
+    session_picks["achieved_history"] = dbm.get_recent_achieved_picks(limit=MAX_WEB_ACHIEVED_HISTORY)
 
     # PRIVACY: strip the cash-derived "Suggested Shares (1% Risk)" column
     # from every row before it can reach the public JSON.
@@ -402,6 +404,11 @@ def export_market_matrix():
         # "achievement" post is due.
         "session_picks": session_picks,
         "chart_history": chart_history,
+        # Public, non-sensitive (ticker + % move only) — Best 5 Gainers /
+        # Worst 5 Losers of the latest session, computed from the same
+        # chart_history closes the dashboard already renders (see
+        # top_movers.compute_daily_movers).
+        "daily_movers": compute_daily_movers(chart_history, buys, as_of=last_data_date),
         # Public, non-sensitive (sector classification, not account data) -
         # lets the web client compute its OWN portfolio concentration risk
         # from its own privately-stored positions, without the server ever

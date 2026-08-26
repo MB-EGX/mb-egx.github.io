@@ -1913,6 +1913,9 @@ def build_achievement_caption(achievements: list[dict]) -> str:
 
 def build_track_record_caption(history: list[dict]) -> str:
 
+    if not history:
+        return ""
+
     horizon_labels_en = {"short": "Next Session", "medium": "Medium-Term", "long": "Long-Term"}
 
     horizon_labels_ar = {"short": "الجلسة القادمة", "medium": "متوسط المدى", "long": "طويل المدى"}

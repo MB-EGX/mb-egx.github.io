@@ -378,6 +378,44 @@ def _sanitize_text_field(val: str, max_len: int = 200) -> str:
 # read, a fabricated/synthetic row, a typo'd year) through silently.
 _MAX_FUTURE_DATE_SLACK_DAYS = 2
 
+# Explicit date formats tried IN ORDER before the generic pandas fallback.
+# First match wins. Rationale: this app's feeds are US-ordered MM/DD/YYYY
+# plus the long "Thursday, 25 June 2026" style (investing.com watchlist
+# exports). Pinning the known shapes up front makes a misparse impossible
+# instead of relying on pandas guessing (see _parse_excel_date's docstring
+# for the May-12 <-> Dec-5 corruption this guards against). US order is
+# checked BEFORE European order, so "05/12/2026" stays May 12 (the feed's
+# real meaning).
+_EXPLICIT_DATE_FORMATS = (
+    ("%Y-%m-%d", "ISO 8601"),
+    ("%Y/%m/%d", "ISO with slash"),
+    ("%A, %d %B %Y", "Investing.com long English date"),
+    ("%a, %d %b %Y", "Abbreviated English long date"),
+    ("%b %d, %Y", "US 'Sep 02, 2026' style"),
+    ("%d %b %Y", "DD Mon YYYY"),
+    ("%m/%d/%Y", "US-ordered MM/DD/YYYY"),
+    ("%d/%m/%Y", "European-ordered DD/MM/YYYY"),
+)
+
+# Explicit date formats tried IN ORDER before the generic pandas fallback.
+# First match wins. Rationale: this app's feeds are US-ordered MM/DD/YYYY
+# plus the long "Thursday, 25 June 2026" style (investing.com watchlist
+# exports). Pinning the known shapes up front makes a misparse impossible
+# instead of relying on pandas guessing (see _parse_excel_date's docstring
+# for the May-12 <-> Dec-5 corruption this guards against). US order is
+# checked BEFORE European order, so "05/12/2026" stays May 12 (the feed's
+# real meaning).
+_EXPLICIT_DATE_FORMATS = (
+    ("%Y-%m-%d", "ISO 8601"),
+    ("%Y/%m/%d", "ISO with slash"),
+    ("%A, %d %B %Y", "Investing.com long English date"),
+    ("%a, %d %b %Y", "Abbreviated English long date"),
+    ("%b %d, %Y", "US 'Sep 02, 2026' style"),
+    ("%d %b %Y", "DD Mon YYYY"),
+    ("%m/%d/%Y", "US-ordered MM/DD/YYYY"),
+    ("%d/%m/%Y", "European-ordered DD/MM/YYYY"),
+)
+
 
 def _parse_excel_date(val):
     """Parses one raw date cell from an ingested CSV/XLSX row.
@@ -422,10 +460,30 @@ def _parse_excel_date(val):
             else:
                 return None
         else:
-            # dayfirst=False: this app's feeds are confirmed US-ordered
-            # (MM/DD/YYYY), not DD/MM/YYYY. See docstring above - this
-            # was the actual root cause of the recurring corruption.
-            parsed = pd.to_datetime(val, dayfirst=False)
+            # Pin the known shapes FIRST (see _EXPLICIT_DATE_FORMATS) so
+            # ambiguous strings are resolved by an explicit format, never
+            # by pandas guessing. Then fall back to dayfirst=False: this
+            # app's feeds are confirmed US-ordered (MM/DD/YYYY), not
+            # DD/MM/YYYY - see the docstring above for the recurring
+            # May-12 <-> Dec-5 corruption this guards against.
+            parsed = None
+            for fmt, _label in _EXPLICIT_DATE_FORMATS:
+                try:
+                    parsed = pd.to_datetime(val, format=fmt)
+                except (ValueError, TypeError):
+                    continue
+                break
+            if parsed is None:
+                parsed = pd.to_datetime(val, dayfirst=False)
+                parsed = None
+                for fmt, _label in _EXPLICIT_DATE_FORMATS:
+                    try:
+                        parsed = pd.to_datetime(val, format=fmt)
+                    except (ValueError, TypeError):
+                        continue
+                    break
+                if parsed is None:
+                    parsed = pd.to_datetime(val, dayfirst=False)
     except Exception:
         return None
 

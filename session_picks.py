@@ -922,7 +922,18 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
 
                 pre_breakout_fills += 1
 
-            dbm.add_pick(ticker, horizon, session_date, price, source="pre_breakout" if row.get("Pre-Breakout Pick") else "signal")
+            rank_score = row.get("Rank Score")
+            if rank_score is None:
+                rank_score = row.get("Breakout Score")
+            rank_origin = row.get("Action") or (
+                "Pre-Breakout Watchlist" if row.get("Pre-Breakout Pick") else "Signal pool"
+            )
+            dbm.add_pick(
+                ticker, horizon, session_date, price,
+                source="pre_breakout" if row.get("Pre-Breakout Pick") else "signal",
+                rank_score=rank_score,
+                rank_origin=rank_origin,
+            )
 
             active_tickers.add(ticker)
 

@@ -106,7 +106,7 @@ from html import escape as _esc
 
 import requests
 
-from config import TELEGRAM_BOT_TOKEN, get_logger
+from config import TELEGRAM_BOT_TOKEN, TELEGRAM_STALE_POLICY, get_logger
 from freshness import is_fresh
 
 logger = get_logger("telegram_bot")
@@ -202,6 +202,7 @@ LABELS = {
         "unknown": "Unknown command. Send /help to see what I can do.",
         "no_text_hint": "Send /help to see what I can do.",
         "no_data": "Market data isn't available right now - try again in a moment.",
+        "stale_refuse": "🚫 Market data is from session {d} — not today's session. I won't answer with stale numbers.\n\nRun `python publish.py` after today's feed is captured, then message me again.",
         "ticker_usage": "Usage: /ticker SYMBOL (e.g. /ticker COMI)",
         "help": (
             "<b>MB-EGX Signal Bot</b>\n\n"
@@ -258,6 +259,7 @@ LABELS = {
         "unknown": "لم أفهم طلبك. اكتب \"مساعدة\" لمعرفة الأوامر المتاحة.",
         "no_text_hint": "اكتب \"مساعدة\" لمعرفة ما يمكنني فعله.",
         "no_data": "بيانات السوق غير متاحة حالياً - حاول مرة أخرى بعد قليل.",
+        "stale_refuse": "🚫 بيانات السوق من جلسة {d} — وليست جلسة اليوم. لن أرد بأرقام قديمة.\n\nشغّل publish.py بعد تحديث بيانات اليوم ثم راسلني مجددًا.",
         "ticker_usage": "الاستخدام: سعر SYMBOL (مثال: سعر COMI)",
         "help": (
             "<b>بوت إشارات MB-EGX</b>\n\n"
@@ -509,6 +511,8 @@ def handle_command(text: str, data: dict | None, stale_date: str | None = None) 
     if data is None and cmd not in ("/start", "/help"):
         return LABELS[lang]["no_data"]
     reply = handler(data, arg, lang)
+    if stale_date and cmd not in ("/start", "/help") and TELEGRAM_STALE_POLICY == "REFUSE":
+        return LABELS[lang]["stale_refuse"].format(d=_esc(stale_date))
     if stale_date and cmd not in ("/start", "/help"):
         warn = (
             f"⚠️ Data is from session {stale_date} — today's session isn't published yet "

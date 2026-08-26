@@ -764,6 +764,62 @@ SSE_LIVE_FEED_URL = os.environ.get("MBEGX_SSE_LIVE_FEED_URL", "").strip()
 # record payload do not grow forever.
 MAX_ACHIEVED_HISTORY = 500
 
+# --- Post cadence policy (post_state.py / telegram_bot.py) ---
+# Track-Record post frequency: "WEEKLY" (default - fires only on
+# TRACK_RECORD_WEEKLY_WEEKDAY, Friday, right after Thursday's last EGX
+# session) or "DAILY" (the old every-day behaviour). Overridable via env.
+TRACK_RECORD_FREQUENCY = os.environ.get("MBEGX_TRACK_RECORD_FREQUENCY", "WEEKLY").strip().upper() or "WEEKLY"
+# Python weekday(): Monday=0 ... Friday=4, Sunday=6. EGX trades Sun-Thu,
+# so Friday is the natural weekly-recap day.
+TRACK_RECORD_WEEKLY_WEEKDAY = 4
+
+# An achievement is only "new" (and therefore the achievement post/alert
+# is due) while its achieved_date is within this many days of the data's
+# own session date. Anything older is history - the weekly track-record
+# post covers it; the achievement post must NOT re-broadcast it every
+# day. This kills the recurring "historical achievement posted daily" bug.
+ACHIEVEMENT_REBROADCAST_MAX_AGE_DAYS = 2
+
+# How much of achieved_history the PUBLIC web payload carries. The full
+# history stays in the local DB; only this slice goes to market_data.json
+# so the web dashboard doesn't re-render hundreds of rows on page load.
+MAX_WEB_ACHIEVED_HISTORY = 25
+
+# Telegram bot behaviour when market_data.json is NOT today's session
+# (telegram_bot.py): "REFUSE" (default) - refuse data commands with a
+# clear "run publish.py first" message instead of answering with stale
+# numbers; "WARN" - answer but prepend a stale-data warning (old
+# behaviour).
+TELEGRAM_STALE_POLICY = os.environ.get("MBEGX_TELEGRAM_STALE_POLICY", "REFUSE").strip().upper() or "REFUSE"
+
+# --- Post cadence policy (post_state.py / telegram_bot.py) ---
+# Track-Record post frequency: "WEEKLY" (default - fires only on
+# TRACK_RECORD_WEEKLY_WEEKDAY, Friday, right after Thursday's last EGX
+# session) or "DAILY" (the old every-day behaviour). Overridable via env.
+TRACK_RECORD_FREQUENCY = os.environ.get("MBEGX_TRACK_RECORD_FREQUENCY", "WEEKLY").strip().upper() or "WEEKLY"
+# Python weekday(): Monday=0 ... Friday=4, Sunday=6. EGX trades Sun-Thu,
+# so Friday is the natural weekly-recap day.
+TRACK_RECORD_WEEKLY_WEEKDAY = 4
+
+# An achievement is only "new" (and therefore the achievement post/alert
+# is due) while its achieved_date is within this many days of the data's
+# own session date. Anything older is history - the weekly track-record
+# post covers it; the achievement post must NOT re-broadcast it every
+# day. This kills the recurring "historical achievement posted daily" bug.
+ACHIEVEMENT_REBROADCAST_MAX_AGE_DAYS = 2
+
+# How much of achieved_history the PUBLIC web payload carries. The full
+# history stays in the local DB; only this slice goes to market_data.json
+# so the web dashboard doesn't re-render hundreds of rows on page load.
+MAX_WEB_ACHIEVED_HISTORY = 25
+
+# Telegram bot behaviour when market_data.json is NOT today's session
+# (telegram_bot.py): "REFUSE" (default) - refuse data commands with a
+# clear "run publish.py first" message instead of answering with stale
+# numbers; "WARN" - answer but prepend a stale-data warning (old
+# behaviour).
+TELEGRAM_STALE_POLICY = os.environ.get("MBEGX_TELEGRAM_STALE_POLICY", "REFUSE").strip().upper() or "REFUSE"
+
 # --- Portfolio concentration risk (analyze_market's portfolio_risk output) ---
 # Flags when too much of the account sits in one sector or one ticker -
 # a common blind spot that per-stock risk metrics (ATR stops, Sortino, etc.)

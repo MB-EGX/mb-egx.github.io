@@ -1849,6 +1849,32 @@ class DecisionMatrix:
                         f"reflect {ticker_last_bar_date}, not today"
                     )
                     score = 0.0
+                    # BUGFIX: Action/Rank Score are neutralized above, but
+                    # "Pattern Conf (%)" / "Projected Gain (%)" / "Projected
+                    # Range 95%" further below are built straight from
+                    # `pattern_data`, which was computed from this ticker's
+                    # last REAL bar and is never itself touched by this
+                    # override. A stale candidate could still carry a high
+                    # historical pattern confidence and surface anywhere that
+                    # reads that field directly instead of Action/Rank Score
+                    # - this is exactly how the "🎯 Pattern Confirmed" screener
+                    # preset on the dashboard kept surfacing stale names (its
+                    # predicate checked "Pattern Conf (%)" alone, with no
+                    # Action-string gate - now fixed on the frontend too, but
+                    # the row itself should never claim a live pattern match
+                    # in the first place). Kelly %/Win Rate Estimate are reset
+                    # for the same reason - both are derived from
+                    # pattern_data/win-rate lookups above this block and would
+                    # otherwise still describe an opportunity that isn't live.
+                    pattern_data = {"match_found": False, "confidence": None, "projected_change_pct": None}
+                    win_rate_est = DEFAULT_WIN_RATE_PRIOR
+                    win_rate_source = "stale_no_data"
+                    kelly_pct = 0.0
+                    # projected_band was already built (further up) from the
+                    # pre-override pattern_data - re-derive it from the neutral
+                    # pattern_data above so it can't keep quoting a "live"
+                    # projected range either.
+                    projected_band = "N/A"
 
                 # Long-term Session Picks quality gate (see config.
                 # LONG_TERM_SETUP / MIN_AVG_VOLUME_LONG_TERM): computed for

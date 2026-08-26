@@ -57,6 +57,7 @@ import sys
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from freshness import is_fresh, today_cairo
+from config import ACHIEVEMENT_REBROADCAST_MAX_AGE_DAYS, TRACK_RECORD_FREQUENCY, TRACK_RECORD_WEEKLY_WEEKDAY
 
 CAIRO = ZoneInfo("Africa/Cairo")
 STATE_PATH = "web_public/social/post_state.json"
@@ -148,13 +149,37 @@ def _achieved_today(today_str):
     """Session Picks marked achieved for today's session (see
     session_picks.py / export_json.py's "session_picks.achieved_today").
     Only meaningful when the data itself is fresh for today — caller
-    already gates on that via _data_is_fresh_today()."""
+    already gates on that via _data_is_fresh_today().
+
+    NEW: only achievements whose achieved_date is within
+    config.ACHIEVEMENT_REBROADCAST_MAX_AGE_DAYS of today count as due —
+    anything older is *history* and must never trigger the achievement
+    post. This kills the recurring "historical achievement re-posted
+    every day" bug (a stale committed market_data.json re-listed the
+    same old day's achievements forever)."""
     try:
         with open(DATA_PATH) as f:
             data = json.load(f)
-        return data.get("session_picks", {}).get("achieved_today", [])
+        achievements = data.get("session_picks", {}).get("achieved_today", [])
     except (FileNotFoundError, json.JSONDecodeError):
         return []
+    try:
+        today = datetime.strptime(today_str, "%Y-%m-%d").date()
+    except ValueError:
+        return []
+    max_age = max(0, int(ACHIEVEMENT_REBROADCAST_MAX_AGE_DAYS))
+    out = []
+    for a in achievements:
+        try:
+            ad = str(a.get("achieved_date") or "")[:10]
+            if ad:
+                age = (today - datetime.strptime(ad, "%Y-%m-%d").date()).days
+                if age > max_age:
+                    continue
+        except ValueError:
+            pass
+        out.append(a)
+    return out
 
 
 def _achieved_history():
@@ -235,7 +260,15 @@ def cmd_due(args):
         status = state["posted"]["track_record"]
         still_needed = any(not status[p] for p in PLATFORMS)
         history_present = bool(_achieved_history())
-        if now >= due_time and still_needed and history_present:
+        # WEEKLY (default): track_record is a Friday recap - right after
+        # Thursday's last EGX session - never a daily post. Set
+        # config.TRACK_RECORD_FREQUENCY="DAILY" to restore the old
+        # every-day cadence.
+        weekly_gate = (
+            TRACK_RECORD_FREQUENCY != "DAILY"
+            and now.weekday() != TRACK_RECORD_WEEKLY_WEEKDAY
+        )
+        if now >= due_time and still_needed and history_present and not weekly_gate:
             due_types.append("track_record")
 
     # weekly — deliberately OUTSIDE the `if fresh:` block above: "fresh"

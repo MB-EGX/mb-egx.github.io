@@ -840,6 +840,7 @@ TRANSLATIONS = {
         "tab_fin": "📊 Financials",
         "tab_top10": "🏆 Top 10",
         "tab_charts": "📊 Charts",
+        "tab_movers": "📊 Daily Movers",
         "last_date": "📅 Last Data Date:",
         "cash_lbl": "💵 Cash Balance:",
         "port_val": "📈 Stock Portfolio Value:",
@@ -872,6 +873,7 @@ TRANSLATIONS = {
         "tab_fin": "📊 الماليات",
         "tab_top10": "🏆 أفضل 10",
         "tab_charts": "📊 رسوم بيانية",
+        "tab_movers": "📊 أفضل الرابحين / الخاسرين اليوم",
         "last_date": "📅 تاريخ أحدث بيانات:",
         "cash_lbl": "💵 الرصيد النقدي:",
         "port_val": "📈 قيمة محفظة الأسهم:",
@@ -1159,6 +1161,7 @@ class MatrixTableModel(QAbstractTableModel):
             ("Action", "Recommended action based on multi-factor confirmation"),
             ("Score", "Composite rank score (higher = stronger signal)"),
             ("Price", "Current close price"),
+            ("Entry Price", "Reference entry — the price at which this setup is being scored (current close). Your reference level if the breakout confirms."),
             ("Entry (VWAP)", "Suggested entry price benchmarked to 20-day Volume Weighted Average Price"),
             ("Stop-Loss", "Suggested stop-loss price (2x ATR below current price)"),
             ("Shares (1% Risk)", "Suggested share count so a stop-out costs ~1% of cash balance"),
@@ -3977,6 +3980,8 @@ class QuantDashboard(QMainWindow):
         self.tabs.addTab(self.tbl_fin_stmt, "📊 Financials")
         self.tabs.addTab(self.top10_overview_widget, "🏆 Top 10")
         self.tabs.addTab(self.chart_widget, "📊 Charts")
+        self.movers_widget = self._build_movers_tab()
+        self.tabs.addTab(self.movers_widget, "📊 Daily Movers")
 
         layout.addWidget(self.tabs)
         self.update_last_data_date_display()
@@ -4073,6 +4078,7 @@ class QuantDashboard(QMainWindow):
         self.tabs.setTabText(6, t.get("tab_fin", "📊 Financials"))
         self.tabs.setTabText(7, t.get("tab_top10", "🏆 Top 10"))
         self.tabs.setTabText(8, t.get("tab_charts", "📊 Charts"))
+        self.tabs.setTabText(9, t.get("tab_movers", "📊 Daily Movers"))
 
         if hasattr(self, "chart_widget"):
             self.chart_widget.set_language(self.current_lang)
@@ -4187,7 +4193,7 @@ class QuantDashboard(QMainWindow):
     # displays what's already in the DB + lets you manually clear a pick;
     # it never decides which tickers get picked.
     # =========================================================================
-    _PICKS_COLS = ["Ticker", "Picked On", "Target Gain", "Expected By", "Pick Price", "Current Price", "Change (%)", "vs Benchmark", "Status", ""]
+    _PICKS_COLS = ["Ticker", "Score", "Picked On", "Target Gain", "Expected By", "Pick Price", "Current Price", "Change (%)", "vs Benchmark", "Status", ""]
     _ACHIEVED_COLS = ["Ticker", "Horizon", "Picked On", "Pick Price", "Achieved On", "Achieved Price", "Achieved (%)"]
 
     def _make_picks_table(self, columns):
@@ -4265,7 +4271,7 @@ class QuantDashboard(QMainWindow):
         # actual benchmark being compared against, not a hard-coded one.
         bench_label = session_picks.get("benchmark_label") or "Benchmark"
         for tbl in self._picks_tables.values():
-            header_item = tbl.horizontalHeaderItem(7)
+            header_item = tbl.horizontalHeaderItem(8)
             if header_item is not None:
                 header_item.setText(tr(f"vs {bench_label}"))
 
@@ -4294,8 +4300,13 @@ class QuantDashboard(QMainWindow):
                 target_pct = pick.get("expected_pct")
                 target_str = f"+{target_pct:.0f}%" if target_pct is not None else "-"
 
+                rank_score = pick.get("rank_score")
+                rank_origin = pick.get("rank_origin")
+                score_str = (f"{float(rank_score):.2f}" if isinstance(rank_score, (int, float)) else "-")
+
                 values = [
                     pick["ticker"],
+                    score_str,
                     pick["pick_date"],
                     target_str,
                     expected_str,
@@ -4309,17 +4320,19 @@ class QuantDashboard(QMainWindow):
                     item = QTableWidgetItem(str(val))
                     item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
                     item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-                    if col_idx == 6 and pct is not None:
+                    if col_idx == 7 and pct is not None:
                         item.setForeground(QColor("#38a169" if pct >= 0 else "#e53e3e"))
                         item.setFont(QFont("Inter", 10, QFont.Weight.Bold))
-                    elif col_idx == 7 and alpha is not None:
+                    elif col_idx == 8 and alpha is not None:
                         item.setForeground(QColor("#38a169" if alpha >= 0 else "#e53e3e"))
+                    if col_idx == 1 and rank_origin:
+                        item.setToolTip(f"{rank_origin}")
                     tbl.setItem(row_idx, col_idx, item)
 
                 btn_remove = QPushButton(tr("✖ Remove"))
                 btn_remove.setStyleSheet("background-color: #742a2a; color: white; border-radius: 4px; padding: 2px 8px;")
                 btn_remove.clicked.connect(lambda _, pid=pick["id"]: self._remove_session_pick(pid))
-                tbl.setCellWidget(row_idx, 9, btn_remove)
+                tbl.setCellWidget(row_idx, 10, btn_remove)
 
         # Track Record — pulled fresh from the DB (full history, not just
         # this run), with today's newly-achieved rows highlighted gold.
@@ -4349,6 +4362,101 @@ class QuantDashboard(QMainWindow):
                 self.tbl_picks_achieved.setItem(row_idx, col_idx, item)
 
         self._notify_achieved_picks(session_picks)
+
+    # ------------------------------------------------------------------
+    # DAILY MOVERS TAB - Best 5 Gainers / Worst 5 Losers
+    # ------------------------------------------------------------------
+    _MOVERS_COLS = ["Ticker", "Close", "Prev Close", "Change (%)", "Rank Score"]
+
+    def _build_movers_tab(self):
+        container = QWidget()
+        v_layout = QVBoxLayout(container)
+        v_layout.setSpacing(4)
+
+        intro = QLabel(tr(
+            "📊 Best 5 Gainers / Worst 5 Losers of the latest session - "
+            "close-to-close % change across the whole universe, tie-broken by Rank Score."
+        ))
+        intro.setWordWrap(True)
+        intro.setStyleSheet("font-size: 11px; color: #a0aec0; padding: 2px 2px 6px 2px;")
+        v_layout.addWidget(intro)
+
+        lbl_g = QLabel(tr("🟢 Best 5 Gainers"))
+        lbl_g.setStyleSheet("font-weight: bold; font-size: 13px; padding: 4px 2px 2px 2px;")
+        v_layout.addWidget(lbl_g)
+        self.tbl_gainers = self._make_picks_table(self._MOVERS_COLS)
+        self.tbl_gainers.setMinimumHeight(140)
+        v_layout.addWidget(self.tbl_gainers)
+
+        lbl_l = QLabel(tr("🔴 Worst 5 Losers"))
+        lbl_l.setStyleSheet("font-weight: bold; font-size: 13px; padding: 6px 2px 2px 2px;")
+        v_layout.addWidget(lbl_l)
+        self.tbl_losers = self._make_picks_table(self._MOVERS_COLS)
+        self.tbl_losers.setMinimumHeight(140)
+        v_layout.addWidget(self.tbl_losers)
+
+        return container
+
+    def _compute_daily_movers(self, top_n: int = 5) -> dict:
+        """Close-to-close % change over the latest session for every
+        ticker in the DB (3 days of bars is enough), tie-broken by Rank
+        Score - same formula as top_movers.compute_daily_movers
+        (export_json.py's web payload)."""
+        try:
+            bulk = self.qe.get_all_market_data_bulk(days=3)
+        except Exception:
+            return {"gainers": [], "losers": []}
+        score_map = {r.get("Ticker"): r.get("Rank Score") for r in (self._raw_buys_data or [])}
+        rows = []
+        for ticker, df in bulk.items():
+            try:
+                if df is None or len(df) < 2:
+                    continue
+                closes = df["close"].dropna().tolist()
+                if len(closes) < 2:
+                    continue
+                prev, last = float(closes[-2]), float(closes[-1])
+                if not prev:
+                    continue
+                rows.append({
+                    "ticker": ticker,
+                    "close": round(last, 4),
+                    "prev_close": round(prev, 4),
+                    "change_pct": round((last / prev - 1.0) * 100.0, 2),
+                    "rank_score": score_map.get(ticker),
+                })
+            except Exception:
+                continue
+        rows.sort(
+            key=lambda r: (r["change_pct"], r["rank_score"] if r["rank_score"] is not None else -1e9),
+            reverse=True,
+        )
+        return {
+            "gainers": rows[:top_n],
+            "losers": (list(reversed(rows[-top_n:])) if rows else []),
+        }
+
+    def _fill_movers(self, movers: dict):
+        movers = movers or {}
+        for tbl, key in ((self.tbl_gainers, "gainers"), (self.tbl_losers, "losers")):
+            data = movers.get(key, [])
+            tbl.setRowCount(len(data))
+            for row_idx, row in enumerate(data):
+                vals = [
+                    str(row.get("ticker", "?")),
+                    f"{row['close']:.4f}" if row.get("close") is not None else "-",
+                    f"{row['prev_close']:.4f}" if row.get("prev_close") is not None else "-",
+                    f"{row['change_pct']:+.2f}%" if row.get("change_pct") is not None else "-",
+                    (f"{row['rank_score']:.1f}" if isinstance(row.get("rank_score"), (int, float)) else "-"),
+                ]
+                for col_idx, val in enumerate(vals):
+                    item = QTableWidgetItem(str(val))
+                    item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
+                    item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+                    if col_idx == 3 and row.get("change_pct") is not None:
+                        item.setForeground(QColor("#38a169" if row["change_pct"] >= 0 else "#e53e3e"))
+                        item.setFont(QFont("Inter", 10, QFont.Weight.Bold))
+                    tbl.setItem(row_idx, col_idx, item)
 
     def browse_folder(self):
         selected_dir = QFileDialog.getExistingDirectory(self, "Select Folder", self.txt_scan_dir.text())
@@ -5193,7 +5301,7 @@ class QuantDashboard(QMainWindow):
 
             _breakout_translatable = {"Squeeze Active", "Volume Trend", "Trend Class", "Signals", "Tier", "Data Confidence"}
             _breakout_keys = [
-                "Ticker", "Tier", "Breakout Score", "Current Price", "Dist. to Resistance (%)",
+                "Ticker", "Tier", "Breakout Score", "Current Price", "Entry Price", "Dist. to Resistance (%)",
                 "RSI-14", "ADX-14", "Squeeze Active", "Volume Trend",
                 "Dry-Up Ratio (10D/50D Vol)", "ATR% Contraction Percentile", "Up/Down Volume Ratio",
                 "Sector RS (5D, pts)", "Sector Index RS (5D, pts)", "Recently Rejected",
@@ -5243,6 +5351,7 @@ class QuantDashboard(QMainWindow):
         if hasattr(self, "chart_widget"):
             self.chart_widget.populate_selector()
         self.apply_filters()
+        self._fill_movers(self._compute_daily_movers())
 
         # Guarded by _push_cloud_stats (False on a language-switch replay of
         # cached results) so this popup only fires for a genuinely fresh

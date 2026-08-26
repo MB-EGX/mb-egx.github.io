@@ -465,6 +465,12 @@ class DatabaseManager:
                 conn.execute(
                     "ALTER TABLE session_picks ADD COLUMN IF NOT EXISTS retired_reason VARCHAR;"
                 )
+                conn.execute(
+                    "ALTER TABLE session_picks ADD COLUMN IF NOT EXISTS rank_score DOUBLE;"
+                )
+                conn.execute(
+                    "ALTER TABLE session_picks ADD COLUMN IF NOT EXISTS rank_origin VARCHAR;"
+                )
             except Exception as e:
                 logger.warning(f"session_picks column migration skipped: {e}")
             # Manual-removal memory (see remove_pick / get_excluded_tickers
@@ -604,7 +610,8 @@ class DatabaseManager:
         """Active (not-yet-achieved) picks, newest first. Pass a horizon
         ('short'/'medium'/'long') to filter to just that bucket, or omit
         it to get every active pick across all three."""
-        query = "SELECT id, ticker, horizon, pick_date, ref_price, source FROM session_picks WHERE status = 'active'"
+        query = ("SELECT id, ticker, horizon, pick_date, ref_price, source, rank_score, rank_origin "
+                 "FROM session_picks WHERE status = 'active'")
         params = ()
         if horizon:
             query += " AND horizon = ?"
@@ -616,11 +623,14 @@ class DatabaseManager:
             {
                 "id": r[0], "ticker": r[1], "horizon": r[2], "pick_date": str(r[3]),
                 "ref_price": float(r[4]), "source": r[5] or "signal",
+                "rank_score": float(r[6]) if r[6] is not None else None,
+                "rank_origin": r[7] or None,
             }
             for r in rows
         ]
 
-    def add_pick(self, ticker: str, horizon: str, pick_date: str, ref_price: float, source: str = "signal"):
+    def add_pick(self, ticker: str, horizon: str, pick_date: str, ref_price: float, source: str = "signal",
+                 rank_score: float | None = None, rank_origin: str | None = None):
         """``source`` distinguishes a confirmed-signal pick ('signal', the
         default — unchanged behavior for every existing caller) from a
         still-coiling Pre-Breakout Watchlist fallback pick ('pre_breakout'
@@ -630,9 +640,10 @@ class DatabaseManager:
         ticker = self.normalize_symbol(ticker)
         with self.get_connection() as conn:
             conn.execute(
-                "INSERT INTO session_picks (ticker, horizon, pick_date, ref_price, status, source) "
-                "VALUES (?, ?, ?, ?, 'active', ?);",
-                (ticker, horizon, str(pick_date), float(ref_price), source or "signal"),
+                "INSERT INTO session_picks (ticker, horizon, pick_date, ref_price, status, source, rank_score, rank_origin) "
+                "VALUES (?, ?, ?, ?, 'active', ?, ?, ?);",
+                (ticker, horizon, str(pick_date), float(ref_price), source or "signal",
+                 float(rank_score) if rank_score is not None else None, rank_origin or None),
             )
 
     def mark_pick_achieved(self, pick_id: int, achieved_date: str, achieved_price: float, achieved_pct: float):
@@ -740,7 +751,8 @@ class DatabaseManager:
         without depending on it still being in the same process run."""
         with self.get_connection() as conn:
             rows = conn.cursor().execute(
-                "SELECT id, ticker, horizon, pick_date, ref_price, achieved_date, achieved_price, achieved_pct, source "
+                "SELECT id, ticker, horizon, pick_date, ref_price, achieved_date, achieved_price, achieved_pct, "
+                "source, rank_score, rank_origin "
                 "FROM session_picks WHERE status = 'achieved' AND achieved_date = ? "
                 "ORDER BY achieved_pct DESC;",
                 (str(achieved_date),),
@@ -751,6 +763,8 @@ class DatabaseManager:
                 "ref_price": float(r[4]), "achieved_date": str(r[5]),
                 "achieved_price": float(r[6]), "achieved_pct": float(r[7]),
                 "source": r[8] or "signal",
+                "rank_score": float(r[9]) if r[9] is not None else None,
+                "rank_origin": r[10] or None,
             }
             for r in rows
         ]
@@ -1110,7 +1124,8 @@ class DatabaseManager:
         first — powers the desktop app's 'Recent Achievements' list."""
         with self.get_connection() as conn:
             rows = conn.cursor().execute(
-                "SELECT id, ticker, horizon, pick_date, ref_price, achieved_date, achieved_price, achieved_pct, source "
+                "SELECT id, ticker, horizon, pick_date, ref_price, achieved_date, achieved_price, achieved_pct, "
+                "source, rank_score, rank_origin "
                 "FROM session_picks WHERE status = 'achieved' "
                 "ORDER BY achieved_date DESC, achieved_pct DESC LIMIT ?;",
                 (int(limit),),
@@ -1121,6 +1136,8 @@ class DatabaseManager:
                 "ref_price": float(r[4]), "achieved_date": str(r[5]),
                 "achieved_price": float(r[6]), "achieved_pct": float(r[7]),
                 "source": r[8] or "signal",
+                "rank_score": float(r[9]) if r[9] is not None else None,
+                "rank_origin": r[10] or None,
             }
             for r in rows
         ]

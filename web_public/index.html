@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" class="dark" id="html-root">
-<head>
+<head><script>(function(w,i,g){w[g]=w[g]||[];if(typeof w[g].push=='function')w[g].push(i)})
+(window,'GTM-K3QN3TWK','google_tags_first_party');</script><script>(function(w,d,s,l){w[l]=w[l]||[];(function(){w[l].push(arguments);})('set', 'developer_id.dY2E1Nz', true);
+		var f=d.getElementsByTagName(s)[0],
+		j=d.createElement(s);j.async=true;j.src='/gk7x/';
+		f.parentNode.insertBefore(j,f);
+		})(window,document,'script','dataLayer');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -469,6 +474,9 @@
             <button onclick="switchTab('tab-charts')" id="btn-tab-charts" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap">
                 📊 Charts & Trend Lines
             </button>
+            <button onclick="switchTab('tab-movers')" id="btn-tab-movers" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap" data-i18n="tab_movers">
+                📊 Daily Movers
+            </button>
             <button onclick="switchTab('tab-leaderboard')" id="btn-tab-leaderboard" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap" data-i18n="tab_leaderboard">
                 🥇 Leaderboard
             </button>
@@ -597,6 +605,7 @@
                             <th class="p-2.5 border border-darkbg font-sans" data-i18n="hdr_tier" title="Watching (below the confirmed bar) / Confirmed / High Confidence (also pushes a Telegram alert)">Tier</th>
                             <th class="p-2.5 border border-darkbg text-right" data-i18n="hdr_breakout_score">Breakout Score</th>
                             <th class="p-2.5 border border-darkbg text-right" data-i18n="hdr_price">Price</th>
+                            <th class="p-2.5 border border-darkbg text-right" data-i18n="hdr_entry_price">Entry Price</th>
                             <th class="p-2.5 border border-darkbg text-right" data-i18n="hdr_dist_resistance">Dist. to Resistance %</th>
                             <th class="p-2.5 border border-darkbg text-right">RSI-14</th>
                             <th class="p-2.5 border border-darkbg text-right">ADX-14</th>
@@ -616,6 +625,40 @@
                     <tbody id="tbody-breakout" class="divide-y divide-bordercol/50 text-xs">
                         <tr><td colspan="19" class="p-8 text-center text-textmuted font-sans" data-i18n="loading_breakout">Loading breakout watchlist...</td></tr>
                     </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB: DAILY MOVERS -->
+        <div id="tab-movers" class="bg-panelbg rounded-b-xl border border-t-0 border-bordercol p-4 shadow-xl hidden space-y-5">
+            <h3 class="font-bold text-sm text-emerald-400 border-b border-bordercol pb-2">🟢 Best 5 Gainers</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse whitespace-nowrap font-mono text-xs">
+                    <thead class="bg-[#2d3748] text-white font-sans">
+                        <tr>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_ticker">Ticker</th>
+                            <th class="p-2.5 border border-darkbg">Close</th>
+                            <th class="p-2.5 border border-darkbg">Prev Close</th>
+                            <th class="p-2.5 border border-darkbg">Change (%)</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_score">Rank Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-movers-gainers" class="divide-y divide-bordercol/50"></tbody>
+                </table>
+            </div>
+            <h3 class="font-bold text-sm text-rose-400 border-b border-bordercol pb-2">🔴 Worst 5 Losers</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse whitespace-nowrap font-mono text-xs">
+                    <thead class="bg-[#2d3748] text-white font-sans">
+                        <tr>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_ticker">Ticker</th>
+                            <th class="p-2.5 border border-darkbg">Close</th>
+                            <th class="p-2.5 border border-darkbg">Prev Close</th>
+                            <th class="p-2.5 border border-darkbg">Change (%)</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_score">Rank Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-movers-losers" class="divide-y divide-bordercol/50"></tbody>
                 </table>
             </div>
         </div>
@@ -1618,6 +1661,10 @@
                 tab_exits: "🛡️ Owned Portfolio Exit Strategy", tab_history: "📜 Trade History & Realized P&L",
                 tab_fin: "📊 Financial Statement", tab_top10: "🏆 Top 10 Overview", tab_charts: "📊 Charts & Trend Lines",
                 tab_leaderboard: "🥇 Leaderboard",
+                tab_movers: "📊 Daily Movers",
+                hdr_score: "Score",
+                hdr_entry_price: "Entry Price",
+                lbl_movers_none: "No mover data yet.",
                 lbl_leaderboard_intro: "Every ticker that has ever hit a Session Pick target, ranked by how many times it's hit and its average return per hit. Built entirely from public, non-account data.",
                 hdr_lb_hits: "Hits", hdr_lb_avg: "Avg Return (%)", hdr_lb_last: "Last Hit",
                 lbl_no_leaderboard: "No leaderboard data yet — check back once a Session Pick hits its target.",
@@ -1865,6 +1912,10 @@
                 tab_exits: "🛡️ إستراتيجية الخروج للمحفظة", tab_history: "📜 سجل الصفقات والربح المحقق",
                 tab_fin: "📊 القوائم المالية", tab_top10: "🏆 أفضل 10 أسهم", tab_charts: "📊 الرسوم البيانية والاتجاهات",
                 tab_leaderboard: "🥇 لوحة الصدارة",
+                tab_movers: "📊 أفضل الرابحين / الخاسرين اليوم",
+                hdr_score: "التقييم",
+                hdr_entry_price: "سعر الدخول",
+                lbl_movers_none: "لا توجد بيانات حركة أسعار بعد.",
                 lbl_leaderboard_intro: "كل رمز حقق هدف ترشيح جلسة من قبل، مرتب حسب عدد مرات التحقيق ومتوسط العائد لكل تحقيق. مبني بالكامل على بيانات عامة غير مرتبطة بالحساب.",
                 hdr_lb_hits: "مرات التحقيق", hdr_lb_avg: "متوسط العائد (%)", hdr_lb_last: "آخر تحقيق",
                 lbl_no_leaderboard: "لا توجد بيانات لوحة صدارة بعد — راجع الصفحة عند تحقيق أول ترشيح لهدفه.",
@@ -4726,6 +4777,26 @@
         // the same keys the desktop populates from: Ticker, Breakout Score,
         // Current Price, Dist. to Resistance (%), RSI-14, ADX-14,
         // Squeeze Active, Volume Trend, Trend Class, Signals.
+        // Best 5 Gainers / Worst 5 Losers (top_movers.py -> movers.json shard)
+        function renderMovers() {
+            const gBody = document.getElementById('tbody-movers-gainers');
+            const lBody = document.getElementById('tbody-movers-losers');
+            if (!gBody || !lBody) return;
+            const movers = (globalData && globalData.daily_movers) || null;
+            const row = (m) => m ? `<tr class="border-b border-bordercol/40">
+                    <td class="p-2 font-bold text-sky-400">${escapeHtml(m.ticker)}</td>
+                    <td class="p-2 text-right text-textmain">${m.close ?? '-'}</td>
+                    <td class="p-2 text-right text-textmuted">${m.prev_close ?? '-'}</td>
+                    <td class="p-2 text-right font-mono font-bold ${(m.change_pct ?? 0) >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${m.change_pct != null ? `${m.change_pct >= 0 ? '+' : ''}${m.change_pct.toFixed(2)}%` : '-'}</td>
+                    <td class="p-2 text-right text-textmuted">${m.rank_score != null ? Number(m.rank_score).toFixed(1) : '-'}</td>
+                </tr>` : '';
+            const emptyRow = () => `<tr><td colspan="5" class="p-4 text-center text-textmuted font-sans">${tt('lbl_movers_none')}</td></tr>`;
+            const g = (movers && movers.gainers) || [];
+            const l = (movers && movers.losers) || [];
+            gBody.innerHTML = g.length ? g.map(row).join('') : emptyRow();
+            lBody.innerHTML = l.length ? l.map(row).join('') : emptyRow();
+        }
+
         function renderBreakouts() {
             const tbody = document.getElementById('tbody-breakout');
             tbody.innerHTML = '';
@@ -4764,6 +4835,7 @@
                     <td class="p-2.5 font-sans ${tierStyle}">${tierLabel(row["Tier"])}</td>
                     <td class="p-2.5 text-right"><span class="${scoreStyle}">${!isNaN(score) ? score.toFixed(1) : '-'}</span></td>
                     <td class="p-2.5 text-right text-textmain">${row["Current Price"] ?? '-'}</td>
+                    <td class="p-2.5 text-right text-textmain">${row["Entry Price"] ?? '-'}</td>
                     <td class="p-2.5 text-right text-textmain">${row["Dist. to Resistance (%)"] ?? '-'}</td>
                     <td class="p-2.5 text-right text-textmain">${row["RSI-14"] ?? '-'}</td>
                     <td class="p-2.5 text-right text-textmain">${row["ADX-14"] ?? '-'}</td>
@@ -4963,6 +5035,10 @@
                             <div class="text-[11px] text-textmuted font-mono flex justify-between">
                                 <span>${tt('hdr_picked_on')}: ${escapeHtml(p.pick_date)}</span>
                                 <span>${p.ref_price != null ? p.ref_price : '-'} → ${current != null ? current : '-'} EGP</span>
+                            </div>
+                            <div class="text-[11px] font-mono flex justify-between">
+                                <span class="text-textmuted font-sans">${tt('hdr_score')}:</span>
+                                <span class="font-bold text-textmain">${p.rank_score != null ? Number(p.rank_score).toFixed(2) : '-'}</span>
                             </div>
                             <div class="text-[11px] text-textmuted font-sans">${tt('lbl_picks_expected_by')}: ${escapeHtml(expectedStr)}</div>
                             <div class="text-[11px] font-mono flex justify-between">
@@ -5193,8 +5269,22 @@
                 },
             },
             {
+                // BUGFIX: unlike the 4 presets above, this one keyed ONLY off
+                // "Pattern Conf (%)" - a field decision_matrix.py computes from
+                // pattern_data BEFORE the stale-candidate override runs, and
+                // never clears afterward (the override replaces Action/Rank
+                // Score, not this field). A ticker whose feed went quiet weeks
+                // ago can still carry a high historical Pattern Conf from its
+                // last real bar and surface here even though its Action already
+                // reads "⏸️ STALE - NO NEW DATA" - exactly the ARVA-style stale-
+                // top-pick bug fixed elsewhere (see compute_market_overview in
+                // social_poster.py). Same Action-string gate as every other
+                // preset here closes it.
                 id: 'pattern_confirmed', icon: '🎯', labelKey: 'preset_pattern_confirmed',
-                predicate: r => typeof r['Pattern Conf (%)'] === 'number' && r['Pattern Conf (%)'] >= 60,
+                predicate: r => {
+                    const a = r.Action || '';
+                    return typeof r['Pattern Conf (%)'] === 'number' && r['Pattern Conf (%)'] >= 60 && !a.includes('STALE');
+                },
             },
         ];
         let activeScreenerPreset = null;
@@ -5358,6 +5448,7 @@
                     fetchShard('session_picks.json'),
                     fetchShard('ticker_sectors.json'),
                     fetchShard('leaderboard.json'),
+                    fetchShard('movers.json'),
                 ]);
 
                 if (!matrix || typeof matrix !== 'object' || !Array.isArray(matrix.market_matrix)) {
@@ -5377,6 +5468,7 @@
                     session_picks: (sessionPicks && sessionPicks.session_picks) || {},
                     ticker_sectors: (tickerSectors && tickerSectors.ticker_sectors) || {},
                     leaderboard: (leaderboard && leaderboard.leaderboard) || [],
+                    daily_movers: (movers && movers.daily_movers) || null,
                     // Loaded lazily/in the background - see ensureChartHistoryLoaded().
                     chart_history: null,
                 };
@@ -5386,7 +5478,7 @@
                 updateMarketRegimeBadge(globalData.market_regime);
                 updateSectorRotationBadge(globalData.market_regime);
                 updateUsdDivergenceBadge(globalData.market_regime);
-                populateSelects(); applyFilters(); renderSectors(); renderTop10(); renderBreakouts(); renderSessionPicks(); renderPortfolio(); renderHistory(); renderAccountBar(); renderPaperTradingPreview(); renderLeaderboardPreview(); renderLeaderboardTab(); renderScreenerPresetChips(); updateNotifyButtonState();
+                populateSelects(); applyFilters(); renderSectors(); renderTop10(); renderBreakouts(); renderMovers(); renderSessionPicks(); renderPortfolio(); renderHistory(); renderAccountBar(); renderPaperTradingPreview(); renderLeaderboardPreview(); renderLeaderboardTab(); renderScreenerPresetChips(); updateNotifyButtonState();
 
                 prefetchChartHistoryInBackground();
             } catch (error) {
@@ -6574,6 +6666,7 @@
             });
         }
     </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
