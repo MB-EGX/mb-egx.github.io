@@ -136,6 +136,18 @@ SCORE_WEIGHTS = {
     "range_position_weight": 0.05,
     "pattern_confidence_weight": 0.3,
     "pattern_projected_gain_weight": 1.5,
+    # BUGFIX: pattern_data["projected_change_pct"] (a historical-analog
+    # match's projected % move) fed straight into the score with NO cap,
+    # unlike reward_risk_component below. On thin/illiquid names with only
+    # a handful of historical analogs, one freak analog (e.g. a data glitch
+    # or a genuine multi-hundred-percent penny-stock move) can produce a
+    # projected_change_pct in the hundreds or low thousands - at the
+    # default 1.5x weight that alone produced Rank Scores like 2122.5 on
+    # NAHO.CA, dwarfing every other row and making the "Full Market Action
+    # Matrix" sort order meaningless. Cap the INPUT to the score (the
+    # displayed "Projected Gain %" column is untouched - this only stops
+    # the outlier from dominating ranking).
+    "pattern_projected_gain_score_cap_pct": 60.0,
     # BUGFIX: reward:risk (take-profit distance / stop distance) was computed
     # for Kelly position-sizing but never fed back into Rank Score, so a row
     # with a great pattern/trend but a terrible payoff (e.g. RR=0.2 - risking
@@ -204,6 +216,21 @@ ACTION_THRESHOLDS = {
     # exported data showed a median buy-side RR of ~0.27 before this floor
     # existed, i.e. risking ~3.7x the potential gain on the typical "buy".
     "min_reward_risk": 0.8,
+    # BUGFIX: the stop-loss level used to floor at a fixed 0.0001 (an
+    # arbitrary epsilon) whenever atr_trailing_multiplier * ATR exceeded
+    # curr_price - which happens whenever ATR-14 is degenerate for a given
+    # ticker (thin/short history, or a bad historical row). That produced
+    # nonsense rows like "Suggested Stop-Loss: 0.0001" on a 0.142 stock -
+    # effectively a 100% notional stop that also broke position sizing
+    # (Suggested Shares came out as 0 because sizing_stop_distance was
+    # still the full, huge ATR-based distance). Instead of an absolute
+    # epsilon, floor the stop at this FRACTION of current price (a stop
+    # this close to price is still wide, but at least means something),
+    # and flag the row's data confidence instead of silently showing a
+    # fabricated near-zero stop - see decision_matrix.py's suggested_stop
+    # block.
+    "stop_loss_min_price_fraction": 0.05,   # never floor tighter than 5% of price
+    "atr_degenerate_ratio": 0.5,            # ATR% of price above this -> flag as unreliable, don't trust the stop
     # Trailing stop and take-profit
     "atr_trailing_multiplier": 2.0,
     "cut_loss_pnl_pct": -8.0,

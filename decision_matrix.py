@@ -1720,7 +1720,21 @@ class DecisionMatrix:
                 atr_mult = ACTION_THRESHOLDS["atr_trailing_multiplier"]
                 # The displayed stop level is the pure ATR stop (unchanged).
                 stop_distance = atr_mult * atr
-                suggested_stop = round(max(curr_price - stop_distance, 0.0001), 4)
+                # BUGFIX: this used to floor at a fixed 0.0001 (an absolute
+                # epsilon) whenever stop_distance >= curr_price, which
+                # happens whenever ATR-14 is degenerate for this ticker
+                # (thin/short history, or a bad historical row inflating
+                # true range). That produced nonsense like "Suggested
+                # Stop-Loss: 0.0001" on a 0.142 stock (NAHO.CA) - a
+                # notional ~100% stop - while position sizing still used
+                # the full (huge) stop_distance, so Suggested Shares came
+                # out as 0 too. Floor at a % of price instead (still wide,
+                # but meaningful), and flag the row so a trader doesn't
+                # silently act on a fabricated stop.
+                atr_pct_of_price = (atr / curr_price) if curr_price > 0 else 0.0
+                stop_loss_degenerate = atr_pct_of_price >= ACTION_THRESHOLDS.get("atr_degenerate_ratio", 0.5)
+                price_floor = curr_price * ACTION_THRESHOLDS.get("stop_loss_min_price_fraction", 0.05)
+                suggested_stop = round(max(curr_price - stop_distance, price_floor, 0.0001), 4)
                 risk_budget = cash_balance * RISK_PER_TRADE_PCT
                 # Real position sizing: shares = risk budget / (stop distance
                 # + round-trip fees). Adding the fee drag to the denominator
@@ -1788,8 +1802,19 @@ class DecisionMatrix:
                     if pattern_data["match_found"]
                     else 0.0
                 )
+                # BUGFIX: cap the % fed into the score (NOT the displayed
+                # "Projected Gain %" column, which still shows the real
+                # figure) - see config.SCORE_WEIGHTS["pattern_projected_gain_score_cap_pct"].
+                # Without this, a single thin-history analog match with a
+                # freak projected % (data glitch or genuine outlier move)
+                # could push Rank Score into the thousands and make Top-10/
+                # Session Picks ranking meaningless (e.g. NAHO.CA scoring
+                # 2122.5 while every real candidate scored under 70).
                 projected_component = (
-                    pattern_data["projected_change_pct"] * SCORE_WEIGHTS["pattern_projected_gain_weight"]
+                    min(
+                        pattern_data["projected_change_pct"],
+                        SCORE_WEIGHTS.get("pattern_projected_gain_score_cap_pct", 60.0),
+                    ) * SCORE_WEIGHTS["pattern_projected_gain_weight"]
                     if pattern_data["match_found"]
                     else 0.0
                 )
@@ -1843,6 +1868,12 @@ class DecisionMatrix:
                     if pattern_data.get("match_found") else "N/A"
                 )
                 signal_reason = _build_signal_reason(action_cmd, trend_latest, confirmed, weekly_aligned, is_squeezed, cmf, vol_ratio)
+                if stop_loss_degenerate:
+                    signal_reason = (
+                        f"{signal_reason} ⚠️ ATR-14 is {round(atr_pct_of_price * 100, 1)}% of price - "
+                        f"stop-loss floored at {round(ACTION_THRESHOLDS.get('stop_loss_min_price_fraction', 0.05) * 100, 0):.0f}% "
+                        f"of price rather than the raw ATR distance; verify this ticker's historical data before sizing a position."
+                    )
 
                 # ROOT-CAUSE FIX: a stale (non-owned) candidate's entire
                 # classification above was computed from its last real bar,
@@ -1965,6 +1996,7 @@ class DecisionMatrix:
                         "Current Price": round(curr_price, 4),
                         "Target Entry (VWAP)": round(entry_target, 4),
                         "Suggested Stop-Loss": suggested_stop,
+                        "Stop-Loss Reliable": not stop_loss_degenerate,
                         "Take-Profit Target": take_profit_target,
                         "Resistance (52W High)": round(float(range_high), 4),
                         "Support (52W Low)": round(float(range_low), 4),

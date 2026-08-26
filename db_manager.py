@@ -679,6 +679,24 @@ class DatabaseManager:
                  float(rank_score) if rank_score is not None else None, rank_origin or None),
             )
 
+    def backfill_pick_rank_score(self, pick_id: int, rank_score: float, rank_origin: str | None = None):
+        """BUGFIX: session_picks.rank_score was added via an ALTER TABLE
+        migration after picks already existed - those pre-existing rows
+        got NULL for the new column and nothing ever wrote to it later
+        (add_pick() only sets it at INSERT time), so any pick made before
+        the migration shows a permanent "-" for Score in the Session
+        Picks tab even though every OTHER pick works fine. Called from
+        session_picks.refresh_session_picks() to opportunistically fill
+        in a still-active pick's rank_score the first time its ticker
+        reappears in the live matrix/breakout pool with a real score -
+        never invents a score for a ticker that isn't currently scored."""
+        with self.get_connection() as conn:
+            conn.execute(
+                "UPDATE session_picks SET rank_score = ?, rank_origin = COALESCE(rank_origin, ?) "
+                "WHERE id = ? AND status = 'active';",
+                (float(rank_score), rank_origin, int(pick_id)),
+            )
+
     def mark_pick_achieved(self, pick_id: int, achieved_date: str, achieved_price: float, achieved_pct: float):
         with self.get_connection() as conn:
             conn.execute(

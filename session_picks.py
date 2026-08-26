@@ -766,7 +766,32 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
 
     by_ticker = {r["Ticker"]: r for r in buys}
 
-
+    # BUGFIX: rank_score is NULL for any active pick made before the
+    # rank_score column existed (see db_manager.backfill_pick_rank_score's
+    # docstring) - permanently showing "-" for Score in the Session Picks
+    # tab for those rows even though newer picks show a real number.
+    # Opportunistically backfill: if a still-active pick's ticker is
+    # currently scored in this run's buys/breakout pool, write that score
+    # in now. Never fabricates a score for a ticker that isn't currently
+    # scored (falls through and stays NULL until it is).
+    bw_by_ticker = {r["Ticker"]: r for r in (breakout_watchlist or [])}
+    for h in HORIZONS:
+        for p in dbm.get_active_picks(h):
+            if p["rank_score"] is not None:
+                continue
+            src_row = by_ticker.get(p["ticker"])
+            score = src_row.get("Rank Score") if src_row else None
+            origin = src_row.get("Action") if src_row else None
+            if score is None:
+                bw_row = bw_by_ticker.get(p["ticker"])
+                if bw_row:
+                    score = bw_row.get("Breakout Score")
+                    origin = "Pre-Breakout Watchlist"
+            if score is not None:
+                try:
+                    dbm.backfill_pick_rank_score(p["id"], score, origin)
+                except Exception:
+                    pass
 
     # 1. Achievement check — every currently-active pick vs today's price,
 
