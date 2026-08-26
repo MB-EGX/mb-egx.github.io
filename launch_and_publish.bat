@@ -28,6 +28,17 @@ set "MKL_NUM_THREADS=1"
 set "OMP_NUM_THREADS=1"
 set "NUMEXPR_NUM_THREADS=1"
 
+REM --- Decision-matrix worker parallelism ------------------------------
+REM config.py hard-caps this to 2 by default as a RAM/page-file safety
+REM net for low-memory Windows machines (each worker process reloads the
+REM full numpy/scipy/pandas stack independently). If this machine has
+REM more headroom (8GB+ RAM, 4+ cores), raising this speeds up "Execute
+REM Matrix" / the recompute step below roughly in proportion to the
+REM increase - e.g. 4 instead of 2 lets ~twice as many ticker chunks run
+REM at once. Uncomment and adjust the line below; leave it commented to
+REM keep config.py's conservative default.
+REM set "MBEGX_MAX_WORKERS=4"
+
 REM --- Prefer the project's venv Python if present, else fall back to PATH ---
 if exist "venv\Scripts\python.exe" (
     set "PY=venv\Scripts\python.exe"
@@ -75,16 +86,28 @@ REM up is easy to do by accident), publish.py will hit that exact lock
 REM error. Check for that specific case up front instead of discovering
 REM it partway through ingestion.
 echo Checking whether MB-EGX is already running...
+REM PERF: this used to be two separate powershell.exe invocations (one
+REM here to find an already-running app_gui.py PID, one further below
+REM just to read today's date) - each PowerShell process start is real,
+REM fixed overhead (routinely 0.5-1.5s+ on Windows, more with AV
+REM scanning) paid on EVERY single launch regardless of how much data
+REM there is to publish. Merged into one script/one process that prints
+REM both answers, prefixed so the batch side can tell them apart.
 set "APP_ALREADY_RUNNING="
-set "PS_CHECK_SCRIPT=%TEMP%\mbegx_check_running_%RANDOM%.ps1"
+set "TODAY_STR="
+set "PS_INIT_SCRIPT=%TEMP%\mbegx_init_%RANDOM%.ps1"
 (
     echo $procs = Get-CimInstance Win32_Process -Filter "Name='pythonw.exe' or Name='python.exe'" -ErrorAction SilentlyContinue
     echo $match = $procs ^| Where-Object { $_.CommandLine -and $_.CommandLine -like '*app_gui.py*' } ^| Select-Object -First 1
-    echo if ^($match^) { Write-Output $match.ProcessId }
-) > "%PS_CHECK_SCRIPT%"
+    echo if ^($match^) { Write-Output "PID:$($match.ProcessId)" }
+    echo Write-Output "DATE:$(Get-Date -Format 'yyyy-MM-dd')"
+) > "%PS_INIT_SCRIPT%"
 
-for /f "usebackq delims=" %%P in (`powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "%PS_CHECK_SCRIPT%" 2^>nul`) do set "APP_ALREADY_RUNNING=%%P"
-del "%PS_CHECK_SCRIPT%" >nul 2>&1
+for /f "usebackq tokens=1,2 delims=:" %%A in (`powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "%PS_INIT_SCRIPT%" 2^>nul`) do (
+    if "%%A"=="PID" set "APP_ALREADY_RUNNING=%%B"
+    if "%%A"=="DATE" set "TODAY_STR=%%B"
+)
+del "%PS_INIT_SCRIPT%" >nul 2>&1
 
 if defined APP_ALREADY_RUNNING (
     echo.
@@ -164,10 +187,8 @@ REM Never blocks the app from opening: any failure here is a warning,
 REM not a stop - matching how a publish.py failure above is handled.
 if not exist "backtests" mkdir "backtests"
 
-set "PS_TODAY_SCRIPT=%TEMP%\mbegx_today_%RANDOM%.ps1"
-echo Get-Date -Format "yyyy-MM-dd" > "%PS_TODAY_SCRIPT%"
-for /f "usebackq delims=" %%D in (`powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "%PS_TODAY_SCRIPT%" 2^>nul`) do set "TODAY_STR=%%D"
-del "%PS_TODAY_SCRIPT%" >nul 2>&1
+REM TODAY_STR was already fetched in the merged init check above (no
+REM second powershell.exe launch needed here anymore).
 
 set "LAST_BACKTEST_DATE="
 if exist "backtests\last_backtest_date.txt" set /p LAST_BACKTEST_DATE=<"backtests\last_backtest_date.txt"

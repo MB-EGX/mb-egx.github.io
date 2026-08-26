@@ -5440,7 +5440,7 @@
 
         async function loadMarketData() {
             try {
-                const [matrix, sectors, top10, breakout, sessionPicks, tickerSectors, leaderboard] = await Promise.all([
+                const [matrix, sectors, top10, breakout, sessionPicks, tickerSectors, leaderboard, movers] = await Promise.all([
                     fetchShard('matrix.json'),
                     fetchShard('sectors.json'),
                     fetchShard('top_10.json'),
