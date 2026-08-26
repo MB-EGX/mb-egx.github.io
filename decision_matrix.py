@@ -433,6 +433,31 @@ def _graduated_score(value: float, soft_lo: float, lo: float, hi: float, soft_hi
     return 0.0
 
 
+def _n_of_m_confirmation(factors: list[tuple[str, bool]], min_pass_ratio: float) -> tuple[bool, int, int, list[str]]:
+    """N-of-M confluence check, replacing a strict ALL-of-these-must-pass
+    gate. ``factors`` is [(label, passed_bool), ...] - only the factors
+    that actually APPLY to this signal type should be passed in (e.g. a
+    STRONG BUY call omits the squeeze factor entirely rather than passing
+    it in as always-True, so the required count scales with what's really
+    being checked). Chaining every factor with AND multiplies down fast
+    even when each individual factor is well-calibrated (four factors each
+    independently true ~35% of the time pass ALL four only ~1.5% of the
+    time) - requiring a FRACTION of applicable factors is more statistically
+    honest confluence, and is far less likely to leave every actionable
+    category empty on data that's still noisy (short history -> unstable
+    ADX/RVOL).
+
+    Returns (confirmed, passed_count, required_count, [unmet factor labels]).
+    """
+    total = len(factors)
+    if total == 0:
+        return True, 0, 0, []
+    required = max(1, math.ceil(min_pass_ratio * total))
+    passed_labels = [label for label, ok in factors if ok]
+    unmet_labels = [label for label, ok in factors if not ok]
+    return len(passed_labels) >= required, len(passed_labels), required, unmet_labels
+
+
 def sector_benchmark_label(sec_name: str) -> str:
     """Display string for the Pre-Breakout Watchlist's "Sector Index RS"
     reason (e.g. "its sector index (EGX Banks)"), or a generic fallback
@@ -1172,6 +1197,30 @@ class DecisionMatrix:
                 trend_latest = latest.get("trend_class", "Consolidation / Neutral")
                 atr = self.qe.estimate_atr(latest, curr_price)
 
+                # NEW: intraday High-Low "close location" - where today's
+                # close sits within its OWN session's High-Low range, not
+                # the 250-bar range_pos_pct above (that's positional vs.
+                # 52W history; this is positional vs. TODAY's own trading).
+                # A close near the session high (ratio -> 1.0) means buyers
+                # were in control into the close and paid up rather than
+                # fading off intraday strength - real same-day conviction
+                # that ADX/RVOL/VWAP (all of which can be satisfied on a
+                # day that closed weak) don't directly capture. A close
+                # near the session low (ratio -> 0.0) on an otherwise
+                # "confirmed" breakout is a classic same-day rejection.
+                day_high = latest.get("high", curr_price)
+                day_low = latest.get("low", curr_price)
+                close_location_ratio = (
+                    (curr_price - day_low) / (day_high - day_low)
+                    if (day_high - day_low) > 0 else 0.5
+                )
+                # Session range as a % of price - mostly informational
+                # (surfaced in Signal Reason / row detail) but also used
+                # below to sanity-flag a suspiciously wide bar.
+                session_range_pct = (
+                    ((day_high - day_low) / curr_price) * 100.0 if curr_price > 0 else 0.0
+                )
+
                 w_sma50 = latest.get("w_sma_50", curr_price)
                 w_rsi = latest.get("w_rsi", 50.0)
                 weekly_aligned = (curr_price > w_sma50) and (w_rsi >= 50.0)
@@ -1287,36 +1336,54 @@ class DecisionMatrix:
                     trend_bonus = SCORE_WEIGHTS["hold_neutral"]
                     needs_confirmation = False
 
-                # Confirmation gates
+                # Confirmation factors (N-of-M confluence, not a strict
+                # ALL-must-pass AND). See _n_of_m_confirmation's docstring
+                # for why: chaining independent factors with AND multiplies
+                # down fast, and on this app's still-short price history
+                # ADX/RVOL are individually noisy - requiring ALL of them
+                # left STRONG BUY/BREAKOUT BUY/BUY ON DIP empty almost
+                # every run. Each factor below is still a real, individually
+                # defensible filter; what changed is only how many of them
+                # a candidate needs to clear.
                 strong_trend = adx >= ACTION_THRESHOLDS["strong_trend_adx_min"]
                 vol_confirmed = (
                     vol_ratio >= ACTION_THRESHOLDS["volume_ratio_threshold"]
                     or vol_z >= ACTION_THRESHOLDS["volume_z_score_threshold"]
                 )
-                # VWAP acceptance gate: a close below its own 20D VWAP still
+                # VWAP acceptance: a close below its own 20D VWAP still
                 # carries intraday selling pressure that frequently stalls a
-                # breakout/strong-buy attempt the next session - require
-                # real VWAP acceptance, not just a raw price/RSI/ADX/volume
-                # match, before a STRONG BUY / BREAKOUT BUY confirms.
+                # breakout/strong-buy attempt the next session.
                 vwap_ok = curr_price >= vwap * ACTION_THRESHOLDS["vwap_acceptance_ratio"]
-                # Squeeze-release gate: ONLY applied to the reactive BREAKOUT
+                # Squeeze-release: ONLY applicable to the reactive BREAKOUT
                 # BUY labels (not STRONG BUY, which is a different, already-
-                # extended setup). A breakout that follows a genuine BB/KC
-                # volatility squeeze has materially better follow-through
-                # than one that doesn't - make it mandatory for a BREAKOUT
-                # BUY to confirm, not just a bonus tacked on afterward.
+                # extended setup) - so it's only added to the factor list
+                # for a breakout signal, not passed in as always-True (that
+                # would silently make the required-count math treat it as
+                # "free", inflating the confirmed fraction for STRONG BUY
+                # rows that never had a squeeze factor to begin with).
                 is_breakout_signal = "BREAKOUT BUY" in raw_action
-                squeeze_ok = is_squeezed if is_breakout_signal else True
+                squeeze_ok = is_squeezed
+                # NEW: same-session close strength - did buyers hold the
+                # session's highs into the close, or fade off them? See
+                # close_location_ratio's own comment above. A setup that
+                # passes every multi-day indicator but closed near its own
+                # session low is a real same-day red flag worth counting as
+                # its own factor, not folded silently into VWAP/volume.
+                close_strength_ok = close_location_ratio >= ACTION_THRESHOLDS["close_strength_min_ratio"]
 
-                confirmed = strong_trend and vol_confirmed and vwap_ok and squeeze_ok
+                confirmation_factors = [
+                    ("low ADX (trend not confirmed)", strong_trend),
+                    ("low volume (RVOL/Z-score not confirmed)", vol_confirmed),
+                    ("below VWAP", vwap_ok),
+                    ("weak session close (near day's low)", close_strength_ok),
+                ]
+                if is_breakout_signal:
+                    confirmation_factors.append(("no squeeze release", squeeze_ok))
+
+                confirmed, n_passed, n_required, unmet = _n_of_m_confirmation(
+                    confirmation_factors, ACTION_THRESHOLDS["confirmation_min_pass_ratio"]
+                )
                 if needs_confirmation and not confirmed:
-                    unmet = []
-                    if not (strong_trend and vol_confirmed):
-                        unmet.append("low ADX/volume")
-                    if not vwap_ok:
-                        unmet.append("below VWAP")
-                    if not squeeze_ok:
-                        unmet.append("no squeeze release")
                     # BUGFIX: an unconfirmed STRONG BUY / BREAKOUT BUY must NOT
                     # be recommended. It used to stay in the matrix with the
                     # label "...(Unconfirmed: ...)" and a quartered score, but the
@@ -1331,7 +1398,10 @@ class DecisionMatrix:
                     # appear in Top-10 / Session Picks, while the reason stays
                     # visible in Signal Reason.
                     raw_action = "🟡 HOLD / NEUTRAL"
-                    action_cmd = f"{raw_action} (Signal unconfirmed: {', '.join(unmet)})"
+                    action_cmd = (
+                        f"{raw_action} (Signal unconfirmed: {n_passed}/{len(confirmation_factors)} "
+                        f"factors passed, need {n_required} - {', '.join(unmet)})"
+                    )
                     trend_bonus = SCORE_WEIGHTS["hold_neutral"]
                 else:
                     action_cmd = raw_action
@@ -1350,18 +1420,32 @@ class DecisionMatrix:
                 # was False) and never even checked weekly trend. A "dip" with
                 # no weekly uptrend underneath it and no real accumulation
                 # (CMF) is not a low-risk pullback in an established trend -
-                # it's just a falling stock. Gate it the same way STRONG BUY/
-                # BREAKOUT BUY are gated above, instead of waving every dip
-                # through unconfirmed.
+                # it's just a falling stock. Gated the same N-of-M way as
+                # STRONG BUY/BREAKOUT BUY above (see _n_of_m_confirmation) -
+                # requiring BOTH weekly-trend alignment AND CMF simultaneously
+                # left this bucket permanently empty in practice; a genuine
+                # dip-buy only needs most of its supporting evidence to line
+                # up, not literally every factor.
                 dip_confirmed = True
                 if raw_action == "⏳ BUY ON DIP":
-                    dip_confirmed = weekly_aligned and cmf >= ACTION_THRESHOLDS["medium_term_cmf_min"]
+                    # NEW: did today's session find support, or close at its
+                    # own low (still falling into the close)? A real
+                    # "buyable dip" should show some intraday rejection of
+                    # the lows, not just a favorable multi-day CMF/trend
+                    # read - same close_location_ratio used for STRONG BUY/
+                    # BREAKOUT BUY above, just read the other direction (a
+                    # dip doesn't need to close near the HIGH, just off the
+                    # LOW).
+                    dip_close_ok = close_location_ratio >= ACTION_THRESHOLDS["dip_close_strength_min_ratio"]
+                    dip_factors = [
+                        ("weekly trend not aligned", weekly_aligned),
+                        ("CMF below accumulation floor", cmf >= ACTION_THRESHOLDS["medium_term_cmf_min"]),
+                        ("still closing near session low (no support found)", dip_close_ok),
+                    ]
+                    dip_confirmed, dip_n_passed, dip_n_required, dip_unmet = _n_of_m_confirmation(
+                        dip_factors, ACTION_THRESHOLDS["dip_confirmation_min_pass_ratio"]
+                    )
                     if not dip_confirmed:
-                        unmet = []
-                        if not weekly_aligned:
-                            unmet.append("weekly trend not aligned")
-                        if cmf < ACTION_THRESHOLDS["medium_term_cmf_min"]:
-                            unmet.append("CMF below accumulation floor")
                         # BUGFIX: an unconfirmed "dip" is a falling stock, not a
                         # dip - a name below its weekly trend with no accumulation
                         # (CMF) is exactly what the backtester refuses to trade
@@ -1373,8 +1457,13 @@ class DecisionMatrix:
                         # recommended to buy. Reclassify to HOLD/NEUTRAL so it
                         # can't leak into Top-10 / Session Picks.
                         raw_action = "🟡 HOLD / NEUTRAL"
-                        action_cmd = f"{raw_action} (Dip unconfirmed: {', '.join(unmet)})"
+                        action_cmd = (
+                            f"{raw_action} (Dip unconfirmed: {dip_n_passed}/{len(dip_factors)} "
+                            f"factors passed, need {dip_n_required} - {', '.join(dip_unmet)})"
+                        )
                         trend_bonus = SCORE_WEIGHTS["hold_neutral"]
+
+
 
                 if weekly_aligned and (
                     "STRONG BUY" in action_cmd or "BREAKOUT BUY" in action_cmd

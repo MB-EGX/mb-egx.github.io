@@ -208,6 +208,34 @@ ACTION_THRESHOLDS = {
     # a dip with net distribution (CMF below this) is not a low-risk pullback
     # in an established trend, it's a stock still being sold.
     "medium_term_cmf_min": 0.15,
+    # N-of-M confluence (replacing strict ALL-of-these-must-pass AND) for
+    # STRONG BUY / BREAKOUT BUY confirmation. 0.75 means: for a STRONG BUY
+    # (4 applicable factors - trend, volume, VWAP, session close strength)
+    # 3 of 4 must pass; for a BREAKOUT BUY (5 factors, squeeze added) 4 of
+    # 5 must pass. See decision_matrix._n_of_m_confirmation and the
+    # confirmation_factors list for exactly which factors apply to which
+    # signal. Chaining 4-5 independent factors with strict AND left these
+    # categories empty almost every run on this app's still-short price
+    # history (noisy ADX/RVOL); requiring a fraction is more statistically
+    # honest confluence and lets genuinely strong (if imperfect) setups
+    # through.
+    "confirmation_min_pass_ratio": 0.75,
+    # Same idea for BUY ON DIP's 3 factors (weekly trend, CMF, session
+    # close strength off the day's low) - 0.67 means 2 of 3 must pass.
+    "dip_confirmation_min_pass_ratio": 0.67,
+    # NEW: same-session "close location" factor - where today's close sits
+    # within TODAY's own High-Low range (0.0 = closed at the session low,
+    # 1.0 = closed at the session high). For STRONG BUY/BREAKOUT BUY, the
+    # close must sit in at least the top (1 - this) share of the day's
+    # range - 0.60 means closed in the upper 40% of the session's range,
+    # i.e. buyers held (or pushed further into) the day's strength rather
+    # than fading it into the close.
+    "close_strength_min_ratio": 0.60,
+    # For BUY ON DIP, the bar is lower - a dip only needs to show it found
+    # SOME support (didn't close pinned at the day's low), not that it
+    # closed near the high. 0.35 means closed above the bottom 35% of the
+    # session's range.
+    "dip_close_strength_min_ratio": 0.35,
     # BUGFIX: minimum acceptable reward:risk for a buy-type recommendation
     # (STRONG BUY / BREAKOUT BUY / ACCUMULATE / BUY ON DIP). Below this floor
     # a name is reclassified to HOLD/NEUTRAL - same treatment as an
