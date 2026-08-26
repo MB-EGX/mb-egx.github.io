@@ -348,7 +348,33 @@ def export_market_matrix():
     # not unpacked into a used variable so it can't accidentally end up in
     # the public payload below. The desktop app (app_gui.py), which reads
     # its own private local DB, is the correct place to display this.
-    buys, exits, top10, closed_trades, fin_stmt, sectors, breakout_watchlist, _portfolio_risk, session_picks, market_regime = matrix.analyze_market()
+    #
+    # RESILIENT UNPACK: analyze_market()'s return tuple has changed shape
+    # more than once before (see app_gui.AnalysisWorker's own "8/9-rev
+    # returns" fix for the exact same signature) — a rigid positional
+    # unpack here means the NEXT time a field is added/removed, this is
+    # the one place that would take down the entire publish.py pipeline
+    # (ingest -> recompute -> export -> push) with a raw "too many/not
+    # enough values to unpack" traceback instead of degrading gracefully.
+    # Mirrors app_gui.AnalysisWorker's field-name-keyed padding so both
+    # callers tolerate the same range of historical/future shapes.
+    _am_result = matrix.analyze_market()
+    _FIELDS = ("buys", "exits", "top10", "closed_trades", "fin_stmt", "sectors",
+               "breakout_watchlist", "_portfolio_risk", "session_picks", "market_regime")
+    if not isinstance(_am_result, (list, tuple)):
+        _am_result = ()
+    _am_padded = list(_am_result) + [None] * (len(_FIELDS) - len(_am_result))
+    _am = dict(zip(_FIELDS, _am_padded))
+    buys               = _am["buys"]               or []
+    exits              = _am["exits"]              or []
+    top10              = _am["top10"]               or []
+    closed_trades      = _am["closed_trades"]       or []
+    fin_stmt           = _am["fin_stmt"]            or {"income": [], "balance": []}
+    sectors            = _am["sectors"]             or []
+    breakout_watchlist = _am["breakout_watchlist"]  or []
+    session_picks      = _am["session_picks"]       or {"short": [], "medium": [], "long": [],
+                                                          "achieved_today": [], "achieved_history": []}
+    market_regime      = _am["market_regime"]       or {"regime": "unknown", "benchmarks": {}}
     last_data_date = dbm.get_latest_market_date()
 
     # Overwrite with the FULL set of picks achieved on this session date,
