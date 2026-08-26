@@ -1,10 +1,10 @@
 {
   "ticker": "GOUR.CA",
-  "last_data_date": "2026-08-25",
+  "last_data_date": "2026-08-26",
   "sector": "Trade & Distributors",
   "matrix": {
     "Ticker": "GOUR.CA",
-    "Last Bar Date": "2026-08-25",
+    "Last Bar Date": "2026-08-26",
     "Days Stale": 0,
     "Sector": "Trade & Distributors",
     "Long-Term Setup Confirmed": false,
@@ -15,27 +15,27 @@
     "P/E Ratio": 27.74,
     "EPS": 0.5844,
     "Beta": null,
-    "Dividend Yield %": 1.35,
-    "Market Cap": 6430000000.0,
-    "1W Return %": -0.25,
-    "1M Return %": 13.71,
+    "Dividend Yield %": 1.34,
+    "Market Cap": 6470000000.0,
+    "1W Return %": 4.03,
+    "1M Return %": 16.2,
     "YTD Return %": null,
     "1Y Return %": null,
     "3Y Return %": null,
-    "External Rating Consensus": 1.75,
+    "External Rating Consensus": 1.125,
     "External Rating Note": null,
-    "Action": "🟡 HOLD / NEUTRAL (Signal unconfirmed: 3/5 factors passed, need 4 - low ADX (trend not confirmed), no squeeze release)",
-    "Rank Score": 21.3,
-    "Reward:Risk": 0.21,
-    "Win Rate Estimate (%)": 80.0,
+    "Action": "🟡 HOLD / NEUTRAL (Signal unconfirmed: 2/5 factors passed, need 4 - low ADX (trend not confirmed), weak session close (near day's low), no squeeze release)",
+    "Rank Score": 3.2,
+    "Reward:Risk": 0.19,
+    "Win Rate Estimate (%)": 60.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
-    "Current Price": 16.17,
-    "Target Entry (VWAP)": 14.7501,
-    "Suggested Stop-Loss": 13.9994,
+    "Current Price": 16.28,
+    "Target Entry (VWAP)": 15.0016,
+    "Suggested Stop-Loss": 14.0716,
     "Stop-Loss Reliable": true,
-    "Take-Profit Target": 16.6502,
-    "Resistance (52W High)": 16.93,
+    "Take-Profit Target": 16.7196,
+    "Resistance (52W High)": 17.15,
     "Support (52W Low)": 0.25,
     "Nearest Resistance": null,
     "Resistance Touches": null,
@@ -48,27 +48,27 @@
     "S1": 15.3433,
     "S2": 14.7067,
     "S3": 13.9133,
-    "Projected Gain (%)": 2.27,
-    "Pattern Conf (%)": 57.97,
-    "Projected Range 95%": "-0.09% to 7.43%",
+    "Projected Gain (%)": -2.86,
+    "Pattern Conf (%)": 6.11,
+    "Projected Range 95%": "-41.47% to 29.18%",
     "Kelly %": 0.0,
-    "Signal Reason": "🟡 HOLD / NEUTRAL (Signal unconfirmed: 3/5 factors passed, need 4 - low ADX (trend not confirmed), no squeeze release) | trend=Consolidation / Neutral | no decisive edge | weekly aligned | vol x2.77",
+    "Signal Reason": "🟡 HOLD / NEUTRAL (Signal unconfirmed: 2/5 factors passed, need 4 - low ADX (trend not confirmed), weak session close (near day's low), no squeeze release) | trend=Consolidation / Neutral | no decisive edge | weekly aligned | vol x2.89",
     "Score Breakdown": {
-      "pattern": 17.39,
-      "projected": 3.41,
-      "range": 4.77,
+      "pattern": 1.83,
+      "projected": -4.29,
+      "range": 4.74,
       "trend_bonus": 0.0,
       "confidence_weight": 0.77
     },
     "Regime": "Volatile Range",
     "Trend Class": "Consolidation / Neutral",
-    "RSI-14": 57.2,
-    "ADX-14": 18.7,
-    "Vol Z-Score": 2.59,
+    "RSI-14": 57.7,
+    "ADX-14": 19.3,
+    "Vol Z-Score": 2.53,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.1295,
+    "MACD Histogram": 0.1087,
     "Bollinger %B": 0.674,
-    "Avg Volume (20D)": 920905,
+    "Avg Volume (20D)": 1038801,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
@@ -219,7 +219,8 @@
       "2026-08-20 00:00:00",
       "2026-08-23 00:00:00",
       "2026-08-24 00:00:00",
-      "2026-08-25 00:00:00"
+      "2026-08-25 00:00:00",
+      "2026-08-26 00:00:00"
     ],
     "close": [
       0.25,
@@ -368,7 +369,8 @@
       15.81,
       15.98,
       16.07,
-      16.17
+      16.17,
+      16.28
     ],
     "open": [
       0.25,
@@ -517,7 +519,8 @@
       15.65,
       15.81,
       15.98,
-      16.07
+      16.07,
+      16.17
     ],
     "high": [
       0.25,
@@ -666,7 +669,8 @@
       15.96,
       16.14,
       16.15,
-      16.4
+      16.4,
+      17.15
     ],
     "low": [
       0.25,
@@ -815,7 +819,8 @@
       15.5,
       15.75,
       15.84,
-      15.7
+      15.7,
+      15.8
     ],
     "volume": [
       0,
@@ -964,7 +969,8 @@
       428210,
       500832,
       469777,
-      2550890
+      2550890,
+      3001854
     ],
     "vwap": [
       0.25,
@@ -1113,9 +1119,10 @@
       14.4179,
       14.4664,
       14.522,
-      14.7501
+      14.7501,
+      15.0016
     ],
-    "resistance": 16.93,
+    "resistance": 17.15,
     "support": 12.28,
     "pivots": {
       "pp": 16.1367,

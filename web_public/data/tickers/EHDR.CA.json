@@ -1,10 +1,10 @@
 {
   "ticker": "EHDR.CA",
-  "last_data_date": "2026-08-25",
+  "last_data_date": "2026-08-26",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "EHDR.CA",
-    "Last Bar Date": "2026-08-25",
+    "Last Bar Date": "2026-08-26",
     "Days Stale": 0,
     "Sector": "Real Estate",
     "Long-Term Setup Confirmed": false,
@@ -12,27 +12,27 @@
       "No confirmed higher-low swing structure yet",
       "No bullish pattern match at required quality"
     ],
-    "P/E Ratio": 29.23,
+    "P/E Ratio": 28.63,
     "EPS": 0.0999,
     "Beta": -0.17,
-    "Dividend Yield %": 3.37,
-    "Market Cap": 1960000000.0,
-    "1W Return %": -9.24,
-    "1M Return %": -3.06,
+    "Dividend Yield %": 3.42,
+    "Market Cap": 1920000000.0,
+    "1W Return %": -4.04,
+    "1M Return %": -2.73,
     "YTD Return %": 13.55,
-    "1Y Return %": 52.0,
-    "3Y Return %": 120.08,
-    "External Rating Consensus": -0.625,
+    "1Y Return %": 52.41,
+    "3Y Return %": 119.23,
+    "External Rating Consensus": -0.5,
     "External Rating Note": null,
-    "Action": "🟡 HOLD / NEUTRAL",
-    "Rank Score": 20.1,
-    "Reward:Risk": 0.23,
-    "Win Rate Estimate (%)": 20.0,
+    "Action": "🟡 HOLD / NEUTRAL (Poor reward:risk 0.24x < 0.80x floor)",
+    "Rank Score": 7.0,
+    "Reward:Risk": 0.24,
+    "Win Rate Estimate (%)": 40.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 2.85,
     "Target Entry (VWAP)": 2.85,
-    "Suggested Stop-Loss": 2.5291,
+    "Suggested Stop-Loss": 2.5435,
     "Stop-Loss Reliable": true,
     "Take-Profit Target": 2.9269,
     "Resistance (52W High)": 3.2,
@@ -48,32 +48,31 @@
     "S1": 2.84,
     "S2": 2.71,
     "S3": 2.53,
-    "Projected Gain (%)": -1.18,
-    "Pattern Conf (%)": 50.72,
-    "Projected Range 95%": "-3.44% to 0.65%",
+    "Projected Gain (%)": -0.94,
+    "Pattern Conf (%)": 5.46,
+    "Projected Range 95%": "-15.58% to 13.04%",
     "Kelly %": 0.0,
-    "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Weak Bullish (Forming) | no decisive edge | weekly aligned",
+    "Signal Reason": "🟡 HOLD / NEUTRAL (Poor reward:risk 0.24x < 0.80x floor) | trend=Consolidation / Neutral | no decisive edge | weekly aligned",
     "Score Breakdown": {
-      "pattern": 15.22,
-      "projected": -1.77,
+      "pattern": 1.64,
+      "projected": -1.41,
       "range": 4.38,
       "trend_bonus": 0.0,
       "confidence_weight": 1.0
     },
     "Regime": "Volatile Range",
-    "Trend Class": "Weak Bullish (Forming)",
+    "Trend Class": "Consolidation / Neutral",
     "RSI-14": 50.1,
-    "ADX-14": 20.7,
-    "Vol Z-Score": -0.66,
-    "MACD Signal": "🔴 Bearish Cross",
-    "MACD Histogram": -0.0098,
-    "Bollinger %B": 0.535,
-    "Avg Volume (20D)": 12239720,
+    "ADX-14": 19.7,
+    "Vol Z-Score": -0.74,
+    "MACD Signal": "Bearish",
+    "MACD Histogram": -0.0177,
+    "Bollinger %B": 0.53,
+    "Avg Volume (20D)": 11686434,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
     "dates": [
-      "2025-08-25 00:00:00",
       "2025-08-26 00:00:00",
       "2025-08-27 00:00:00",
       "2025-08-28 00:00:00",
@@ -327,10 +326,10 @@
       "2026-08-20 00:00:00",
       "2026-08-23 00:00:00",
       "2026-08-24 00:00:00",
-      "2026-08-25 00:00:00"
+      "2026-08-25 00:00:00",
+      "2026-08-26 00:00:00"
     ],
     "close": [
-      1.855,
       1.875,
       1.87,
       1.95,
@@ -584,10 +583,10 @@
       2.96,
       2.97,
       2.92,
+      2.85,
       2.85
     ],
     "open": [
-      1.84,
       1.855,
       1.9,
       1.88,
@@ -841,10 +840,10 @@
       2.97,
       2.96,
       2.97,
-      2.92
+      2.92,
+      2.85
     ],
     "high": [
-      1.87,
       1.92,
       1.905,
       1.965,
@@ -1098,10 +1097,10 @@
       3.02,
       3.04,
       3.0,
-      2.95
+      2.95,
+      2.9
     ],
     "low": [
-      1.84,
       1.85,
       1.86,
       1.865,
@@ -1355,10 +1354,10 @@
       2.89,
       2.93,
       2.88,
-      2.85
+      2.85,
+      2.84
     ],
     "volume": [
-      1330000,
       5660000,
       3330000,
       14770000,
@@ -1612,29 +1611,29 @@
       9130041,
       5588742,
       8696034,
-      5864978
+      5864978,
+      4500387
     ],
     "vwap": [
-      1.855,
-      1.8766,
-      1.8772,
-      1.9063,
-      1.9112,
-      1.9114,
-      1.9104,
-      1.9061,
-      1.9037,
-      1.9019,
-      1.9003,
-      1.8993,
-      1.8973,
-      1.8966,
-      1.895,
-      1.8924,
-      1.8909,
-      1.8885,
-      1.8857,
-      1.884,
+      1.8817,
+      1.8804,
+      1.9092,
+      1.9136,
+      1.9137,
+      1.9124,
+      1.9077,
+      1.9052,
+      1.9032,
+      1.9016,
+      1.9005,
+      1.8984,
+      1.8976,
+      1.896,
+      1.8933,
+      1.8917,
+      1.8892,
+      1.8863,
+      1.8846,
       1.8808,
       1.8793,
       1.8782,
@@ -1869,7 +1868,8 @@
       2.9229,
       2.9195,
       2.9199,
-      2.9219
+      2.9219,
+      2.9313
     ],
     "resistance": 3.2,
     "support": 2.155,
@@ -1886,8 +1886,8 @@
       {
         "pattern": "Descending Triangle",
         "direction": "bearish",
-        "start_index": 135,
-        "end_index": 176,
+        "start_index": 134,
+        "end_index": 175,
         "start_date": "2026-03-03",
         "end_date": "2026-05-01",
         "levels": {
@@ -1897,13 +1897,13 @@
           "apex_price": 2.1179
         },
         "quality": 0.75,
-        "apex_index": 231.50561797752826
+        "apex_index": 230.5056179775283
       },
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 138,
-        "end_index": 177,
+        "start_index": 137,
+        "end_index": 176,
         "start_date": "2026-03-06",
         "end_date": "2026-05-02",
         "levels": {
@@ -1914,7 +1914,7 @@
           "apex_price": 2.2924
         },
         "quality": 1.0,
-        "apex_index": 198.35294117647058
+        "apex_index": 197.35294117647058
       }
     ]
   }

@@ -1,10 +1,10 @@
 {
   "ticker": "KORA.CA",
-  "last_data_date": "2026-08-25",
+  "last_data_date": "2026-08-26",
   "sector": "Construction & Engineering",
   "matrix": {
     "Ticker": "KORA.CA",
-    "Last Bar Date": "2026-08-25",
+    "Last Bar Date": "2026-08-26",
     "Days Stale": 0,
     "Sector": "Construction & Engineering",
     "Long-Term Setup Confirmed": false,
@@ -16,23 +16,23 @@
     "EPS": null,
     "Beta": null,
     "Dividend Yield %": null,
-    "Market Cap": 7650000000.0,
-    "1W Return %": -1.17,
+    "Market Cap": 7610000000.0,
+    "1W Return %": 0.9,
     "1M Return %": 0.9,
     "YTD Return %": 1590.0,
     "1Y Return %": 1590.0,
     "3Y Return %": null,
-    "External Rating Consensus": 1.25,
+    "External Rating Consensus": 1.625,
     "External Rating Note": null,
-    "Action": "🟡 HOLD / NEUTRAL (Poor reward:risk 0.17x < 0.80x floor)",
-    "Rank Score": 22.3,
-    "Reward:Risk": 0.17,
-    "Win Rate Estimate (%)": 100.0,
+    "Action": "🟡 HOLD / NEUTRAL (Signal unconfirmed: 2/5 factors passed, need 4 - low volume (RVOL/Z-score not confirmed), below VWAP, no squeeze release)",
+    "Rank Score": -53.5,
+    "Reward:Risk": 0.18,
+    "Win Rate Estimate (%)": 25.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 3.38,
-    "Target Entry (VWAP)": 3.3663,
-    "Suggested Stop-Loss": 2.8747,
+    "Target Entry (VWAP)": 3.3661,
+    "Suggested Stop-Loss": 2.9037,
     "Stop-Loss Reliable": true,
     "Take-Profit Target": 3.4713,
     "Resistance (52W High)": 3.87,
@@ -48,14 +48,14 @@
     "S1": 3.3333,
     "S2": 3.2467,
     "S3": 3.1833,
-    "Projected Gain (%)": 1.81,
-    "Pattern Conf (%)": 45.14,
-    "Projected Range 95%": "0.45% to 3.16%",
-    "Kelly %": 25.0,
-    "Signal Reason": "🟡 HOLD / NEUTRAL (Poor reward:risk 0.17x < 0.80x floor) | trend=Weak Bullish (Forming) | no decisive edge | weekly aligned | vol x1.05",
+    "Projected Gain (%)": -46.77,
+    "Pattern Conf (%)": 35.08,
+    "Projected Range 95%": "-94.03% to 2.47%",
+    "Kelly %": 0.0,
+    "Signal Reason": "🟡 HOLD / NEUTRAL (Signal unconfirmed: 2/5 factors passed, need 4 - low volume (RVOL/Z-score not confirmed), below VWAP, no squeeze release) | trend=Weak Bullish (Forming) | no decisive edge | weekly aligned",
     "Score Breakdown": {
-      "pattern": 13.54,
-      "projected": 2.71,
+      "pattern": 10.52,
+      "projected": -70.16,
       "range": 4.33,
       "trend_bonus": 0.0,
       "confidence_weight": 1.0
@@ -63,17 +63,16 @@
     "Regime": "Volatile Range",
     "Trend Class": "Weak Bullish (Forming)",
     "RSI-14": 56.5,
-    "ADX-14": 24.1,
-    "Vol Z-Score": 0.06,
+    "ADX-14": 23.5,
+    "Vol Z-Score": -0.14,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.048,
+    "MACD Histogram": 0.0344,
     "Bollinger %B": 0.63,
-    "Avg Volume (20D)": 15556062,
+    "Avg Volume (20D)": 14567679,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
     "dates": [
-      "2025-08-25 00:00:00",
       "2025-08-26 00:00:00",
       "2025-08-27 00:00:00",
       "2025-08-28 00:00:00",
@@ -322,10 +321,10 @@
       "2026-08-20 00:00:00",
       "2026-08-23 00:00:00",
       "2026-08-24 00:00:00",
-      "2026-08-25 00:00:00"
+      "2026-08-25 00:00:00",
+      "2026-08-26 00:00:00"
     ],
     "close": [
-      0.2,
       0.2,
       0.2,
       0.2,
@@ -574,10 +573,10 @@
       3.39,
       3.42,
       3.4,
+      3.38,
       3.38
     ],
     "open": [
-      0.2,
       0.2,
       0.2,
       0.2,
@@ -826,10 +825,10 @@
       3.35,
       3.39,
       3.42,
-      3.4
+      3.4,
+      3.38
     ],
     "high": [
-      0.2,
       0.2,
       0.2,
       0.2,
@@ -1078,10 +1077,10 @@
       3.4,
       3.45,
       3.43,
-      3.4
+      3.4,
+      3.38
     ],
     "low": [
-      0.2,
       0.2,
       0.2,
       0.2,
@@ -1330,10 +1329,10 @@
       3.32,
       3.36,
       3.38,
+      3.33,
       3.33
     ],
     "volume": [
-      0,
       0,
       0,
       0,
@@ -1582,10 +1581,10 @@
       22755334,
       18534730,
       13238846,
-      16349204
+      16349204,
+      12867642
     ],
     "vwap": [
-      0.2,
       0.2,
       0.2,
       0.2,
@@ -1834,7 +1833,8 @@
       3.3798,
       3.3829,
       3.3727,
-      3.3663
+      3.3663,
+      3.3661
     ],
     "resistance": 3.87,
     "support": 0.2,

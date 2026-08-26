@@ -1,40 +1,40 @@
 {
   "ticker": "AMII.CA",
-  "last_data_date": "2026-08-25",
+  "last_data_date": "2026-08-26",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "AMII.CA",
-    "Last Bar Date": "2026-08-25",
+    "Last Bar Date": "2026-08-26",
     "Days Stale": 0,
     "Sector": "Real Estate",
     "Long-Term Setup Confirmed": true,
     "Long-Term Setup Reasons": [
       "Not enough history for a long-term setup check",
-      "Substituted provider 1Y return (162.39%) for pattern/swing check - insufficient local history"
+      "Substituted provider 1Y return (170.6%) for pattern/swing check - insufficient local history"
     ],
-    "P/E Ratio": 2606.78,
+    "P/E Ratio": 2525.42,
     "EPS": 0.0059,
     "Beta": -0.37,
     "Dividend Yield %": null,
     "Market Cap": 1150000000.0,
-    "1W Return %": 10.35,
-    "1M Return %": 23.1,
-    "YTD Return %": 88.11,
-    "1Y Return %": 162.39,
-    "3Y Return %": 972.68,
-    "External Rating Consensus": 1.75,
+    "1W Return %": 10.58,
+    "1M Return %": 24.45,
+    "YTD Return %": 88.36,
+    "1Y Return %": 170.6,
+    "3Y Return %": 949.86,
+    "External Rating Consensus": 1.875,
     "External Rating Note": null,
-    "Action": "📈 ACCUMULATE",
-    "Rank Score": 12.8,
+    "Action": "🟡 HOLD / NEUTRAL (Signal unconfirmed: 3/5 factors passed, need 4 - low volume (RVOL/Z-score not confirmed), no squeeze release)",
+    "Rank Score": 7.8,
     "Reward:Risk": 1.24,
     "Win Rate Estimate (%)": 50.0,
     "Win Rate Source": "prior_50_50",
     "Backtested Sample Size": null,
-    "Current Price": 15.35,
-    "Target Entry (VWAP)": 14.6883,
-    "Suggested Stop-Loss": 13.3117,
+    "Current Price": 15.37,
+    "Target Entry (VWAP)": 14.7964,
+    "Suggested Stop-Loss": 13.3487,
     "Stop-Loss Reliable": true,
-    "Take-Profit Target": 18.0054,
+    "Take-Profit Target": 18.0042,
     "Resistance (52W High)": 17.25,
     "Support (52W Low)": 11.8,
     "Nearest Resistance": null,
@@ -51,24 +51,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 4.84,
-    "Signal Reason": "📈 ACCUMULATE | trend=Very Strong Bullish Trend | confirmed | weekly aligned | positive money flow",
+    "Kelly %": 4.83,
+    "Signal Reason": "🟡 HOLD / NEUTRAL (Signal unconfirmed: 3/5 factors passed, need 4 - low volume (RVOL/Z-score not confirmed), no squeeze release) | trend=Very Strong Bullish Trend | no decisive edge | weekly aligned",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
-      "range": 3.26,
-      "trend_bonus": 10.0,
+      "range": 3.28,
+      "trend_bonus": 0.0,
       "confidence_weight": 0.5
     },
     "Regime": "N/A",
     "Trend Class": "Very Strong Bullish Trend",
-    "RSI-14": 64.7,
-    "ADX-14": 52.8,
-    "Vol Z-Score": -0.7,
+    "RSI-14": 64.9,
+    "ADX-14": 50.5,
+    "Vol Z-Score": -0.14,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0446,
-    "Bollinger %B": 0.809,
-    "Avg Volume (20D)": 5424388,
+    "MACD Histogram": 0.0445,
+    "Bollinger %B": 0.786,
+    "Avg Volume (20D)": 5352347,
     "Data Confidence": "Low (<3 Months)"
   },
   "chart_history": {
@@ -93,7 +93,8 @@
       "2026-08-20 00:00:00",
       "2026-08-23 00:00:00",
       "2026-08-24 00:00:00",
-      "2026-08-25 00:00:00"
+      "2026-08-25 00:00:00",
+      "2026-08-26 00:00:00"
     ],
     "close": [
       12.08,
@@ -116,7 +117,8 @@
       15.18,
       15.5,
       15.38,
-      15.35
+      15.35,
+      15.37
     ],
     "open": [
       12.5,
@@ -139,7 +141,8 @@
       14.03,
       15.18,
       15.5,
-      15.38
+      15.38,
+      15.35
     ],
     "high": [
       13.0,
@@ -162,7 +165,8 @@
       15.3,
       16.1,
       15.68,
-      15.42
+      15.42,
+      15.4
     ],
     "low": [
       12.07,
@@ -185,7 +189,8 @@
       13.9,
       15.33,
       15.0,
-      14.81
+      14.81,
+      14.5
     ],
     "volume": [
       5260726,
@@ -208,7 +213,8 @@
       12811621,
       9957664,
       1454151,
-      2464102
+      2464102,
+      4771322
     ],
     "vwap": [
       12.3833,
@@ -231,7 +237,8 @@
       14.4495,
       14.5577,
       14.5681,
-      14.6883
+      14.6883,
+      14.7964
     ],
     "resistance": 17.25,
     "support": 13.805,

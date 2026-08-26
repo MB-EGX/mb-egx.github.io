@@ -1,11 +1,10 @@
 {
   "ticker": ".EGREAL",
-  "last_data_date": "2026-08-25",
+  "last_data_date": "2026-08-26",
   "sector": "General / Diversified",
   "matrix": null,
   "chart_history": {
     "dates": [
-      "2025-08-25 00:00:00",
       "2025-08-26 00:00:00",
       "2025-08-27 00:00:00",
       "2025-08-28 00:00:00",
@@ -234,10 +233,10 @@
       "2026-08-20 00:00:00",
       "2026-08-23 00:00:00",
       "2026-08-24 00:00:00",
-      "2026-08-25 00:00:00"
+      "2026-08-25 00:00:00",
+      "2026-08-26 00:00:00"
     ],
     "close": [
-      3330.43,
       3302.7,
       3325.07,
       3364.27,
@@ -466,10 +465,10 @@
       6419.7,
       6523.81,
       6452.03,
-      6426.01
+      6426.01,
+      6466.77
     ],
     "open": [
-      3335.34,
       3330.43,
       3302.7,
       3325.07,
@@ -698,10 +697,10 @@
       6416.16,
       6419.7,
       6525.78,
-      6452.58
+      6452.58,
+      6426.48
     ],
     "high": [
-      3353.97,
       3346.59,
       3325.07,
       3364.27,
@@ -930,10 +929,10 @@
       6436.78,
       6524.34,
       6541.57,
-      6459.04
+      6459.04,
+      6466.77
     ],
     "low": [
-      3330.43,
       3288.19,
       3296.21,
       3314.89,
@@ -1162,7 +1161,8 @@
       6358.11,
       6419.7,
       6430.12,
-      6398.92
+      6398.92,
+      6413.78
     ],
     "volume": [
       0,
@@ -1397,7 +1397,6 @@
       0
     ],
     "vwap": [
-      3330.43,
       3302.7,
       3325.07,
       3364.27,
@@ -1626,7 +1625,8 @@
       6419.7,
       6523.81,
       6452.03,
-      6426.01
+      6426.01,
+      6466.77
     ],
     "resistance": 6557.28,
     "support": 5482.245,
@@ -1643,8 +1643,8 @@
       {
         "pattern": "Price Channel (Rising)",
         "direction": "bullish",
-        "start_index": 65,
-        "end_index": 94,
+        "start_index": 64,
+        "end_index": 93,
         "start_date": "2025-11-26",
         "end_date": "2026-01-03",
         "levels": {
@@ -1658,8 +1658,8 @@
       {
         "pattern": "Double Bottom",
         "direction": "bullish",
-        "start_index": 83,
-        "end_index": 96,
+        "start_index": 82,
+        "end_index": 95,
         "start_date": "2025-12-18",
         "end_date": "2026-01-05",
         "levels": {
@@ -1673,8 +1673,8 @@
       {
         "pattern": "Ascending Triangle",
         "direction": "bullish",
-        "start_index": 96,
-        "end_index": 140,
+        "start_index": 95,
+        "end_index": 139,
         "start_date": "2026-01-05",
         "end_date": "2026-03-06",
         "levels": {
@@ -1684,13 +1684,13 @@
           "apex_price": 5488.92
         },
         "quality": 0.94,
-        "apex_index": 454.3560356540739
+        "apex_index": 453.3560356540739
       },
       {
         "pattern": "Price Channel (Flat)",
         "direction": "neutral",
-        "start_index": 96,
-        "end_index": 147,
+        "start_index": 95,
+        "end_index": 146,
         "start_date": "2026-01-05",
         "end_date": "2026-03-16",
         "levels": {
@@ -1704,8 +1704,8 @@
       {
         "pattern": "Double Top",
         "direction": "bearish",
-        "start_index": 119,
-        "end_index": 140,
+        "start_index": 118,
+        "end_index": 139,
         "start_date": "2026-02-06",
         "end_date": "2026-03-06",
         "levels": {
@@ -1719,8 +1719,8 @@
       {
         "pattern": "Price Channel (Falling)",
         "direction": "bearish",
-        "start_index": 119,
-        "end_index": 187,
+        "start_index": 118,
+        "end_index": 186,
         "start_date": "2026-02-06",
         "end_date": "2026-05-13",
         "levels": {
@@ -1734,8 +1734,8 @@
       {
         "pattern": "Descending Triangle",
         "direction": "bearish",
-        "start_index": 137,
-        "end_index": 151,
+        "start_index": 136,
+        "end_index": 150,
         "start_date": "2026-03-03",
         "end_date": "2026-03-25",
         "levels": {
@@ -1745,7 +1745,7 @@
           "apex_price": 4180.416
         },
         "quality": 0.77,
-        "apex_index": 153.2545707350049
+        "apex_index": 152.25457073500493
       }
     ]
   }
