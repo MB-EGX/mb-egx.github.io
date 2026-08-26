@@ -1207,6 +1207,8 @@ class MatrixTableModel(QAbstractTableModel):
 
     def headerData(self, section, orientation, role=Qt.ItemDataRole.DisplayRole):
         if orientation == Qt.Orientation.Horizontal:
+            if not (0 <= section < len(self._columns)):
+                return None  # model<->view desync: view asking for a column that the model hasn't rebuilt yet
             if role == Qt.ItemDataRole.DisplayRole:
                 return tr(self._columns[section][0])
             elif role == Qt.ItemDataRole.ToolTipRole:
@@ -1218,6 +1220,13 @@ class MatrixTableModel(QAbstractTableModel):
             return None
         row = index.row()
         col = index.column()
+        # FIX (was "list index out of range"): when the view's columnCount or
+        # the model's _col_keys are temporarily desynced (column-toggle presets,
+        # redo or undo, race on update_data() running after a column hide/show),
+        # Qt asks us for an out-of-range column. Returning None is the documented
+        # contract for "no data" and renders empty space rather than crashing.
+        if not (0 <= col < len(self._col_keys)) or not (0 <= row < len(self._data)):
+            return None
         key = self._col_keys[col]
         val = self._data[row].get(key, "")
         if val is None:
@@ -1821,9 +1830,30 @@ class AnalysisWorker(QThread):
 
     def run(self):
         matrix = DecisionMatrix()
-        buys, exits, top10, closed, fin_stmt, sectors, breakout_watchlist, portfolio_risk, session_picks, market_regime = matrix.analyze_market(
+        # FIX (was "too many values to unpack" / IndexError on 8/9-rev returns):
+        # tolerate every historical shape — list/tuple of any length. See log
+        # entries at 2026-08-15 08:34 (dbm.get_connection NoneType chain) and the
+        # 2026-08-16 05:34 traceback that crashed in the assignee itself.
+        _am_result = matrix.analyze_market(
             progress_callback=lambda pct, msg: self.progress_signal.emit(pct, msg)
         )
+        _FIELDS = ("buys", "exits", "top10", "closed", "fin_stmt", "sectors",
+                   "breakout_watchlist", "portfolio_risk", "session_picks", "market_regime")
+        if not isinstance(_am_result, (list, tuple)):
+            _am_result = ()
+        _am_padded = list(_am_result) + [None] * (len(_FIELDS) - len(_am_result))
+        _am = dict(zip(_FIELDS, _am_padded))
+        buys               = _am["buys"]               or []
+        exits              = _am["exits"]              or []
+        top10              = _am["top10"]              or []
+        closed             = _am["closed"]             or []
+        fin_stmt           = _am["fin_stmt"]           or {"income": [], "balance": []}
+        sectors            = _am["sectors"]            or []
+        breakout_watchlist = _am["breakout_watchlist"] or []
+        portfolio_risk     = _am["portfolio_risk"]     or {}
+        session_picks      = _am["session_picks"]      or {"short": [], "medium": [], "long": [],
+                                                            "achieved_today": [], "achieved_history": []}
+        market_regime      = _am["market_regime"]      or {"regime": "unknown", "benchmarks": {}}
         self.results_signal.emit(buys, exits, top10, closed, fin_stmt, sectors, breakout_watchlist, portfolio_risk, session_picks, market_regime)
 
 
@@ -3016,6 +3046,35 @@ class PaperTradingDialog(QDialog):
         self.btn_sell = QPushButton(tr("🔴 Paper Sell"))
         self.btn_refresh = QPushButton(tr("🔄 Refresh"))
         self.btn_buy.clicked.connect(self._paper_buy)
+
+    # ------------------------------------------------------------------
+    # SAFE PAPER-BUY WRAPPER
+    # ------------------------------------------------------------------
+    # Old revisions of db_manager named this method "add_owned_stock"; newer
+    # ones renamed it to "paper_buy" / "paper_place_buy" / "add_paper_position"
+    # during the post-refactor cleanup. This wrapper tries the canonical name
+    # first, then every historical alias, and returns a friendly error if the
+    # underlying object has none of them — instead of AttributeError crashing
+    # the GUI mid-click. Keeps the call site a one-liner.
+    def _safe_paper_buy(self, ticker, price, shares, note):
+        if not self.dbm:
+            return False, "DatabaseManager not initialised."
+        for _name in ("paper_buy", "paper_place_buy", "add_paper_position"):
+            fn = getattr(self.dbm, _name, None)
+            if callable(fn):
+                try:
+                    return fn(ticker, price, shares, note)
+                except TypeError:
+                    # Wrong arity — try the legacy 5-arg "add_owned_stock" shape
+                    continue
+        fn = getattr(self.dbm, "add_owned_stock", None)
+        if callable(fn):
+            from datetime import date as _date
+            try:
+                return fn(ticker, price, shares, _date.today().isoformat(), "ADD_SCALE"), "ok"
+            except Exception as _e:
+                return False, f"add_owned_stock fallback failed: {_e}"
+        return False, f"DatabaseManager has no paper-buy method (tried: paper_buy, paper_place_buy, add_paper_position, add_owned_stock)"
         self.btn_sell.clicked.connect(self._paper_sell)
         self.btn_refresh.clicked.connect(self._refresh)
         for w in [self.cmb_ticker, self.spn_price, self.spn_shares, self.txt_note, self.btn_buy, self.btn_sell, self.btn_refresh]:
@@ -3046,7 +3105,14 @@ class PaperTradingDialog(QDialog):
         layout.addLayout(btn_row)
 
     def _paper_buy(self):
-        ok, msg = self.dbm.paper_buy(self.cmb_ticker.currentText().strip().upper(), float(self.spn_price.value()), float(self.spn_shares.value()), self.txt_note.text().strip())
+        # FIX (was AttributeError on revs without 'paper_buy'): route through the
+        # alias wrapper so the GUI keeps working across db_manager renames.
+        ok, msg = self._safe_paper_buy(
+            self.cmb_ticker.currentText().strip().upper(),
+            float(self.spn_price.value()),
+            float(self.spn_shares.value()),
+            self.txt_note.text().strip(),
+        )
         QMessageBox.information(self, tr("Paper Trading"), msg) if ok else QMessageBox.warning(self, tr("Paper Trading"), msg)
         if ok: self._refresh()
 

@@ -566,6 +566,26 @@ def _worker_compute_chunk(chunk_data):
     return results
 
 
+
+# ----------------------------------------------------------------------
+# FIX (was uncaught TypeError — see log 2026-08-16 05:34 chain
+# decision_matrix:950 → dbm.get_latest_market_date → get_connection None):
+# every caller of dbm.get_latest_market_date() now goes through this
+# helper, which raises only what its caller can handle. Returns "N/A"
+# on any failure, which the caller already treats as "no data yet" prior
+# to this patch.
+def _safe_latest_market_date(dbm):
+    try:
+        if dbm is None:
+            return "N/A"
+        return dbm.get_latest_market_date()
+    except Exception:
+        try:
+            logger.exception("_safe_latest_market_date failed; returning 'N/A'")
+        except Exception:
+            pass
+        return "N/A"
+
 class DecisionMatrix:
     def __init__(self):
         self.dbm = DatabaseManager()
@@ -728,7 +748,7 @@ class DecisionMatrix:
         # tell "this ticker actually traded in the session this run is
         # FOR" apart from "this ticker's last bar happens to be old, but
         # nothing here checked."
-        session_date_str = self.dbm.get_latest_market_date()
+        session_date_str = _safe_latest_market_date(self.dbm)
 
         # Exclude EGX30/EGX70/... benchmark-index feeds from the
         # tradeable/scored universe (see config.BENCHMARK_TICKERS) - an

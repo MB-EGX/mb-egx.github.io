@@ -228,6 +228,35 @@ class DatabaseManager:
                 DatabaseManager._schema_initialized = True
 
     def get_connection(self):
+        """Return the live DuckDB connection.
+
+        FIX (was TypeError: 'NoneType' object does not support the context
+        manager protocol — see log at 2026-08-16 05:34 and at
+        decision_matrix:950 → db_manager:442): in the original code this
+        method returned ``DatabaseManager._shared_connection`` verbatim, so
+        any caller that hit get_connection() before __init__ had finished,
+        or after close_connection() had been called by another thread, got
+        back None and crashed on the ``with self.get_connection() as conn``
+        line at the bottom of every query method.
+
+        The fix: lazy-init if shared connection is still None at request
+        time (cheap, idempotent, thread-safe via the existing _init_lock),
+        and reopen on next call after deliberately-closed instances.
+        """
+        if DatabaseManager._shared_connection is None:
+            with DatabaseManager._init_lock:
+                if DatabaseManager._shared_connection is None:
+                    try:
+                        DatabaseManager._shared_connection = _ConnectionWrapper(
+                            DatabaseManager._db_path_for_instance(self),
+                            on_retry=lambda: None,
+                        )
+                    except Exception as _e:
+                        logger.error(f"get_connection lazy-init failed: {_e}")
+                        raise
+                if not DatabaseManager._schema_initialized:
+                    self._init_db()
+                    DatabaseManager._schema_initialized = True
         return DatabaseManager._shared_connection
 
     @classmethod
@@ -591,15 +620,20 @@ class DatabaseManager:
         return norm in {DatabaseManager.normalize_symbol(b) for b in BENCHMARK_TICKERS}
 
     def get_latest_market_date(self) -> str:
-        with self.get_connection() as conn:
-            try:
+        # FIX (was TypeError: 'NoneType' object does not support the context
+        # manager — see log 2026-08-16 line 176): defense in depth. get_connection()
+        # is now lazy-init (won't return None), but add an explicit try so any
+        # future regression here returns "N/A" instead of crashing a downstream
+        # worker.
+        try:
+            with self.get_connection() as conn:
                 row = conn.cursor().execute("SELECT MAX(date) FROM market_data;").fetchone()
                 if row and row[0]:
                     return str(row[0])
                 return "N/A"
-            except Exception as e:
-                logger.error(f"get_latest_market_date() failed: {e}")
-                return "N/A"
+        except Exception as e:
+            logger.error(f"get_latest_market_date() failed (defensive): {e}")
+            return "N/A"
 
     # =========================================================================
     # SESSION PICKS — see session_picks.py for the selection/achievement logic
