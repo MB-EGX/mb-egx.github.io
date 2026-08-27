@@ -330,6 +330,32 @@ class DatabaseManager:
                     is_demo BOOLEAN DEFAULT FALSE
                 );
             """)
+            # --- Trade-performance / journal migration (Performance feature) ---
+            # ``id`` gives every closed trade a stable handle a journal edit
+            # (tags/notes) can target later - portfolio_closed had none
+            # before, so old rows are backfilled once via the sequence
+            # rather than getting a NULL id forever. ``entry_action``/
+            # ``sector`` are captured at BUY time (see add_owned_stock) and
+            # carried through to the closed row on sale (see record_sale) -
+            # that's what lets the Performance view break results down by
+            # "which Action Matrix signal actually paid off" and by sector,
+            # without having to re-derive either after the fact. ``source``
+            # distinguishes a trade the app itself tracked ('app') from one
+            # a user logs by hand for a position never opened through the
+            # app ('manual') - see add_manual_closed_trade(). Every ADD
+            # COLUMN is IF NOT EXISTS so this is safe to run against a
+            # database that already has these columns (every startup).
+            conn.execute("CREATE SEQUENCE IF NOT EXISTS portfolio_closed_id_seq START 1;")
+            conn.execute("ALTER TABLE portfolio_closed ADD COLUMN IF NOT EXISTS id UBIGINT;")
+            conn.execute("UPDATE portfolio_closed SET id = nextval('portfolio_closed_id_seq') WHERE id IS NULL;")
+            conn.execute("ALTER TABLE portfolio_closed ADD COLUMN IF NOT EXISTS entry_action VARCHAR;")
+            conn.execute("ALTER TABLE portfolio_closed ADD COLUMN IF NOT EXISTS sector VARCHAR;")
+            conn.execute("ALTER TABLE portfolio_closed ADD COLUMN IF NOT EXISTS tags VARCHAR;")
+            conn.execute("ALTER TABLE portfolio_closed ADD COLUMN IF NOT EXISTS notes VARCHAR;")
+            conn.execute("ALTER TABLE portfolio_closed ADD COLUMN IF NOT EXISTS source VARCHAR;")
+            conn.execute("UPDATE portfolio_closed SET source = 'app' WHERE source IS NULL;")
+            conn.execute("ALTER TABLE portfolio_owned ADD COLUMN IF NOT EXISTS entry_action VARCHAR;")
+            conn.execute("ALTER TABLE portfolio_owned ADD COLUMN IF NOT EXISTS sector VARCHAR;")
             conn.execute("""
                 CREATE TABLE IF NOT EXISTS account_cash (
                     id INTEGER PRIMARY KEY,
@@ -1381,7 +1407,20 @@ class DatabaseManager:
                 logger.error(f"get_unique_tickers() failed: {e}")
                 return []
 
-    def add_owned_stock(self, ticker: str, buy_price: float, shares: float, purchase_date: str, mode="ADD_SCALE", is_demo=False):
+    def add_owned_stock(self, ticker: str, buy_price: float, shares: float, purchase_date: str, mode="ADD_SCALE", is_demo=False,
+                         entry_action: str | None = None, sector: str | None = None):
+        """``entry_action``/``sector`` are optional - callers that don't pass
+        them (every pre-existing call site) behave exactly as before. When
+        the caller DOES pass them (a Buy placed from the Action Matrix, which
+        already knows that row's Action + Sector), they're captured on the
+        open position and carried through to portfolio_closed on sale (see
+        record_sale) so the Performance view can report "did following each
+        signal actually pay off" without re-deriving anything after the
+        fact. A scale-in (the ADD_SCALE branch, existing-position case)
+        deliberately does NOT overwrite an already-recorded entry_action/
+        sector with the new fill's values - the position's ORIGINAL entry
+        thesis is what the journal should reflect, not whichever signal
+        happened to be showing on a later top-up."""
         ticker = self.normalize_symbol(ticker)
         if mode != "OVERWRITE" and float(shares) <= 0:
             if _LANG == "AR":
@@ -1391,8 +1430,8 @@ class DatabaseManager:
         with self.get_connection() as conn:
             if mode == "OVERWRITE":
                 conn.execute(
-                    "INSERT OR REPLACE INTO portfolio_owned (ticker, buy_price, shares, purchase_date, is_demo) VALUES (?, ?, ?, ?, ?);",
-                    (ticker, float(buy_price), float(shares), str(purchase_date), bool(is_demo)),
+                    "INSERT OR REPLACE INTO portfolio_owned (ticker, buy_price, shares, purchase_date, is_demo, entry_action, sector) VALUES (?, ?, ?, ?, ?, ?, ?);",
+                    (ticker, float(buy_price), float(shares), str(purchase_date), bool(is_demo), entry_action, sector),
                 )
                 if _LANG == "AR":
                     return (True, f"✏️ تم تصحيح / استبدال المركز لـ {ticker}:\nتم تعيينه إلى {shares:,.4f} سهم بالضبط بسعر {buy_price:.4f} جنيه.")
@@ -1401,8 +1440,8 @@ class DatabaseManager:
                 row = conn.cursor().execute("SELECT buy_price, shares, is_demo FROM portfolio_owned WHERE ticker = ?;", (ticker,)).fetchone()
                 if not row:
                     conn.execute(
-                        "INSERT INTO portfolio_owned (ticker, buy_price, shares, purchase_date, is_demo) VALUES (?, ?, ?, ?, ?);",
-                        (ticker, float(buy_price), float(shares), str(purchase_date), bool(is_demo)),
+                        "INSERT INTO portfolio_owned (ticker, buy_price, shares, purchase_date, is_demo, entry_action, sector) VALUES (?, ?, ?, ?, ?, ?, ?);",
+                        (ticker, float(buy_price), float(shares), str(purchase_date), bool(is_demo), entry_action, sector),
                     )
                     # Cash flow: a real buy spends cash AND pays the real
                     # EGX brokerage fee (config.TRANSACTION_FEE_PCT) - this
@@ -1486,11 +1525,12 @@ class DatabaseManager:
             rows = conn.cursor().execute("SELECT ticker, buy_price, shares, purchase_date, is_demo FROM portfolio_owned ORDER BY ticker ASC;").fetchall()
         return {self.normalize_symbol(r[0]): {"buy_price": r[1], "shares": r[2], "purchase_date": str(r[3]), "is_demo": bool(r[4]) if len(r) > 4 else False} for r in rows}
 
-    def record_sale(self, ticker: str, sell_price: float, shares_to_sell: float, sell_date: str):
+    def record_sale(self, ticker: str, sell_price: float, shares_to_sell: float, sell_date: str,
+                     tags: str | None = None, notes: str | None = None):
         ticker = self.normalize_symbol(ticker)
         with self.get_connection() as conn:
             row = conn.cursor().execute(
-                "SELECT ticker, buy_price, shares, purchase_date, is_demo FROM portfolio_owned WHERE ticker = ? OR ticker = ?;",
+                "SELECT ticker, buy_price, shares, purchase_date, is_demo, entry_action, sector FROM portfolio_owned WHERE ticker = ? OR ticker = ?;",
                 (ticker, ticker.replace(".CA", "")),
             ).fetchone()
             if not row:
@@ -1499,6 +1539,8 @@ class DatabaseManager:
                 return (False, f"You do not have an open position for {ticker} in your active portfolio.")
             actual_ticker, buy_price, current_shares, purchase_date = row[0], row[1], row[2], str(row[3])
             is_demo = bool(row[4]) if len(row) > 4 else False
+            entry_action = row[5] if len(row) > 5 else None
+            sector = row[6] if len(row) > 6 else None
             
             if shares_to_sell > (current_shares + 0.0001):
                 if _LANG == "AR":
@@ -1520,10 +1562,10 @@ class DatabaseManager:
 
             conn.execute(
                 """
-                INSERT INTO portfolio_closed (ticker, buy_price, sell_price, shares, purchase_date, sell_date, realized_pnl, pnl_pct, is_demo)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+                INSERT INTO portfolio_closed (id, ticker, buy_price, sell_price, shares, purchase_date, sell_date, realized_pnl, pnl_pct, is_demo, entry_action, sector, tags, notes, source)
+                VALUES (nextval('portfolio_closed_id_seq'), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'app');
                 """,
-                (actual_ticker, buy_price, sell_price, shares_to_sell, purchase_date, str(sell_date), realized_pnl, pnl_pct, is_demo),
+                (actual_ticker, buy_price, sell_price, shares_to_sell, purchase_date, str(sell_date), realized_pnl, pnl_pct, is_demo, entry_action, sector, tags, notes),
             )
 
             remaining_shares = current_shares - shares_to_sell
@@ -1547,15 +1589,66 @@ class DatabaseManager:
             return (True, f"تم تسجيل بيع {shares_to_sell} سهم من {actual_ticker} بسعر {sell_price} جنيه بنجاح.\nالربح/الخسارة المحققة: {realized_pnl:.2f} جنيه ({pnl_pct:.2f}%).")
         return (True, f"Successfully recorded sale of {shares_to_sell} shares of {actual_ticker} @ {sell_price} EGP.\nRealized P&L: {realized_pnl:.2f} EGP ({pnl_pct:.2f}%).")
 
+    def add_manual_closed_trade(self, ticker: str, buy_price: float, sell_price: float, shares: float,
+                                 purchase_date: str, sell_date: str, entry_action: str | None = None,
+                                 sector: str | None = None, tags: str | None = None, notes: str | None = None,
+                                 is_demo: bool = False):
+        """Logs a trade that was never opened through the app's own Buy tab
+        (e.g. placed with a broker directly) - same portfolio_closed shape
+        as an app-tracked trade (see record_sale), just with source='manual'
+        and no portfolio_owned/cash side effects, since there was never an
+        app-tracked open position to close. Net of the same round-trip
+        brokerage fee every other realized-P&L figure in this app already
+        accounts for (config.TRANSACTION_FEE_PCT), so a manual trade's P&L
+        is directly comparable to an app-tracked one in the Performance view."""
+        ticker = self.normalize_symbol(ticker)
+        net_sell = float(sell_price) * (1.0 - TRANSACTION_FEE_PCT)
+        net_buy = float(buy_price) * (1.0 + TRANSACTION_FEE_PCT)
+        realized_pnl = (net_sell - net_buy) * float(shares)
+        pnl_pct = ((net_sell - net_buy) / net_buy) * 100 if net_buy > 0 else 0.0
+        with self.get_connection() as conn:
+            conn.execute(
+                """
+                INSERT INTO portfolio_closed (id, ticker, buy_price, sell_price, shares, purchase_date, sell_date, realized_pnl, pnl_pct, is_demo, entry_action, sector, tags, notes, source)
+                VALUES (nextval('portfolio_closed_id_seq'), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'manual');
+                """,
+                (ticker, float(buy_price), float(sell_price), float(shares), str(purchase_date), str(sell_date),
+                 realized_pnl, pnl_pct, bool(is_demo), entry_action, sector, tags, notes),
+            )
+        if _LANG == "AR":
+            return (True, f"📝 تم تسجيل صفقة يدوية لـ {ticker}.\nالربح/الخسارة المحققة: {realized_pnl:.2f} جنيه ({pnl_pct:.2f}%).")
+        return (True, f"📝 Logged manual trade for {ticker}.\nRealized P&L: {realized_pnl:.2f} EGP ({pnl_pct:.2f}%).")
+
+    def update_trade_journal(self, trade_id: int, tags: str | None = None, notes: str | None = None):
+        """Edits the tags/notes on an already-closed trade (app-tracked or
+        manual) after the fact - e.g. adding a post-mortem note once you've
+        had time to reflect on why a trade won or lost. ``trade_id`` is the
+        stable ``id`` get_all_closed_trades() now returns per row."""
+        with self.get_connection() as conn:
+            existing = conn.cursor().execute("SELECT id FROM portfolio_closed WHERE id = ?;", (int(trade_id),)).fetchone()
+            if not existing:
+                if _LANG == "AR":
+                    return (False, "⚠️ لم يتم العثور على هذه الصفقة.")
+                return (False, "⚠️ Trade not found.")
+            conn.execute("UPDATE portfolio_closed SET tags = ?, notes = ? WHERE id = ?;", (tags, notes, int(trade_id)))
+        if _LANG == "AR":
+            return (True, "✅ تم تحديث ملاحظات الصفقة.")
+        return (True, "✅ Trade journal updated.")
+
     def get_all_closed_trades(self):
         with self.get_connection() as conn:
-            rows = conn.cursor().execute("SELECT ticker, shares, buy_price, sell_price, realized_pnl, pnl_pct, purchase_date, sell_date, is_demo FROM portfolio_closed ORDER BY sell_date DESC;").fetchall()
+            rows = conn.cursor().execute(
+                "SELECT ticker, shares, buy_price, sell_price, realized_pnl, pnl_pct, purchase_date, sell_date, is_demo, "
+                "id, entry_action, sector, tags, notes, source FROM portfolio_closed ORDER BY sell_date DESC;"
+            ).fetchall()
         return [
             {
                 "Ticker": self.normalize_symbol(r[0]), "Shares Sold": round(r[1], 4),
                 "Buy Price": round(r[2], 4), "Sell Price": round(r[3], 4),
                 "Realized P&L (EGP)": round(r[4], 2), "Realized P&L (%)": round(r[5], 2),
-                "Purchase Date": str(r[6]), "Sell Date": str(r[7]), "is_demo": bool(r[8]) if len(r) > 8 else False
+                "Purchase Date": str(r[6]), "Sell Date": str(r[7]), "is_demo": bool(r[8]) if len(r) > 8 else False,
+                "id": r[9], "Entry Action": r[10], "Sector": r[11], "Tags": r[12], "Notes": r[13],
+                "Source": r[14] or "app",
             }
             for r in rows
         ]

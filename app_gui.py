@@ -23,6 +23,8 @@ from decision_matrix import DecisionMatrix, set_language as _set_dm_language
 from analytics import QuantitativeEngine
 import top_movers
 from chart_widget import StockSectorChartWidget
+from trade_performance import build_performance_report
+from market_regime import load_benchmark_indicators, build_close_by_date
 from ingestion import IngestionPipeline, set_language as _set_ing_language
 from PyQt6.QtCore import QDate, Qt, QThread, QTimer, pyqtSignal, QAbstractTableModel, QModelIndex, QSettings, QSortFilterProxyModel
 from PyQt6.QtGui import QFont, QColor, QPixmap, QIcon
@@ -32,7 +34,7 @@ from PyQt6.QtWidgets import (
     QLineEdit, QMainWindow, QMessageBox, QProgressBar, QPushButton, QScrollArea,
     QTableWidget, QTableWidgetItem, QTableView, QTabWidget, QVBoxLayout, QWidget,
     QCheckBox, QTextEdit, QSizePolicy, QFrame, QTextBrowser,
-    QSystemTrayIcon
+    QSystemTrayIcon, QGridLayout
 )
 
 try:
@@ -41,6 +43,13 @@ try:
 except Exception:  # pragma: no cover - optional Qt module on some builds
     _HAS_PRINT = False
 from glossary_content import TERMS as GLOSSARY_TERMS, ACTION_LABELS as GLOSSARY_ACTIONS, CHART_PATTERNS as GLOSSARY_PATTERNS
+
+try:
+    from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
+    from matplotlib.figure import Figure
+    _HAS_MPL = True
+except Exception:  # pragma: no cover - matplotlib optional
+    _HAS_MPL = False
 
 logger = get_logger("app_gui")
 
@@ -851,6 +860,7 @@ TRANSLATIONS = {
         "tab_top10": "🏆 Top 10",
         "tab_charts": "📊 Charts",
         "tab_movers": "📊 Daily Movers",
+        "tab_performance": "📈 Performance",
         "last_date": "📅 Last Data Date:",
         "cash_lbl": "💵 Cash Balance:",
         "port_val": "📈 Stock Portfolio Value:",
@@ -884,6 +894,7 @@ TRANSLATIONS = {
         "tab_top10": "🏆 أفضل 10",
         "tab_charts": "📊 رسوم بيانية",
         "tab_movers": "📊 أفضل الرابحين / الخاسرين اليوم",
+        "tab_performance": "📈 الأداء",
         "last_date": "📅 تاريخ أحدث بيانات:",
         "cash_lbl": "💵 الرصيد النقدي:",
         "port_val": "📈 قيمة محفظة الأسهم:",
@@ -1876,7 +1887,17 @@ class PortfolioDialog(QDialog):
         price = self.spn_buy_price.value()
         shares = self.spn_buy_shares.value()
         p_date = self.dt_buy_date.date().toString("yyyy-MM-dd")
-        success, msg = self.dbm.add_owned_stock(ticker, price, shares, p_date, mode=mode, is_demo=False)
+        entry_action = None
+        sector = None
+        parent = self.parent()
+        if parent is not None:
+            for _row in getattr(parent, "_raw_buys_data", []) or []:
+                if str(_row.get("Ticker", "")).upper() == ticker.upper():
+                    entry_action = _row.get("Action")
+                    sector = _row.get("Sector")
+                    break
+        success, msg = self.dbm.add_owned_stock(ticker, price, shares, p_date, mode=mode, is_demo=False,
+                                                entry_action=entry_action, sector=sector)
         if success:
             QMessageBox.information(self, tr("Position Updated"), msg)
             self.accept()
@@ -2012,6 +2033,89 @@ class PortfolioDialog(QDialog):
         self.accept()
 
 
+
+class ManualTradeDialog(QDialog):
+    def __init__(self, dbm, parent=None):
+        super().__init__(parent)
+        self.dbm = dbm
+        self.setWindowTitle(tr("➕ Log Manual Trade"))
+        self.resize(480, 560)
+        layout = QVBoxLayout(self)
+        form = QFormLayout()
+        form.setSpacing(10)
+        _tickers = dbm.get_unique_tickers()
+        self.cmb_ticker = QComboBox()
+        self.cmb_ticker.setEditable(True)
+        self.cmb_ticker.addItems(_tickers)
+        self.cmb_ticker.setPlaceholderText(tr("Ticker (e.g. COMI.CA)"))
+        form.addRow(tr("Ticker:"), self.cmb_ticker)
+        self.spn_buy = QDoubleSpinBox()
+        self.spn_buy.setRange(0.0001, 100000.0)
+        self.spn_buy.setDecimals(4)
+        form.addRow(tr("Buy Price (EGP):"), self.spn_buy)
+        self.spn_sell = QDoubleSpinBox()
+        self.spn_sell.setRange(0.0001, 100000.0)
+        self.spn_sell.setDecimals(4)
+        form.addRow(tr("Sell Price (EGP):"), self.spn_sell)
+        self.spn_shares = QDoubleSpinBox()
+        self.spn_shares.setRange(0.0001, 10000000.0)
+        self.spn_shares.setDecimals(4)
+        form.addRow(tr("Shares:"), self.spn_shares)
+        self.dt_buy = QDateEdit()
+        self.dt_buy.setCalendarPopup(True)
+        self.dt_buy.setDate(QDate.currentDate())
+        form.addRow(tr("Purchase Date:"), self.dt_buy)
+        self.dt_sell = QDateEdit()
+        self.dt_sell.setCalendarPopup(True)
+        self.dt_sell.setDate(QDate.currentDate())
+        form.addRow(tr("Sell Date:"), self.dt_sell)
+        self.cmb_action = QComboBox()
+        self.cmb_action.setEditable(True)
+        self.cmb_action.addItems(["", "🔥 STRONG BUY", "⚡ BREAKOUT BUY (X-OVER + MOMENTUM)", "⚡ BREAKOUT BUY (X-OVER)", "⚡ BREAKOUT BUY (MOMENTUM)", "📈 ACCUMULATE", "⏳ BUY ON DIP", "🟡 HOLD / NEUTRAL"])
+        form.addRow(tr("Entry Action:"), self.cmb_action)
+        self.cmb_sector = QComboBox()
+        self.cmb_sector.setEditable(True)
+        try:
+            _sectors = sorted({v for v in dbm.get_sector_map().values() if v})
+            self.cmb_sector.addItems([""] + _sectors)
+        except Exception:
+            pass
+        form.addRow(tr("Sector:"), self.cmb_sector)
+        self.txt_tags = QLineEdit()
+        self.txt_tags.setPlaceholderText(tr("e.g. earnings,gap-down"))
+        form.addRow(tr("Tags:"), self.txt_tags)
+        self.txt_notes = QTextEdit()
+        self.txt_notes.setPlaceholderText(tr("Post-mortem notes..."))
+        self.txt_notes.setMaximumHeight(80)
+        form.addRow(tr("Notes:"), self.txt_notes)
+        layout.addLayout(form)
+        btns = QHBoxLayout()
+        btn_cancel = QPushButton(tr("Cancel"))
+        btn_cancel.clicked.connect(self.reject)
+        btn_save = QPushButton(tr("💾 Save Manual Trade"))
+        btn_save.setStyleSheet("background-color: #38a169; color: white; padding: 8px 14px; border-radius: 6px;")
+        btn_save.clicked.connect(self._save)
+        btns.addWidget(btn_cancel)
+        btns.addWidget(btn_save)
+        layout.addLayout(btns)
+
+    def _save(self):
+        _ticker = self.cmb_ticker.currentText().strip().upper()
+        if not _ticker:
+            QMessageBox.warning(self, tr("Input Error"), tr("Please enter a ticker."))
+            return
+        _ok, _msg = self.dbm.add_manual_closed_trade(
+            _ticker, self.spn_buy.value(), self.spn_sell.value(), self.spn_shares.value(),
+            self.dt_buy.date().toString("yyyy-MM-dd"), self.dt_sell.date().toString("yyyy-MM-dd"),
+            entry_action=self.cmb_action.currentText().strip() or None,
+            sector=self.cmb_sector.currentText().strip() or None,
+            tags=self.txt_tags.text().strip() or None,
+            notes=self.txt_notes.toPlainText().strip() or None)
+        if _ok:
+            QMessageBox.information(self, tr("Saved"), _msg)
+            self.accept()
+        else:
+            QMessageBox.warning(self, tr("Error"), _msg)
 class IngestionWorker(QThread):
     progress_signal = pyqtSignal(int, str)
     finished_signal = pyqtSignal()
@@ -4272,6 +4376,8 @@ class QuantDashboard(QMainWindow):
         self.tabs.addTab(self.chart_widget, "📊 Charts")
         self.movers_widget = self._build_movers_tab()
         self.tabs.addTab(self.movers_widget, "📊 Daily Movers")
+        self.performance_widget = self._build_performance_tab()
+        self.tabs.addTab(self.performance_widget, "📈 Performance")
 
         layout.addWidget(self.tabs)
         self.update_last_data_date_display()
@@ -4369,6 +4475,9 @@ class QuantDashboard(QMainWindow):
         self.tabs.setTabText(7, t.get("tab_top10", "🏆 Top 10"))
         self.tabs.setTabText(8, t.get("tab_charts", "📊 Charts"))
         self.tabs.setTabText(9, t.get("tab_movers", "📊 Daily Movers"))
+        self.tabs.setTabText(10, t.get("tab_performance", "📈 Performance"))
+        if getattr(self, "_last_perf_report", None) is not None:
+            self._render_performance_report(self._last_perf_report)
 
         if hasattr(self, "chart_widget"):
             self.chart_widget.set_language(self.current_lang)
@@ -4692,6 +4801,233 @@ class QuantDashboard(QMainWindow):
     _VALUATION_COLS = ["Ticker", "Sector", "P/E Ratio", "Sector Avg P/E", "vs Sector (%)", "Close"]
     _WEEK52_HIGH_COLS = ["Ticker", "Close", "52W High", "Dist. to High (%)", "Rank Score"]
     _WEEK52_LOW_COLS = ["Ticker", "Close", "52W Low", "Dist. to Low (%)", "Rank Score"]
+
+
+    def _build_performance_tab(self):
+        container = QWidget()
+        v_layout = QVBoxLayout(container)
+        v_layout.setSpacing(10)
+        v_layout.setContentsMargins(6, 6, 6, 6)
+
+        header = QHBoxLayout()
+        title = QLabel(tr("📈 Trade Performance — closed, realized trades only"))
+        title.setStyleSheet("font-weight: bold; font-size: 15px;")
+        header.addWidget(title)
+        header.addStretch()
+        btn_refresh = QPushButton(tr("🔄 Refresh"))
+        btn_refresh.setStyleSheet("background-color: #3198dc; color: white; padding: 6px 12px; border-radius: 6px;")
+        btn_refresh.clicked.connect(self._refresh_performance)
+        header.addWidget(btn_refresh)
+        btn_manual = QPushButton(tr("➕ Log Manual Trade"))
+        btn_manual.setStyleSheet("background-color: #38a169; color: white; padding: 6px 12px; border-radius: 6px;")
+        btn_manual.clicked.connect(self.open_manual_trade_dialog)
+        header.addWidget(btn_manual)
+        v_layout.addLayout(header)
+
+        grid = QGridLayout()
+        grid.setHorizontalSpacing(18)
+        grid.setVerticalSpacing(6)
+        self._perf_summary_labels = {}
+        _keys = [
+            ("total_trades", "Total Trades"), ("win_rate_pct", "Win Rate"),
+            ("profit_factor", "Profit Factor"), ("expectancy_egp", "Expectancy / Trade"),
+            ("total_realized_pnl_egp", "Total Realized P&L"), ("avg_holding_days", "Avg Holding (days)"),
+            ("max_win_streak", "Max Win Streak"), ("max_loss_streak", "Max Loss Streak"),
+            ("current_streak", "Current Streak"), ("max_dd_pct", "Max Drawdown"),
+            ("current_dd_pct", "Current Drawdown"), ("avg_win_pct", "Avg Win"),
+            ("avg_loss_pct", "Avg Loss"), ("manual_trade_count", "Manual Trades"),
+        ]
+        for _i, (_key, _label) in enumerate(_keys):
+            _lbl = QLabel(tr(_label + ":"))
+            _lbl.setStyleSheet("color: #a0aec0; font-size: 11px;")
+            _val = QLabel("—")
+            _val.setStyleSheet("font-weight: bold; font-size: 12px;")
+            grid.addWidget(_lbl, _i // 2, (_i % 2) * 2)
+            grid.addWidget(_val, _i // 2, (_i % 2) * 2 + 1)
+            self._perf_summary_labels[_key] = _val
+        v_layout.addLayout(grid)
+
+        self._perf_figure = Figure(figsize=(9, 3.2), dpi=100)
+        self._perf_ax = self._perf_figure.add_subplot(111)
+        self._perf_canvas = FigureCanvas(self._perf_figure)
+        self._perf_canvas.setMinimumHeight(260)
+        v_layout.addWidget(self._perf_canvas)
+
+        self._perf_alpha_label = QLabel("")
+        self._perf_alpha_label.setWordWrap(True)
+        self._perf_alpha_label.setStyleSheet("font-size: 11px; color: #a0aec0; padding: 4px;")
+        v_layout.addWidget(self._perf_alpha_label)
+
+        self._perf_breakdown_tables = {}
+        for _key, _title in [("breakdown_by_signal", "By Entry Signal"), ("breakdown_by_sector", "By Sector"),
+                             ("breakdown_by_tag", "By Tag"), ("breakdown_by_source", "By Source")]:
+            _lbl = QLabel(tr(_title))
+            _lbl.setStyleSheet("font-weight: bold; font-size: 13px; padding-top: 8px;")
+            v_layout.addWidget(_lbl)
+            _tbl = QTableWidget()
+            _tbl.setColumnCount(4)
+            _tbl.setHorizontalHeaderLabels([tr(c) for c in ["Group", "Trades", "Win %", "Total P&L (EGP)"]])
+            _tbl.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+            _tbl.setMaximumHeight(160)
+            self._perf_breakdown_tables[_key] = _tbl
+            v_layout.addWidget(_tbl)
+
+        _lbl = QLabel(tr("📔 Trade Journal (double-click a row to edit tags/notes)"))
+        _lbl.setStyleSheet("font-weight: bold; font-size: 13px; padding-top: 8px;")
+        v_layout.addWidget(_lbl)
+        self._perf_journal_cols = ["Sell Date", "Ticker", "Buy Price", "Sell Price", "Shares",
+                                   "Realized P&L (EGP)", "Realized P&L (%)", "Entry Action", "Sector",
+                                   "Tags", "Notes", "Source"]
+        self._perf_journal = QTableWidget()
+        self._perf_journal.setColumnCount(len(self._perf_journal_cols))
+        self._perf_journal.setHorizontalHeaderLabels([tr(c) for c in self._perf_journal_cols])
+        self._perf_journal.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
+        self._perf_journal.cellDoubleClicked.connect(self._edit_journal_notes)
+        v_layout.addWidget(self._perf_journal)
+
+        v_layout.addStretch()
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setWidget(container)
+        return scroll
+
+    def _refresh_performance(self):
+        try:
+            _trades = self.dbm.get_all_closed_trades()
+            _bench_close = None
+            try:
+                _bench_df = load_benchmark_indicators(self.qe, ticker=None)
+                _bench_close = build_close_by_date(_bench_df) or None
+            except Exception:
+                _bench_close = None
+            _report = build_performance_report(_trades, benchmark_close_by_date=_bench_close, benchmark_label="EGX 30")
+            self._render_performance_report(_report)
+        except Exception as _e:
+            QMessageBox.warning(self, tr("Performance"), tr("Failed to load performance data: {err}").format(err=str(_e)))
+
+    def _render_performance_report(self, report):
+        self._last_perf_report = report
+        s = report.get("summary") or {}
+        dd = report.get("drawdown") or {}
+        st = report.get("streaks") or {}
+        labels = self._perf_summary_labels
+
+        def _set(key, text, color=None):
+            lbl = labels.get(key)
+            if lbl is None:
+                return
+            lbl.setText(text)
+            if color:
+                lbl.setStyleSheet(f"font-weight: bold; font-size: 12px; color: {color};")
+
+        _set("total_trades", str(s.get("total_trades", 0)))
+        _wr = s.get("win_rate_pct")
+        _set("win_rate_pct", f"{_wr:.1f}%" if _wr is not None else "—")
+        _pf = s.get("profit_factor")
+        _set("profit_factor", "∞" if _pf == float("inf") else (f"{_pf:.2f}" if _pf is not None else "—"))
+        _ex = s.get("expectancy_egp")
+        _set("expectancy_egp", f"{_ex:,.2f} EGP" if _ex is not None else "—", "#38a169" if (_ex or 0) >= 0 else "#e53e3e")
+        _tp = s.get("total_realized_pnl_egp", 0.0)
+        _set("total_realized_pnl_egp", f"{_tp:,.2f} EGP", "#38a169" if _tp >= 0 else "#e53e3e")
+        _ah = s.get("avg_holding_days")
+        _set("avg_holding_days", f"{_ah:.1f}" if _ah is not None else "—")
+        _set("max_win_streak", str(st.get("max_win_streak", 0)))
+        _set("max_loss_streak", str(st.get("max_loss_streak", 0)))
+        _cur = st.get("current_streak_type")
+        _cur_txt = f"{st.get('current_streak_len', 0)} × {'win' if _cur == 'win' else 'loss'}" if _cur else "—"
+        _set("current_streak", _cur_txt)
+        _mdd = dd.get("max_dd_pct")
+        _set("max_dd_pct", f"{_mdd:.2f}%" if _mdd is not None else "—", "#e53e3e" if (_mdd or 0) > 0 else None)
+        _cdd = dd.get("current_dd_pct")
+        _set("current_dd_pct", f"{_cdd:.2f}%" if _cdd is not None else "—", "#e53e3e" if (_cdd or 0) > 0 else None)
+        _aw = s.get("avg_win_pct")
+        _al = s.get("avg_loss_pct")
+        _set("avg_win_pct", f"{_aw:.2f}%" if _aw is not None else "—", "#38a169")
+        _set("avg_loss_pct", f"{_al:.2f}%" if _al is not None else "—", "#e53e3e")
+        _set("manual_trade_count", str(s.get("manual_trade_count", 0)))
+
+        self._perf_ax.clear()
+        _curve = report.get("equity_curve") or []
+        if _curve:
+            _dates = [c["date"] for c in _curve]
+            _cum = [c["cumulative_pnl_egp"] for c in _curve]
+            self._perf_ax.plot(range(len(_cum)), _cum, color="#3198dc", linewidth=2)
+            self._perf_ax.axhline(0, color="#4a5568", linewidth=0.8, linestyle="--")
+            self._perf_ax.set_title("Cumulative Realized P&L (EGP)")
+            self._perf_ax.set_ylabel("EGP")
+            _step = max(1, len(_dates) // 6)
+            self._perf_ax.set_xticks(range(0, len(_dates), _step))
+            self._perf_ax.set_xticklabels([_dates[i] for i in range(0, len(_dates), _step)], rotation=30, fontsize=8)
+            self._perf_ax.grid(True, alpha=0.25)
+        else:
+            self._perf_ax.text(0.5, 0.5, "No closed trades yet", ha="center", va="center", color="#a0aec0")
+            self._perf_ax.set_xticks([])
+            self._perf_ax.set_yticks([])
+        self._perf_figure.tight_layout()
+        self._perf_canvas.draw()
+
+        _ba = report.get("benchmark_alpha") or {}
+        if _ba.get("available"):
+            self._perf_alpha_label.setText(
+                tr("📊 vs {label}: {n}/{tot} trades with benchmark overlap | Beat the market {wr}% of the time | Avg alpha {a:+.2f}%").format(
+                    label=_ba.get("label", "EGX 30"), n=_ba.get("trades_with_alpha", 0), tot=_ba.get("total_trades", 0),
+                    wr=_ba.get("win_rate_vs_benchmark_pct", 0), a=_ba.get("avg_alpha_pct", 0)))
+        else:
+            self._perf_alpha_label.setText(tr("📊 Benchmark alpha unavailable: {reason}").format(reason=_ba.get("reason", "no data")))
+
+        for _key, _tbl in self._perf_breakdown_tables.items():
+            _rows = report.get(_key) or []
+            _tbl.setRowCount(len(_rows))
+            for _r_i, _row in enumerate(_rows):
+                _vals = [str(_row.get("label", "")), str(_row.get("trade_count", 0)),
+                         f"{_row['win_rate_pct']:.1f}%" if _row.get("win_rate_pct") is not None else "—",
+                         f"{_row.get('total_pnl_egp', 0):,.2f}"]
+                for _c_i, _v in enumerate(_vals):
+                    _item = QTableWidgetItem(_v)
+                    _item.setFlags(_item.flags() & ~Qt.ItemFlag.ItemIsEditable)
+                    if _c_i == 3:
+                        _pnl = _row.get("total_pnl_egp", 0)
+                        _item.setForeground(QColor("#38a169" if _pnl >= 0 else "#e53e3e"))
+                    _tbl.setItem(_r_i, _c_i, _item)
+
+        _journal = report.get("journal") or []
+        self._perf_journal_rows = _journal
+        self._perf_journal.setRowCount(len(_journal))
+        for _r_i, _row in enumerate(_journal):
+            _vals = [str(_row.get("Sell Date", "")), str(_row.get("Ticker", "")),
+                     f"{_row.get('Buy Price') or 0:.4f}", f"{_row.get('Sell Price') or 0:.4f}",
+                     f"{_row.get('Shares Sold') or 0:,.4f}",
+                     f"{_row.get('Realized P&L (EGP)') or 0:,.2f}", f"{_row.get('Realized P&L (%)') or 0:.2f}%",
+                     str(_row.get("Entry Action") or ""), str(_row.get("Sector") or ""),
+                     str(_row.get("Tags") or ""), str(_row.get("Notes") or ""), str(_row.get("Source") or "")]
+            for _c_i, _v in enumerate(_vals):
+                _item = QTableWidgetItem(_v)
+                _item.setFlags(_item.flags() & ~Qt.ItemFlag.ItemIsEditable)
+                if _c_i == 5:
+                    _pnl = float(_row.get("Realized P&L (EGP)") or 0)
+                    _item.setForeground(QColor("#38a169" if _pnl >= 0 else "#e53e3e"))
+                self._perf_journal.setItem(_r_i, _c_i, _item)
+
+    def _edit_journal_notes(self, row, col):
+        _rows = getattr(self, "_perf_journal_rows", [])
+        if row >= len(_rows):
+            return
+        _trade = _rows[row]
+        if _trade.get("id") is None:
+            return
+        _tags, _ok1 = QInputDialog.getText(self, tr("Edit Tags"), tr("Tags (comma-separated):"), text=str(_trade.get("Tags") or ""))
+        if not _ok1:
+            return
+        _notes, _ok2 = QInputDialog.getMultiLineText(self, tr("Edit Notes"), tr("Notes:"), str(_trade.get("Notes") or ""))
+        if not _ok2:
+            return
+        self.dbm.update_trade_journal(_trade["id"], tags=_tags or None, notes=_notes or None)
+        self._refresh_performance()
+
+    def open_manual_trade_dialog(self):
+        dlg = ManualTradeDialog(self.dbm, self)
+        dlg.exec()
+        self._refresh_performance()
 
     def _build_movers_tab(self):
         container = QWidget()

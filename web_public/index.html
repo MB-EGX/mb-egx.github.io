@@ -15,6 +15,11 @@
 		var f=d.getElementsByTagName(s)[0],
 		j=d.createElement(s);j.async=true;j.src='/gk7x/';
 		f.parentNode.insertBefore(j,f);
+		})(window,document,'script','dataLayer');</script><script>(function(w,i,g){w[g]=w[g]||[];if(typeof w[g].push=='function')w[g].push(i)})
+(window,'GTM-K3QN3TWK','google_tags_first_party');</script><script>(function(w,d,s,l){w[l]=w[l]||[];(function(){w[l].push(arguments);})('set', 'developer_id.dY2E1Nz', true);
+		var f=d.getElementsByTagName(s)[0],
+		j=d.createElement(s);j.async=true;j.src='/gk7x/';
+		f.parentNode.insertBefore(j,f);
 		})(window,document,'script','dataLayer');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -416,8 +421,6 @@
                 <option value="📈 ACCUMULATE" data-i18n="opt_accumulate">📈 ACCUMULATE</option>
                 <option value="⏳ BUY ON DIP" data-i18n="opt_buy_on_dip">⏳ BUY ON DIP</option>
                 <option value="🟡 HOLD" data-i18n="opt_hold_neutral">🟡 HOLD / NEUTRAL</option>
-                <option value="⚠️ OVERBOUGHT" data-i18n="opt_overbought">⚠️ OVERBOUGHT</option>
-                <option value="⚠️ OVERSOLD" data-i18n="opt_oversold">⚠️ OVERSOLD</option>
                 <option value="🛑 SELL" data-i18n="opt_sell_avoid">🛑 SELL / AVOID</option>
             </select>
 
@@ -435,6 +438,13 @@
                 <option value="High" data-i18n="opt_conf_high">High (1Y+)</option>
                 <option value="Medium" data-i18n="opt_conf_medium">Medium (<1 Year)</option>
                 <option value="Low" data-i18n="opt_conf_low">Low (<3 Months)</option>
+            </select>
+
+            <select id="filter-momentum" onchange="applyFilters()" class="bg-darkbg border border-bordercol rounded px-2 py-1.5 text-textmain w-full lg:w-auto">
+                <option value="All" data-i18n="opt_all_momentum">All Momentum</option>
+                <option value="Overbought" data-i18n="opt_momentum_overbought">⚠️ Overbought</option>
+                <option value="Oversold" data-i18n="opt_momentum_oversold">⚠️ Oversold</option>
+                <option value="None" data-i18n="opt_momentum_none">— Neutral</option>
             </select>
 
             <label class="flex items-center gap-2 cursor-pointer bg-darkbg px-3 py-1.5 rounded border border-bordercol whitespace-nowrap">
@@ -495,6 +505,9 @@
             <button onclick="switchTab('tab-strategy')" id="btn-tab-strategy" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap">
                 🧮 Strategy Calculator
             </button>
+            <button onclick="switchTab('tab-performance')" id="btn-tab-performance" class="px-3 py-2 rounded-t-lg text-xs font-semibold bg-darkbg text-textmuted hover:text-textmain transition whitespace-nowrap">
+                📈 Performance
+            </button>
         </div>
 
         <!-- TAB 1: MATRIX -->
@@ -507,6 +520,7 @@
                             <th class="p-2.5 border border-darkbg" data-col="1" data-i18n="hdr_ticker">Ticker</th>
                             <th class="p-2.5 border border-darkbg text-center font-sans" data-col="2" data-i18n="hdr_position">Position</th>
                             <th class="p-2.5 border border-darkbg text-center" data-col="3" data-i18n="hdr_action">Action</th>
+                            <th class="p-2.5 border border-darkbg text-center font-sans" data-i18n="hdr_momentum" title="Overbought/Oversold oscillator confluence (Stoch %K, StochRSI, CCI) - a modifier on the Action above, not a competing label">Momentum</th>
                             <th class="p-2.5 border border-darkbg" data-col="4" data-i18n="hdr_score">Score</th>
                             <th class="p-2.5 border border-darkbg" data-col="5" data-i18n="hdr_price">Price</th>
                             <th class="p-2.5 border border-darkbg" data-col="6" data-i18n="hdr_entry_vwap">Entry (VWAP)</th>
@@ -551,7 +565,7 @@
                         </tr>
                     </thead>
                     <tbody id="tbody-matrix" class="divide-y divide-bordercol/50 text-xs">
-                        <tr><td colspan="45" class="p-8 text-center text-textmuted font-sans" data-i18n="loading_matrix">Loading quantitative matrix...</td></tr>
+                        <tr><td colspan="46" class="p-8 text-center text-textmuted font-sans" data-i18n="loading_matrix">Loading quantitative matrix...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -966,6 +980,73 @@
                             <tbody id="tbody-strategy-by-action"></tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- TAB: PERFORMANCE -->
+        <div id="tab-performance" class="bg-panelbg rounded-b-xl border border-t-0 border-bordercol p-4 shadow-xl hidden space-y-5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+                <span class="text-sm font-bold text-textmain">📈 Trade Performance — closed, realized trades only</span>
+                <div class="flex gap-2">
+                    <button onclick="renderPerformance()" class="bg-sky-600 hover:bg-sky-500 text-white px-3 py-1.5 rounded font-bold text-xs">🔄 Refresh</button>
+                    <button onclick="openModal('modal-perf-manual')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded font-bold text-xs">➕ Log Manual Trade</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2">
+                <div class="bg-darkbg border border-bordercol rounded-lg p-3"><div class="text-[10px] text-textmuted uppercase">Total Trades</div><div id="perf-trades" class="text-xl font-bold font-mono text-textmain">0</div></div>
+                <div class="bg-darkbg border border-bordercol rounded-lg p-3"><div class="text-[10px] text-textmuted uppercase">Win Rate</div><div id="perf-winrate" class="text-xl font-bold font-mono">—</div></div>
+                <div class="bg-darkbg border border-bordercol rounded-lg p-3"><div class="text-[10px] text-textmuted uppercase">Profit Factor</div><div id="perf-pf" class="text-xl font-bold font-mono">—</div></div>
+                <div class="bg-darkbg border border-bordercol rounded-lg p-3"><div class="text-[10px] text-textmuted uppercase">Expectancy / Trade</div><div id="perf-expectancy" class="text-xl font-bold font-mono">—</div></div>
+                <div class="bg-darkbg border border-bordercol rounded-lg p-3"><div class="text-[10px] text-textmuted uppercase">Total Realized P&L</div><div id="perf-totalpnl" class="text-xl font-bold font-mono">—</div></div>
+                <div class="bg-darkbg border border-bordercol rounded-lg p-3"><div class="text-[10px] text-textmuted uppercase">Avg Holding</div><div id="perf-hold" class="text-xl font-bold font-mono">—</div></div>
+                <div class="bg-darkbg border border-bordercol rounded-lg p-3"><div class="text-[10px] text-textmuted uppercase">Max Win Streak</div><div id="perf-maxwin" class="text-xl font-bold font-mono">0</div></div>
+                <div class="bg-darkbg border border-bordercol rounded-lg p-3"><div class="text-[10px] text-textmuted uppercase">Max Loss Streak</div><div id="perf-maxloss" class="text-xl font-bold font-mono">0</div></div>
+                <div class="bg-darkbg border border-bordercol rounded-lg p-3"><div class="text-[10px] text-textmuted uppercase">Current Streak</div><div id="perf-curstreak" class="text-xl font-bold font-mono">—</div></div>
+                <div class="bg-darkbg border border-bordercol rounded-lg p-3"><div class="text-[10px] text-textmuted uppercase">Max Drawdown</div><div id="perf-maxdd" class="text-xl font-bold font-mono">—</div></div>
+                <div class="bg-darkbg border border-bordercol rounded-lg p-3"><div class="text-[10px] text-textmuted uppercase">Current Drawdown</div><div id="perf-curdd" class="text-xl font-bold font-mono">—</div></div>
+                <div class="bg-darkbg border border-bordercol rounded-lg p-3"><div class="text-[10px] text-textmuted uppercase">Manual Trades</div><div id="perf-manual" class="text-xl font-bold font-mono">0</div></div>
+            </div>
+
+            <div class="bg-darkbg border border-bordercol rounded-lg p-3">
+                <div class="text-xs text-textmuted mb-1">Cumulative Realized P&L (EGP)</div>
+                <div class="h-56"><canvas id="perf-equity-canvas"></canvas></div>
+            </div>
+
+            <div id="perf-alpha" class="text-xs text-textmuted"></div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div class="bg-darkbg border border-bordercol rounded-lg p-3">
+                    <div class="text-xs font-bold text-textmain mb-2">Breakdown by Entry Signal</div>
+                    <table class="w-full text-left font-mono text-xs"><thead class="text-textmuted"><tr><th class="p-1.5">Group</th><th class="p-1.5">Trades</th><th class="p-1.5">Win %</th><th class="p-1.5">Total P&L (EGP)</th></tr></thead><tbody id="tbody-perf-signal"></tbody></table>
+                </div>
+                <div class="bg-darkbg border border-bordercol rounded-lg p-3">
+                    <div class="text-xs font-bold text-textmain mb-2">Breakdown by Sector</div>
+                    <table class="w-full text-left font-mono text-xs"><thead class="text-textmuted"><tr><th class="p-1.5">Group</th><th class="p-1.5">Trades</th><th class="p-1.5">Win %</th><th class="p-1.5">Total P&L (EGP)</th></tr></thead><tbody id="tbody-perf-sector"></tbody></table>
+                </div>
+                <div class="bg-darkbg border border-bordercol rounded-lg p-3">
+                    <div class="text-xs font-bold text-textmain mb-2">Breakdown by Tag</div>
+                    <table class="w-full text-left font-mono text-xs"><thead class="text-textmuted"><tr><th class="p-1.5">Group</th><th class="p-1.5">Trades</th><th class="p-1.5">Win %</th><th class="p-1.5">Total P&L (EGP)</th></tr></thead><tbody id="tbody-perf-tag"></tbody></table>
+                </div>
+                <div class="bg-darkbg border border-bordercol rounded-lg p-3">
+                    <div class="text-xs font-bold text-textmain mb-2">Breakdown by Source</div>
+                    <table class="w-full text-left font-mono text-xs"><thead class="text-textmuted"><tr><th class="p-1.5">Group</th><th class="p-1.5">Trades</th><th class="p-1.5">Win %</th><th class="p-1.5">Total P&L (EGP)</th></tr></thead><tbody id="tbody-perf-source"></tbody></table>
+                </div>
+            </div>
+
+            <div class="bg-darkbg border border-bordercol rounded-lg p-3">
+                <div class="text-xs font-bold text-textmain mb-2">📔 Trade Journal</div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left font-mono text-xs whitespace-nowrap">
+                        <thead class="text-textmuted"><tr>
+                            <th class="p-1.5">Sell Date</th><th class="p-1.5">Ticker</th><th class="p-1.5">Buy Price</th><th class="p-1.5">Sell Price</th><th class="p-1.5">Shares</th>
+                            <th class="p-1.5">Realized P&L (EGP)</th><th class="p-1.5">Realized P&L (%)</th><th class="p-1.5">Entry Action</th><th class="p-1.5">Sector</th>
+                            <th class="p-1.5">Tags</th><th class="p-1.5">Notes</th><th class="p-1.5">Source</th>
+                        </tr></thead>
+                        <tbody id="tbody-perf-journal"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -1572,6 +1653,31 @@
         </div>
     </div>
 
+
+    <!-- Log Manual Trade Modal -->
+    <div id="modal-perf-manual" class="fixed inset-0 bg-black/80 hidden z-[210] flex items-center justify-center p-4">
+        <div class="bg-panelbg border border-bordercol rounded-xl max-w-md w-full p-5 space-y-3 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <h3 class="text-base font-bold text-emerald-400">➕ <span data-i18n="perf_manual_title">Log Manual Trade</span></h3>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+                <div class="col-span-2"><label class="block text-textmuted mb-1">Ticker:</label><input id="perf-m-ticker" list="portfolio-ticker-list" placeholder="e.g. COMI.CA" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono uppercase"></div>
+                <div><label class="block text-textmuted mb-1">Buy Price (EGP):</label><input type="number" id="perf-m-buy" step="0.01" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono"></div>
+                <div><label class="block text-textmuted mb-1">Sell Price (EGP):</label><input type="number" id="perf-m-sell" step="0.01" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono"></div>
+                <div><label class="block text-textmuted mb-1">Shares:</label><input type="number" id="perf-m-shares" step="1" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono"></div>
+                <div><label class="block text-textmuted mb-1">Source:</label><input value="manual" disabled class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmuted font-mono"></div>
+                <div><label class="block text-textmuted mb-1">Purchase Date:</label><input type="date" id="perf-m-buydate" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono"></div>
+                <div><label class="block text-textmuted mb-1">Sell Date:</label><input type="date" id="perf-m-selldate" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono"></div>
+                <div class="col-span-2"><label class="block text-textmuted mb-1">Entry Action:</label><input id="perf-m-action" list="perf-action-list" placeholder="e.g. 🔥 STRONG BUY" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono"><datalist id="perf-action-list"><option value="🔥 STRONG BUY"><option value="⚡ BREAKOUT BUY (X-OVER + MOMENTUM)"><option value="⚡ BREAKOUT BUY (X-OVER)"><option value="⚡ BREAKOUT BUY (MOMENTUM)"><option value="📈 ACCUMULATE"><option value="⏳ BUY ON DIP"><option value="🟡 HOLD / NEUTRAL"></datalist></div>
+                <div class="col-span-2"><label class="block text-textmuted mb-1">Sector:</label><input id="perf-m-sector" list="perf-sector-list" placeholder="e.g. Banks" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono"><datalist id="perf-sector-list"></datalist></div>
+                <div class="col-span-2"><label class="block text-textmuted mb-1">Tags:</label><input id="perf-m-tags" placeholder="earnings,gap-down" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono"></div>
+                <div class="col-span-2"><label class="block text-textmuted mb-1">Notes:</label><textarea id="perf-m-notes" rows="2" class="w-full bg-darkbg border border-bordercol rounded p-2 text-textmain font-mono"></textarea></div>
+            </div>
+            <div class="flex justify-end gap-2">
+                <button onclick="closeModal('modal-perf-manual')" class="bg-slate-700 text-white px-3 py-1.5 rounded font-bold text-xs">Cancel</button>
+                <button onclick="addManualTrade()" class="bg-emerald-600 text-white px-4 py-1.5 rounded font-bold text-xs">💾 Save Manual Trade</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Set Profit Target Modal -->
     <div id="modal-target" class="fixed inset-0 bg-black/80 hidden z-[210] flex items-center justify-center p-4">
         <div class="bg-panelbg border border-bordercol rounded-xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
@@ -1773,7 +1879,11 @@
                 tab_exits: "🛡️ Owned Portfolio Exit Strategy", tab_history: "📜 Trade History & Realized P&L",
                 tab_fin: "📊 Financial Statement", tab_top10: "🏆 Top 10 Overview", tab_charts: "📊 Charts & Trend Lines",
                 tab_leaderboard: "🥇 Leaderboard",
+                tab_performance: "📈 الأداء",
+                perf_manual_title: "تسجيل صفقة يدوية",
                 tab_movers: "📊 Daily Movers",
+                tab_performance: "📈 Performance",
+                perf_manual_title: "Log Manual Trade",
                 hdr_score: "Score",
                 hdr_entry_price: "Entry Price",
                 lbl_movers_none: "No mover data yet.",
@@ -1841,7 +1951,10 @@
                 toggle_patterns: "🔺 Patterns", toggle_volume: "📊 Volume", btn_save_chart_img: "💾 Save Chart",
                 btn_maximize_chart: "⛶ Maximize", btn_exit_fullscreen_chart: "⛶ Exit Fullscreen",
                 // Table headers
-                hdr_ticker: "Ticker", hdr_action: "Action", hdr_score: "Score", hdr_price: "Price", hdr_day1: "Day-1", day1_badge: "⚡ Day-1",
+                hdr_ticker: "Ticker", hdr_action: "Action", hdr_momentum: "Momentum", hdr_score: "Score", hdr_price: "Price", hdr_day1: "Day-1", day1_badge: "⚡ Day-1",
+                momentum_overbought: "Overbought", momentum_oversold: "Oversold",
+                momentum_overbought_hint: "Overbought oscillator confluence — a modifier on the Action, not a competing signal",
+                momentum_oversold_hint: "Oversold oscillator confluence — folded into Buy on Dip's confirmation, not an independent trigger",
                 hdr_horizon: "Horizon", hdr_picked_on: "Picked On", hdr_pick_price: "Pick Price",
                 hdr_achieved_on: "Achieved On", hdr_achieved_price: "Achieved Price", hdr_achieved_pct: "Achieved (%)",
                 hdr_recent_achievements: "🏆 Achieved Today",
@@ -1936,7 +2049,7 @@
                 btn_usage_analytics: "Usage Analytics", tt_sign_out: "Sign out", ph_search_ticker: "Search Ticker or keyword...",
                 opt_all_actions: "All Actions", opt_strong_buy: "🔥 STRONG BUY", opt_breakout_buy: "⚡ BREAKOUT BUY",
                 opt_accumulate: "📈 ACCUMULATE", opt_buy_on_dip: "⏳ BUY ON DIP", opt_hold_neutral: "🟡 HOLD / NEUTRAL",
-                opt_overbought: "⚠️ OVERBOUGHT", opt_oversold: "⚠️ OVERSOLD",
+                opt_all_momentum: "All Momentum", opt_momentum_overbought: "⚠️ Overbought", opt_momentum_oversold: "⚠️ Oversold", opt_momentum_none: "— Neutral",
                 opt_sell_avoid: "🛑 SELL / AVOID", opt_all_trends: "All Trends", opt_strong_bullish: "Strong Bullish",
                 opt_weak_bullish: "Weak Bullish", opt_consolidation: "Consolidation / Neutral", opt_weak_bearish: "Weak Bearish",
                 opt_strong_bearish: "Strong Bearish", opt_all_confidence: "All Data Confidence", opt_conf_high: "High (1Y+)",
@@ -2093,7 +2206,10 @@
                 toggle_patterns: "🔺 الأنماط", toggle_volume: "📊 الحجم", btn_save_chart_img: "💾 حفظ الرسم",
                 btn_maximize_chart: "⛶ تكبير", btn_exit_fullscreen_chart: "⛶ إنهاء ملء الشاشة",
                 // Table headers
-                hdr_ticker: "الرمز", hdr_action: "الإجراء", hdr_score: "الدرجة", hdr_price: "السعر", hdr_day1: "اليوم الأول", day1_badge: "⚡ اليوم الأول",
+                hdr_ticker: "الرمز", hdr_action: "الإجراء", hdr_momentum: "الزخم", hdr_score: "الدرجة", hdr_price: "السعر", hdr_day1: "اليوم الأول", day1_badge: "⚡ اليوم الأول",
+                momentum_overbought: "تشبع شرائي", momentum_oversold: "تشبع بيعي",
+                momentum_overbought_hint: "تلاقي مؤشرات التشبع الشرائي — معدِّل على الإجراء، وليس إشارة منافسة",
+                momentum_oversold_hint: "تلاقي مؤشرات التشبع البيعي — يُدمج ضمن تأكيدات الشراء عند الهبوط، وليس محفزاً مستقلاً",
                 hdr_horizon: "المدى", hdr_picked_on: "تاريخ الترشيح", hdr_pick_price: "سعر الترشيح",
                 hdr_achieved_on: "تاريخ التحقق", hdr_achieved_price: "سعر التحقق", hdr_achieved_pct: "نسبة التحقق (%)",
                 hdr_recent_achievements: "🏆 تحقق اليوم",
@@ -2188,7 +2304,7 @@
                 btn_usage_analytics: "إحصائيات الاستخدام", tt_sign_out: "تسجيل الخروج", ph_search_ticker: "بحث عن رمز أو كلمة مفتاحية...",
                 opt_all_actions: "كل الإجراءات", opt_strong_buy: "🔥 شراء قوي", opt_breakout_buy: "⚡ شراء اختراق",
                 opt_accumulate: "📈 تجميع", opt_buy_on_dip: "⏳ شراء عند الهبوط", opt_hold_neutral: "🟡 احتفاظ / محايد",
-                opt_overbought: "⚠️ تشبع شرائي", opt_oversold: "⚠️ تشبع بيعي",
+                opt_all_momentum: "كل حالات الزخم", opt_momentum_overbought: "⚠️ تشبع شرائي", opt_momentum_oversold: "⚠️ تشبع بيعي", opt_momentum_none: "— محايد",
                 opt_sell_avoid: "🛑 بيع / تجنب", opt_all_trends: "كل الاتجاهات", opt_strong_bullish: "صعودي قوي",
                 opt_weak_bullish: "صعودي ضعيف", opt_consolidation: "تماسك / محايد", opt_weak_bearish: "هبوطي ضعيف",
                 opt_strong_bearish: "هبوطي قوي", opt_all_confidence: "كل مستويات دقة البيانات", opt_conf_high: "عالية (سنة+)",
@@ -2290,8 +2406,6 @@
             "⏳ BUY ON DIP": "⏳ شراء عند الهبوط",
             "📈 ACCUMULATE": "📈 تجميع",
             "🟡 HOLD / NEUTRAL": "🟡 احتفاظ / محايد",
-            "⚠️ OVERBOUGHT": "⚠️ تشبع شرائي",
-            "⚠️ OVERSOLD": "⚠️ تشبع بيعي",
 
             // Client-computed simplified variants used in renderPortfolio()
             // (slightly different wording from the server-side labels above).
@@ -2561,7 +2675,7 @@
 
         // Modals & Tabs
         function switchTab(tabId) {
-            ['tab-matrix', 'tab-sectors', 'tab-exits', 'tab-breakout', 'tab-picks', 'tab-history', 'tab-fin', 'tab-top10', 'tab-charts', 'tab-leaderboard', 'tab-strategy'].forEach(id => {
+            ['tab-matrix', 'tab-sectors', 'tab-exits', 'tab-breakout', 'tab-picks', 'tab-history', 'tab-fin', 'tab-top10', 'tab-charts', 'tab-leaderboard', 'tab-strategy', 'tab-performance'].forEach(id => {
                 document.getElementById(id).classList.add('hidden');
                 document.getElementById('btn-' + id).classList.remove('tab-active');
             });
@@ -2569,6 +2683,7 @@
             document.getElementById('btn-' + tabId).classList.add('tab-active');
             if (tabId === 'tab-charts' && !chartInstance) plotChart();
             if (tabId === 'tab-strategy' && !strategyPerfData) loadStrategyPerformance();
+            if (tabId === 'tab-performance' && !perfRendered) renderPerformance();
         }
         // NOTE: every modal below uses z-[210], one level above the chart's
         // fullscreen wrapper (#chart-fullscreen-wrapper, z-[201] - see
@@ -3899,6 +4014,11 @@
             const price = sanitizeNumber(document.getElementById('port-price').value);
             const shares = sanitizeNumber(document.getElementById('port-shares').value);
             const mode = document.getElementById('port-mode').value;
+            let entryAction = null, sector = null;
+            if (globalData && globalData.market_matrix) {
+                const found = globalData.market_matrix.find(m => m.Ticker === ticker);
+                if (found) { entryAction = found.Action || null; sector = found.Sector || null; }
+            }
 
             if (!ticker) { alert(tt("alert_invalid_ticker")); return; }
             if (price <= 0) { alert(tt("alert_price_positive")); return; }
@@ -3923,7 +4043,7 @@
                 // NOT touch cash, same as the desktop app's OVERWRITE mode.
                 existing.buyPrice = price; existing.shares = shares;
             } else {
-                userPortfolio.push({ ticker, buyPrice: price, shares, date: new Date().toISOString().split('T')[0] });
+                userPortfolio.push({ ticker, buyPrice: price, shares, date: new Date().toISOString().split('T')[0], entryAction, sector });
                 // Cash flow: opening a fresh position spends cash and pays
                 // the fee too - see reasoning above.
                 userCash -= (price * shares * (1 + TRANSACTION_FEE_PCT));
@@ -3954,7 +4074,8 @@
             const pnlPct = netBuyCost > 0 ? ((netSellPrice - netBuyCost) / netBuyCost) * 100 : 0;
             userHistory.unshift({
                 ticker: pos.ticker, shares: pos.shares, buyPrice: pos.buyPrice, sellPrice: cp,
-                realizedPnl: pnl, pnlPct: pnlPct, buyDate: pos.date, sellDate: new Date().toISOString().split('T')[0]
+                realizedPnl: pnl, pnlPct: pnlPct, buyDate: pos.date, sellDate: new Date().toISOString().split('T')[0],
+                entryAction: pos.entryAction || null, sector: pos.sector || null, tags: null, notes: null, source: 'app'
             });
             // Cash flow: a sale returns cash net of the exit brokerage fee -
             // see reasoning above.
@@ -5414,13 +5535,16 @@
             const actionFilter = document.getElementById('filter-action').value;
             const trendFilter = document.getElementById('filter-trend').value;
             const confFilter = document.getElementById('filter-confidence').value;
+            const momentumFilter = document.getElementById('filter-momentum').value;
             const hideIlliquid = document.getElementById('filter-illiquid').checked;
             matrixFilteredRows = globalData.market_matrix.filter((row) => {
                 const ticker = (row.Ticker || "").toUpperCase(), action = row.Action || "", trend = row["Trend Class"] || "", conf = row["Data Confidence"] || "";
+                const momentum = row["Momentum"] || "None";
                 if (search && !ticker.includes(search)) return false;
                 if (actionFilter !== "All" && !action.includes(actionFilter)) return false;
                 if (trendFilter !== "All" && trend !== trendFilter) return false;
                 if (confFilter !== "All" && !conf.includes(confFilter)) return false;
+                if (momentumFilter !== "All" && momentum !== momentumFilter) return false;
                 if (hideIlliquid && (action.includes("ILLIQUID") || action.includes("Unconfirmed"))) return false;
                 if (activeScreenerPreset) {
                     const preset = SCREENER_PRESETS.find(p => p.id === activeScreenerPreset);
@@ -5455,9 +5579,11 @@
                 else if (action.includes('STRONG BUY') || action.includes('BREAKOUT BUY')) actionStyle = 'bg-[#276749] text-white font-bold';
                 else if (action.includes('ACCUMULATE') || action.includes('BUY ON DIP')) actionStyle = 'bg-[#2b6cb0] text-white';
                 else if (action.includes('SELL') || action.includes('AVOID')) actionStyle = 'bg-[#9b2c2c] text-white font-bold';
-                else if (action.includes('OVERBOUGHT')) actionStyle = 'bg-[#c05621] text-white font-bold';
-                else if (action.includes('OVERSOLD')) actionStyle = 'bg-[#6b46c1] text-white font-bold';
                 else if (action.includes('HOLD')) actionStyle = 'bg-[#975a16] text-white';
+                const momentum = row["Momentum"] || null;
+                let momentumBadge = '<span class="text-textmuted">—</span>';
+                if (momentum === 'Overbought') momentumBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#c05621] text-white" title="${tt('momentum_overbought_hint')}">⚠️ ${tt('momentum_overbought')}</span>`;
+                else if (momentum === 'Oversold') momentumBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#6b46c1] text-white" title="${tt('momentum_oversold_hint')}">⚠️ ${tt('momentum_oversold')}</span>`;
                 let confStyle = 'text-slate-300';
                 if (conf.includes('Very Low')) confStyle = 'text-rose-400 font-bold';
                 else if (conf.includes('Low')) confStyle = 'text-amber-400 font-semibold';
@@ -5465,6 +5591,7 @@
                 tr.className = 'border-b border-bordercol/40 hover:bg-panelbg transition';
                 tr.innerHTML = `
                     <td class="p-2.5 font-sans text-textmuted">${rowCount}</td><td class="p-2.5 font-bold text-sky-400">${escapeHtml(row.Ticker) || '-'}</td><td class="p-2.5 text-center font-sans ${posStyle}">${posLabel}</td><td class="p-2 text-center font-sans ${actionStyle} rounded-full shadow-sm px-3" title="${escapeHtml(row['Signal Reason'] || '')}">${trAction(row.Action) || '-'}</td>
+                    <td class="p-2.5 text-center font-sans">${momentumBadge}</td>
                     <td class="p-2.5 text-textmain font-bold">${row["Rank Score"] || 0} <span class="text-[10px] font-normal text-textmuted" title="Kelly %: ${row["Kelly %"] ?? '-'}">K ${row["Kelly %"] ?? '-'}</span></td><td class="p-2.5 font-bold text-white">${row["Current Price"] || 0}</td><td class="p-2.5 text-textmain">${row["Target Entry (VWAP)"] || 0}</td>
                     <td class="p-2.5 text-rose-400 font-semibold">${row["Suggested Stop-Loss"] || 0}</td><td class="p-2.5 text-textmain" title="Estimated from your own cash balance">${estimateSuggestedShares(row["Target Entry (VWAP)"], row["Suggested Stop-Loss"]).toLocaleString()}</td>
                     <td class="p-2.5 text-emerald-400 font-semibold">${row["Projected Gain (%)"] || 'N/A'}</td><td class="p-2.5 text-textmain">${row["Pattern Conf (%)"] || 'N/A'}</td><td class="p-2.5 font-sans text-textmuted">${trTrend(row["Trend Class"]) || '-'}</td>
@@ -5501,7 +5628,7 @@
                 `;
                 tbody.appendChild(tr);
             });
-            if (total === 0) tbody.innerHTML = `<tr><td colspan="45" class="p-8 text-center text-textmuted font-sans">${tt('lbl_no_filter_matches')}</td></tr>`;
+            if (total === 0) tbody.innerHTML = `<tr><td colspan="46" class="p-8 text-center text-textmuted font-sans">${tt('lbl_no_filter_matches')}</td></tr>`;
             applyColumnOrder('thead-matrix-tr', 'tbody-matrix', 'quant_col_order_matrix');
             applyColumnVisibility();
             initMatrixSort();
@@ -5558,6 +5685,7 @@
             document.getElementById('filter-action').value = 'All';
             document.getElementById('filter-trend').value = 'All';
             document.getElementById('filter-confidence').value = 'All';
+            document.getElementById('filter-momentum').value = 'All';
             document.getElementById('filter-illiquid').checked = true;
             activeScreenerPreset = null;
             renderScreenerPresetChips();
@@ -5735,6 +5863,199 @@
             out.innerText = `${amount.toLocaleString()} EGP → ${finalValue.toLocaleString(undefined, {maximumFractionDigits: 0})} EGP (${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%) across ${d.trade_count} sequential trades`;
         }
 
+
+        // ===================== Performance tab (client-side mirror of
+        // trade_performance.py - same field names, same formulas) =====
+        let perfRendered = false;
+        let perfChart = null;
+
+        function perfNormalize() {
+            return userHistory.map(h => ({
+                ...h,
+                _pnl: parseFloat(h.realizedPnl) || 0,
+                _pnl_pct: parseFloat(h.pnlPct) || 0,
+                _sell: h.sellDate || '',
+                _buy: h.buyDate || ''
+            })).filter(h => h._sell).sort((a, b) => a._sell < b._sell ? -1 : a._sell > b._sell ? 1 : 0);
+        }
+
+        function perfSummary(trades) {
+            const n = trades.length;
+            if (!n) return { total_trades: 0, win_rate_pct: null, profit_factor: null, expectancy_egp: null, total_realized_pnl_egp: 0, avg_holding_days: null, manual_trade_count: 0 };
+            const wins = trades.filter(t => t._pnl > 0), losses = trades.filter(t => t._pnl < 0);
+            const decisive = wins.length + losses.length;
+            const grossWin = wins.reduce((s, t) => s + t._pnl, 0);
+            const grossLoss = Math.abs(losses.reduce((s, t) => s + t._pnl, 0));
+            const total = trades.reduce((s, t) => s + t._pnl, 0);
+            const holds = trades.map(t => { const b = new Date(t._buy + 'T00:00:00'), s = new Date(t._sell + 'T00:00:00'); return isNaN(b) || isNaN(s) ? null : Math.round((s - b) / 86400000); }).filter(x => x !== null);
+            return {
+                total_trades: n,
+                win_rate_pct: decisive ? +(wins.length / decisive * 100).toFixed(1) : null,
+                profit_factor: grossLoss > 0 ? +(grossWin / grossLoss).toFixed(2) : (grossWin === 0 ? null : Infinity),
+                expectancy_egp: +(total / n).toFixed(2),
+                total_realized_pnl_egp: +total.toFixed(2),
+                avg_holding_days: holds.length ? +(holds.reduce((a, b) => a + b, 0) / holds.length).toFixed(1) : null,
+                manual_trade_count: trades.filter(t => (t.source || 'app') === 'manual').length
+            };
+        }
+
+        function perfStreaks(trades) {
+            let maxWin = 0, maxLoss = 0, curLen = 0, curType = null;
+            for (const t of trades) {
+                const out = t._pnl > 0 ? 'win' : t._pnl < 0 ? 'loss' : null;
+                if (out === null) { curType = null; curLen = 0; continue; }
+                if (out === curType) curLen++; else { curType = out; curLen = 1; }
+                if (curType === 'win') maxWin = Math.max(maxWin, curLen); else maxLoss = Math.max(maxLoss, curLen);
+            }
+            return { current_streak_type: curType, current_streak_len: curLen, max_win_streak: maxWin, max_loss_streak: maxLoss };
+        }
+
+        function perfEquity(trades) {
+            let running = 0; const curve = [];
+            for (const t of trades) { running += t._pnl; curve.push({ date: t._sell, ticker: t.ticker, pnl: t._pnl, cumulative: +running.toFixed(2), equity: running }); }
+            return curve;
+        }
+
+        function perfDrawdown(curve) {
+            if (!curve.length) return { max_dd_pct: null, current_dd_pct: null };
+            let peak = curve[0].equity, maxDd = 0;
+            for (const pt of curve) { if (pt.equity > peak) peak = pt.equity; const dd = peak > 0 ? (peak - pt.equity) / peak * 100 : 0; if (dd > maxDd) maxDd = dd; }
+            const allTimePeak = Math.max(...curve.map(p => p.equity));
+            const last = curve[curve.length - 1].equity;
+            const curDd = allTimePeak > 0 ? (allTimePeak - last) / allTimePeak * 100 : 0;
+            return { max_dd_pct: +maxDd.toFixed(2), current_dd_pct: +curDd.toFixed(2) };
+        }
+
+        function perfBreakdown(trades, groupFn, unknown) {
+            const groups = {};
+            for (const t of trades) {
+                const keys = groupFn(t) || [unknown];
+                for (const k of keys) { if (!groups[k]) groups[k] = []; groups[k].push(t); }
+            }
+            return Object.entries(groups).map(([label, g]) => {
+                const wins = g.filter(t => t._pnl > 0), losses = g.filter(t => t._pnl < 0), dec = wins.length + losses.length;
+                return { label, trade_count: g.length, win_rate_pct: dec ? +(wins.length / dec * 100).toFixed(1) : null, total_pnl_egp: +g.reduce((s, t) => s + t._pnl, 0).toFixed(2) };
+            }).sort((a, b) => b.total_pnl_egp - a.total_pnl_egp);
+        }
+
+        function perfBenchmarkCloseByDate() {
+            const st = globalData && globalData.chart_history && globalData.chart_history.stocks;
+            if (!st) return null;
+            for (const key of ['.EGX30', 'EGX30', '.EGX30.CA']) {
+                const h = st[key];
+                if (h && h.dates && h.close && h.dates.length) {
+                    const m = {};
+                    for (let i = 0; i < h.dates.length; i++) m[h.dates[i]] = +h.close[i];
+                    return m;
+                }
+            }
+            return null;
+        }
+
+        function renderPerformance() {
+            perfRendered = true;
+            const trades = perfNormalize();
+            const summary = perfSummary(trades);
+            const streaks = perfStreaks(trades);
+            const curve = perfEquity(trades);
+            const dd = perfDrawdown(curve);
+
+            const set = (id, text, color) => { const el = document.getElementById(id); if (!el) return; el.innerText = text; el.className = 'text-xl font-bold font-mono ' + (color || 'text-textmain'); };
+            set('perf-trades', summary.total_trades);
+            set('perf-winrate', summary.win_rate_pct === null ? '—' : summary.win_rate_pct + '%', summary.win_rate_pct !== null && summary.win_rate_pct >= 50 ? 'text-emerald-400' : 'text-rose-400');
+            set('perf-pf', summary.profit_factor === null ? '—' : summary.profit_factor === Infinity ? '∞' : summary.profit_factor);
+            set('perf-expectancy', summary.expectancy_egp === null ? '—' : (summary.expectancy_egp >= 0 ? '+' : '') + summary.expectancy_egp.toLocaleString(undefined, {maximumFractionDigits: 2}) + ' EGP', summary.expectancy_egp !== null && summary.expectancy_egp >= 0 ? 'text-emerald-400' : 'text-rose-400');
+            set('perf-totalpnl', (summary.total_realized_pnl_egp >= 0 ? '+' : '') + summary.total_realized_pnl_egp.toLocaleString(undefined, {maximumFractionDigits: 2}) + ' EGP', summary.total_realized_pnl_egp >= 0 ? 'text-emerald-400' : 'text-rose-400');
+            set('perf-hold', summary.avg_holding_days === null ? '—' : summary.avg_holding_days + ' d');
+            set('perf-maxwin', streaks.max_win_streak);
+            set('perf-maxloss', streaks.max_loss_streak);
+            set('perf-curstreak', streaks.current_streak_type ? streaks.current_streak_len + ' × ' + (streaks.current_streak_type === 'win' ? 'W' : 'L') : '—');
+            set('perf-maxdd', dd.max_dd_pct === null ? '—' : '-' + dd.max_dd_pct + '%', dd.max_dd_pct !== null && dd.max_dd_pct > 0 ? 'text-rose-400' : 'text-emerald-400');
+            set('perf-curdd', dd.current_dd_pct === null ? '—' : '-' + dd.current_dd_pct + '%', dd.current_dd_pct !== null && dd.current_dd_pct > 0 ? 'text-rose-400' : 'text-emerald-400');
+            set('perf-manual', summary.manual_trade_count);
+
+            const ctx = document.getElementById('perf-equity-canvas');
+            if (perfChart) { perfChart.destroy(); perfChart = null; }
+            if (ctx && curve.length) {
+                perfChart = new Chart(ctx, {
+                    type: 'line',
+                    data: { labels: curve.map(p => p.date), datasets: [{ label: 'Cumulative Realized P&L (EGP)', data: curve.map(p => p.cumulative), borderColor: '#38bdf8', backgroundColor: 'rgba(56,189,248,0.08)', fill: true, pointRadius: 3, tension: 0.15 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#cbd5e0', font: { size: 11 } } } }, scales: { x: { ticks: { color: '#94a3b8', maxTicksLimit: 8, maxRotation: 40 } }, y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.12)' } } } }
+                });
+            }
+
+            const fillBreakdown = (tbodyId, rows, emptyColspan) => {
+                const tb = document.getElementById(tbodyId); if (!tb) return;
+                tb.innerHTML = rows.length ? rows.map(r => `<tr class="border-b border-bordercol/50"><td class="p-2 text-textmain">${escapeHtml(r.label)}</td><td class="p-2 text-textmuted">${r.trade_count}</td><td class="p-2 ${r.win_rate_pct !== null && r.win_rate_pct >= 50 ? 'text-emerald-400' : 'text-rose-400'}">${r.win_rate_pct === null ? '—' : r.win_rate_pct + '%'}</td><td class="p-2 font-mono ${r.total_pnl_egp >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${r.total_pnl_egp >= 0 ? '+' : ''}${r.total_pnl_egp.toLocaleString(undefined, {maximumFractionDigits: 2})}</td></tr>`).join('') : `<tr><td colspan="${emptyColspan}" class="p-3 text-center text-textmuted">No trades</td></tr>`;
+            };
+            fillBreakdown('tbody-perf-signal', perfBreakdown(trades, t => t.entryAction ? [t.entryAction] : null, '(no signal / manual)'), 4);
+            fillBreakdown('tbody-perf-sector', perfBreakdown(trades, t => t.sector ? [t.sector] : null, '(sector unknown)'), 4);
+            fillBreakdown('tbody-perf-tag', perfBreakdown(trades, t => { const raw = (t.tags || '').trim(); return raw ? raw.split(',').map(x => x.trim()).filter(Boolean) : null; }, '(untagged)'), 4);
+            fillBreakdown('tbody-perf-source', perfBreakdown(trades, t => [t.source || 'app'], 'app'), 4);
+
+            const jt = document.getElementById('tbody-perf-journal');
+            if (jt) {
+                const jrows = [...trades].reverse();
+                jt.innerHTML = jrows.length ? jrows.map(t => `<tr class="border-b border-bordercol/50">
+                    <td class="p-2 text-textmuted">${escapeHtml(t.sellDate)}</td><td class="p-2 font-bold text-sky-400">${escapeHtml(t.ticker)}</td>
+                    <td class="p-2 font-mono">${(+t.buyPrice).toFixed(4)}</td><td class="p-2 font-mono">${(+t.sellPrice).toFixed(4)}</td><td class="p-2 font-mono">${(+t.shares).toLocaleString()}</td>
+                    <td class="p-2 font-mono ${t.realizedPnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${t.realizedPnl >= 0 ? '+' : ''}${(+t.realizedPnl).toLocaleString(undefined, {maximumFractionDigits: 2})}</td>
+                    <td class="p-2 font-mono ${t.pnlPct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${(+t.pnlPct).toFixed(2)}%</td>
+                    <td class="p-2 text-textmuted">${escapeHtml(t.entryAction || '—')}</td><td class="p-2 text-textmuted">${escapeHtml(t.sector || '—')}</td>
+                    <td class="p-2 text-textmuted">${escapeHtml(t.tags || '—')}</td><td class="p-2 text-textmuted">${escapeHtml(t.notes || '—')}</td><td class="p-2 text-textmuted">${escapeHtml(t.source || 'app')}</td>
+                </tr>`).join('') : `<tr><td colspan="12" class="p-4 text-center text-textmuted">No closed trades yet.</td></tr>`;
+            }
+
+            const sectorList = document.getElementById('perf-sector-list');
+            if (sectorList && globalData && globalData.market_matrix) {
+                const seen = new Set(); let opts = '';
+                globalData.market_matrix.forEach(m => { if (m.Sector && !seen.has(m.Sector)) { seen.add(m.Sector); opts += `<option value="${escapeHtml(m.Sector)}">`; } });
+                sectorList.innerHTML = opts;
+            }
+
+            const alphaEl = document.getElementById('perf-alpha');
+            if (alphaEl) {
+                const closeByDate = perfBenchmarkCloseByDate();
+                if (!closeByDate) { alphaEl.innerText = '📊 Benchmark alpha unavailable: no EGX30 history in this feed.'; }
+                else {
+                    let n = 0, beat = 0, sum = 0;
+                    for (const t of trades) {
+                        const ec = closeByDate[t._buy], xc = closeByDate[t._sell];
+                        if (!ec || !xc) continue;
+                        const bench = (xc / ec - 1) * 100;
+                        const alpha = t._pnl_pct - bench;
+                        n++; if (alpha > 0) beat++; sum += alpha;
+                    }
+                    if (!n) alphaEl.innerText = '📊 Benchmark alpha unavailable: no trades overlap EGX30 history.';
+                    else alphaEl.innerText = `📊 vs EGX30: ${n}/${summary.total_trades} trades with overlap | Beat the market ${(beat / n * 100).toFixed(1)}% of the time | Avg alpha ${sum >= 0 ? '+' : ''}${(sum / n).toFixed(2)}%`;
+                }
+            }
+        }
+
+        function addManualTrade() {
+            const ticker = sanitizeTicker(document.getElementById('perf-m-ticker').value);
+            const buyPrice = sanitizeNumber(document.getElementById('perf-m-buy').value);
+            const sellPrice = sanitizeNumber(document.getElementById('perf-m-sell').value);
+            const shares = sanitizeNumber(document.getElementById('perf-m-shares').value);
+            const buyDate = document.getElementById('perf-m-buydate').value;
+            const sellDate = document.getElementById('perf-m-selldate').value;
+            const entryAction = document.getElementById('perf-m-action').value.trim();
+            const sector = document.getElementById('perf-m-sector').value.trim();
+            const tags = document.getElementById('perf-m-tags').value.trim();
+            const notes = document.getElementById('perf-m-notes').value.trim();
+            if (!ticker || !(buyPrice > 0) || !(sellPrice > 0) || !(shares > 0)) { alert('Enter ticker, buy price, sell price and shares.'); return; }
+            if (!buyDate || !sellDate) { alert('Enter purchase and sell dates.'); return; }
+            const netSell = sellPrice * (1 - TRANSACTION_FEE_PCT);
+            const netBuy = buyPrice * (1 + TRANSACTION_FEE_PCT);
+            const pnl = (netSell - netBuy) * shares;
+            const pnlPct = netBuy > 0 ? ((netSell - netBuy) / netBuy) * 100 : 0;
+            userHistory.unshift({ ticker, shares, buyPrice, sellPrice, realizedPnl: pnl, pnlPct, buyDate, sellDate, entryAction: entryAction || null, sector: sector || null, tags: tags || null, notes: notes || null, source: 'manual' });
+            localStorage.setItem('quant_history', JSON.stringify(userHistory));
+            syncUserData();
+            renderHistory(); renderPerformance();
+            closeModal('modal-perf-manual');
+        }
+
         // ===================== Sharded data loading =====================
         // export_json.py writes both a monolithic market_data.json AND a set
         // of per-tab shards (matrix.json, sectors.json, top_10.json,
@@ -5812,7 +6133,7 @@
                 prefetchChartHistoryInBackground();
             } catch (error) {
                 console.error("Failed to load market data:", error);
-                document.getElementById('tbody-matrix').innerHTML = `<tr><td colspan="45" class="p-8 text-center text-rose-400 font-sans">⚠️ ${tt('lbl_data_unavailable')}</td></tr>`;
+                document.getElementById('tbody-matrix').innerHTML = `<tr><td colspan="46" class="p-8 text-center text-rose-400 font-sans">⚠️ ${tt('lbl_data_unavailable')}</td></tr>`;
             }
         }
 
@@ -6995,6 +7316,7 @@
             });
         }
     </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
