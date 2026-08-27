@@ -442,6 +442,18 @@ ACTION_LABELS = [
             "ar": "إشارة خروج واضحة ومحددة مسبقاً بدلاً من الاضطرار لقرار لحظي حول ما إذا كان الربح 'كافياً'.",
         },
     },
+    {
+        "term": {"en": "⚡ Day-1 Breakout", "ar": "⚡ اختراق اليوم الأول"},
+        "bias": "bullish",
+        "definition": {
+            "en": "A fresh 20-day closing high with volume confirmation (RVOL above the 20-day average) and price not yet extended far above VWAP — the first day a breakout actually fires.",
+            "ar": "قمة إغلاق جديدة خلال 20 يومًا مع تأكيد حجم التداول (حجم نسبي أعلى من متوسط 20 يومًا) وسعر لم يبتعد كثيرًا بعد عن VWAP — أول يوم يتحقق فيه الاختراق فعليًا.",
+        },
+        "why_it_matters": {
+            "en": "Higher conviction than a still-coiling pre-breakout setup: the move has already started with real volume. Session Picks reserves dedicated short-term slots for Day-1 names, and the matrix, social captions and chart all badge them.",
+            "ar": "ثقة أعلى من إعداد ما قبل الاختراق الذي لا يزال في مرحلة الانضغاط: الحركة بدأت فعلًا بحجم حقيقي. تحتفظ ترشيحات الجلسة بفتحات قصيرة المدى مخصصة لأسماء اليوم الأول، وتوسمها المصفوفة ووسائل التواصل والرسم البياني.",
+        },
+    },
 ]
 
 CHART_PATTERNS = [

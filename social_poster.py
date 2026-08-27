@@ -1192,6 +1192,18 @@ def _draw_pick_row(draw, x, y, w, row_h, pick, fonts):
 
     draw.text((x + 20, y + 12), ticker, font=f_ticker, fill=TEXT_MAIN)
 
+    if pick.get("Day-1 Breakout"):
+
+        badge = "⚡ Day-1"
+
+        bw = f_body.getlength(badge) + 18
+
+        bx = x + 20 + f_ticker.getlength(ticker) + 12
+
+        draw.rounded_rectangle([bx, y + 10, bx + bw, y + 36], radius=7, fill=GREEN)
+
+        draw.text((bx + 9, y + 13), badge, font=f_body, fill=BG)
+
 
 
     bits = []
@@ -1656,13 +1668,25 @@ def _pick_lines_en(rows: list[dict]) -> list[str]:
 
         return ["  (no active picks right now)"]
 
-    return [
+    lines = []
 
-        f"  • {r.get('Ticker') or r.get('ticker', '—')} — score {r.get('Rank Score', '—')}/100, RSI {r.get('RSI-14', '—')}"
+    for r in rows:
 
-        for r in rows
+        line = f"  • {r.get('Ticker') or r.get('ticker', '—')} — score {r.get('Rank Score', '—')}/100, RSI {r.get('RSI-14', '—')}"
 
-    ]
+        if r.get("Day-1 Breakout"):
+
+            reasons = r.get("Day-1 Breakout Reasons") or []
+
+            line += " ⚡ Day-1 Breakout (fresh 20-day high + volume)"
+
+            if reasons:
+
+                line += ": " + "; ".join(str(x) for x in reasons[:3])
+
+        lines.append(line)
+
+    return lines
 
 
 
@@ -1674,13 +1698,25 @@ def _pick_lines_ar(rows: list[dict]) -> list[str]:
 
         return ["  (لا توجد ترشيحات نشطة حاليًا)"]
 
-    return [
+    lines = []
 
-        f"  • {r.get('Ticker') or r.get('ticker', '—')} — الدرجة {r.get('Rank Score', '—')}/100، RSI {r.get('RSI-14', '—')}"
+    for r in rows:
 
-        for r in rows
+        line = f"  • {r.get('Ticker') or r.get('ticker', '—')} — الدرجة {r.get('Rank Score', '—')}/100، RSI {r.get('RSI-14', '—')}"
 
-    ]
+        if r.get("Day-1 Breakout"):
+
+            reasons = r.get("Day-1 Breakout Reasons") or []
+
+            line += " ⚡ اختراق اليوم الأول (قمة 20 يوم + حجم)"
+
+            if reasons:
+
+                line += ": " + "; ".join(str(x) for x in reasons[:3])
+
+        lines.append(line)
+
+    return lines
 
 
 # --- Arabic-first bilingual assembly + RTL bidi fix --------------------
@@ -2107,7 +2143,7 @@ def build_telegram_caption(highlights: dict) -> str:
 
         if bucket:
 
-            rows.append(title + ': ' + ', '.join((r.get("Ticker") or r.get("ticker", "—")) for r in bucket[:3]))
+            rows.append(title + ': ' + ', '.join((r.get("Ticker") or r.get("ticker", "—")) + (" ⚡ Day-1" if r.get("Day-1 Breakout") else "") for r in bucket[:3]))
 
     return "\n".join(rows) if rows else "No active highlights."
 

@@ -10,6 +10,11 @@
 		var f=d.getElementsByTagName(s)[0],
 		j=d.createElement(s);j.async=true;j.src='/gk7x/';
 		f.parentNode.insertBefore(j,f);
+		})(window,document,'script','dataLayer');</script><script>(function(w,i,g){w[g]=w[g]||[];if(typeof w[g].push=='function')w[g].push(i)})
+(window,'GTM-K3QN3TWK','google_tags_first_party');</script><script>(function(w,d,s,l){w[l]=w[l]||[];(function(){w[l].push(arguments);})('set', 'developer_id.dY2E1Nz', true);
+		var f=d.getElementsByTagName(s)[0],
+		j=d.createElement(s);j.async=true;j.src='/gk7x/';
+		f.parentNode.insertBefore(j,f);
 		})(window,document,'script','dataLayer');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -540,10 +545,11 @@
                             <th class="p-2.5 border border-darkbg" title="Estimated from dividend sustainability - not a cash-flow-statement figure">Cash Flow Health (est.)</th>
                             <th class="p-2.5 border border-darkbg" title="Estimated from earnings yield (1/P-E) - not a reported margin">Profitability Health (est.)</th>
                             <th class="p-2.5 border border-darkbg" title="Estimated from 1Y/3Y price return - not reported earnings/revenue growth">Growth Health (est.)</th>
+                            <th class="p-2.5 border border-darkbg text-center" data-i18n="hdr_day1" title="Fresh 20-day high + volume confirmation — Day-1 Breakout">Day-1</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-matrix" class="divide-y divide-bordercol/50 text-xs">
-                        <tr><td colspan="44" class="p-8 text-center text-textmuted font-sans" data-i18n="loading_matrix">Loading quantitative matrix...</td></tr>
+                        <tr><td colspan="45" class="p-8 text-center text-textmuted font-sans" data-i18n="loading_matrix">Loading quantitative matrix...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -1833,7 +1839,7 @@
                 toggle_patterns: "🔺 Patterns", toggle_volume: "📊 Volume", btn_save_chart_img: "💾 Save Chart",
                 btn_maximize_chart: "⛶ Maximize", btn_exit_fullscreen_chart: "⛶ Exit Fullscreen",
                 // Table headers
-                hdr_ticker: "Ticker", hdr_action: "Action", hdr_score: "Score", hdr_price: "Price",
+                hdr_ticker: "Ticker", hdr_action: "Action", hdr_score: "Score", hdr_price: "Price", hdr_day1: "Day-1", day1_badge: "⚡ Day-1",
                 hdr_horizon: "Horizon", hdr_picked_on: "Picked On", hdr_pick_price: "Pick Price",
                 hdr_achieved_on: "Achieved On", hdr_achieved_price: "Achieved Price", hdr_achieved_pct: "Achieved (%)",
                 hdr_recent_achievements: "🏆 Achieved Today",
@@ -2084,7 +2090,7 @@
                 toggle_patterns: "🔺 الأنماط", toggle_volume: "📊 الحجم", btn_save_chart_img: "💾 حفظ الرسم",
                 btn_maximize_chart: "⛶ تكبير", btn_exit_fullscreen_chart: "⛶ إنهاء ملء الشاشة",
                 // Table headers
-                hdr_ticker: "الرمز", hdr_action: "الإجراء", hdr_score: "الدرجة", hdr_price: "السعر",
+                hdr_ticker: "الرمز", hdr_action: "الإجراء", hdr_score: "الدرجة", hdr_price: "السعر", hdr_day1: "اليوم الأول", day1_badge: "⚡ اليوم الأول",
                 hdr_horizon: "المدى", hdr_picked_on: "تاريخ الترشيح", hdr_pick_price: "سعر الترشيح",
                 hdr_achieved_on: "تاريخ التحقق", hdr_achieved_price: "سعر التحقق", hdr_achieved_pct: "نسبة التحقق (%)",
                 hdr_recent_achievements: "🏆 تحقق اليوم",
@@ -5322,6 +5328,7 @@
             { key: 'Cash Flow Health Score (est.)', numeric: true },
             { key: 'Profitability Health Score (est.)', numeric: true },
             { key: 'Growth Health Score (est.)', numeric: true },
+            { key: 'Day-1 Breakout' },
         ];
         let matrixSortState = { colIdx: null, dir: 1 }; // dir: 1 = ascending, -1 = descending
 
@@ -5482,10 +5489,11 @@
                     <td class="p-2.5 text-textmuted" title="Estimated from dividend sustainability - not a cash-flow-statement figure">${row["Cash Flow Health Score (est.)"] ?? '-'}</td>
                     <td class="p-2.5 text-textmuted" title="Estimated from earnings yield (1/P-E) - not a reported margin">${row["Profitability Health Score (est.)"] ?? '-'}</td>
                     <td class="p-2.5 text-textmuted" title="Estimated from 1Y/3Y price return - not reported earnings/revenue growth">${row["Growth Health Score (est.)"] ?? '-'}</td>
+                    <td class="p-2.5 text-center">${row["Day-1 Breakout"] ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-600/20 text-emerald-300 border border-emerald-500/40" title="${escapeHtml((row["Day-1 Breakout Reasons"] || []).join(' · '))}">${tt('day1_badge')}</span>` : '-'}</td>
                 `;
                 tbody.appendChild(tr);
             });
-            if (total === 0) tbody.innerHTML = `<tr><td colspan="44" class="p-8 text-center text-textmuted font-sans">${tt('lbl_no_filter_matches')}</td></tr>`;
+            if (total === 0) tbody.innerHTML = `<tr><td colspan="45" class="p-8 text-center text-textmuted font-sans">${tt('lbl_no_filter_matches')}</td></tr>`;
             applyColumnOrder('thead-matrix-tr', 'tbody-matrix', 'quant_col_order_matrix');
             applyColumnVisibility();
             initMatrixSort();
@@ -5796,7 +5804,7 @@
                 prefetchChartHistoryInBackground();
             } catch (error) {
                 console.error("Failed to load market data:", error);
-                document.getElementById('tbody-matrix').innerHTML = `<tr><td colspan="44" class="p-8 text-center text-rose-400 font-sans">⚠️ ${tt('lbl_data_unavailable')}</td></tr>`;
+                document.getElementById('tbody-matrix').innerHTML = `<tr><td colspan="45" class="p-8 text-center text-rose-400 font-sans">⚠️ ${tt('lbl_data_unavailable')}</td></tr>`;
             }
         }
 
@@ -6979,6 +6987,7 @@
             });
         }
     </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>

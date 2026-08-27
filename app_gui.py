@@ -323,6 +323,8 @@ AR_TRANSLATIONS = {
         "⏱️ متوسط الوقت / الجلسة: {avg}",
     "Stock ticker symbol": "رمز السهم",
     "Ticker": "الرمز", "Action": "الإجراء", "Trend": "الاتجاه",
+    "Day-1 Breakout": "اختراق اليوم الأول",
+    "Fresh 20-day high + volume confirmation — Day-1 Breakout.": "قمة 20 يوم جديدة + تأكيد حجم التداول — اختراق اليوم الأول.",
     "Recommended action based on multi-factor confirmation": "الإجراء الموصى به بناءً على تأكيد متعدد العوامل",
     "Score": "الدرجة", "Composite rank score (higher = stronger signal)": "درجة التصنيف المركبة (كلما زادت، زادت قوة الإشارة)",
     "Price": "السعر", "Current close price": "سعر الإغلاق الحالي",
@@ -1249,11 +1251,12 @@ class MatrixTableModel(QAbstractTableModel):
             ("Cash Flow Health (est.)",      "Estimated from dividend sustainability - not a cash-flow-statement figure.", "Cash Flow Health Score (est.)"),
             ("Profitability Health (est.)",  "Estimated from earnings yield (1/P-E) - not a reported margin.", "Profitability Health Score (est.)"),
             ("Growth Health (est.)",         "Estimated from 1Y/3Y price return - not reported earnings/revenue growth.", "Growth Health Score (est.)"),
+            ("Day-1 Breakout",               "Fresh 20-day high + volume confirmation — Day-1 Breakout.",        "Day-1 Breakout"),
             ("Signal Reason",                "Plain-language evidence behind the action.",                     "Signal Reason"),
         ]
         self._columns   = [(t, tip) for (t, tip, _k) in self._ACTION_MATRIX_SCHEMA]
         self._col_keys  = [_k for (_t, _tip, _k) in self._ACTION_MATRIX_SCHEMA]
-        assert len(self._columns) == len(self._col_keys) == 50, (
+        assert len(self._columns) == len(self._col_keys) == 51, (
             "ACTION_MATRIX_SCHEMA projection mismatch"
         )
 
@@ -1295,9 +1298,11 @@ class MatrixTableModel(QAbstractTableModel):
         if role == Qt.ItemDataRole.DisplayRole:
             if key in ("Action", "Trend Class", "Data Confidence", "Position"):
                 return tr(val_str)
+            if key == "Day-1 Breakout":
+                return "⚡ Day-1" if str(val).lower() in ("true", "1", "yes") else "—"
             return val_str
         elif role == Qt.ItemDataRole.TextAlignmentRole:
-            if key in ["Action", "Data Confidence", "Position"]:
+            if key in ["Action", "Data Confidence", "Position", "Day-1 Breakout"]:
                 return int(Qt.AlignmentFlag.AlignCenter)
             # Text/label columns stay left-aligned; everything else in this
             # schema is a number/price/percentage and reads better
@@ -1330,6 +1335,8 @@ class MatrixTableModel(QAbstractTableModel):
                 elif "HOLD" in val_str:
                     return QColor("#975a16")
         elif role == Qt.ItemDataRole.ForegroundRole:
+            if key == "Day-1 Breakout" and str(val).lower() in ("true", "1", "yes"):
+                return QColor("#38a169")
             if key == "Position" and "OWNED" in val_str:
                 return QColor("#ffffff")
             elif key == "Action":
@@ -1342,6 +1349,8 @@ class MatrixTableModel(QAbstractTableModel):
                     return QColor("#dd6b20")
         elif role == Qt.ItemDataRole.FontRole:
             if key == "Action" and ("STRONG BUY" in val_str or "BREAKOUT BUY" in val_str):
+                return QFont("Inter", 9, QFont.Weight.Bold)
+            if key == "Day-1 Breakout" and str(val).lower() in ("true", "1", "yes"):
                 return QFont("Inter", 9, QFont.Weight.Bold)
         return None
 
