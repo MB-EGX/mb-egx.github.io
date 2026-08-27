@@ -69,6 +69,7 @@ from config import (
     SESSION_PICKS_QUOTA, SESSION_PICKS_EXPECTED_PCT, SESSION_PICKS_EXPECTED_DAYS,
 
     MAX_ACHIEVED_HISTORY, SESSION_PICKS_PRE_BREAKOUT_MAX_SLOTS, SESSION_PICKS_PRE_BREAKOUT_MIN_SCORE,
+    SESSION_PICKS_DAY1_MAX_SLOTS, STALE_EXCLUSION_DAYS, ARCHIVED_TICKERS,
 
     SESSION_PICKS_STOP_LOSS_PCT,
 
@@ -452,6 +453,26 @@ def _candidate_pool(horizon: str, top10: dict, buys: list, sectors: list, by_tic
 
         pool.sort(key=lambda r: r.get("Rank Score", 0), reverse=True)
 
+        # Day-1 Breakout Confirmation names (NEW): names that JUST broke out
+        # today (fresh 20-day high + volume spike + not extended) - see
+        # config.DAY1_BREAKOUT. Higher conviction than the still-coiling
+        # pre-breakout names below, so they rank ahead of them but after the
+        # already-fired signal pool. Stale/delisted names are skipped so a
+        # stale row can never be picked.
+        day1_pool = sorted(
+            (r for r in buys if r.get("Day-1 Breakout")
+             and r.get("Ticker") not in (ARCHIVED_TICKERS or set())
+             and not (STALE_EXCLUSION_DAYS and (r.get("Days Stale") or 0) > STALE_EXCLUSION_DAYS)),
+            key=lambda r: r.get("Rank Score", 0), reverse=True,
+        )
+        for r in day1_pool:
+            pool.append({
+                "Ticker": r.get("Ticker"),
+                "Current Price": r.get("Current Price"),
+                "Rank Score": r.get("Rank Score", 0),
+                "Day-1 Breakout": True,
+            })
+
         if breakout_watchlist:
 
             pb_candidates = sorted(
@@ -809,6 +830,20 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
 
         for pick in dbm.get_active_picks(horizon):
 
+            # Archived/delisted: retire immediately so the name never stays
+            # active in a list it can no longer be part of.
+            if pick["ticker"] in (ARCHIVED_TICKERS or set()):
+                try:
+                    dbm.retire_pick(pick["id"], session_date, prices.get(pick["ticker"]), None, "archived_delisted")
+                except Exception:
+                    pass
+                retired_today.append({
+                    **pick, "retired_date": session_date,
+                    "retired_price": prices.get(pick["ticker"]),
+                    "retired_pct": None, "retired_reason": "archived_delisted",
+                })
+                continue
+
             current_price = prices.get(pick["ticker"])
 
             if current_price is None or not pick["ref_price"]:
@@ -924,6 +959,7 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
         excluded_today = dbm.get_excluded_tickers(horizon, session_date)
 
         pre_breakout_fills = 0
+        day1_fills = 0
 
         for row in _candidate_pool(horizon, top10, buys, sectors, by_ticker, breakout_watchlist):
 
@@ -939,6 +975,21 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
 
                 continue
 
+            # Never pick an archived/delisted or stale-beyond-limit name.
+            if ticker in (ARCHIVED_TICKERS or set()):
+                continue
+            if STALE_EXCLUSION_DAYS and (row.get("Days Stale") or 0) > STALE_EXCLUSION_DAYS:
+                continue
+
+            # Cap how many "short" slots Day-1 Breakout names may fill.
+            if row.get("Day-1 Breakout"):
+
+                if day1_fills >= SESSION_PICKS_DAY1_MAX_SLOTS:
+
+                    continue
+
+                day1_fills += 1
+
             if row.get("Pre-Breakout Pick"):
 
                 if pre_breakout_fills >= SESSION_PICKS_PRE_BREAKOUT_MAX_SLOTS:
@@ -950,12 +1001,15 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
             rank_score = row.get("Rank Score")
             if rank_score is None:
                 rank_score = row.get("Breakout Score")
+            is_day1 = bool(row.get("Day-1 Breakout"))
             rank_origin = row.get("Action") or (
-                "Pre-Breakout Watchlist" if row.get("Pre-Breakout Pick") else "Signal pool"
+                "Day-1 Breakout" if is_day1
+                else "Pre-Breakout Watchlist" if row.get("Pre-Breakout Pick") else "Signal pool"
             )
             dbm.add_pick(
                 ticker, horizon, session_date, price,
-                source="pre_breakout" if row.get("Pre-Breakout Pick") else "signal",
+                source="day1_breakout" if is_day1
+                else "pre_breakout" if row.get("Pre-Breakout Pick") else "signal",
                 rank_score=rank_score,
                 rank_origin=rank_origin,
             )

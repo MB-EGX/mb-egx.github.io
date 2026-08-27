@@ -61,7 +61,22 @@ from config import (
     VALUATION_EXTREMES_TOP_N,
     WEEK52_EXTREMES_TOP_N,
     WEEK52_NEAR_PCT,
+    STALE_EXCLUSION_DAYS,
+    ARCHIVED_TICKERS,
 )
+
+
+def _excluded_tickers(matrix_rows) -> set:
+    """Tickers that must never appear in "today's movers": archived/delisted
+    names (config.ARCHIVED_TICKERS) plus any ticker whose last bar is stale
+    (Days Stale > 0) - a stale ticker's close-to-close % change describes an
+    earlier session, not today, so showing it as a "gainer" is misleading
+    (e.g. ARVA.CA +56% from 3-week-old data)."""
+    excluded = set(ARCHIVED_TICKERS or set())
+    for r in (matrix_rows or []):
+        if (r.get("Days Stale") or 0) > 0:
+            excluded.add(r.get("Ticker"))
+    return excluded
 
 
 def compute_gainers_losers(chart_history=None, matrix_rows=None, top_n: int = 5) -> dict:
@@ -76,8 +91,12 @@ def compute_gainers_losers(chart_history=None, matrix_rows=None, top_n: int = 5)
     stocks = (chart_history or {}).get("stocks", {})
     score_map = {r.get("Ticker"): r.get("Rank Score") for r in (matrix_rows or []) if r.get("Ticker")}
 
+    excluded = _excluded_tickers(matrix_rows)
+
     rows = []
     for ticker, h in stocks.items():
+        if ticker in excluded:
+            continue
         try:
             closes = h.get("close") or []
             if len(closes) < 2:
@@ -119,8 +138,12 @@ def compute_most_active(chart_history=None, matrix_rows=None, top_n: int = MOST_
     stocks = (chart_history or {}).get("stocks", {})
     score_map = {r.get("Ticker"): r.get("Rank Score") for r in (matrix_rows or []) if r.get("Ticker")}
 
+    excluded = _excluded_tickers(matrix_rows)
+
     rows = []
     for ticker, h in stocks.items():
+        if ticker in excluded:
+            continue
         try:
             volumes = h.get("volume") or []
             closes = h.get("close") or []
@@ -160,7 +183,7 @@ def compute_valuation_extremes(matrix_rows=None, sector_map=None, top_n: int = V
     Returned rows: ticker, pe_ratio, sector_avg_pe, pe_vs_sector_pct
     (negative = cheaper than sector average), close, rank_score.
     """
-    rows_in = matrix_rows or []
+    rows_in = [r for r in (matrix_rows or []) if r.get("Ticker") not in _excluded_tickers(matrix_rows)]
     sector_map = sector_map or {}
 
     sector_pe_sum: dict = {}
@@ -211,7 +234,7 @@ def compute_week52_extremes(matrix_rows=None, top_n: int = WEEK52_EXTREMES_TOP_N
     Returned rows: ticker, close, week52_high or week52_low,
     dist_pct (0 = exactly at the extreme), rank_score.
     """
-    rows_in = matrix_rows or []
+    rows_in = [r for r in (matrix_rows or []) if r.get("Ticker") not in _excluded_tickers(matrix_rows)]
     highs, lows = [], []
     for r in rows_in:
         price = r.get("Current Price")

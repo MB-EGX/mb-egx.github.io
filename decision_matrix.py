@@ -54,6 +54,9 @@ from config import (
     KELLY_FRACTION,
     KELLY_CAP_FRACTION,
     DEFAULT_WIN_RATE_PRIOR,
+    DAY1_BREAKOUT,
+    STALE_EXCLUSION_DAYS,
+    ARCHIVED_TICKERS,
     HEALTH_SCORE_WEIGHTS,
     get_logger,
 )
@@ -1156,6 +1159,13 @@ class DecisionMatrix:
                     days_stale = (date.fromisoformat(session_date_str) - date.fromisoformat(ticker_last_bar_date)).days
                 except ValueError:
                     days_stale = None
+            # Delisted/suspended/archived: stale beyond the config threshold,
+            # or a known false-history name. Excluded from watchlist, picks,
+            # movers and top-10 so it can never surface as if it were live.
+            is_delisted = bool(
+                (days_stale is not None and STALE_EXCLUSION_DAYS and days_stale > STALE_EXCLUSION_DAYS)
+                or (norm_ticker in (ARCHIVED_TICKERS or set()))
+            )
 
             try:
                 if is_owned:
@@ -1627,7 +1637,7 @@ class DecisionMatrix:
                 # take the watchlist entry down with it.
                 # -------------------------------------------------------------
                 try:
-                    if is_liquid and n_bars >= 20 and not is_stale:
+                    if is_liquid and n_bars >= 20 and not is_stale and not is_delisted:
                         bw_score = 0.0
                         bw_reasons = []
                         at = ACTION_THRESHOLDS
@@ -1923,6 +1933,38 @@ class DecisionMatrix:
                 except Exception as e:
                     logger.warning(f"{norm_ticker}: pre-breakout screening failed ({e}) - skipping watchlist for this ticker only")
 
+                # --- Day-1 Breakout Confirmation (NEW) ---
+                # The mirror image of the coiling screen above: instead of
+                # "what might break out next", this flags names that JUST
+                # broke out today - fresh 20-day high + volume confirmation
+                # + not yet extended. This is the "already just increased
+                # tickers" tier, so Session Picks can catch a move on day
+                # 1-2 instead of only after it has already run.
+                day1_breakout = False
+                day1_reasons = []
+                if is_liquid and n_bars >= 20 and not is_stale and not is_delisted and not is_owned:
+                    try:
+                        _c5 = df_ind["close"].iloc[-6]
+                        _t5d = ((curr_price - _c5) / _c5) * 100.0 if _c5 > 0 else 999.0
+                        _hi20 = float(df_ind["high"].iloc[-20:].max())
+                        _dist_hi20 = ((curr_price / _hi20) - 1.0) * 100.0 if _hi20 > 0 else 999.0
+                        _ext_vwap = ((curr_price / vwap) - 1.0) * 100.0 if vwap and vwap > 0 else 999.0
+                        _rvol = vol_ratio if vol_ratio is not None else 0.0
+                        _db = DAY1_BREAKOUT
+                        if (_dist_hi20 <= _db["dist_hi20_max_pct"]
+                                and _rvol >= _db["min_rvol"]
+                                and _ext_vwap <= _db["max_ext_vwap_pct"]
+                                and _t5d <= _db["max_5d_return_pct"]):
+                            day1_breakout = True
+                            day1_reasons = [
+                                f"Fresh 20-day high (dist {_dist_hi20:.1f}%)",
+                                f"Volume {_rvol:.1f}x 20-day avg",
+                                f"Not extended ({_ext_vwap:.1f}% vs VWAP)",
+                            ]
+                    except Exception:
+                        day1_breakout = False
+                        day1_reasons = []
+
                 # --- Stop / take-profit / reward:risk, computed BEFORE the
                 # score so a poor payoff can (a) gate the action itself and
                 # (b) factor into Rank Score. This used to run AFTER score
@@ -2121,6 +2163,8 @@ class DecisionMatrix:
                     action_cmd = (
                         f"⏸️ STALE - NO NEW DATA ({days_stale}d, last: {ticker_last_bar_date})"
                     )
+                    if is_delisted:
+                        action_cmd += " [ARCHIVED/DELISTED - excluded from picks/watchlist/movers]"
                     signal_reason = (
                         f"{action_cmd} - no bar for this session; the figures on this row "
                         f"reflect {ticker_last_bar_date}, not today"
@@ -2212,6 +2256,8 @@ class DecisionMatrix:
                         "Ticker": norm_ticker,
                         "Last Bar Date": ticker_last_bar_date,
                         "Days Stale": days_stale if is_stale else 0,
+                        "Day-1 Breakout": bool(day1_breakout),
+                        "Day-1 Breakout Reasons": list(day1_reasons),
                         "Sector": sector_map.get(norm_ticker, sector_map.get(ticker, "General / Diversified")),
                         "Long-Term Setup Confirmed": long_term_confirmed_final,
                         "Long-Term Setup Reasons": long_term_reasons_final,

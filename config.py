@@ -567,6 +567,36 @@ SESSION_PICKS_STOP_LOSS_PCT = {
     "long": 10.0,
 }
 
+# --- Day-1 Breakout Confirmation (new Session Picks tier) ---
+# The mirror image of the pre-breakout coiling screen (breakout_watch_*):
+# instead of "what might break out next", this flags names that JUST broke
+# out today - fresh 20-day high + volume confirmation + not yet extended.
+# This is the "already just increased tickers" half of the Session Picks
+# objective: catch the move on day 1-2, not after it has already run.
+DAY1_BREAKOUT = {
+    "dist_hi20_max_pct": 0.5,   # close within 0.5% of (or above) the 20-day high
+    "min_rvol": 2.0,            # today's volume >= 2x the 20-day average
+    "max_ext_vwap_pct": 8.0,    # close <= 8% above the 20-day VWAP (day 1-2, not day 5)
+    "max_5d_return_pct": 20.0,  # not already a multi-day runner
+}
+# How many of the 5 "short" slots may be filled by Day-1 Breakout names
+# (the rest go to already-fired signals / pre-breakout coiling names).
+SESSION_PICKS_DAY1_MAX_SLOTS = 2
+
+# --- Stale / delisted exclusion ---
+# A ticker whose last bar is older than this many calendar days is treated
+# as delisted/suspended and excluded from every list (Session Picks,
+# Breakout Watchlist, Daily Movers, Top-10) so stale names can never
+# surface as if they were live. The existing per-session is_stale
+# neutralization (STALE - NO NEW DATA, score 0) still applies to the
+# matrix row itself so a trader can see "this name went quiet".
+STALE_EXCLUSION_DAYS = 10
+
+# Tickers known to be delisted / false-history artifacts that must never
+# reappear in ANY list even if a stale row still exists. Extend this set
+# as you confirm more names.
+ARCHIVED_TICKERS = {"TWSA.CA"}
+
 # --- Hosted/web scale configuration ---
 SUBSCRIPTION_TIERS = {
     "free": {
