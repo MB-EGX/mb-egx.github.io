@@ -360,6 +360,8 @@ AR_TRANSLATIONS = {
     "⏳ BUY ON DIP": "⏳ شراء عند الهبوط",
     "📈 ACCUMULATE": "📈 تجميع",
     "🟡 HOLD / NEUTRAL": "🟡 احتفاظ / محايد",
+    "⚠️ OVERBOUGHT": "⚠️ تشبع شرائي",
+    "⚠️ OVERSOLD": "⚠️ تشبع بيعي",
     # Live-filter dropdown items (generic/aggregate labels, distinct from
     # the specific badge variants above)
     "All Actions": "كل الإجراءات",
@@ -1332,6 +1334,10 @@ class MatrixTableModel(QAbstractTableModel):
                     return QColor("#2b6cb0")
                 elif "SELL / AVOID" in val_str:
                     return QColor("#9b2c2c")
+                elif "OVERBOUGHT" in val_str:
+                    return QColor("#c05621")
+                elif "OVERSOLD" in val_str:
+                    return QColor("#6b46c1")
                 elif "HOLD" in val_str:
                     return QColor("#975a16")
         elif role == Qt.ItemDataRole.ForegroundRole:
@@ -3936,6 +3942,8 @@ class QuantDashboard(QMainWindow):
             "📈 ACCUMULATE",
             "⏳ BUY ON DIP",
             "🟡 HOLD / NEUTRAL",
+            "⚠️ OVERBOUGHT",
+            "⚠️ OVERSOLD",
             "🛑 SELL / AVOID",
         ]
         self.cmb_action.addItems([tr(x) for x in self._action_filter_items])

@@ -858,6 +858,16 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
 
         threshold = SESSION_PICKS_EXPECTED_PCT.get(horizon, 3.0)
 
+        # Rank-score lookup for this horizon's current candidate pool — the
+        # missing wiring for _loser_outranked_by_candidate() below. Built
+        # once per horizon (not per pick) since it doesn't depend on the
+        # pick being evaluated.
+        horizon_rank_score_map = {
+            row.get("Ticker"): row.get("Rank Score")
+            for row in _candidate_pool(horizon, top10, buys, sectors, by_ticker, breakout_watchlist)
+            if row.get("Ticker") and row.get("Rank Score") is not None
+        }
+
         for pick in dbm.get_active_picks(horizon):
 
             # Archived/delisted: retire immediately so the name never stays
@@ -931,6 +941,24 @@ def refresh_session_picks(dbm, buys: list, top10: dict, sectors: list, session_d
                 continue
 
             retirement_reason = _retirement_reason(pick, horizon, session_date, pct)
+
+            # NEW: stale-loser replacement (was defined but never called —
+            # see _loser_outranked_by_candidate's own docstring/comment
+            # block above). Only applies to a pick that is currently a
+            # loser (pct < 0), past the churn-grace period
+            # (STALE_LOSER_MIN_HORIZON_DAYS), and not already retiring for
+            # another reason — a stop-loss/expired-window retirement takes
+            # priority and is reported as such.
+            if not retirement_reason and pct < 0:
+                pick_date_d = _parse_iso_date(pick.get("pick_date"))
+                session_d = _parse_iso_date(session_date)
+                days_held = (session_d - pick_date_d).days if (pick_date_d and session_d) else None
+                if (
+                    days_held is not None
+                    and days_held >= STALE_LOSER_MIN_HORIZON_DAYS
+                    and _loser_outranked_by_candidate(pick, pct, horizon_rank_score_map)
+                ):
+                    retirement_reason = "outranked_by_higher_scored_candidate"
 
             if retirement_reason:
 

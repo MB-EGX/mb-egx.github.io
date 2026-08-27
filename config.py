@@ -122,6 +122,12 @@ DEFAULT_WIN_RATE_PRIOR = 0.5
 SCORE_WEIGHTS = {
     "sell_avoid": -45.0,
     "strong_buy": 48.0,
+    # NEW: overbought/oversold reclassification using the STOCH %K /
+    # STOCHRSI / CCI columns that were already computed and displayed but
+    # never fed into the action label itself (see ACTION_THRESHOLDS'
+    # "overbought_*"/"oversold_*" keys below for the trigger levels).
+    "overbought": -10.0,   # cautionary, not as bearish as an outright SELL/AVOID
+    "oversold": 5.0,        # mildly constructive (extreme washout, not yet a dip-buy confirmation)
     "breakout_crossover": 32.0,  # tighter than before: reduce false-positive urgency
     "breakout_momentum": 24.0,
     "buy_on_dip": 30.0,
@@ -190,6 +196,22 @@ ACTION_THRESHOLDS = {
     # BREAKOUT BUY components (see decision_matrix for how they combine)
     "breakout_momentum_rsi_min": 55.0,
     "breakout_gap_min": 0.0,
+    # OVERBOUGHT: disqualifies what would otherwise be a STRONG BUY when the
+    # stock is already extended by momentum-oscillator confluence (2-of-3),
+    # not a single indicator alone — same "N-of-M confluence" convention the
+    # confirmation-factor logic below already uses, to avoid one noisy
+    # oscillator false-flagging a genuinely strong trend.
+    "overbought_stoch_k_min": 80.0,
+    "overbought_stochrsi_min": 80.0,
+    "overbought_cci_min": 150.0,
+    # OVERSOLD: extreme-washout flag, distinct from BUY ON DIP (which is
+    # gated on range position / plain RSI) - this reads the faster
+    # oscillators (2-of-3 confluence) plus a basic RSI floor so a name
+    # merely drifting isn't mislabeled as an extreme.
+    "oversold_stoch_k_max": 20.0,
+    "oversold_stochrsi_max": 20.0,
+    "oversold_cci_max": -150.0,
+    "oversold_rsi_max": 30.0,
     # Secondary SELL / AVOID lane: catches structurally weak names that are
     # no longer just "not bullish" but actively deteriorating.
     "sell_trend_price_ratio": 0.97,

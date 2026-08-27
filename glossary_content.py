@@ -335,6 +335,30 @@ ACTION_LABELS = [
         },
     },
     {
+        "term": {"en": "⚠️ OVERBOUGHT", "ar": "⚠️ تشبع شرائي"},
+        "bias": "bearish",
+        "definition": {
+            "en": "Disqualifies what would otherwise be a STRONG BUY: the stock is pressing near its 52-week high AND at least 2 of the 3 fast oscillators (STOCH %K ≥ 80, STOCHRSI ≥ 80, CCI ≥ 150) confirm it's already extended.",
+            "ar": "يُلغي ما كان سيُصنَّف شراءً قوياً: السهم قريب من أعلى مستوى في 52 أسبوعاً، ويؤكد اثنان على الأقل من ثلاثة مؤشرات تذبذب سريعة (STOCH %K ≥ 80، STOCHRSI ≥ 80، CCI ≥ 150) أنه ممتد بالفعل.",
+        },
+        "why_it_matters": {
+            "en": "Chasing an already-extended breakout is the exact false-positive this gate filters out — a 2-of-3 confluence rather than one noisy oscillator, so a genuinely strong trend isn't mislabeled off a single indicator.",
+            "ar": "مطاردة اختراق ممتد بالفعل هي بالضبط الإشارة الخاطئة التي يستبعدها هذا الفلتر — يعتمد على توافق اثنين من ثلاثة مؤشرات وليس مؤشراً واحداً مشوشاً، حتى لا يُصنَّف اتجاه قوي فعلاً بشكل خاطئ.",
+        },
+    },
+    {
+        "term": {"en": "⚠️ OVERSOLD", "ar": "⚠️ تشبع بيعي"},
+        "bias": "neutral",
+        "definition": {
+            "en": "An extreme-washout flag: RSI ≤ 30 with at least 2 of 3 fast oscillators confirming (STOCH %K ≤ 20, STOCHRSI ≤ 20, CCI ≤ -150). Distinct from BUY ON DIP, which is gated on range position/plain RSI instead.",
+            "ar": "إشارة تصفية حادة: RSI ≤ 30 مع تأكيد اثنين من ثلاثة مؤشرات تذبذب سريعة (STOCH %K ≤ 20، STOCHRSI ≤ 20، CCI ≤ -150-). يختلف عن الشراء عند الهبوط الذي يعتمد على موقع النطاق أو RSI فقط.",
+        },
+        "why_it_matters": {
+            "en": "Deeply oversold isn't by itself a reason to buy — a falling knife is oversold too. This flags the extreme so it can be judged in context, rather than silently folding into another label or being invisible.",
+            "ar": "التشبع البيعي العميق وحده ليس سبباً للشراء — فالسهم المنهار سعرياً يكون متشبعاً بيعياً أيضاً. تُظهر هذه الإشارة الحالة القصوى ليتم تقييمها في سياقها، بدلاً من دمجها بصمت في تصنيف آخر أو إخفائها.",
+        },
+    },
+    {
         "term": {"en": "🛑 SELL / AVOID", "ar": "🛑 بيع / تجنب"},
         "bias": "bearish",
         "definition": {

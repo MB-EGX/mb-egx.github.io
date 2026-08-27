@@ -1327,6 +1327,9 @@ class DecisionMatrix:
                 vol_z = latest.get("vol_z_score", 0.0)
                 vwap = latest.get("vwap_20", curr_price)
                 cmf = latest.get("cmf_20", 0.0)
+                stoch_k = latest.get("stoch_k", 50.0)
+                stochrsi = latest.get("stochrsi", 50.0)
+                cci_20 = latest.get("cci_20", 0.0)
                 is_squeezed = latest.get("bb_kc_squeeze", False)
                 avg_volume_20 = latest.get("volume_avg", 0.0)
                 macd_hist = latest.get("macd_histogram", 0.0)
@@ -1410,12 +1413,40 @@ class DecisionMatrix:
                     rsi >= ACTION_THRESHOLDS["breakout_momentum_rsi_min"]
                 )
 
+                # NEW: overbought/oversold via the STOCH %K / STOCHRSI / CCI
+                # columns (already computed and exported, never previously
+                # read by this classifier — see conversation history). 2-of-3
+                # confluence, same "N-of-M" convention as the confirmation
+                # factors below, so one noisy oscillator can't flip the label
+                # on its own.
+                overbought_confluence = sum([
+                    stoch_k >= ACTION_THRESHOLDS["overbought_stoch_k_min"],
+                    stochrsi >= ACTION_THRESHOLDS["overbought_stochrsi_min"],
+                    cci_20 >= ACTION_THRESHOLDS["overbought_cci_min"],
+                ]) >= 2
+                oversold_confluence = sum([
+                    stoch_k <= ACTION_THRESHOLDS["oversold_stoch_k_max"],
+                    stochrsi <= ACTION_THRESHOLDS["oversold_stochrsi_max"],
+                    cci_20 <= ACTION_THRESHOLDS["oversold_cci_max"],
+                ]) >= 2
+
                 if (
                     curr_price <= sma50 * ACTION_THRESHOLDS["sell_avoid_price_ratio"]
                     and rsi <= ACTION_THRESHOLDS["sell_avoid_rsi_max"]
                 ):
                     raw_action = "🛑 SELL / AVOID"
                     trend_bonus = SCORE_WEIGHTS["sell_avoid"]
+                    needs_confirmation = False
+                elif (
+                    overbought_confluence
+                    and range_pos_pct >= ACTION_THRESHOLDS["strong_buy_range_pos_min"]
+                ):
+                    # Disqualifies what would otherwise be a STRONG BUY: the
+                    # stock is pressing highs AND already extended by
+                    # momentum-oscillator confluence - chasing here is the
+                    # exact false-positive this gate exists to filter out.
+                    raw_action = "⚠️ OVERBOUGHT"
+                    trend_bonus = SCORE_WEIGHTS["overbought"]
                     needs_confirmation = False
                 elif (
                     range_pos_pct >= ACTION_THRESHOLDS["strong_buy_range_pos_min"]
@@ -1452,6 +1483,19 @@ class DecisionMatrix:
                 ):
                     raw_action = "🛑 SELL / AVOID"
                     trend_bonus = SCORE_WEIGHTS["sell_avoid"] * 0.6
+                    needs_confirmation = False
+                elif (
+                    oversold_confluence
+                    and rsi <= ACTION_THRESHOLDS["oversold_rsi_max"]
+                ):
+                    # Distinct from BUY ON DIP below: an extreme-washout flag
+                    # via the faster oscillators, not a range-position/RSI
+                    # pullback thesis. Deliberately NOT auto-upgraded to a
+                    # buy label - "deeply oversold" alone isn't a reason to
+                    # buy (a falling knife is oversold too); it's flagged so
+                    # a person can judge the trend context themselves.
+                    raw_action = "⚠️ OVERSOLD"
+                    trend_bonus = SCORE_WEIGHTS["oversold"]
                     needs_confirmation = False
                 elif (
                     range_pos_pct <= ACTION_THRESHOLDS["buy_on_dip_range_pos_max"]
@@ -1636,6 +1680,7 @@ class DecisionMatrix:
                 # failure anywhere else in this ticker's row can no longer
                 # take the watchlist entry down with it.
                 # -------------------------------------------------------------
+                _bw_len_before = len(breakout_watchlist)
                 try:
                     if is_liquid and n_bars >= 20 and not is_stale and not is_delisted:
                         bw_score = 0.0
@@ -1964,6 +2009,15 @@ class DecisionMatrix:
                     except Exception:
                         day1_breakout = False
                         day1_reasons = []
+
+                # Backfill the Day-1 flag onto this ticker's Pre-Breakout
+                # Watchlist row (if it got one above) — was computed AFTER
+                # the watchlist row was already built, so the row never
+                # carried it. Patched in place rather than reordering the
+                # scoring block itself, to avoid touching working logic.
+                if len(breakout_watchlist) > _bw_len_before:
+                    breakout_watchlist[-1]["Day-1 Breakout"] = bool(day1_breakout)
+                    breakout_watchlist[-1]["Day-1 Breakout Reasons"] = list(day1_reasons)
 
                 # --- Stop / take-profit / reward:risk, computed BEFORE the
                 # score so a poor payoff can (a) gate the action itself and

@@ -416,6 +416,8 @@
                 <option value="📈 ACCUMULATE" data-i18n="opt_accumulate">📈 ACCUMULATE</option>
                 <option value="⏳ BUY ON DIP" data-i18n="opt_buy_on_dip">⏳ BUY ON DIP</option>
                 <option value="🟡 HOLD" data-i18n="opt_hold_neutral">🟡 HOLD / NEUTRAL</option>
+                <option value="⚠️ OVERBOUGHT" data-i18n="opt_overbought">⚠️ OVERBOUGHT</option>
+                <option value="⚠️ OVERSOLD" data-i18n="opt_oversold">⚠️ OVERSOLD</option>
                 <option value="🛑 SELL" data-i18n="opt_sell_avoid">🛑 SELL / AVOID</option>
             </select>
 
@@ -1934,6 +1936,7 @@
                 btn_usage_analytics: "Usage Analytics", tt_sign_out: "Sign out", ph_search_ticker: "Search Ticker or keyword...",
                 opt_all_actions: "All Actions", opt_strong_buy: "🔥 STRONG BUY", opt_breakout_buy: "⚡ BREAKOUT BUY",
                 opt_accumulate: "📈 ACCUMULATE", opt_buy_on_dip: "⏳ BUY ON DIP", opt_hold_neutral: "🟡 HOLD / NEUTRAL",
+                opt_overbought: "⚠️ OVERBOUGHT", opt_oversold: "⚠️ OVERSOLD",
                 opt_sell_avoid: "🛑 SELL / AVOID", opt_all_trends: "All Trends", opt_strong_bullish: "Strong Bullish",
                 opt_weak_bullish: "Weak Bullish", opt_consolidation: "Consolidation / Neutral", opt_weak_bearish: "Weak Bearish",
                 opt_strong_bearish: "Strong Bearish", opt_all_confidence: "All Data Confidence", opt_conf_high: "High (1Y+)",
@@ -2185,6 +2188,7 @@
                 btn_usage_analytics: "إحصائيات الاستخدام", tt_sign_out: "تسجيل الخروج", ph_search_ticker: "بحث عن رمز أو كلمة مفتاحية...",
                 opt_all_actions: "كل الإجراءات", opt_strong_buy: "🔥 شراء قوي", opt_breakout_buy: "⚡ شراء اختراق",
                 opt_accumulate: "📈 تجميع", opt_buy_on_dip: "⏳ شراء عند الهبوط", opt_hold_neutral: "🟡 احتفاظ / محايد",
+                opt_overbought: "⚠️ تشبع شرائي", opt_oversold: "⚠️ تشبع بيعي",
                 opt_sell_avoid: "🛑 بيع / تجنب", opt_all_trends: "كل الاتجاهات", opt_strong_bullish: "صعودي قوي",
                 opt_weak_bullish: "صعودي ضعيف", opt_consolidation: "تماسك / محايد", opt_weak_bearish: "هبوطي ضعيف",
                 opt_strong_bearish: "هبوطي قوي", opt_all_confidence: "كل مستويات دقة البيانات", opt_conf_high: "عالية (سنة+)",
@@ -2286,6 +2290,8 @@
             "⏳ BUY ON DIP": "⏳ شراء عند الهبوط",
             "📈 ACCUMULATE": "📈 تجميع",
             "🟡 HOLD / NEUTRAL": "🟡 احتفاظ / محايد",
+            "⚠️ OVERBOUGHT": "⚠️ تشبع شرائي",
+            "⚠️ OVERSOLD": "⚠️ تشبع بيعي",
 
             // Client-computed simplified variants used in renderPortfolio()
             // (slightly different wording from the server-side labels above).
@@ -5449,6 +5455,8 @@
                 else if (action.includes('STRONG BUY') || action.includes('BREAKOUT BUY')) actionStyle = 'bg-[#276749] text-white font-bold';
                 else if (action.includes('ACCUMULATE') || action.includes('BUY ON DIP')) actionStyle = 'bg-[#2b6cb0] text-white';
                 else if (action.includes('SELL') || action.includes('AVOID')) actionStyle = 'bg-[#9b2c2c] text-white font-bold';
+                else if (action.includes('OVERBOUGHT')) actionStyle = 'bg-[#c05621] text-white font-bold';
+                else if (action.includes('OVERSOLD')) actionStyle = 'bg-[#6b46c1] text-white font-bold';
                 else if (action.includes('HOLD')) actionStyle = 'bg-[#975a16] text-white';
                 let confStyle = 'text-slate-300';
                 if (conf.includes('Very Low')) confStyle = 'text-rose-400 font-bold';
