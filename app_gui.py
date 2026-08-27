@@ -1434,11 +1434,23 @@ class NumericTableWidgetItem(QTableWidgetItem):
 
     def __init__(self, text: str, value):
         super().__init__(text)
-        self._sort_value = value if value is not None else float("-inf")
+        # float(...) here (not just "keep whatever was passed in") also
+        # normalizes any numpy scalar (np.float64/np.int64 - common once
+        # a value has passed through pandas, e.g. df["volume"] entries)
+        # to a plain Python float up front, so __lt__ below never has to
+        # worry about the type of what it's comparing.
+        self._sort_value = float(value) if value is not None else float("-inf")
 
     def __lt__(self, other):
         if isinstance(other, NumericTableWidgetItem):
-            return self._sort_value < other._sort_value
+            # PyQt6 requires a native Python bool from __lt__ - comparing
+            # two numpy-derived numbers (e.g. numpy.float64 < numpy.float64)
+            # returns numpy.bool_, which PyQt6 rejects with "invalid result
+            # from NumericTableWidgetItem.__lt__(), a 'bool' is expected
+            # not 'numpy.bool_'" the moment sorting is triggered. Both
+            # sides are already plain floats after __init__'s cast above,
+            # so this bool(...) is just a defensive final guarantee.
+            return bool(self._sort_value < other._sort_value)
         return super().__lt__(other)
 
 
