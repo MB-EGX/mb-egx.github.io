@@ -360,8 +360,13 @@ AR_TRANSLATIONS = {
     "⏳ BUY ON DIP": "⏳ شراء عند الهبوط",
     "📈 ACCUMULATE": "📈 تجميع",
     "🟡 HOLD / NEUTRAL": "🟡 احتفاظ / محايد",
-    "⚠️ OVERBOUGHT": "⚠️ تشبع شرائي",
-    "⚠️ OVERSOLD": "⚠️ تشبع بيعي",
+    # Momentum column values (row data, translated the same way Action/
+    # Trend Class values are) + its filter dropdown - repurposed from the
+    # old standalone OVERBOUGHT/OVERSOLD Action-badge translations, now
+    # that those are a modifier column instead of a competing Action.
+    "Overbought": "تشبع شرائي",
+    "Oversold": "تشبع بيعي",
+    "All Momentum": "كل مستويات الزخم",
     # Live-filter dropdown items (generic/aggregate labels, distinct from
     # the specific badge variants above)
     "All Actions": "كل الإجراءات",
@@ -1254,11 +1259,17 @@ class MatrixTableModel(QAbstractTableModel):
             ("Profitability Health (est.)",  "Estimated from earnings yield (1/P-E) - not a reported margin.", "Profitability Health Score (est.)"),
             ("Growth Health (est.)",         "Estimated from 1Y/3Y price return - not reported earnings/revenue growth.", "Growth Health Score (est.)"),
             ("Day-1 Breakout",               "Fresh 20-day high + volume confirmation — Day-1 Breakout.",        "Day-1 Breakout"),
+            # NEW: overbought/oversold no longer has its own Action label
+            # (see decision_matrix.py's classification block) - the
+            # oscillator reading is a modifier on Action now, surfaced
+            # here instead so it isn't lost. None when neither confluence
+            # fires (the common case).
+            ("Momentum",                     "Overbought/Oversold oscillator confluence (STOCH/StochRSI/CCI) - a modifier on Action, not its own decision.", "Momentum"),
             ("Signal Reason",                "Plain-language evidence behind the action.",                     "Signal Reason"),
         ]
         self._columns   = [(t, tip) for (t, tip, _k) in self._ACTION_MATRIX_SCHEMA]
         self._col_keys  = [_k for (_t, _tip, _k) in self._ACTION_MATRIX_SCHEMA]
-        assert len(self._columns) == len(self._col_keys) == 51, (
+        assert len(self._columns) == len(self._col_keys) == 52, (
             "ACTION_MATRIX_SCHEMA projection mismatch"
         )
 
@@ -1300,6 +1311,8 @@ class MatrixTableModel(QAbstractTableModel):
         if role == Qt.ItemDataRole.DisplayRole:
             if key in ("Action", "Trend Class", "Data Confidence", "Position"):
                 return tr(val_str)
+            if key == "Momentum":
+                return tr(val_str) if val_str and val_str != "-" else "—"
             if key == "Day-1 Breakout":
                 return "⚡ Day-1" if str(val).lower() in ("true", "1", "yes") else "—"
             return val_str
@@ -1315,6 +1328,7 @@ class MatrixTableModel(QAbstractTableModel):
             _TEXT_COLUMN_KEYS = {
                 "Ticker", "Position", "Action", "Trend Class", "Data Confidence",
                 "MACD Signal", "Signal Reason", "Day's Range", "52 Week Range",
+                "Momentum",
             }
             if key not in _TEXT_COLUMN_KEYS:
                 return int(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
@@ -1334,12 +1348,16 @@ class MatrixTableModel(QAbstractTableModel):
                     return QColor("#2b6cb0")
                 elif "SELL / AVOID" in val_str:
                     return QColor("#9b2c2c")
-                elif "OVERBOUGHT" in val_str:
-                    return QColor("#c05621")
-                elif "OVERSOLD" in val_str:
-                    return QColor("#6b46c1")
                 elif "HOLD" in val_str:
                     return QColor("#975a16")
+            if key == "Momentum":
+                # NEW: Momentum is now a modifier column, not an Action -
+                # same colors the old standalone OVERBOUGHT/OVERSOLD Action
+                # badges used, kept here so the visual language carries over.
+                if val_str == "Overbought":
+                    return QColor("#c05621")
+                elif val_str == "Oversold":
+                    return QColor("#6b46c1")
         elif role == Qt.ItemDataRole.ForegroundRole:
             if key == "Day-1 Breakout" and str(val).lower() in ("true", "1", "yes"):
                 return QColor("#38a169")
@@ -3942,8 +3960,6 @@ class QuantDashboard(QMainWindow):
             "📈 ACCUMULATE",
             "⏳ BUY ON DIP",
             "🟡 HOLD / NEUTRAL",
-            "⚠️ OVERBOUGHT",
-            "⚠️ OVERSOLD",
             "🛑 SELL / AVOID",
         ]
         self.cmb_action.addItems([tr(x) for x in self._action_filter_items])
@@ -3974,6 +3990,22 @@ class QuantDashboard(QMainWindow):
         self.cmb_confidence.addItems([tr(x) for x in self._confidence_filter_items])
         self.cmb_confidence.currentTextChanged.connect(self.apply_filters)
         filter_layout.addWidget(self.cmb_confidence, stretch=1)
+
+        # NEW: Momentum is a modifier column now, not an Action value (see
+        # decision_matrix.py's classification block), so the old "All
+        # Actions" dropdown can no longer filter to overbought/oversold
+        # rows. This dropdown restores that ability against the new
+        # Momentum field instead, without reintroducing it as a
+        # competing Action.
+        self.cmb_momentum = QComboBox()
+        self._momentum_filter_items = [
+            "All Momentum",
+            "Overbought",
+            "Oversold",
+        ]
+        self.cmb_momentum.addItems([tr(x) for x in self._momentum_filter_items])
+        self.cmb_momentum.currentTextChanged.connect(self.apply_filters)
+        filter_layout.addWidget(self.cmb_momentum, stretch=1)
 
         self.chk_hide_illiquid = QPushButton("🚫 Hide Illiquid / Unconfirmed")
         self.chk_hide_illiquid.setCheckable(True)
@@ -4179,6 +4211,7 @@ class QuantDashboard(QMainWindow):
             ("Rejected?", "Price recently tested resistance and pulled back without closing above it — a meaningfully weaker setup than a fresh approach"),
             ("Trend", "Trend classification"),
             ("Data Confidence", "How much price history this ticker has — a young listing's signals carry less weight"),
+            ("Momentum", "Overbought/Oversold oscillator confluence — this list already penalizes both in the Breakout Score itself; shown here for context."),
             ("Signals", "Which setup elements fired for this ticker"),
         ]
         self.tbl_breakout_watch.setColumnCount(len(self._breakout_watch_columns))
@@ -4390,6 +4423,9 @@ class QuantDashboard(QMainWindow):
         if hasattr(self, "_confidence_filter_items"):
             for i, key in enumerate(self._confidence_filter_items):
                 self.cmb_confidence.setItemText(i, tr(key))
+        if hasattr(self, "_momentum_filter_items"):
+            for i, key in enumerate(self._momentum_filter_items):
+                self.cmb_momentum.setItemText(i, tr(key))
 
         # Re-render already-loaded row data (Sector/Action/Trend/Signals
         # values, financial statement labels...) in the new language,
@@ -4928,6 +4964,7 @@ class QuantDashboard(QMainWindow):
         self.cmb_action.setCurrentIndex(0)
         self.cmb_trend.setCurrentIndex(0)
         self.cmb_confidence.setCurrentIndex(0)
+        self.cmb_momentum.setCurrentIndex(0)
         self.chk_hide_illiquid.setChecked(True)
         self.active_screener_preset = None
         for btn in getattr(self, "_preset_buttons", {}).values():
@@ -5654,13 +5691,13 @@ class QuantDashboard(QMainWindow):
                 self.tbl_fin_stmt.setItem(row_idx, 0, item_name)
                 self.tbl_fin_stmt.setItem(row_idx, 1, item_val)
 
-            _breakout_translatable = {"Squeeze Active", "Volume Trend", "Trend Class", "Signals", "Tier", "Data Confidence"}
+            _breakout_translatable = {"Squeeze Active", "Volume Trend", "Trend Class", "Signals", "Tier", "Data Confidence", "Momentum"}
             _breakout_keys = [
                 "Ticker", "Tier", "Breakout Score", "Current Price", "Entry Price", "Dist. to Resistance (%)",
                 "RSI-14", "ADX-14", "Squeeze Active", "Volume Trend",
                 "Dry-Up Ratio (10D/50D Vol)", "ATR% Contraction Percentile", "Up/Down Volume Ratio",
                 "Sector RS (5D, pts)", "Sector Index RS (5D, pts)", "Recently Rejected",
-                "Trend Class", "Data Confidence", "Signals",
+                "Trend Class", "Data Confidence", "Momentum", "Signals",
             ]
 
             self.tbl_breakout_watch.setRowCount(len(breakout_watchlist))
@@ -5697,6 +5734,10 @@ class QuantDashboard(QMainWindow):
                         item.setForeground(QColor("#e53e3e"))
                     elif key in ("Sector RS (5D, pts)", "Sector Index RS (5D, pts)") and isinstance(val, (int, float)):
                         item.setForeground(QColor("#38a169" if val >= 0 else "#e53e3e"))
+                    elif key == "Momentum" and val == "Overbought":
+                        item.setForeground(QColor("#c05621"))
+                    elif key == "Momentum" and val == "Oversold":
+                        item.setForeground(QColor("#6b46c1"))
 
                     self.tbl_breakout_watch.setItem(row_idx, col_idx, item)
         finally:
@@ -5751,6 +5792,7 @@ class QuantDashboard(QMainWindow):
         action_filter = self._action_filter_items[self.cmb_action.currentIndex()]
         trend_filter = self._trend_filter_items[self.cmb_trend.currentIndex()]
         confidence_filter = self._confidence_filter_items[self.cmb_confidence.currentIndex()]
+        momentum_filter = self._momentum_filter_items[self.cmb_momentum.currentIndex()]
         hide_illiquid = self.chk_hide_illiquid.isChecked()
 
         if hasattr(self, "_raw_buys_data") and self._raw_buys_data:
@@ -5760,11 +5802,13 @@ class QuantDashboard(QMainWindow):
                 action_text = str(row.get("Action", ""))
                 trend_text = str(row.get("Trend Class", ""))
                 confidence_text = str(row.get("Data Confidence", ""))
+                momentum_text = str(row.get("Momentum") or "")
 
                 match_search = (search_text in ticker_text) if search_text else True
                 match_action = ((action_filter in action_text) if action_filter != "All Actions" else True)
                 match_trend = ((trend_text == trend_filter) if trend_filter != "All Trends" else True)
                 match_confidence = ((confidence_text == confidence_filter) if confidence_filter != "All Data Confidence" else True)
+                match_momentum = ((momentum_text == momentum_filter) if momentum_filter != "All Momentum" else True)
                 match_liquidity = (("ILLIQUID" not in action_text and "Unconfirmed" not in action_text) if hide_illiquid else True)
                 match_preset = True
                 if self.active_screener_preset:
@@ -5775,7 +5819,7 @@ class QuantDashboard(QMainWindow):
                         except Exception:
                             match_preset = False
 
-                if match_search and match_action and match_trend and match_confidence and match_liquidity and match_preset:
+                if match_search and match_action and match_trend and match_confidence and match_momentum and match_liquidity and match_preset:
                     filtered_list.append(row)
             
             self._fill_matrix_table(self.tbl_buys, filtered_list)

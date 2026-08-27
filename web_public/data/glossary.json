@@ -493,32 +493,17 @@
     },
     {
       "term": {
-        "en": "⚠️ OVERBOUGHT",
-        "ar": "⚠️ تشبع شرائي"
-      },
-      "bias": "bearish",
-      "definition": {
-        "en": "Disqualifies what would otherwise be a STRONG BUY: the stock is pressing near its 52-week high AND at least 2 of the 3 fast oscillators (STOCH %K ≥ 80, STOCHRSI ≥ 80, CCI ≥ 150) confirm it's already extended.",
-        "ar": "يُلغي ما كان سيُصنَّف شراءً قوياً: السهم قريب من أعلى مستوى في 52 أسبوعاً، ويؤكد اثنان على الأقل من ثلاثة مؤشرات تذبذب سريعة (STOCH %K ≥ 80، STOCHRSI ≥ 80، CCI ≥ 150) أنه ممتد بالفعل."
-      },
-      "why_it_matters": {
-        "en": "Chasing an already-extended breakout is the exact false-positive this gate filters out — a 2-of-3 confluence rather than one noisy oscillator, so a genuinely strong trend isn't mislabeled off a single indicator.",
-        "ar": "مطاردة اختراق ممتد بالفعل هي بالضبط الإشارة الخاطئة التي يستبعدها هذا الفلتر — يعتمد على توافق اثنين من ثلاثة مؤشرات وليس مؤشراً واحداً مشوشاً، حتى لا يُصنَّف اتجاه قوي فعلاً بشكل خاطئ."
-      }
-    },
-    {
-      "term": {
-        "en": "⚠️ OVERSOLD",
-        "ar": "⚠️ تشبع بيعي"
+        "en": "Momentum: Overbought / Oversold",
+        "ar": "الزخم: تشبع شرائي / بيعي"
       },
       "bias": "neutral",
       "definition": {
-        "en": "An extreme-washout flag: RSI ≤ 30 with at least 2 of 3 fast oscillators confirming (STOCH %K ≤ 20, STOCHRSI ≤ 20, CCI ≤ -150). Distinct from BUY ON DIP, which is gated on range position/plain RSI instead.",
-        "ar": "إشارة تصفية حادة: RSI ≤ 30 مع تأكيد اثنين من ثلاثة مؤشرات تذبذب سريعة (STOCH %K ≤ 20، STOCHRSI ≤ 20، CCI ≤ -150-). يختلف عن الشراء عند الهبوط الذي يعتمد على موقع النطاق أو RSI فقط."
+        "en": "Not its own Action - a modifier on the 6 real ones. Overbought (2-of-3: STOCH %K ≥ 80, STOCHRSI ≥ 80, CCI ≥ 150) disqualifies what would otherwise be a STRONG BUY, any BREAKOUT BUY variant, or ACCUMULATE - a disqualified candidate falls through to whichever of ACCUMULATE/HOLD its other numbers still support. Oversold (2-of-3: STOCH %K ≤ 20, STOCHRSI ≤ 20, CCI ≤ -150) never triggers BUY ON DIP by itself - it only adds supporting confirmation to a dip thesis that's already met BUY ON DIP's own range-position/RSI trigger. Both also apply a Breakout Score penalty on the Pre-Breakout Watchlist. The reading itself is always shown in Signal Reason and the Momentum column, whichever of the 6 Actions ends up firing.",
+        "ar": "ليس إجراءً مستقلاً بل مُعدِّل على الإجراءات الستة الفعلية. التشبع الشرائي (اثنان من ثلاثة: STOCH %K ≥ 80، STOCHRSI ≥ 80، CCI ≥ 150) يُلغي ما كان سيُصنَّف شراءً قوياً أو أي نوع من شراء الاختراق أو التجميع — ويسقط المرشح المُلغى إلى التجميع أو الاحتفاظ حسب بقية أرقامه. أما التشبع البيعي (اثنان من ثلاثة: STOCH %K ≤ 20، STOCHRSI ≤ 20، CCI ≤ -150-) فلا يُفعِّل الشراء عند الهبوط بمفرده أبداً — بل يضيف تأكيداً داعماً فقط لفرضية هبوط استوفت بالفعل شرط موقع النطاق/RSI الخاص بها. كلاهما يُطبَّق أيضاً كخصم على درجة الاختراق في قائمة مراقبة ما قبل الاختراق. القراءة نفسها تظهر دائماً في سبب الإشارة وعمود الزخم، أياً كان الإجراء الفعلي من الستة."
       },
       "why_it_matters": {
-        "en": "Deeply oversold isn't by itself a reason to buy — a falling knife is oversold too. This flags the extreme so it can be judged in context, rather than silently folding into another label or being invisible.",
-        "ar": "التشبع البيعي العميق وحده ليس سبباً للشراء — فالسهم المنهار سعرياً يكون متشبعاً بيعياً أيضاً. تُظهر هذه الإشارة الحالة القصوى ليتم تقييمها في سياقها، بدلاً من دمجها بصمت في تصنيف آخر أو إخفائها."
+        "en": "Chasing an already-extended move (overbought) and treating a falling knife as a buy signal (oversold alone) are two different false-positives - each is now filtered where it actually applies, instead of both competing with the 6 real actions as their own labels and silently disappearing from Session Picks / the Pre-Breakout Watchlist the moment either fired.",
+        "ar": "مطاردة حركة ممتدة بالفعل (تشبع شرائي) ومعاملة سهم منهار كإشارة شراء (تشبع بيعي وحده) خطآن مختلفان — يُستبعد كل منهما الآن في موضعه الفعلي، بدلاً من أن يتنافسا مع الإجراءات الستة الحقيقية كتصنيفين مستقلين ويختفيا بصمت من اختيارات الجلسة/قائمة مراقبة ما قبل الاختراق فور ظهور أي منهما."
       }
     },
     {

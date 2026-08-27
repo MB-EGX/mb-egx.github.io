@@ -505,7 +505,7 @@ def _recent_failed_resistance_test(df_ind, resistance_level: float, curr_price: 
     return bool(tested and pulled_back)
 
 
-def _build_signal_reason(action_cmd: str, trend_latest: str, confirmed: bool, weekly_aligned: bool, is_squeezed: bool, cmf: float, vol_ratio: float) -> str:
+def _build_signal_reason(action_cmd: str, trend_latest: str, confirmed: bool, weekly_aligned: bool, is_squeezed: bool, cmf: float, vol_ratio: float, momentum_flag: str | None = None) -> str:
     reasons = [action_cmd, f"trend={trend_latest}"]
     if "HOLD / NEUTRAL" in action_cmd:
         reasons.append("no decisive edge")
@@ -519,6 +519,12 @@ def _build_signal_reason(action_cmd: str, trend_latest: str, confirmed: bool, we
         reasons.append("positive money flow")
     if vol_ratio >= 1.0:
         reasons.append(f"vol x{vol_ratio:.2f}")
+    # NEW: surfaces the oscillator state that used to be its own Action
+    # label ("⚠️ OVERBOUGHT"/"⚠️ OVERSOLD") - see momentum_flag's own
+    # comment where it's computed. Still visible here even though it no
+    # longer displaces the real Action.
+    if momentum_flag:
+        reasons.append(momentum_flag.lower())
     return " | ".join(reasons)
 
 
@@ -1413,12 +1419,40 @@ class DecisionMatrix:
                     rsi >= ACTION_THRESHOLDS["breakout_momentum_rsi_min"]
                 )
 
-                # NEW: overbought/oversold via the STOCH %K / STOCHRSI / CCI
-                # columns (already computed and exported, never previously
-                # read by this classifier — see conversation history). 2-of-3
-                # confluence, same "N-of-M" convention as the confirmation
-                # factors below, so one noisy oscillator can't flip the label
-                # on its own.
+                # Overbought/oversold via the STOCH %K / STOCHRSI / CCI
+                # columns. 2-of-3 confluence, same "N-of-M" convention as the
+                # confirmation factors below, so one noisy oscillator can't
+                # flip the label on its own.
+                #
+                # REDESIGNED (was: two standalone terminal Action labels,
+                # "⚠️ OVERBOUGHT" / "⚠️ OVERSOLD", competing with the 6 real
+                # trading decisions). That made them exclusive with STRONG
+                # BUY/BREAKOUT BUY/ACCUMULATE/BUY ON DIP/HOLD/SELL rather than
+                # informing them, and silently dropped a ticker out of
+                # Session Picks / Pre-Breakout Watchlist the moment either
+                # fired (both only ever match on the 6 real action strings -
+                # see session_picks._candidate_pool). Folded back in as
+                # modifiers on those 6 decisions instead:
+                #   - overbought_confluence DISQUALIFIES STRONG BUY / all 3
+                #     BREAKOUT BUY variants / ACCUMULATE (chasing an already-
+                #     extended move). A disqualified candidate falls through
+                #     to whichever of ACCUMULATE/HOLD its other numbers still
+                #     support, instead of vanishing into its own label.
+                #   - oversold_confluence is deliberately NOT an independent
+                #     BUY ON DIP trigger - "deeply oversold" alone still isn't
+                #     a reason to buy (a falling knife is oversold too, same
+                #     reasoning as the label this replaces). It's folded into
+                #     BUY ON DIP's own N-of-M confirmation factors below as
+                #     supporting evidence, strengthening an ALREADY-triggered
+                #     dip thesis without ever creating one by itself.
+                #   - Pre-Breakout Watchlist scoring (further below) also
+                #     reads both flags directly: overbought/oversold both
+                #     penalize a Breakout Score, since that list is about
+                #     coiling near resistance, not chasing an extended move
+                #     or washing out near support.
+                # The oscillator state itself is never lost - see
+                # ``momentum_flag`` below, surfaced as its own "Momentum"
+                # column / Signal Reason note instead of a competing Action.
                 overbought_confluence = sum([
                     stoch_k >= ACTION_THRESHOLDS["overbought_stoch_k_min"],
                     stochrsi >= ACTION_THRESHOLDS["overbought_stochrsi_min"],
@@ -1429,6 +1463,11 @@ class DecisionMatrix:
                     stochrsi <= ACTION_THRESHOLDS["oversold_stochrsi_max"],
                     cci_20 <= ACTION_THRESHOLDS["oversold_cci_max"],
                 ]) >= 2
+                momentum_flag = (
+                    "Overbought" if overbought_confluence
+                    else "Oversold" if oversold_confluence
+                    else None
+                )
 
                 if (
                     curr_price <= sma50 * ACTION_THRESHOLDS["sell_avoid_price_ratio"]
@@ -1438,20 +1477,10 @@ class DecisionMatrix:
                     trend_bonus = SCORE_WEIGHTS["sell_avoid"]
                     needs_confirmation = False
                 elif (
-                    overbought_confluence
-                    and range_pos_pct >= ACTION_THRESHOLDS["strong_buy_range_pos_min"]
-                ):
-                    # Disqualifies what would otherwise be a STRONG BUY: the
-                    # stock is pressing highs AND already extended by
-                    # momentum-oscillator confluence - chasing here is the
-                    # exact false-positive this gate exists to filter out.
-                    raw_action = "⚠️ OVERBOUGHT"
-                    trend_bonus = SCORE_WEIGHTS["overbought"]
-                    needs_confirmation = False
-                elif (
                     range_pos_pct >= ACTION_THRESHOLDS["strong_buy_range_pos_min"]
                     and ACTION_THRESHOLDS["strong_buy_rsi_min"] <= rsi <= ACTION_THRESHOLDS["strong_buy_rsi_max"]
                     and gap_pct >= ACTION_THRESHOLDS["strong_buy_gap_min"]
+                    and not overbought_confluence
                 ):
                     raw_action = "🔥 STRONG BUY"
                     trend_bonus = SCORE_WEIGHTS["strong_buy"]
@@ -1460,6 +1489,7 @@ class DecisionMatrix:
                     ma_crossover
                     and momentum_signal
                     and gap_pct >= ACTION_THRESHOLDS["breakout_gap_min"]
+                    and not overbought_confluence
                 ):
                     # Both crossover AND momentum fire — the strongest breakout
                     raw_action = "⚡ BREAKOUT BUY (X-OVER + MOMENTUM)"
@@ -1468,11 +1498,11 @@ class DecisionMatrix:
                         + SCORE_WEIGHTS["breakout_momentum"]
                     )
                     needs_confirmation = True
-                elif ma_crossover and gap_pct >= ACTION_THRESHOLDS["breakout_gap_min"]:
+                elif ma_crossover and gap_pct >= ACTION_THRESHOLDS["breakout_gap_min"] and not overbought_confluence:
                     raw_action = "⚡ BREAKOUT BUY (X-OVER)"
                     trend_bonus = SCORE_WEIGHTS["breakout_crossover"]
                     needs_confirmation = True
-                elif momentum_signal and gap_pct >= ACTION_THRESHOLDS["breakout_gap_min"]:
+                elif momentum_signal and gap_pct >= ACTION_THRESHOLDS["breakout_gap_min"] and not overbought_confluence:
                     raw_action = "⚡ BREAKOUT BUY (MOMENTUM)"
                     trend_bonus = SCORE_WEIGHTS["breakout_momentum"]
                     needs_confirmation = True
@@ -1483,19 +1513,6 @@ class DecisionMatrix:
                 ):
                     raw_action = "🛑 SELL / AVOID"
                     trend_bonus = SCORE_WEIGHTS["sell_avoid"] * 0.6
-                    needs_confirmation = False
-                elif (
-                    oversold_confluence
-                    and rsi <= ACTION_THRESHOLDS["oversold_rsi_max"]
-                ):
-                    # Distinct from BUY ON DIP below: an extreme-washout flag
-                    # via the faster oscillators, not a range-position/RSI
-                    # pullback thesis. Deliberately NOT auto-upgraded to a
-                    # buy label - "deeply oversold" alone isn't a reason to
-                    # buy (a falling knife is oversold too); it's flagged so
-                    # a person can judge the trend context themselves.
-                    raw_action = "⚠️ OVERSOLD"
-                    trend_bonus = SCORE_WEIGHTS["oversold"]
                     needs_confirmation = False
                 elif (
                     range_pos_pct <= ACTION_THRESHOLDS["buy_on_dip_range_pos_max"]
@@ -1509,6 +1526,7 @@ class DecisionMatrix:
                     and rsi >= ACTION_THRESHOLDS["accumulate_rsi_min"]
                     and cmf >= ACTION_THRESHOLDS["accumulate_cmf_min"]
                     and (curr_price >= ema20 or curr_price >= sma50)
+                    and not overbought_confluence
                 ):
                     raw_action = "📈 ACCUMULATE"
                     trend_bonus = SCORE_WEIGHTS["accumulate"]
@@ -1623,6 +1641,15 @@ class DecisionMatrix:
                         ("weekly trend not aligned", weekly_aligned),
                         ("CMF below accumulation floor", cmf >= ACTION_THRESHOLDS["medium_term_cmf_min"]),
                         ("still closing near session low (no support found)", dip_close_ok),
+                        # NEW: oversold-oscillator confluence (STOCH %K /
+                        # StochRSI / CCI - see momentum_flag above) as
+                        # SUPPORTING evidence only, not an independent
+                        # trigger - a dip that's already met the range/RSI
+                        # trigger above AND shows a genuine washout reading
+                        # is a stronger dip thesis than one that hasn't;
+                        # this can never by itself turn a non-dip into a
+                        # BUY ON DIP (a falling knife is oversold too).
+                        ("no oversold-oscillator support (STOCH/StochRSI/CCI)", oversold_confluence),
                     ]
                     dip_confirmed, dip_n_passed, dip_n_required, dip_unmet = _n_of_m_confirmation(
                         dip_factors, ACTION_THRESHOLDS["dip_confirmation_min_pass_ratio"]
@@ -1930,6 +1957,25 @@ class DecisionMatrix:
                                 bw_reasons.append(f"Broad market in confirmed uptrend ({benchmark_label(PRIMARY_BENCHMARK_TICKER)})")
                             else:
                                 bw_reasons.append(f"Broad market in confirmed downtrend ({benchmark_label(PRIMARY_BENCHMARK_TICKER)})")
+
+                        # NEW: overbought/oversold penalty - same
+                        # momentum_flag computed in the classification block
+                        # above (see its docstring for the full redesign).
+                        # This list is specifically about coiling NEAR
+                        # RESISTANCE ahead of a move - a name already
+                        # overbought is extended with less room left before
+                        # it, and a name already oversold is washed out, not
+                        # coiling - both are penalized rather than treated
+                        # as neutral, but neither is an outright exclusion
+                        # (a name can still clear breakout_watch_min_score
+                        # on the strength of everything else).
+                        if overbought_confluence:
+                            bw_score += at["breakout_watch_overbought_penalty"]
+                            bw_reasons.append("Overbought (STOCH/StochRSI/CCI confluence) - extended, less room before resistance")
+                        elif oversold_confluence:
+                            bw_score += at["breakout_watch_oversold_penalty"]
+                            bw_reasons.append("Oversold (STOCH/StochRSI/CCI confluence) - washed out, not coiling near resistance")
+
                         bw_score = max(0.0, bw_score)
 
                         already_fired = (
@@ -1959,6 +2005,7 @@ class DecisionMatrix:
                                     "Tier": tier,
                                     "Current Price": round(curr_price, 4),
                                     "Dist. to Resistance (%)": dist_to_resistance,
+                                    "Momentum": momentum_flag,
                                     "RSI-14": round(rsi, 1),
                                     "ADX-14": round(adx, 1),
                                     "Squeeze Active": bool(is_squeezed),
@@ -2191,7 +2238,7 @@ class DecisionMatrix:
                     f"{pattern_data.get('lower_95_pct', 'N/A')}% to {pattern_data.get('upper_95_pct', 'N/A')}%"
                     if pattern_data.get("match_found") else "N/A"
                 )
-                signal_reason = _build_signal_reason(action_cmd, trend_latest, confirmed, weekly_aligned, is_squeezed, cmf, vol_ratio)
+                signal_reason = _build_signal_reason(action_cmd, trend_latest, confirmed, weekly_aligned, is_squeezed, cmf, vol_ratio, momentum_flag)
                 if stop_loss_degenerate:
                     signal_reason = (
                         f"{signal_reason} ⚠️ ATR-14 is {round(atr_pct_of_price * 100, 1)}% of price - "
@@ -2318,6 +2365,7 @@ class DecisionMatrix:
                         **enrichment_fields,
                         "Position": "🔁 OWNED - Scale-In Candidate" if is_owned else "New Candidate",
                         "Action": action_cmd,
+                        "Momentum": momentum_flag,
                         "Rank Score": round(score, 1),
                         "Reward:Risk": round(reward_risk, 2),
                         "Win Rate Estimate (%)": round(win_rate_est * 100.0, 1),

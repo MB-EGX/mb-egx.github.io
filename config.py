@@ -122,12 +122,15 @@ DEFAULT_WIN_RATE_PRIOR = 0.5
 SCORE_WEIGHTS = {
     "sell_avoid": -45.0,
     "strong_buy": 48.0,
-    # NEW: overbought/oversold reclassification using the STOCH %K /
-    # STOCHRSI / CCI columns that were already computed and displayed but
-    # never fed into the action label itself (see ACTION_THRESHOLDS'
-    # "overbought_*"/"oversold_*" keys below for the trigger levels).
-    "overbought": -10.0,   # cautionary, not as bearish as an outright SELL/AVOID
-    "oversold": 5.0,        # mildly constructive (extreme washout, not yet a dip-buy confirmation)
+    # RETIRED: "overbought"/"oversold" trend_bonus weights. Overbought/
+    # oversold are no longer their own terminal Action label with their own
+    # score - they're now gates/modifiers folded directly into the 6 real
+    # actions' own conditions in decision_matrix.py's classification block
+    # (STRONG BUY/BREAKOUT BUY/ACCUMULATE disqualified when overbought;
+    # oversold folded into BUY ON DIP's confirmation factors), plus a
+    # Breakout Score penalty for the Pre-Breakout Watchlist - see
+    # "breakout_watch_overbought_penalty"/"breakout_watch_oversold_penalty"
+    # in ACTION_THRESHOLDS below.
     "breakout_crossover": 32.0,  # tighter than before: reduce false-positive urgency
     "breakout_momentum": 24.0,
     "buy_on_dip": 30.0,
@@ -369,6 +372,19 @@ ACTION_THRESHOLDS = {
                                           # so "High Confidence" stays selective now that there are
                                           # more ways to accumulate points)
     "breakout_watch_max_results": 25,
+    # NEW: overbought/oversold penalty (see decision_matrix.py's
+    # classification-block comment for the full redesign this belongs
+    # to). This list is specifically about coiling NEAR RESISTANCE ahead
+    # of a move: an already-overbought name is extended with less room
+    # left before it (same disqualifier that keeps it out of STRONG BUY/
+    # BREAKOUT BUY/ACCUMULATE), and an already-oversold name is washed
+    # out, not coiling. Both are penalties, not exclusions - a name can
+    # still clear breakout_watch_min_score on the strength of everything
+    # else. Overbought is weighted more heavily than oversold here
+    # because "extended, no room left" more directly contradicts this
+    # list's own thesis than "washed out" does.
+    "breakout_watch_overbought_penalty": -15.0,
+    "breakout_watch_oversold_penalty": -8.0,
     # NEW: relative strength vs. the REAL EGX sector sub-index (config.
     # SECTOR_BENCHMARK_MAP), not just the peer-average "breakout_watch_
     # sector_rs_*" factor above. See decision_matrix's "Sector Index RS"
