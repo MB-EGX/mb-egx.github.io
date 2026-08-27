@@ -6,7 +6,7 @@ import threading
 import time
 from datetime import date
 from pathlib import Path
-from config import DB_PATH, PAPER_TRADING_DEFAULTS, MAX_ACHIEVED_HISTORY, TRANSACTION_FEE_PCT, get_logger
+from config import DB_PATH, PAPER_TRADING_DEFAULTS, MAX_ACHIEVED_HISTORY, TRANSACTION_FEE_PCT, COMPANY_NAME_STOPWORDS_RE, get_logger
 import duckdb
 
 logger = get_logger("db_manager")
@@ -1250,7 +1250,7 @@ class DatabaseManager:
                             s_map[old_k] = s_map[self.normalize_symbol(old_k)] = sec
 
                     s_clean = key.lower().replace("go green", "gogreen")
-                    s_clean = re.sub(r'\b(s\.?a\.?e\.?|co\.?|company|egypt|egyptian|for|and|of|the|in|-|–|&|holding|group)\b', ' ', s_clean)
+                    s_clean = re.sub(COMPANY_NAME_STOPWORDS_RE, ' ', s_clean)
                     s_clean = re.sub(r'[^\w\s]', ' ', s_clean)
                     tokens = set(s_clean.split())
                     if len(tokens) >= 1:
@@ -1261,7 +1261,7 @@ class DatabaseManager:
                     norm_sym = self.normalize_symbol(t_sym)
                     if norm_sym not in s_map and t_name:
                         n_clean = str(t_name).lower().replace("go green", "gogreen")
-                        n_clean = re.sub(r'\b(s\.?a\.?e\.?|co\.?|company|egypt|egyptian|for|and|of|the|in|-|–|&|holding|group)\b', ' ', n_clean)
+                        n_clean = re.sub(COMPANY_NAME_STOPWORDS_RE, ' ', n_clean)
                         n_clean = re.sub(r'[^\w\s]', ' ', n_clean)
                         n_tokens = set(n_clean.split())
                         if n_tokens:

@@ -1008,6 +1008,10 @@
                 <div class="bg-darkbg border border-bordercol rounded-lg p-3"><div class="text-[10px] text-textmuted uppercase">Max Drawdown</div><div id="perf-maxdd" class="text-xl font-bold font-mono">—</div></div>
                 <div class="bg-darkbg border border-bordercol rounded-lg p-3"><div class="text-[10px] text-textmuted uppercase">Current Drawdown</div><div id="perf-curdd" class="text-xl font-bold font-mono">—</div></div>
                 <div class="bg-darkbg border border-bordercol rounded-lg p-3"><div class="text-[10px] text-textmuted uppercase">Manual Trades</div><div id="perf-manual" class="text-xl font-bold font-mono">0</div></div>
+                <div class="bg-darkbg border border-bordercol rounded-lg p-3"><div class="text-[10px] text-textmuted uppercase">Avg Win</div><div id="perf-avgwin" class="text-xl font-bold font-mono">—</div></div>
+                <div class="bg-darkbg border border-bordercol rounded-lg p-3"><div class="text-[10px] text-textmuted uppercase">Avg Loss</div><div id="perf-avgloss" class="text-xl font-bold font-mono">—</div></div>
+                <div class="bg-darkbg border border-bordercol rounded-lg p-3"><div class="text-[10px] text-textmuted uppercase">Best Trade</div><div id="perf-besttrade" class="text-xl font-bold font-mono">—</div></div>
+                <div class="bg-darkbg border border-bordercol rounded-lg p-3"><div class="text-[10px] text-textmuted uppercase">Worst Trade</div><div id="perf-worsttrade" class="text-xl font-bold font-mono">—</div></div>
             </div>
 
             <div class="bg-darkbg border border-bordercol rounded-lg p-3">
@@ -5881,18 +5885,27 @@
 
         function perfSummary(trades) {
             const n = trades.length;
-            if (!n) return { total_trades: 0, win_rate_pct: null, profit_factor: null, expectancy_egp: null, total_realized_pnl_egp: 0, avg_holding_days: null, manual_trade_count: 0 };
+            if (!n) return { total_trades: 0, win_rate_pct: null, profit_factor: null, expectancy_egp: null, avg_win_egp: null, avg_loss_egp: null, avg_win_pct: null, avg_loss_pct: null, best_trade: null, worst_trade: null, total_realized_pnl_egp: 0, avg_holding_days: null, manual_trade_count: 0 };
             const wins = trades.filter(t => t._pnl > 0), losses = trades.filter(t => t._pnl < 0);
             const decisive = wins.length + losses.length;
             const grossWin = wins.reduce((s, t) => s + t._pnl, 0);
             const grossLoss = Math.abs(losses.reduce((s, t) => s + t._pnl, 0));
             const total = trades.reduce((s, t) => s + t._pnl, 0);
             const holds = trades.map(t => { const b = new Date(t._buy + 'T00:00:00'), s = new Date(t._sell + 'T00:00:00'); return isNaN(b) || isNaN(s) ? null : Math.round((s - b) / 86400000); }).filter(x => x !== null);
+            // best/worst by raw _pnl, matching trade_performance.compute_summary_stats' max()/min() key.
+            const best = trades.reduce((a, b) => b._pnl > a._pnl ? b : a, trades[0]);
+            const worst = trades.reduce((a, b) => b._pnl < a._pnl ? b : a, trades[0]);
             return {
                 total_trades: n,
                 win_rate_pct: decisive ? +(wins.length / decisive * 100).toFixed(1) : null,
                 profit_factor: grossLoss > 0 ? +(grossWin / grossLoss).toFixed(2) : (grossWin === 0 ? null : Infinity),
                 expectancy_egp: +(total / n).toFixed(2),
+                avg_win_egp: wins.length ? +(grossWin / wins.length).toFixed(2) : null,
+                avg_loss_egp: losses.length ? +(-Math.abs(grossLoss) / losses.length).toFixed(2) : null,
+                avg_win_pct: wins.length ? +(wins.reduce((s, t) => s + t._pnl_pct, 0) / wins.length).toFixed(2) : null,
+                avg_loss_pct: losses.length ? +(losses.reduce((s, t) => s + t._pnl_pct, 0) / losses.length).toFixed(2) : null,
+                best_trade: { ticker: best.ticker, pnl_egp: +best._pnl.toFixed(2), pnl_pct: +best._pnl_pct.toFixed(2), sell_date: best._sell },
+                worst_trade: { ticker: worst.ticker, pnl_egp: +worst._pnl.toFixed(2), pnl_pct: +worst._pnl_pct.toFixed(2), sell_date: worst._sell },
                 total_realized_pnl_egp: +total.toFixed(2),
                 avg_holding_days: holds.length ? +(holds.reduce((a, b) => a + b, 0) / holds.length).toFixed(1) : null,
                 manual_trade_count: trades.filter(t => (t.source || 'app') === 'manual').length
@@ -5973,6 +5986,10 @@
             set('perf-maxdd', dd.max_dd_pct === null ? '—' : '-' + dd.max_dd_pct + '%', dd.max_dd_pct !== null && dd.max_dd_pct > 0 ? 'text-rose-400' : 'text-emerald-400');
             set('perf-curdd', dd.current_dd_pct === null ? '—' : '-' + dd.current_dd_pct + '%', dd.current_dd_pct !== null && dd.current_dd_pct > 0 ? 'text-rose-400' : 'text-emerald-400');
             set('perf-manual', summary.manual_trade_count);
+            set('perf-avgwin', summary.avg_win_egp === null ? '—' : '+' + summary.avg_win_egp.toLocaleString(undefined, {maximumFractionDigits: 2}) + ' EGP' + (summary.avg_win_pct !== null ? ` (+${summary.avg_win_pct}%)` : ''), 'text-emerald-400');
+            set('perf-avgloss', summary.avg_loss_egp === null ? '—' : summary.avg_loss_egp.toLocaleString(undefined, {maximumFractionDigits: 2}) + ' EGP' + (summary.avg_loss_pct !== null ? ` (${summary.avg_loss_pct}%)` : ''), 'text-rose-400');
+            set('perf-besttrade', summary.best_trade === null ? '—' : `${escapeHtml(summary.best_trade.ticker || '—')} +${summary.best_trade.pnl_egp.toLocaleString(undefined, {maximumFractionDigits: 2})} EGP (+${summary.best_trade.pnl_pct}%)`, 'text-emerald-400');
+            set('perf-worsttrade', summary.worst_trade === null ? '—' : `${escapeHtml(summary.worst_trade.ticker || '—')} ${summary.worst_trade.pnl_egp.toLocaleString(undefined, {maximumFractionDigits: 2})} EGP (${summary.worst_trade.pnl_pct}%)`, 'text-rose-400');
 
             const ctx = document.getElementById('perf-equity-canvas');
             if (perfChart) { perfChart.destroy(); perfChart = null; }

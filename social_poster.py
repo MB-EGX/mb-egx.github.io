@@ -2489,7 +2489,13 @@ def main():
 
     p_publish_tg.add_argument("--caption-file", required=True)
 
-    p_publish_tg.add_argument("--chat-id", default=os.environ.get("MBEGX_TELEGRAM_CHANNEL_ID"))
+    # Defaults from config.TELEGRAM_CHANNEL_CHAT_ID (config.py is the single
+    # source of truth for this value, same as everywhere else in the app -
+    # previously read the MBEGX_TELEGRAM_CHANNEL_ID env var directly here,
+    # which worked identically but bypassed config.py). --chat-id still
+    # lets you override it per-invocation, same as before.
+    from config import TELEGRAM_CHANNEL_CHAT_ID
+    p_publish_tg.add_argument("--chat-id", default=TELEGRAM_CHANNEL_CHAT_ID or os.environ.get("MBEGX_TELEGRAM_CHANNEL_ID"))
 
     p_publish_tg.add_argument("--bot-token", default=os.environ.get("TELEGRAM_BOT_TOKEN"))
 

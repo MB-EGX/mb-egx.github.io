@@ -34,10 +34,13 @@ from pathlib import Path
 
 import duckdb
 
-# Same normalization + stopword-stripping regex as db_manager.get_sector_map(),
-# reused verbatim so filename matching agrees with how your app already
-# matches company names to tickers everywhere else.
-_STOPWORDS = r'\b(s\.?a\.?e\.?|co\.?|company|egypt|egyptian|for|and|of|the|in|-|–|&|holding|group)\b'
+from config import COMPANY_NAME_STOPWORDS_RE
+
+# Same normalization + stopword-stripping regex as db_manager.get_sector_map()
+# - imported from config.py's single shared constant so filename matching
+# always agrees with how your app matches company names to tickers
+# everywhere else, with no risk of the copies drifting apart.
+_STOPWORDS = COMPANY_NAME_STOPWORDS_RE
 _SUFFIX_RE = re.compile(r'\s*stock\s*price\s*history\s*$', re.IGNORECASE)
 
 

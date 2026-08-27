@@ -473,15 +473,6 @@ def _parse_excel_date(val):
                 break
             if parsed is None:
                 parsed = pd.to_datetime(val, dayfirst=False)
-                parsed = None
-                for fmt, _label in _EXPLICIT_DATE_FORMATS:
-                    try:
-                        parsed = pd.to_datetime(val, format=fmt)
-                    except (ValueError, TypeError):
-                        continue
-                    break
-                if parsed is None:
-                    parsed = pd.to_datetime(val, dayfirst=False)
     except Exception:
         return None
 
