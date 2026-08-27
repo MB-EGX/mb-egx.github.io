@@ -157,6 +157,22 @@ SCORE_WEIGHTS = {
     # the score (see reward_risk_score_cap below).
     "reward_risk_weight": 10.0,
     "reward_risk_score_cap": 3.0,  # cap the RR component's input so a huge/degenerate RR can't blow out the score
+    # NEW: today's own close-location-within-the-session's-range (see
+    # decision_matrix.py's close_location_ratio - already computed there
+    # and already used as a boolean gate for STRONG BUY / BUY ON DIP
+    # confirmation via ACTION_THRESHOLDS' close_strength_min_ratio /
+    # dip_close_strength_min_ratio). This weight lets that SAME ratio
+    # also nudge the score up/down continuously, not just gate a label,
+    # so "next session pick" ranking reflects same-day conviction too.
+    # Centered at 0.5 (a coin-flip close) so a routine mid-range close
+    # doesn't bias the score either way - only a genuinely strong
+    # (near session high) or weak (near session low) close moves it.
+    # (ratio - 0.5) ranges -0.5..+0.5, so at the default weight this
+    # contributes at most +/-5.0 to Rank Score - a real but not
+    # dominant nudge, deliberately smaller than range_position_weight's
+    # 52-week-range contribution (up to +/-12.5) since a single day's
+    # range is noisier than a 250-bar range.
+    "day_range_position_weight": 10.0,
 }
 
 # --- Action classification thresholds (formerly hard-coded in decision_matrix) ---
@@ -358,6 +374,63 @@ SR_CLUSTER_TOLERANCE_PCT = 1.5  # swings within this % of each other collapse in
 SR_MIN_TOUCHES = 2              # a single untested swing isn't a "level" yet - needs at least one repeat
 SR_RECENCY_HALF_LIFE_DAYS = 120 # a touch's weight in the strength score halves every this-many days
 SR_MAX_LEVELS = 3               # runner-up levels kept per side (nearest-first), beyond the primary one
+
+# --- Extra technical indicators (analytics.compute_indicators) ---
+# Standard textbook periods (TradingView / StockCharts / Investopedia
+# defaults) - not re-tuned to this market, so results are directly
+# comparable to any other screener a user might cross-check against.
+STOCH_K_PERIOD = 14
+STOCH_K_SMOOTH = 3     # %K itself is smoothed by this many bars (the "slow" stochastic, the industry-standard default)
+STOCH_D_PERIOD = 3     # %D = SMA(%K, this)
+STOCHRSI_PERIOD = 14   # applied to RSI-14 itself, then %K/%D-smoothed the same as STOCH above
+CCI_PERIOD = 20
+ROC_PERIOD = 12
+WILLIAMS_R_PERIOD = 14
+ULTIMATE_OSC_PERIODS = (7, 14, 28)      # fast, medium, slow - Larry Williams' original weights are 4:2:1
+ULTIMATE_OSC_WEIGHTS = (4.0, 2.0, 1.0)
+BULL_BEAR_POWER_EMA_PERIOD = 13         # Elder Ray - EMA-13 is Alexander Elder's own default
+HIGHS_LOWS_LOOKBACK = 14                # "Highs/Lows": close's position within its own N-bar high/low band (Stochastic-style %), distinct from the 52-week range_pos_pct already computed in decision_matrix.py
+
+# --- Ticker "Health" composite scores (0-100, higher = healthier) ---
+# HONEST LIMITATION: this app's only fundamentals source is the watchlist
+# CSV export (see ingestion.ENRICHMENT_FIELD_EXACT / db_manager.
+# ticker_enrichment) - market cap, revenue, EPS, P/E, beta, dividend/yield,
+# and price-based period returns. It does NOT carry a cash-flow statement,
+# margins, or a reported earnings-growth figure. "Cash Flow Health" and
+# "Profitability Health" below are therefore PROXIES built from what is
+# actually available (dividend sustainability and EPS/earnings-yield as a
+# stand-in for cash generation and profitability), and "Growth Health" is
+# priced-based (1Y/3Y provider return), not earnings/revenue growth. Each
+# is clearly labeled "(est.)" wherever it's displayed, and each returns
+# None (never a fabricated number) when its own required inputs are
+# missing - same "missing means unavailable" contract as every other
+# optional feature in this app. Wire in real fundamentals (operating
+# cash flow, net margin, reported revenue/EPS growth) via a future
+# watchlist column + ENRICHMENT_FIELD_EXACT entry to replace the proxy
+# with the real thing without touching any caller of these scores.
+HEALTH_SCORE_WEIGHTS = {
+    # Relative Value: cheap/expensive vs the ticker's OWN sector peers
+    # (P/E percentile) plus dividend yield - a real, available fundamental
+    # comparison, not a proxy.
+    "relative_value_pe_weight": 0.7,
+    "relative_value_yield_weight": 0.3,
+    # Price Momentum: composite of already-computed technical indicators
+    # (RSI-14, ADX/DI direction, MACD histogram sign, ROC) - fully
+    # available, not a proxy.
+    "momentum_rsi_weight": 0.30,
+    "momentum_roc_weight": 0.30,
+    "momentum_macd_weight": 0.20,
+    "momentum_trend_weight": 0.20,
+}
+
+# --- Daily Movers extras (top_movers.py) ---
+MOST_ACTIVE_TOP_N = 5
+VALUATION_EXTREMES_TOP_N = 5
+WEEK52_EXTREMES_TOP_N = 5
+# A ticker within this % of its 52-week high/low still counts as "at" it
+# for the 52-Week High / 52-Week Low mover lists (an intraday print can
+# miss the exact extreme by a hair and still be the story of the day).
+WEEK52_NEAR_PCT = 1.0
 
 # --- Data-confidence weighting ---
 CONFIDENCE_FLOOR_WEIGHT = 0.5

@@ -54,6 +54,7 @@ from config import (
     KELLY_FRACTION,
     KELLY_CAP_FRACTION,
     DEFAULT_WIN_RATE_PRIOR,
+    HEALTH_SCORE_WEIGHTS,
     get_logger,
 )
 
@@ -575,6 +576,110 @@ def _build_enrichment_fields(action_cmd: str, enrichment: dict | None) -> dict:
     return fields
 
 
+def _clamp_score(x: float) -> float:
+    return round(max(0.0, min(100.0, x)), 1)
+
+
+def _build_health_scores(latest, enrichment: dict | None, sector_avg_pe: float | None) -> dict:
+    """Five 0-100 "ticker health" composite scores for the Action Matrix.
+
+    HONEST LIMITATION (see config.HEALTH_SCORE_WEIGHTS's docstring): this
+    app's fundamentals source (the watchlist CSV export) carries P/E,
+    EPS, beta, dividend/yield, market cap, and price-based period returns
+    - it does NOT carry a cash-flow statement, margins, or a reported
+    earnings/revenue-growth figure. Relative Value and Price Momentum
+    below are built from genuinely available data; Cash Flow Health,
+    Profitability Health, and Growth Health are labeled "(est.)"
+    wherever displayed because they are PROXIES (dividend sustainability
+    and earnings yield standing in for cash generation/profitability;
+    priced-based 1Y/3Y return standing in for reported growth) - never
+    presented as if they were real balance-sheet/income-statement
+    figures. Any score returns None (not a fabricated number) if its own
+    required input is missing.
+    """
+    w = HEALTH_SCORE_WEIGHTS
+    out = {
+        "Relative Value Score": None,
+        "Price Momentum Score": None,
+        "Cash Flow Health Score (est.)": None,
+        "Profitability Health Score (est.)": None,
+        "Growth Health Score (est.)": None,
+    }
+
+    # --- Relative Value: real data (P/E vs sector peers, dividend yield) ---
+    pe = (enrichment or {}).get("pe_ratio")
+    yield_pct = (enrichment or {}).get("yield_pct")
+    pe_component = None
+    if pe is not None and pe > 0 and sector_avg_pe:
+        # Lower P/E than the sector average -> cheaper -> higher score.
+        # Ratio capped both sides so one extreme outlier can't blow out
+        # the 0-100 scale; a P/E at half the sector average scores ~100,
+        # double the sector average scores ~0.
+        ratio = pe / sector_avg_pe
+        pe_component = _clamp_score(100.0 - ((ratio - 0.5) / 1.5) * 100.0)
+    yield_component = _clamp_score(min(yield_pct, 12.0) / 12.0 * 100.0) if yield_pct is not None else None
+    if pe_component is not None or yield_component is not None:
+        parts, weights = [], []
+        if pe_component is not None:
+            parts.append(pe_component); weights.append(w["relative_value_pe_weight"])
+        if yield_component is not None:
+            parts.append(yield_component); weights.append(w["relative_value_yield_weight"])
+        out["Relative Value Score"] = _clamp_score(sum(p * wt for p, wt in zip(parts, weights)) / sum(weights))
+
+    # --- Price Momentum: real data (already-computed technical indicators) ---
+    rsi = latest.get("rsi_14")
+    roc = latest.get("roc_12")
+    macd_hist = latest.get("macd_histogram")
+    plus_di = latest.get("plus_di")
+    minus_di = latest.get("minus_di")
+    adx = latest.get("adx_14")
+    if rsi is not None and roc is not None and macd_hist is not None and adx is not None:
+        rsi_component = _clamp_score(float(rsi))  # RSI is already 0-100
+        roc_component = _clamp_score(50.0 + (max(-20.0, min(20.0, float(roc))) / 20.0) * 50.0)
+        macd_component = 100.0 if macd_hist > 0 else (0.0 if macd_hist < 0 else 50.0)
+        di_diff = (plus_di or 0.0) - (minus_di or 0.0)
+        trend_dir_component = _clamp_score(50.0 + (max(-1.0, min(1.0, di_diff / 25.0))) * 50.0 * (min(float(adx), 50.0) / 50.0))
+        out["Price Momentum Score"] = _clamp_score(
+            rsi_component * w["momentum_rsi_weight"]
+            + roc_component * w["momentum_roc_weight"]
+            + macd_component * w["momentum_macd_weight"]
+            + trend_dir_component * w["momentum_trend_weight"]
+        )
+
+    # --- Cash Flow Health (est.): dividend sustainability proxy ---
+    # A company paying (and, implicitly, funding) a real dividend is at
+    # minimum generating enough cash to cover it - not proof of strong
+    # cash flow, but the closest honest proxy available here. No
+    # dividend data at all -> no score (never assumed "unhealthy").
+    dividend = (enrichment or {}).get("dividend")
+    if dividend is not None and yield_pct is not None:
+        out["Cash Flow Health Score (est.)"] = _clamp_score(
+            50.0 + (min(yield_pct, 10.0) / 10.0) * 50.0 if dividend > 0 else 35.0
+        )
+
+    # --- Profitability Health (est.): earnings-yield proxy (EPS/Price via P/E) ---
+    # A lower P/E at a given price means more EPS per EGP paid - not a
+    # margin figure, but a real, available profitability-per-price signal.
+    if pe is not None and pe > 0:
+        earnings_yield = (1.0 / pe) * 100.0
+        out["Profitability Health Score (est.)"] = _clamp_score(min(earnings_yield, 20.0) / 20.0 * 100.0)
+    elif pe is not None and pe <= 0:
+        # Negative/zero P/E from a provider typically flags negative EPS.
+        out["Profitability Health Score (est.)"] = 15.0
+
+    # --- Growth Health (est.): price-based 1Y/3Y provider return proxy ---
+    # NOT reported revenue/earnings growth (not available from this data
+    # source) - a price-return proxy, clearly labeled as such.
+    r1y = (enrichment or {}).get("return_1y_pct")
+    r3y = (enrichment or {}).get("return_3y_pct")
+    if r1y is not None or r3y is not None:
+        parts = [r for r in (r1y, r3y) if r is not None]
+        avg_r = sum(parts) / len(parts)
+        out["Growth Health Score (est.)"] = _clamp_score(50.0 + (max(-50.0, min(50.0, avg_r)) / 50.0) * 50.0)
+
+    return out
+
+
 def _worker_compute_chunk(chunk_data):
     qe = QuantitativeEngine(connect_db=False)
     results = {}
@@ -875,6 +980,29 @@ class DecisionMatrix:
         # fed via an enrichment-bearing CSV - handled per-ticker below as
         # "not available", never invented.
         enrichment_map = self.dbm.get_latest_enrichment()
+        # Sector-average P/E, for the "Relative Value" health score below -
+        # a ticker's own P/E only says something about valuation next to
+        # its PEERS (a bank and a real-estate developer have structurally
+        # different "normal" P/E bands), never in isolation. Built once,
+        # up front, over every enrichment row with a usable positive P/E -
+        # a ticker with no P/E of its own, or whose sector has no other
+        # priced peer yet, simply gets no Relative Value score (never a
+        # fabricated "average" of one).
+        sector_pe_sum: dict = {}
+        sector_pe_count: dict = {}
+        for _tk, _enr in enrichment_map.items():
+            _pe = _enr.get("pe_ratio") if _enr else None
+            if _pe is None or _pe <= 0:
+                continue
+            _sec = sector_map.get(_tk, sector_map.get(_tk.replace(".CA", ""), None))
+            if not _sec:
+                continue
+            sector_pe_sum[_sec] = sector_pe_sum.get(_sec, 0.0) + _pe
+            sector_pe_count[_sec] = sector_pe_count.get(_sec, 0) + 1
+        sector_avg_pe = {
+            sec: sector_pe_sum[sec] / sector_pe_count[sec]
+            for sec in sector_pe_sum if sector_pe_count.get(sec, 0) > 0
+        }
 
         buy_recommendations = []
         exit_strategies = []
@@ -1917,12 +2045,23 @@ class DecisionMatrix:
                     * SCORE_WEIGHTS["reward_risk_weight"]
                 )
 
+                # NEW: today's own close-location-within-the-session's-range
+                # (close_location_ratio, computed above) now also nudges the
+                # score continuously - not just gates STRONG BUY/BUY ON DIP
+                # confirmation as it already did. See config.SCORE_WEIGHTS
+                # ["day_range_position_weight"]'s docstring for the centering
+                # and cap rationale. This is what feeds "day's range" into
+                # Rank Score (and therefore into session_picks.py's picks,
+                # which rank/select directly off this same Rank Score).
+                day_range_component = (close_location_ratio - 0.5) * SCORE_WEIGHTS["day_range_position_weight"]
+
                 raw_score = (
                     pattern_component
                     + projected_component
                     + (range_pos_pct * SCORE_WEIGHTS["range_position_weight"])
                     + trend_bonus
                     + reward_risk_component
+                    + day_range_component
                 )
                 score = raw_score * conf_weight
                 # Win-rate estimate for Kelly - priority order:
@@ -2029,6 +2168,8 @@ class DecisionMatrix:
                 # tickers may be stored in either form.
                 enrichment = enrichment_map.get(norm_ticker) or enrichment_map.get(ticker)
                 enrichment_fields = _build_enrichment_fields(action_cmd, enrichment)
+                sec_for_row = sector_map.get(norm_ticker, sector_map.get(ticker))
+                health_fields = _build_health_scores(latest, enrichment, sector_avg_pe.get(sec_for_row))
 
                 # While this app's OWN ingested history is still too short
                 # for chart_patterns' swing/pattern detection to ever
@@ -2089,6 +2230,43 @@ class DecisionMatrix:
                         "Take-Profit Target": take_profit_target,
                         "Resistance (52W High)": round(float(range_high), 4),
                         "Support (52W Low)": round(float(range_low), 4),
+                        # --- Day's Range / Open / Previous Close / Bid-Ask ---
+                        "Open": round(float(latest.get("open", curr_price)), 4),
+                        "Previous Close": round(float(prev_close), 4),
+                        "Day High": round(float(day_high), 4),
+                        "Day Low": round(float(day_low), 4),
+                        "Day's Range": f"{round(float(day_low), 2)} - {round(float(day_high), 2)}",
+                        "52 Week Range": f"{round(float(range_low), 2)} - {round(float(range_high), 2)}",
+                        # Close-location-within-today's-range, exposed as a
+                        # real field now (not just an internal score/gate
+                        # input) - 0.0 = closed at the session low, 1.0 =
+                        # closed at the session high.
+                        "Day Range Position": round(float(close_location_ratio), 3),
+                        "Day Range %": round(float(session_range_pct), 2),
+                        # BID/ASK: NOT AVAILABLE. This app's only price feed
+                        # is daily EOD OHLCV bars (see db_manager.market_data's
+                        # schema and ingestion.py) plus a periodic watchlist
+                        # fundamentals snapshot - neither carries a live
+                        # bid/ask quote. Rather than fabricate a spread off
+                        # the close price, these are surfaced as None ("-"
+                        # in both UIs) so the gap is visible instead of
+                        # silently invented. Wiring a real bid/ask requires
+                        # a live-quote data source; once one exists, populate
+                        # these two fields here and both UIs pick it up with
+                        # no further changes needed.
+                        "Bid": None,
+                        "Ask": None,
+                        **health_fields,
+                        # --- Additional technical indicators (analytics.compute_indicators) ---
+                        "STOCH %K": round(float(latest.get("stoch_k", 50.0)), 2),
+                        "STOCH %D": round(float(latest.get("stoch_d", 50.0)), 2),
+                        "STOCHRSI": round(float(latest.get("stochrsi", 50.0)), 2),
+                        "CCI": round(float(latest.get("cci_20", 0.0)), 2),
+                        "ROC": round(float(latest.get("roc_12", 0.0)), 2),
+                        "Williams %R": round(float(latest.get("williams_r", -50.0)), 2),
+                        "UO": round(float(latest.get("ultimate_osc", 50.0)), 2),
+                        "Bull/Bear Power": round(float(latest.get("bull_bear_power", 0.0)), 4),
+                        "Highs/Lows": round(float(latest.get("highs_lows_pct", 50.0)), 2),
                         # Genuine, touch-confirmed levels (see analytics.
                         # compute_support_resistance) - the nearest price the
                         # stock has actually reversed at more than once,

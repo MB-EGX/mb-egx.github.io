@@ -34,6 +34,17 @@ from config import (
     ANNUALIZED_RISK_FREE_RATE,
     DEFAULT_ATR_PCT_FALLBACK,
     TICKER_REGIME_THRESHOLDS,
+    STOCH_K_PERIOD,
+    STOCH_K_SMOOTH,
+    STOCH_D_PERIOD,
+    STOCHRSI_PERIOD,
+    CCI_PERIOD,
+    ROC_PERIOD,
+    WILLIAMS_R_PERIOD,
+    ULTIMATE_OSC_PERIODS,
+    ULTIMATE_OSC_WEIGHTS,
+    BULL_BEAR_POWER_EMA_PERIOD,
+    HIGHS_LOWS_LOOKBACK,
 )
 
 import numpy as np
@@ -249,11 +260,28 @@ class QuantitativeEngine:
     def validate_indicator_outputs(df: pd.DataFrame) -> pd.DataFrame:
         if df is None or df.empty:
             return df
-        for col in ("rsi_14", "adx_14", "atr_14", "macd", "macd_signal", "macd_histogram"):
+        for col in ("rsi_14", "adx_14", "atr_14", "macd", "macd_signal", "macd_histogram",
+                    "stoch_k", "stoch_d", "stochrsi", "cci_20", "roc_12", "williams_r",
+                    "ultimate_osc", "bull_power", "bear_power", "bull_bear_power",
+                    "highs_lows_pct"):
             if col in df.columns:
                 df[col] = pd.to_numeric(df[col], errors="coerce")
         if "rsi_14" in df.columns:
             df["rsi_14"] = df["rsi_14"].clip(lower=0, upper=100).fillna(50.0)
+        # New oscillators: same defensive clip-and-fill discipline as
+        # rsi_14/adx_14 above - a bad division upstream (e.g. a zero-
+        # range window on an illiquid/flat-lined ticker) must never
+        # surface as NaN/inf in the matrix or a downstream sort/score.
+        for bounded_col, (lo, hi), neutral in (
+            ("stoch_k", (0, 100), 50.0), ("stoch_d", (0, 100), 50.0),
+            ("stochrsi", (0, 100), 50.0), ("williams_r", (-100, 0), -50.0),
+            ("ultimate_osc", (0, 100), 50.0), ("highs_lows_pct", (0, 100), 50.0),
+        ):
+            if bounded_col in df.columns:
+                df[bounded_col] = df[bounded_col].clip(lower=lo, upper=hi).fillna(neutral)
+        for unbounded_col in ("cci_20", "roc_12", "bull_power", "bear_power", "bull_bear_power"):
+            if unbounded_col in df.columns:
+                df[unbounded_col] = df[unbounded_col].replace([np.inf, -np.inf], np.nan).fillna(0.0)
         if "adx_14" in df.columns:
             df["adx_14"] = df["adx_14"].clip(lower=0, upper=100).fillna(0.0)
         if "atr_14" in df.columns:
@@ -504,6 +532,98 @@ class QuantitativeEngine:
         # tolerance band to absorb rounding noise; ties default to
         # consolidation. Updated band labels are documented in
         # glossary_content.py separately.
+        # ---------------------------------------------------------------
+        # NEW: additional standard technical indicators (STOCH, StochRSI,
+        # CCI, ROC, Williams %R, Ultimate Oscillator, Bull/Bear Power,
+        # Highs/Lows) - textbook formulas (TradingView/StockCharts/
+        # Investopedia), computed purely from OHLCV already in `df`, no
+        # new data source required. Periods come from config.py so they
+        # can be retuned in one place without touching this function.
+        # ---------------------------------------------------------------
+
+        # Stochastic Oscillator (%K slow-smoothed, %D = SMA of %K)
+        stoch_period = min(STOCH_K_PERIOD, n)
+        roll_low = df["low"].rolling(window=stoch_period, min_periods=1).min()
+        roll_high = df["high"].rolling(window=stoch_period, min_periods=1).max()
+        stoch_range = (roll_high - roll_low).replace(0, np.nan)
+        raw_k = ((df["close"] - roll_low) / stoch_range) * 100.0
+        raw_k = raw_k.fillna(50.0)
+        df["stoch_k"] = raw_k.rolling(window=min(STOCH_K_SMOOTH, n), min_periods=1).mean()
+        df["stoch_d"] = df["stoch_k"].rolling(window=min(STOCH_D_PERIOD, n), min_periods=1).mean()
+
+        # Stochastic RSI: the Stochastic formula applied to RSI-14 itself
+        # instead of price - a faster, more sensitive oscillator than
+        # either RSI or Stochastic alone (Tushar Chande & Stanley Kroll,
+        # 1994; the standard TradingView/StockCharts implementation).
+        stochrsi_period = min(STOCHRSI_PERIOD, n)
+        rsi_low = df["rsi_14"].rolling(window=stochrsi_period, min_periods=1).min()
+        rsi_high = df["rsi_14"].rolling(window=stochrsi_period, min_periods=1).max()
+        rsi_range = (rsi_high - rsi_low).replace(0, np.nan)
+        stochrsi_raw = ((df["rsi_14"] - rsi_low) / rsi_range) * 100.0
+        df["stochrsi"] = stochrsi_raw.fillna(50.0)
+
+        # CCI (Commodity Channel Index) - Donald Lambert's original
+        # constant (0.015) scales so +/-100 brackets ~70-80% of typical
+        # price moves.
+        cci_period = min(CCI_PERIOD, n)
+        typical = (df["high"] + df["low"] + df["close"]) / 3.0
+        cci_sma = typical.rolling(window=cci_period, min_periods=1).mean()
+        mean_dev = typical.rolling(window=cci_period, min_periods=1).apply(
+            lambda x: np.mean(np.abs(x - x.mean())), raw=True
+        )
+        df["cci_20"] = ((typical - cci_sma) / (0.015 * mean_dev.replace(0, np.nan))).fillna(0.0)
+
+        # ROC (Rate of Change, %) - plain N-bar momentum.
+        roc_period = min(ROC_PERIOD, n)
+        close_n_ago = df["close"].shift(roc_period)
+        df["roc_12"] = (((df["close"] - close_n_ago) / close_n_ago.replace(0, np.nan)) * 100.0).fillna(0.0)
+
+        # Williams %R - inverted Stochastic scale (0 to -100); reuses the
+        # same rolling high/low as %K above (same period by convention).
+        wr_period = min(WILLIAMS_R_PERIOD, n)
+        wr_low = df["low"].rolling(window=wr_period, min_periods=1).min()
+        wr_high = df["high"].rolling(window=wr_period, min_periods=1).max()
+        wr_range = (wr_high - wr_low).replace(0, np.nan)
+        df["williams_r"] = (((wr_high - df["close"]) / wr_range) * -100.0).fillna(-50.0)
+
+        # Ultimate Oscillator (Larry Williams, 1976) - blends 3 timeframes
+        # (fast/medium/slow) weighted 4:2:1 so no single lookback dominates.
+        prior_close = df["close"].shift(1).fillna(df["close"].iloc[0])
+        bp = df["close"] - pd.concat([df["low"], prior_close], axis=1).min(axis=1)          # Buying Pressure
+        tr_uo = pd.concat([df["high"], prior_close], axis=1).max(axis=1) - pd.concat([df["low"], prior_close], axis=1).min(axis=1)  # True Range
+        p_fast, p_med, p_slow = (min(p, n) for p in ULTIMATE_OSC_PERIODS)
+        w_fast, w_med, w_slow = ULTIMATE_OSC_WEIGHTS
+        avg_fast = bp.rolling(p_fast, min_periods=1).sum() / tr_uo.rolling(p_fast, min_periods=1).sum().replace(0, np.nan)
+        avg_med = bp.rolling(p_med, min_periods=1).sum() / tr_uo.rolling(p_med, min_periods=1).sum().replace(0, np.nan)
+        avg_slow = bp.rolling(p_slow, min_periods=1).sum() / tr_uo.rolling(p_slow, min_periods=1).sum().replace(0, np.nan)
+        df["ultimate_osc"] = (
+            100.0 * (w_fast * avg_fast.fillna(0.5) + w_med * avg_med.fillna(0.5) + w_slow * avg_slow.fillna(0.5))
+            / (w_fast + w_med + w_slow)
+        )
+
+        # Bull/Bear Power (Alexander Elder, "Trading for a Living") -
+        # measures how far bulls pushed the high, and bears pushed the
+        # low, above/below a 13-period EMA of price. A single combined
+        # figure (bull_power + bear_power) is stored as "Bull/Bear
+        # Power" for the matrix; the components stay available on the
+        # frame for anyone who wants them separately.
+        bbp_ema = df["close"].ewm(span=min(BULL_BEAR_POWER_EMA_PERIOD, n), adjust=False).mean()
+        df["bull_power"] = df["high"] - bbp_ema
+        df["bear_power"] = df["low"] - bbp_ema
+        df["bull_bear_power"] = df["bull_power"] + df["bear_power"]
+
+        # "Highs/Lows": close's position within its OWN N-bar high/low
+        # band, as a 0-100 %-style reading (Stochastic-style, but a
+        # DIFFERENT, shorter window than both %K above and the 250-bar
+        # 52-week range_pos_pct computed downstream in decision_matrix.py -
+        # this is the short/swing-term read, those are the session-term
+        # and year-term reads respectively).
+        hl_period = min(HIGHS_LOWS_LOOKBACK, n)
+        hl_low = df["low"].rolling(window=hl_period, min_periods=1).min()
+        hl_high = df["high"].rolling(window=hl_period, min_periods=1).max()
+        hl_range = (hl_high - hl_low).replace(0, np.nan)
+        df["highs_lows_pct"] = (((df["close"] - hl_low) / hl_range) * 100.0).fillna(50.0)
+
         di_diff = plus_di - minus_di
         bullish = di_diff >= 0.5
         bearish = di_diff <= -0.5

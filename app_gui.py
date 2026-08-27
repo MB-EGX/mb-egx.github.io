@@ -21,9 +21,10 @@ from config import WATCH_DIR, TRANSACTION_FEE_PCT, PORTFOLIO_RISK_THRESHOLDS, ge
 from db_manager import DatabaseManager, DatabaseLockedError, set_language as _set_db_language
 from decision_matrix import DecisionMatrix, set_language as _set_dm_language
 from analytics import QuantitativeEngine
+import top_movers
 from chart_widget import StockSectorChartWidget
 from ingestion import IngestionPipeline, set_language as _set_ing_language
-from PyQt6.QtCore import QDate, Qt, QThread, QTimer, pyqtSignal, QAbstractTableModel, QModelIndex, QSettings
+from PyQt6.QtCore import QDate, Qt, QThread, QTimer, pyqtSignal, QAbstractTableModel, QModelIndex, QSettings, QSortFilterProxyModel
 from PyQt6.QtGui import QFont, QColor, QPixmap, QIcon
 from PyQt6.QtWidgets import (
     QApplication, QComboBox, QCompleter, QDateEdit, QDialog, QDoubleSpinBox,
@@ -1226,11 +1227,33 @@ class MatrixTableModel(QAbstractTableModel):
             ("S2",                           "Second pivot support.",                                         "S2"),
             ("S3",                           "Third pivot support.",                                          "S3"),
             ("Kelly %",                      "Position-size fraction (Kelly, half-Kelly capped).",            "Kelly %"),
+            ("Open",                         "Today's opening price.",                                        "Open"),
+            ("Previous Close",               "Prior session's closing price.",                                "Previous Close"),
+            ("Day's Range",                  "Today's Low - High.",                                           "Day's Range"),
+            ("52 Week Range",                "52-week Low - High.",                                           "52 Week Range"),
+            ("Day Range Position",           "Where today's close sits within today's own High-Low range (0=low, 1=high).", "Day Range Position"),
+            ("Market Cap",                   "Market capitalization (from watchlist fundamentals feed).",     "Market Cap"),
+            ("Bid",                          "Live bid price - not available from this app's EOD data feed.", "Bid"),
+            ("Ask",                          "Live ask price - not available from this app's EOD data feed.", "Ask"),
+            ("STOCH %K",                     "Stochastic Oscillator %K (14, slow-smoothed 3).",               "STOCH %K"),
+            ("STOCH %D",                     "Stochastic Oscillator %D (SMA-3 of %K).",                       "STOCH %D"),
+            ("STOCHRSI",                     "Stochastic RSI (14).",                                          "STOCHRSI"),
+            ("CCI",                          "Commodity Channel Index (20).",                                 "CCI"),
+            ("ROC",                          "Rate of Change % (12).",                                        "ROC"),
+            ("Williams %R",                  "Williams %R (14).",                                             "Williams %R"),
+            ("UO",                           "Ultimate Oscillator (7/14/28).",                                "UO"),
+            ("Bull/Bear Power",              "Elder Ray Bull Power + Bear Power (EMA-13).",                   "Bull/Bear Power"),
+            ("Highs/Lows",                   "Close's position within its own 14-bar High/Low band (%).",     "Highs/Lows"),
+            ("Relative Value",               "Valuation vs sector-average P/E + dividend yield (0-100).",     "Relative Value Score"),
+            ("Price Momentum",               "Composite RSI/ROC/MACD/trend-direction score (0-100).",         "Price Momentum Score"),
+            ("Cash Flow Health (est.)",      "Estimated from dividend sustainability - not a cash-flow-statement figure.", "Cash Flow Health Score (est.)"),
+            ("Profitability Health (est.)",  "Estimated from earnings yield (1/P-E) - not a reported margin.", "Profitability Health Score (est.)"),
+            ("Growth Health (est.)",         "Estimated from 1Y/3Y price return - not reported earnings/revenue growth.", "Growth Health Score (est.)"),
             ("Signal Reason",                "Plain-language evidence behind the action.",                     "Signal Reason"),
         ]
         self._columns   = [(t, tip) for (t, tip, _k) in self._ACTION_MATRIX_SCHEMA]
         self._col_keys  = [_k for (_t, _tip, _k) in self._ACTION_MATRIX_SCHEMA]
-        assert len(self._columns) == len(self._col_keys) == 28, (
+        assert len(self._columns) == len(self._col_keys) == 50, (
             "ACTION_MATRIX_SCHEMA projection mismatch"
         )
 
@@ -1276,7 +1299,17 @@ class MatrixTableModel(QAbstractTableModel):
         elif role == Qt.ItemDataRole.TextAlignmentRole:
             if key in ["Action", "Data Confidence", "Position"]:
                 return int(Qt.AlignmentFlag.AlignCenter)
-            elif (3 <= col <= 9) or (15 <= col <= 16) or (19 <= col <= 25):
+            # Text/label columns stay left-aligned; everything else in this
+            # schema is a number/price/percentage and reads better
+            # right-aligned. Driven by column KEY (not a hardcoded index
+            # range) so newly-appended columns (Day's Range, health
+            # scores, new indicators, ...) get correct alignment for
+            # free instead of silently defaulting to left-aligned text.
+            _TEXT_COLUMN_KEYS = {
+                "Ticker", "Position", "Action", "Trend Class", "Data Confidence",
+                "MACD Signal", "Signal Reason", "Day's Range", "52 Week Range",
+            }
+            if key not in _TEXT_COLUMN_KEYS:
                 return int(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
             return int(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         elif role == Qt.ItemDataRole.ToolTipRole:
@@ -1335,6 +1368,78 @@ class MatrixTableModel(QAbstractTableModel):
         except Exception:
             pass
         self.endResetModel()
+
+
+class NumericAwareSortProxy(QSortFilterProxyModel):
+    """Generic ascending/descending column sort for any QTableView backed
+    by a plain-string-returning QAbstractTableModel (MatrixTableModel and
+    friends) - click a header to sort by it, click again to reverse.
+
+    Every cell in MatrixTableModel.data() comes back as a plain display
+    string (currency-formatted numbers, "%"-suffixed percentages,
+    "1,234,567"-style thousands separators, "-" for missing, or genuine
+    text like Action/Trend labels) - Qt's default QSortFilterProxyModel
+    lessThan() would compare those lexicographically ("10" < "9" as
+    strings), which is wrong for every numeric column in the Action
+    Matrix. This override tries to parse both sides as numbers first
+    (stripping %, commas, currency-irrelevant whitespace, and treating
+    "-"/"N/A"/"" as the lowest possible value so missing data always
+    sorts to one end rather than scattering randomly); only genuinely
+    non-numeric text falls back to a case-insensitive string compare.
+    """
+
+    @staticmethod
+    def _to_number(text: str):
+        if text is None:
+            return None
+        s = str(text).strip()
+        if s in ("", "-", "N/A", "None"):
+            return None
+        neg = s.startswith("(") and s.endswith(")")  # accounting-style negatives, if any ever appear
+        s = s.strip("()")
+        s = s.replace(",", "").replace("%", "").replace("EGP", "").strip()
+        try:
+            val = float(s)
+            return -val if neg else val
+        except ValueError:
+            return None
+
+    def lessThan(self, left, right):
+        left_val = self.sourceModel().data(left, Qt.ItemDataRole.DisplayRole)
+        right_val = self.sourceModel().data(right, Qt.ItemDataRole.DisplayRole)
+        left_num = self._to_number(left_val)
+        right_num = self._to_number(right_val)
+        if left_num is not None and right_num is not None:
+            return left_num < right_num
+        # One or both sides aren't numeric (or are the "missing" marker) -
+        # missing values sort as the lowest, so a real value on the other
+        # side still orders sensibly rather than the compare falling
+        # through to an arbitrary string comparison.
+        if left_num is None and right_num is not None:
+            return True
+        if left_num is not None and right_num is None:
+            return False
+        return str(left_val or "").lower() < str(right_val or "").lower()
+
+
+class NumericTableWidgetItem(QTableWidgetItem):
+    """QTableWidgetItem that sorts by an explicit numeric value instead of
+    its display string - used on every plain QTableWidget-based table
+    (Daily Movers, Session Picks, Achieved/Track Record) so clicking a
+    numeric column header (Close, Change %, Score, Volume, ...) sorts
+    correctly (e.g. 9 before 10) instead of lexicographically. Pass
+    ``value=None`` for a missing figure - it sorts as the lowest value,
+    same "missing sorts to one end" convention as NumericAwareSortProxy.
+    """
+
+    def __init__(self, text: str, value):
+        super().__init__(text)
+        self._sort_value = value if value is not None else float("-inf")
+
+    def __lt__(self, other):
+        if isinstance(other, NumericTableWidgetItem):
+            return self._sort_value < other._sort_value
+        return super().__lt__(other)
 
 
 class ColumnChooserDialog(QDialog):
@@ -4266,7 +4371,23 @@ class QuantDashboard(QMainWindow):
     def _create_matrix_table(self, settings_key: str | None = None):
         tbl = QTableView()
         model = MatrixTableModel()
-        tbl.setModel(model)
+        # Ascending/descending sort on every column: click a header to
+        # sort by it, click again to reverse, click a third time (Qt's
+        # default third-click behavior) to return to insertion order.
+        # See NumericAwareSortProxy's docstring for why a plain
+        # QSortFilterProxyModel alone isn't enough (it would sort
+        # numeric-looking display strings lexicographically).
+        proxy = NumericAwareSortProxy()
+        proxy.setSourceModel(model)
+        tbl.setModel(proxy)
+        tbl.setSortingEnabled(True)
+        tbl.horizontalHeader().setSortIndicatorShown(True)
+        # Keep a direct handle to the underlying data model - existing
+        # call sites (populate_tables, etc.) call .update_data(...) on
+        # what they think is "the matrix table's model"; route that
+        # straight to the real (source) model so sorting is transparent
+        # to every existing caller with no other code changes needed.
+        tbl.source_model = model
         tbl.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
         tbl.horizontalHeader().setMinimumSectionSize(70)
         tbl.verticalHeader().setVisible(False)
@@ -4325,6 +4446,10 @@ class QuantDashboard(QMainWindow):
         tbl.setHorizontalHeaderLabels([tr(c) if c else "" for c in columns])
         tbl.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         tbl.verticalHeader().setVisible(False)
+        # Ascending/descending sort by clicking any column header - see
+        # NumericTableWidgetItem for why numeric columns need it set via
+        # that class rather than Qt's default (string) comparison.
+        tbl.setSortingEnabled(True)
         return tbl
 
     def _build_session_picks_tab(self):
@@ -4400,6 +4525,11 @@ class QuantDashboard(QMainWindow):
 
         for horizon, tbl in self._picks_tables.items():
             picks = session_picks.get(horizon, [])
+            # Sorting must be OFF while populating via setItem() in a loop -
+            # Qt re-sorts after every insert with it on, which corrupts
+            # row_idx-based placement (a well-known QTableWidget gotcha).
+            # Re-enabled after, once every row is placed.
+            tbl.setSortingEnabled(False)
             tbl.setRowCount(len(picks))
             for row_idx, pick in enumerate(picks):
                 current_price = price_map.get(pick["ticker"])
@@ -4456,10 +4586,12 @@ class QuantDashboard(QMainWindow):
                 btn_remove.setStyleSheet("background-color: #742a2a; color: white; border-radius: 4px; padding: 2px 8px;")
                 btn_remove.clicked.connect(lambda _, pid=pick["id"]: self._remove_session_pick(pid))
                 tbl.setCellWidget(row_idx, 10, btn_remove)
+            tbl.setSortingEnabled(True)
 
         # Track Record — pulled fresh from the DB (full history, not just
         # this run), with today's newly-achieved rows highlighted gold.
         recent = self.dbm.get_recent_achieved_picks(limit=20)
+        self.tbl_picks_achieved.setSortingEnabled(False)
         self.tbl_picks_achieved.setRowCount(len(recent))
         for row_idx, pick in enumerate(recent):
             values = [
@@ -4483,13 +4615,18 @@ class QuantDashboard(QMainWindow):
                 elif col_idx == 6:
                     item.setForeground(QColor("#38a169"))
                 self.tbl_picks_achieved.setItem(row_idx, col_idx, item)
+        self.tbl_picks_achieved.setSortingEnabled(True)
 
         self._notify_achieved_picks(session_picks)
 
     # ------------------------------------------------------------------
-    # DAILY MOVERS TAB - Best 5 Gainers / Worst 5 Losers
+    # DAILY MOVERS TAB - Gainers / Losers / Most Active / Valuation / 52-Week
     # ------------------------------------------------------------------
     _MOVERS_COLS = ["Ticker", "Close", "Prev Close", "Change (%)", "Rank Score"]
+    _MOST_ACTIVE_COLS = ["Ticker", "Volume", "Close", "Change (%)", "Rank Score"]
+    _VALUATION_COLS = ["Ticker", "Sector", "P/E Ratio", "Sector Avg P/E", "vs Sector (%)", "Close"]
+    _WEEK52_HIGH_COLS = ["Ticker", "Close", "52W High", "Dist. to High (%)", "Rank Score"]
+    _WEEK52_LOW_COLS = ["Ticker", "Close", "52W Low", "Dist. to Low (%)", "Rank Score"]
 
     def _build_movers_tab(self):
         container = QWidget()
@@ -4498,88 +4635,133 @@ class QuantDashboard(QMainWindow):
 
         intro = QLabel(tr(
             "📊 Best 5 Gainers / Worst 5 Losers of the latest session - "
-            "close-to-close % change across the whole universe, tie-broken by Rank Score."
+            "close-to-close % change across the whole universe, tie-broken by Rank Score. "
+            "Plus Most Active (by volume), Most Undervalued/Overvalued (P/E vs sector average), "
+            "and names trading at their 52-week High/Low. Click any column header to sort."
         ))
         intro.setWordWrap(True)
         intro.setStyleSheet("font-size: 11px; color: #a0aec0; padding: 2px 2px 6px 2px;")
         v_layout.addWidget(intro)
 
-        lbl_g = QLabel(tr("🟢 Best 5 Gainers"))
-        lbl_g.setStyleSheet("font-weight: bold; font-size: 13px; padding: 4px 2px 2px 2px;")
-        v_layout.addWidget(lbl_g)
-        self.tbl_gainers = self._make_picks_table(self._MOVERS_COLS)
-        self.tbl_gainers.setMinimumHeight(140)
-        v_layout.addWidget(self.tbl_gainers)
-
-        lbl_l = QLabel(tr("🔴 Worst 5 Losers"))
-        lbl_l.setStyleSheet("font-weight: bold; font-size: 13px; padding: 6px 2px 2px 2px;")
-        v_layout.addWidget(lbl_l)
-        self.tbl_losers = self._make_picks_table(self._MOVERS_COLS)
-        self.tbl_losers.setMinimumHeight(140)
-        v_layout.addWidget(self.tbl_losers)
+        sections = [
+            ("🟢 Best 5 Gainers", "tbl_gainers", self._MOVERS_COLS),
+            ("🔴 Worst 5 Losers", "tbl_losers", self._MOVERS_COLS),
+            ("🔥 Most Active (Volume)", "tbl_most_active", self._MOST_ACTIVE_COLS),
+            ("💎 Most Undervalued (vs Sector P/E)", "tbl_undervalued", self._VALUATION_COLS),
+            ("💸 Most Overvalued (vs Sector P/E)", "tbl_overvalued", self._VALUATION_COLS),
+            ("⬆️ 52-Week High", "tbl_week52_high", self._WEEK52_HIGH_COLS),
+            ("⬇️ 52-Week Low", "tbl_week52_low", self._WEEK52_LOW_COLS),
+        ]
+        for title, attr_name, cols in sections:
+            lbl = QLabel(tr(title))
+            lbl.setStyleSheet("font-weight: bold; font-size: 13px; padding: 4px 2px 2px 2px;")
+            v_layout.addWidget(lbl)
+            tbl = self._make_picks_table(cols)
+            tbl.setMinimumHeight(140)
+            setattr(self, attr_name, tbl)
+            v_layout.addWidget(tbl)
 
         return container
 
     def _compute_daily_movers(self, top_n: int = 5) -> dict:
-        """Close-to-close % change over the latest session for every
-        ticker in the DB (3 days of bars is enough), tie-broken by Rank
-        Score - same formula as top_movers.compute_daily_movers
-        (export_json.py's web payload)."""
+        """Full Daily Movers bundle (gainers/losers/most_active/valuation
+        extremes/52-week extremes) - delegates to top_movers.py so the
+        desktop app and the web export (export_json.py) never drift on
+        the underlying formula. Gainers/losers/most_active are computed
+        here from a fresh small DB pull shaped like chart_history's
+        {"stocks": {ticker: {"close": [...], "volume": [...]}}} (3-4
+        days of bars is enough for a close-to-close/volume read);
+        valuation and 52-week extremes reuse self._raw_buys_data (this
+        run's Action Matrix rows), which already carry P/E, Sector,
+        Current Price, and the 52-week Resistance/Support fields.
+        """
         try:
-            bulk = self.qe.get_all_market_data_bulk(days=3)
+            bulk = self.qe.get_all_market_data_bulk(days=4)
         except Exception:
-            return {"gainers": [], "losers": []}
-        score_map = {r.get("Ticker"): r.get("Rank Score") for r in (self._raw_buys_data or [])}
-        rows = []
-        for ticker, df in bulk.items():
-            try:
-                if df is None or len(df) < 2:
-                    continue
-                closes = df["close"].dropna().tolist()
-                if len(closes) < 2:
-                    continue
-                prev, last = float(closes[-2]), float(closes[-1])
-                if not prev:
-                    continue
-                rows.append({
-                    "ticker": ticker,
-                    "close": round(last, 4),
-                    "prev_close": round(prev, 4),
-                    "change_pct": round((last / prev - 1.0) * 100.0, 2),
-                    "rank_score": score_map.get(ticker),
-                })
-            except Exception:
-                continue
-        rows.sort(
-            key=lambda r: (r["change_pct"], r["rank_score"] if r["rank_score"] is not None else -1e9),
-            reverse=True,
+            bulk = {}
+        pseudo_chart_history = {"stocks": {
+            ticker: {
+                "close": df["close"].dropna().tolist() if df is not None and "close" in df.columns else [],
+                "volume": df["volume"].dropna().tolist() if df is not None and "volume" in df.columns else [],
+            }
+            for ticker, df in bulk.items() if df is not None and not df.empty
+        }}
+        sector_map = {}
+        try:
+            sector_map = self.dbm.get_sector_map()
+        except Exception:
+            pass
+        return top_movers.compute_market_movers(
+            pseudo_chart_history, self._raw_buys_data or [], sector_map, top_n=top_n,
         )
-        return {
-            "gainers": rows[:top_n],
-            "losers": (list(reversed(rows[-top_n:])) if rows else []),
-        }
 
     def _fill_movers(self, movers: dict):
         movers = movers or {}
-        for tbl, key in ((self.tbl_gainers, "gainers"), (self.tbl_losers, "losers")):
-            data = movers.get(key, [])
-            tbl.setRowCount(len(data))
-            for row_idx, row in enumerate(data):
-                vals = [
-                    str(row.get("ticker", "?")),
-                    f"{row['close']:.4f}" if row.get("close") is not None else "-",
-                    f"{row['prev_close']:.4f}" if row.get("prev_close") is not None else "-",
-                    f"{row['change_pct']:+.2f}%" if row.get("change_pct") is not None else "-",
-                    (f"{row['rank_score']:.1f}" if isinstance(row.get("rank_score"), (int, float)) else "-"),
-                ]
-                for col_idx, val in enumerate(vals):
-                    item = QTableWidgetItem(str(val))
-                    item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
-                    item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-                    if col_idx == 3 and row.get("change_pct") is not None:
-                        item.setForeground(QColor("#38a169" if row["change_pct"] >= 0 else "#e53e3e"))
-                        item.setFont(QFont("Inter", 10, QFont.Weight.Bold))
+
+        def _num_item(value, fmt=None, center=True):
+            text = "-" if value is None else (fmt.format(value) if fmt else str(value))
+            if isinstance(value, (int, float)):
+                item = NumericTableWidgetItem(text, value)
+            else:
+                item = QTableWidgetItem(text)  # text column (ticker/sector) - default alphabetical sort is correct here
+            item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
+            if center:
+                item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+            return item
+
+        def _fill(tbl, rows, row_builder):
+            tbl.setSortingEnabled(False)  # see _make_picks_table's docstring - must be off during setItem loop
+            tbl.setRowCount(len(rows))
+            for row_idx, row in enumerate(rows):
+                for col_idx, item in enumerate(row_builder(row)):
                     tbl.setItem(row_idx, col_idx, item)
+            tbl.setSortingEnabled(True)
+
+        def _change_pct_item(pct):
+            item = _num_item(pct, "{:+.2f}%")
+            if pct is not None:
+                item.setForeground(QColor("#38a169" if pct >= 0 else "#e53e3e"))
+                item.setFont(QFont("Inter", 10, QFont.Weight.Bold))
+            return item
+
+        _fill(self.tbl_gainers, movers.get("gainers", []), lambda r: [
+            _num_item(r.get("ticker")), _num_item(r.get("close"), "{:.4f}"),
+            _num_item(r.get("prev_close"), "{:.4f}"), _change_pct_item(r.get("change_pct")),
+            _num_item(r.get("rank_score"), "{:.1f}"),
+        ])
+        _fill(self.tbl_losers, movers.get("losers", []), lambda r: [
+            _num_item(r.get("ticker")), _num_item(r.get("close"), "{:.4f}"),
+            _num_item(r.get("prev_close"), "{:.4f}"), _change_pct_item(r.get("change_pct")),
+            _num_item(r.get("rank_score"), "{:.1f}"),
+        ])
+        _fill(self.tbl_most_active, movers.get("most_active", []), lambda r: [
+            _num_item(r.get("ticker")), _num_item(r.get("volume"), "{:,}"),
+            _num_item(r.get("close"), "{:.4f}"), _change_pct_item(r.get("change_pct")),
+            _num_item(r.get("rank_score"), "{:.1f}"),
+        ])
+
+        def _valuation_row(r):
+            item = _num_item(r.get("pe_vs_sector_pct"), "{:+.2f}%")
+            if r.get("pe_vs_sector_pct") is not None:
+                item.setForeground(QColor("#e53e3e" if r["pe_vs_sector_pct"] >= 0 else "#38a169"))
+            return [
+                _num_item(r.get("ticker")), _num_item(r.get("sector"), center=False),
+                _num_item(r.get("pe_ratio"), "{:.2f}"), _num_item(r.get("sector_avg_pe"), "{:.2f}"),
+                item, _num_item(r.get("close"), "{:.4f}"),
+            ]
+        _fill(self.tbl_undervalued, movers.get("most_undervalued", []), _valuation_row)
+        _fill(self.tbl_overvalued, movers.get("most_overvalued", []), _valuation_row)
+
+        _fill(self.tbl_week52_high, movers.get("week52_high", []), lambda r: [
+            _num_item(r.get("ticker")), _num_item(r.get("close"), "{:.4f}"),
+            _num_item(r.get("week52_high"), "{:.4f}"), _num_item(r.get("dist_pct"), "{:.2f}%"),
+            _num_item(r.get("rank_score"), "{:.1f}"),
+        ])
+        _fill(self.tbl_week52_low, movers.get("week52_low", []), lambda r: [
+            _num_item(r.get("ticker")), _num_item(r.get("close"), "{:.4f}"),
+            _num_item(r.get("week52_low"), "{:.4f}"), _num_item(r.get("dist_pct"), "{:.2f}%"),
+            _num_item(r.get("rank_score"), "{:.1f}"),
+        ])
 
     def browse_folder(self):
         selected_dir = QFileDialog.getExistingDirectory(self, "Select Folder", self.txt_scan_dir.text())
@@ -5493,7 +5675,10 @@ class QuantDashboard(QMainWindow):
             )
 
     def _fill_matrix_table(self, table_view, data_list):
-        model = table_view.model()
+        # Route to the underlying MatrixTableModel, not the sort proxy
+        # now sitting in front of it (table_view.model() returns the
+        # proxy - see _create_matrix_table's NumericAwareSortProxy).
+        model = getattr(table_view, "source_model", None) or table_view.model()
         if hasattr(model, "update_data"):
             model.update_data(data_list)
 

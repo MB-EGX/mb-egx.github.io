@@ -434,7 +434,7 @@ def export_market_matrix():
         # Worst 5 Losers of the latest session, computed from the same
         # chart_history closes the dashboard already renders (see
         # top_movers.compute_daily_movers).
-        "daily_movers": compute_daily_movers(chart_history, buys, as_of=last_data_date),
+        "daily_movers": compute_daily_movers(chart_history, buys, as_of=last_data_date, sector_map=sector_map),
         # Public, non-sensitive (sector classification, not account data) -
         # lets the web client compute its OWN portfolio concentration risk
         # from its own privately-stored positions, without the server ever

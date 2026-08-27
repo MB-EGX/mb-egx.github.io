@@ -15,28 +15,28 @@
         "close": 1.65,
         "prev_close": 1.37,
         "change_pct": 20.44,
-        "rank_score": 7.5
+        "rank_score": 10.0
       },
       {
         "ticker": "EGREF.CA",
         "close": 34.64,
         "prev_close": 28.87,
         "change_pct": 19.99,
-        "rank_score": 11.9
+        "rank_score": 16.9
       },
       {
         "ticker": "TWSA.CA",
         "close": 7.58,
         "prev_close": 6.32,
         "change_pct": 19.94,
-        "rank_score": 2.3
+        "rank_score": 7.3
       },
       {
         "ticker": "GPIM.CA",
         "close": 1.54,
         "prev_close": 1.37,
         "change_pct": 12.41,
-        "rank_score": 36.7
+        "rank_score": 41.7
       }
     ],
     "losers": [
@@ -45,28 +45,28 @@
         "close": 34.84,
         "prev_close": 38.16,
         "change_pct": -8.7,
-        "rank_score": -25.7
+        "rank_score": -26.9
       },
       {
         "ticker": "EASB.CA",
         "close": 7.66,
         "prev_close": 8.17,
         "change_pct": -6.24,
-        "rank_score": -15.7
+        "rank_score": -19.8
       },
       {
         "ticker": "AFDI.CA",
         "close": 55.3,
         "prev_close": 58.7,
         "change_pct": -5.79,
-        "rank_score": 3.0
+        "rank_score": -1.7
       },
       {
         "ticker": "GRCA.CA",
         "close": 72.64,
         "prev_close": 76.72,
         "change_pct": -5.32,
-        "rank_score": 49.9
+        "rank_score": 45.3
       },
       {
         "ticker": "EGPE.SI",
@@ -74,6 +74,211 @@
         "prev_close": 0.76,
         "change_pct": -5.26,
         "rank_score": null
+      }
+    ],
+    "most_active": [
+      {
+        "ticker": ".EGX70EWI",
+        "volume": 2147261319,
+        "close": 21269.03,
+        "change_pct": 0.79,
+        "rank_score": null
+      },
+      {
+        "ticker": ".EGX100EWI",
+        "volume": 2146223151,
+        "close": 27578.41,
+        "change_pct": 0.69,
+        "rank_score": null
+      },
+      {
+        "ticker": "ARAB.CA",
+        "volume": 946487634,
+        "close": 0.262,
+        "change_pct": 4.38,
+        "rank_score": 4.2
+      },
+      {
+        "ticker": "OFH.CA",
+        "volume": 311194623,
+        "close": 1.1,
+        "change_pct": 9.56,
+        "rank_score": 12.6
+      },
+      {
+        "ticker": ".EGX30",
+        "volume": 274453793,
+        "close": 55106.54,
+        "change_pct": -0.31,
+        "rank_score": null
+      }
+    ],
+    "most_undervalued": [
+      {
+        "ticker": "COPR.CA",
+        "pe_ratio": 0.13,
+        "sector": "Real Estate",
+        "sector_avg_pe": 169.85,
+        "pe_vs_sector_pct": -99.92,
+        "close": 0.538,
+        "rank_score": -13.6
+      },
+      {
+        "ticker": "RTVC.CA",
+        "pe_ratio": 0.34,
+        "sector": "Travel & Leisure",
+        "sector_avg_pe": 31.24,
+        "pe_vs_sector_pct": -98.91,
+        "close": 4.13,
+        "rank_score": 10.0
+      },
+      {
+        "ticker": "ELKA.CA",
+        "pe_ratio": 3.16,
+        "sector": "Real Estate",
+        "sector_avg_pe": 169.85,
+        "pe_vs_sector_pct": -98.14,
+        "close": 1.77,
+        "rank_score": 2.4
+      },
+      {
+        "ticker": "DCRC.CA",
+        "pe_ratio": 3.19,
+        "sector": "Real Estate",
+        "sector_avg_pe": 169.85,
+        "pe_vs_sector_pct": -98.12,
+        "close": 55.0,
+        "rank_score": 12.2
+      },
+      {
+        "ticker": "BONY.CA",
+        "pe_ratio": 3.9,
+        "sector": "Real Estate",
+        "sector_avg_pe": 169.85,
+        "pe_vs_sector_pct": -97.7,
+        "close": 4.62,
+        "rank_score": 34.1
+      }
+    ],
+    "most_overvalued": [
+      {
+        "ticker": "AMII.CA",
+        "pe_ratio": 2525.42,
+        "sector": "Real Estate",
+        "sector_avg_pe": 169.85,
+        "pe_vs_sector_pct": 1386.81,
+        "close": 15.37,
+        "rank_score": 10.2
+      },
+      {
+        "ticker": "SNFC.CA",
+        "pe_ratio": 816.41,
+        "sector": "Food, Beverages & Tobacco",
+        "sector_avg_pe": 90.38,
+        "pe_vs_sector_pct": 803.35,
+        "close": 10.5,
+        "rank_score": 26.0
+      },
+      {
+        "ticker": "IDRE.CA",
+        "pe_ratio": 1484.31,
+        "sector": "Real Estate",
+        "sector_avg_pe": 169.85,
+        "pe_vs_sector_pct": 773.87,
+        "close": 52.6,
+        "rank_score": 4.7
+      },
+      {
+        "ticker": "SIPC.CA",
+        "pe_ratio": 569.41,
+        "sector": "Health Care & Pharmaceuticals",
+        "sector_avg_pe": 92.02,
+        "pe_vs_sector_pct": 518.78,
+        "close": 4.9,
+        "rank_score": 17.1
+      },
+      {
+        "ticker": "KWIN.CA",
+        "pe_ratio": 253.74,
+        "sector": "Non-Bank Financial Services",
+        "sector_avg_pe": 41.23,
+        "pe_vs_sector_pct": 515.49,
+        "close": 108.5,
+        "rank_score": 2.8
+      }
+    ],
+    "week52_high": [
+      {
+        "ticker": "GPIM.CA",
+        "close": 1.54,
+        "week52_high": 1.54,
+        "dist_pct": 0.0,
+        "rank_score": 41.7
+      },
+      {
+        "ticker": "EGREF.CA",
+        "close": 34.64,
+        "week52_high": 34.64,
+        "dist_pct": 0.0,
+        "rank_score": 16.9
+      },
+      {
+        "ticker": "FIRE.CA",
+        "close": 5.74,
+        "week52_high": 5.74,
+        "dist_pct": 0.0,
+        "rank_score": 15.2
+      },
+      {
+        "ticker": "OFH.CA",
+        "close": 1.1,
+        "week52_high": 1.1,
+        "dist_pct": 0.0,
+        "rank_score": 12.6
+      },
+      {
+        "ticker": "DCRC.CA",
+        "close": 55.0,
+        "week52_high": 55.0,
+        "dist_pct": 0.0,
+        "rank_score": 12.2
+      }
+    ],
+    "week52_low": [
+      {
+        "ticker": "DEIN.CA",
+        "close": 10.35,
+        "week52_low": 10.35,
+        "dist_pct": 0.0,
+        "rank_score": 7.6
+      },
+      {
+        "ticker": "CTSB.CA",
+        "close": 0.1,
+        "week52_low": 0.1,
+        "dist_pct": 0.0,
+        "rank_score": 0.0
+      },
+      {
+        "ticker": "NCIS.CA",
+        "close": 2.0,
+        "week52_low": 2.0,
+        "dist_pct": 0.0,
+        "rank_score": 0.0
+      },
+      {
+        "ticker": "TRST.CA",
+        "close": 0.06,
+        "week52_low": 0.06,
+        "dist_pct": 0.0,
+        "rank_score": 0.0
+      },
+      {
+        "ticker": "MEGM.CA",
+        "close": 12.54,
+        "week52_low": 12.54,
+        "dist_pct": 0.0,
+        "rank_score": -7.4
       }
     ]
   }

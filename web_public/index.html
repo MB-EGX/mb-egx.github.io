@@ -513,10 +513,32 @@
                             <th class="p-2.5 border border-darkbg" data-col="19" data-i18n="hdr_take_profit">Take-Profit</th>
                             <th class="p-2.5 border border-darkbg" data-col="20" data-i18n="hdr_resistance">Resistance (R1/R2/R3)</th>
                             <th class="p-2.5 border border-darkbg" data-col="21" data-i18n="hdr_support">Support (S1/S2/S3)</th>
+                            <th class="p-2.5 border border-darkbg">Open</th>
+                            <th class="p-2.5 border border-darkbg">Prev Close</th>
+                            <th class="p-2.5 border border-darkbg">Day's Range</th>
+                            <th class="p-2.5 border border-darkbg">52 Week Range</th>
+                            <th class="p-2.5 border border-darkbg" title="Where today's close sits within today's own High-Low range (0=low, 1=high)">Day Range Pos.</th>
+                            <th class="p-2.5 border border-darkbg">Market Cap</th>
+                            <th class="p-2.5 border border-darkbg" title="Live bid - not available from this app's EOD data feed">Bid</th>
+                            <th class="p-2.5 border border-darkbg" title="Live ask - not available from this app's EOD data feed">Ask</th>
+                            <th class="p-2.5 border border-darkbg">STOCH %K</th>
+                            <th class="p-2.5 border border-darkbg">STOCH %D</th>
+                            <th class="p-2.5 border border-darkbg">STOCHRSI</th>
+                            <th class="p-2.5 border border-darkbg">CCI</th>
+                            <th class="p-2.5 border border-darkbg">ROC</th>
+                            <th class="p-2.5 border border-darkbg">Williams %R</th>
+                            <th class="p-2.5 border border-darkbg">UO</th>
+                            <th class="p-2.5 border border-darkbg">Bull/Bear Power</th>
+                            <th class="p-2.5 border border-darkbg">Highs/Lows</th>
+                            <th class="p-2.5 border border-darkbg" title="Valuation vs sector-average P/E + dividend yield (0-100)">Relative Value</th>
+                            <th class="p-2.5 border border-darkbg" title="Composite RSI/ROC/MACD/trend score (0-100)">Price Momentum</th>
+                            <th class="p-2.5 border border-darkbg" title="Estimated from dividend sustainability - not a cash-flow-statement figure">Cash Flow Health (est.)</th>
+                            <th class="p-2.5 border border-darkbg" title="Estimated from earnings yield (1/P-E) - not a reported margin">Profitability Health (est.)</th>
+                            <th class="p-2.5 border border-darkbg" title="Estimated from 1Y/3Y price return - not reported earnings/revenue growth">Growth Health (est.)</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-matrix" class="divide-y divide-bordercol/50 text-xs">
-                        <tr><td colspan="22" class="p-8 text-center text-textmuted font-sans" data-i18n="loading_matrix">Loading quantitative matrix...</td></tr>
+                        <tr><td colspan="44" class="p-8 text-center text-textmuted font-sans" data-i18n="loading_matrix">Loading quantitative matrix...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -659,6 +681,83 @@
                         </tr>
                     </thead>
                     <tbody id="tbody-movers-losers" class="divide-y divide-bordercol/50"></tbody>
+                </table>
+            </div>
+            <h3 class="font-bold text-sm text-amber-400 border-b border-bordercol pb-2">🔥 Most Active (Volume)</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse whitespace-nowrap font-mono text-xs">
+                    <thead class="bg-[#2d3748] text-white font-sans">
+                        <tr>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_ticker">Ticker</th>
+                            <th class="p-2.5 border border-darkbg">Volume</th>
+                            <th class="p-2.5 border border-darkbg">Close</th>
+                            <th class="p-2.5 border border-darkbg">Change (%)</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_score">Rank Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-movers-active" class="divide-y divide-bordercol/50"></tbody>
+                </table>
+            </div>
+            <h3 class="font-bold text-sm text-sky-400 border-b border-bordercol pb-2" title="Ranked by P/E Ratio vs the ticker's own sector average">💎 Most Undervalued (vs Sector P/E)</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse whitespace-nowrap font-mono text-xs">
+                    <thead class="bg-[#2d3748] text-white font-sans">
+                        <tr>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_ticker">Ticker</th>
+                            <th class="p-2.5 border border-darkbg">Sector</th>
+                            <th class="p-2.5 border border-darkbg">P/E Ratio</th>
+                            <th class="p-2.5 border border-darkbg">Sector Avg P/E</th>
+                            <th class="p-2.5 border border-darkbg">vs Sector (%)</th>
+                            <th class="p-2.5 border border-darkbg">Close</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-movers-undervalued" class="divide-y divide-bordercol/50"></tbody>
+                </table>
+            </div>
+            <h3 class="font-bold text-sm text-orange-400 border-b border-bordercol pb-2" title="Ranked by P/E Ratio vs the ticker's own sector average">💸 Most Overvalued (vs Sector P/E)</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse whitespace-nowrap font-mono text-xs">
+                    <thead class="bg-[#2d3748] text-white font-sans">
+                        <tr>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_ticker">Ticker</th>
+                            <th class="p-2.5 border border-darkbg">Sector</th>
+                            <th class="p-2.5 border border-darkbg">P/E Ratio</th>
+                            <th class="p-2.5 border border-darkbg">Sector Avg P/E</th>
+                            <th class="p-2.5 border border-darkbg">vs Sector (%)</th>
+                            <th class="p-2.5 border border-darkbg">Close</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-movers-overvalued" class="divide-y divide-bordercol/50"></tbody>
+                </table>
+            </div>
+            <h3 class="font-bold text-sm text-emerald-400 border-b border-bordercol pb-2">⬆️ 52-Week High</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse whitespace-nowrap font-mono text-xs">
+                    <thead class="bg-[#2d3748] text-white font-sans">
+                        <tr>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_ticker">Ticker</th>
+                            <th class="p-2.5 border border-darkbg">Close</th>
+                            <th class="p-2.5 border border-darkbg">52W High</th>
+                            <th class="p-2.5 border border-darkbg">Dist. to High (%)</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_score">Rank Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-movers-week52-high" class="divide-y divide-bordercol/50"></tbody>
+                </table>
+            </div>
+            <h3 class="font-bold text-sm text-rose-400 border-b border-bordercol pb-2">⬇️ 52-Week Low</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse whitespace-nowrap font-mono text-xs">
+                    <thead class="bg-[#2d3748] text-white font-sans">
+                        <tr>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_ticker">Ticker</th>
+                            <th class="p-2.5 border border-darkbg">Close</th>
+                            <th class="p-2.5 border border-darkbg">52W Low</th>
+                            <th class="p-2.5 border border-darkbg">Dist. to Low (%)</th>
+                            <th class="p-2.5 border border-darkbg" data-i18n="hdr_score">Rank Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-movers-week52-low" class="divide-y divide-bordercol/50"></tbody>
                 </table>
             </div>
         </div>
@@ -4777,24 +4876,86 @@
         // the same keys the desktop populates from: Ticker, Breakout Score,
         // Current Price, Dist. to Resistance (%), RSI-14, ADX-14,
         // Squeeze Active, Volume Trend, Trend Class, Signals.
-        // Best 5 Gainers / Worst 5 Losers (top_movers.py -> movers.json shard)
+        // Full Daily Movers bundle (top_movers.py -> movers.json shard):
+        // gainers, losers, most_active, most_undervalued, most_overvalued,
+        // week52_high, week52_low. Each table gets simple click-to-sort on
+        // its own columns too (small, static tables - a plain in-place
+        // array sort is enough, no need for the Action Matrix's full
+        // MATRIX_COLUMN_FIELDS machinery).
+        function _sortableMoversTable(tbodyId, rows, rowFn, emptyColspan) {
+            const tbody = document.getElementById(tbodyId);
+            if (!tbody) return;
+            const emptyRow = () => `<tr><td colspan="${emptyColspan}" class="p-4 text-center text-textmuted font-sans">${tt('lbl_movers_none')}</td></tr>`;
+            tbody.innerHTML = (rows && rows.length) ? rows.map(rowFn).join('') : emptyRow();
+            const table = tbody.closest('table');
+            if (table && !table.dataset.sortInit) {
+                table.dataset.sortInit = '1';
+                const headers = Array.from(table.querySelectorAll('thead th'));
+                headers.forEach((th, colIdx) => {
+                    th.classList.add('cursor-pointer', 'select-none');
+                    th.title = (th.title ? th.title + ' — ' : '') + 'Click to sort';
+                    let dir = 1;
+                    th.addEventListener('click', () => {
+                        dir = (th.dataset.lastDir === '1') ? -1 : 1;
+                        headers.forEach(h => delete h.dataset.lastDir);
+                        th.dataset.lastDir = String(dir);
+                        const bodyRows = Array.from(tbody.querySelectorAll('tr')).filter(r => r.children.length > 1);
+                        bodyRows.sort((a, b) => {
+                            const av = a.children[colIdx] ? a.children[colIdx].textContent.trim() : '';
+                            const bv = b.children[colIdx] ? b.children[colIdx].textContent.trim() : '';
+                            const an = parseFloat(av.replace(/[,%]/g, ''));
+                            const bn = parseFloat(bv.replace(/[,%]/g, ''));
+                            if (!isNaN(an) && !isNaN(bn)) return (an - bn) * dir;
+                            return av.toLowerCase().localeCompare(bv.toLowerCase()) * dir;
+                        });
+                        bodyRows.forEach(r => tbody.appendChild(r));
+                    });
+                });
+            }
+        }
+
         function renderMovers() {
-            const gBody = document.getElementById('tbody-movers-gainers');
-            const lBody = document.getElementById('tbody-movers-losers');
-            if (!gBody || !lBody) return;
             const movers = (globalData && globalData.daily_movers) || null;
-            const row = (m) => m ? `<tr class="border-b border-bordercol/40">
+
+            const changeRow = (m) => m ? `<tr class="border-b border-bordercol/40">
                     <td class="p-2 font-bold text-sky-400">${escapeHtml(m.ticker)}</td>
                     <td class="p-2 text-right text-textmain">${m.close ?? '-'}</td>
                     <td class="p-2 text-right text-textmuted">${m.prev_close ?? '-'}</td>
                     <td class="p-2 text-right font-mono font-bold ${(m.change_pct ?? 0) >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${m.change_pct != null ? `${m.change_pct >= 0 ? '+' : ''}${m.change_pct.toFixed(2)}%` : '-'}</td>
                     <td class="p-2 text-right text-textmuted">${m.rank_score != null ? Number(m.rank_score).toFixed(1) : '-'}</td>
                 </tr>` : '';
-            const emptyRow = () => `<tr><td colspan="5" class="p-4 text-center text-textmuted font-sans">${tt('lbl_movers_none')}</td></tr>`;
-            const g = (movers && movers.gainers) || [];
-            const l = (movers && movers.losers) || [];
-            gBody.innerHTML = g.length ? g.map(row).join('') : emptyRow();
-            lBody.innerHTML = l.length ? l.map(row).join('') : emptyRow();
+            _sortableMoversTable('tbody-movers-gainers', (movers && movers.gainers) || [], changeRow, 5);
+            _sortableMoversTable('tbody-movers-losers', (movers && movers.losers) || [], changeRow, 5);
+
+            const activeRow = (m) => m ? `<tr class="border-b border-bordercol/40">
+                    <td class="p-2 font-bold text-sky-400">${escapeHtml(m.ticker)}</td>
+                    <td class="p-2 text-right text-textmain">${m.volume != null ? Number(m.volume).toLocaleString() : '-'}</td>
+                    <td class="p-2 text-right text-textmain">${m.close ?? '-'}</td>
+                    <td class="p-2 text-right font-mono font-bold ${(m.change_pct ?? 0) >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${m.change_pct != null ? `${m.change_pct >= 0 ? '+' : ''}${m.change_pct.toFixed(2)}%` : '-'}</td>
+                    <td class="p-2 text-right text-textmuted">${m.rank_score != null ? Number(m.rank_score).toFixed(1) : '-'}</td>
+                </tr>` : '';
+            _sortableMoversTable('tbody-movers-active', (movers && movers.most_active) || [], activeRow, 5);
+
+            const valuationRow = (m) => m ? `<tr class="border-b border-bordercol/40">
+                    <td class="p-2 font-bold text-sky-400">${escapeHtml(m.ticker)}</td>
+                    <td class="p-2 font-sans text-textmuted">${escapeHtml(m.sector || '-')}</td>
+                    <td class="p-2 text-right text-textmain">${m.pe_ratio ?? '-'}</td>
+                    <td class="p-2 text-right text-textmuted">${m.sector_avg_pe ?? '-'}</td>
+                    <td class="p-2 text-right font-mono font-bold ${(m.pe_vs_sector_pct ?? 0) >= 0 ? 'text-rose-400' : 'text-emerald-400'}">${m.pe_vs_sector_pct != null ? `${m.pe_vs_sector_pct >= 0 ? '+' : ''}${m.pe_vs_sector_pct.toFixed(2)}%` : '-'}</td>
+                    <td class="p-2 text-right text-textmain">${m.close ?? '-'}</td>
+                </tr>` : '';
+            _sortableMoversTable('tbody-movers-undervalued', (movers && movers.most_undervalued) || [], valuationRow, 6);
+            _sortableMoversTable('tbody-movers-overvalued', (movers && movers.most_overvalued) || [], valuationRow, 6);
+
+            const week52Row = (extremeKey) => (m) => m ? `<tr class="border-b border-bordercol/40">
+                    <td class="p-2 font-bold text-sky-400">${escapeHtml(m.ticker)}</td>
+                    <td class="p-2 text-right text-textmain">${m.close ?? '-'}</td>
+                    <td class="p-2 text-right text-textmuted">${m[extremeKey] ?? '-'}</td>
+                    <td class="p-2 text-right text-textmain">${m.dist_pct != null ? `${m.dist_pct.toFixed(2)}%` : '-'}</td>
+                    <td class="p-2 text-right text-textmuted">${m.rank_score != null ? Number(m.rank_score).toFixed(1) : '-'}</td>
+                </tr>` : '';
+            _sortableMoversTable('tbody-movers-week52-high', (movers && movers.week52_high) || [], week52Row('week52_high'), 5);
+            _sortableMoversTable('tbody-movers-week52-low', (movers && movers.week52_low) || [], week52Row('week52_low'), 5);
         }
 
         function renderBreakouts() {
@@ -5101,6 +5262,129 @@
         let matrixCurrentPage = 1;
         let matrixPageSize = parseInt(localStorage.getItem('quant_matrix_page_size') || '50', 10) || 50;
 
+        // ---- Ascending/descending column sort (click any header) ----
+        // Indexed by the SAME source-order column index tagColumnIdentity()
+        // assigns (data-col-idx) - stable regardless of drag-reordering.
+        // `key` reads straight off the row dict for most columns; a few
+        // (Position/Shares/MACD/Resistance/Support) sort by a more
+        // meaningful underlying numeric field than what's displayed
+        // (e.g. "Resistance (R1/R2/R3)" sorts by R1, not by the
+        // multi-line text). `numeric: true` means "coerce to Number and
+        // treat non-numeric/missing as the lowest value" - text columns
+        // sort case-insensitively instead.
+        const MATRIX_COLUMN_FIELDS = [
+            null, // 0: "#" - row rank, not sortable
+            { key: 'Ticker' },
+            { fn: (r) => (userPortfolio.find(x => (x.ticker || '').toUpperCase() === (r.Ticker || '').toUpperCase()) ? 1 : 0), numeric: true },
+            { key: 'Action' },
+            { key: 'Rank Score', numeric: true },
+            { key: 'Current Price', numeric: true },
+            { key: 'Target Entry (VWAP)', numeric: true },
+            { key: 'Suggested Stop-Loss', numeric: true },
+            { fn: (r) => estimateSuggestedShares(r['Target Entry (VWAP)'], r['Suggested Stop-Loss']), numeric: true },
+            { key: 'Projected Gain (%)', numeric: true },
+            { key: 'Pattern Conf (%)', numeric: true },
+            { key: 'Trend Class' },
+            { key: 'RSI-14', numeric: true },
+            { key: 'ADX-14', numeric: true },
+            { key: 'Vol Z-Score', numeric: true },
+            { key: 'MACD Histogram', numeric: true },
+            { key: 'Bollinger %B', numeric: true },
+            { key: 'Avg Volume (20D)', numeric: true },
+            { key: 'Data Confidence' },
+            { key: 'Take-Profit Target', numeric: true },
+            { key: 'R1', numeric: true },
+            { key: 'S1', numeric: true },
+            { key: 'Open', numeric: true },
+            { key: 'Previous Close', numeric: true },
+            { key: 'Day Range %', numeric: true },
+            { key: 'Resistance (52W High)', numeric: true },
+            { key: 'Day Range Position', numeric: true },
+            { key: 'Market Cap', numeric: true },
+            { key: 'Bid', numeric: true },
+            { key: 'Ask', numeric: true },
+            { key: 'STOCH %K', numeric: true },
+            { key: 'STOCH %D', numeric: true },
+            { key: 'STOCHRSI', numeric: true },
+            { key: 'CCI', numeric: true },
+            { key: 'ROC', numeric: true },
+            { key: 'Williams %R', numeric: true },
+            { key: 'UO', numeric: true },
+            { key: 'Bull/Bear Power', numeric: true },
+            { key: 'Highs/Lows', numeric: true },
+            { key: 'Relative Value Score', numeric: true },
+            { key: 'Price Momentum Score', numeric: true },
+            { key: 'Cash Flow Health Score (est.)', numeric: true },
+            { key: 'Profitability Health Score (est.)', numeric: true },
+            { key: 'Growth Health Score (est.)', numeric: true },
+        ];
+        let matrixSortState = { colIdx: null, dir: 1 }; // dir: 1 = ascending, -1 = descending
+
+        function sortMatrixBy(colIdx) {
+            const field = MATRIX_COLUMN_FIELDS[colIdx];
+            if (!field) return; // "#" column or an unmapped index - nothing to sort by
+            matrixSortState = { colIdx, dir: (matrixSortState.colIdx === colIdx ? -matrixSortState.dir : 1) };
+            applySortToFilteredRows();
+            matrixCurrentPage = 1;
+            renderMatrixPage();
+            updateSortIndicators();
+        }
+
+        function applySortToFilteredRows() {
+            const { colIdx, dir } = matrixSortState;
+            if (colIdx === null) return;
+            const field = MATRIX_COLUMN_FIELDS[colIdx];
+            if (!field) return;
+            const getVal = field.fn ? field.fn : (r) => r[field.key];
+            matrixFilteredRows.sort((a, b) => {
+                let av = getVal(a), bv = getVal(b);
+                if (field.numeric) {
+                    av = (av === null || av === undefined || av === '' || av === 'N/A') ? -Infinity : Number(av);
+                    bv = (bv === null || bv === undefined || bv === '' || bv === 'N/A') ? -Infinity : Number(bv);
+                    if (Number.isNaN(av)) av = -Infinity;
+                    if (Number.isNaN(bv)) bv = -Infinity;
+                    return (av - bv) * dir;
+                }
+                av = String(av ?? '').toLowerCase();
+                bv = String(bv ?? '').toLowerCase();
+                return av.localeCompare(bv) * dir;
+            });
+        }
+
+        function updateSortIndicators() {
+            const headRow = document.getElementById('thead-matrix-tr');
+            if (!headRow) return;
+            Array.from(headRow.children).forEach(th => {
+                const idx = parseInt(th.dataset.colIdx, 10);
+                let icon = th.querySelector('.sort-ind');
+                if (!icon) {
+                    icon = document.createElement('span');
+                    icon.className = 'sort-ind text-[9px] ml-1 opacity-70';
+                    th.appendChild(icon);
+                }
+                icon.textContent = (idx === matrixSortState.colIdx) ? (matrixSortState.dir === 1 ? '▲' : '▼') : '';
+            });
+        }
+
+        function initMatrixSort() {
+            const headRow = document.getElementById('thead-matrix-tr');
+            if (!headRow || headRow.dataset.sortInit) return;
+            tagColumnIdentity(headRow);
+            headRow.dataset.sortInit = '1';
+            Array.from(headRow.children).forEach(th => {
+                const idx = parseInt(th.dataset.colIdx, 10);
+                if (idx === 0 || !MATRIX_COLUMN_FIELDS[idx]) return; // "#" / unmapped columns aren't clickable
+                th.classList.add('cursor-pointer', 'select-none');
+                th.title = (th.title ? th.title + ' — ' : '') + 'Click to sort';
+                th.addEventListener('click', (e) => {
+                    // Don't hijack a drag gesture (dragstart already handles
+                    // reordering) - a plain click (no drag movement) still
+                    // fires normally alongside a draggable=true element.
+                    sortMatrixBy(idx);
+                });
+            });
+        }
+
         function applyFilters() {
             if (!globalData || !globalData.market_matrix) {
                 document.getElementById('tbody-matrix').innerHTML = '';
@@ -5171,12 +5455,36 @@
                     <td class="p-2.5 text-emerald-400 font-semibold">${row["Take-Profit Target"] ?? '-'}</td>
                     <td class="p-2.5 text-rose-400 text-[11px] leading-tight" title="52-week high: ${row["Resistance (52W High)"] ?? '-'}">R1 ${row["R1"] ?? '-'}<br>R2 ${row["R2"] ?? '-'}<br>R3 ${row["R3"] ?? '-'}</td>
                     <td class="p-2.5 text-emerald-400 text-[11px] leading-tight" title="52-week low: ${row["Support (52W Low)"] ?? '-'}">S1 ${row["S1"] ?? '-'}<br>S2 ${row["S2"] ?? '-'}<br>S3 ${row["S3"] ?? '-'}</td>
+                    <td class="p-2.5 text-textmain">${row["Open"] ?? '-'}</td>
+                    <td class="p-2.5 text-textmuted">${row["Previous Close"] ?? '-'}</td>
+                    <td class="p-2.5 text-textmain">${row["Day's Range"] ?? '-'}</td>
+                    <td class="p-2.5 text-textmain">${row["52 Week Range"] ?? '-'}</td>
+                    <td class="p-2.5 text-textmain" title="0 = closed at session low, 1 = closed at session high">${row["Day Range Position"] ?? '-'}</td>
+                    <td class="p-2.5 text-textmain">${row["Market Cap"] != null ? Number(row["Market Cap"]).toLocaleString() : '-'}</td>
+                    <td class="p-2.5 text-textmuted" title="Not available - no live-quote feed">${row["Bid"] ?? '-'}</td>
+                    <td class="p-2.5 text-textmuted" title="Not available - no live-quote feed">${row["Ask"] ?? '-'}</td>
+                    <td class="p-2.5 text-textmain">${row["STOCH %K"] ?? '-'}</td>
+                    <td class="p-2.5 text-textmain">${row["STOCH %D"] ?? '-'}</td>
+                    <td class="p-2.5 text-textmain">${row["STOCHRSI"] ?? '-'}</td>
+                    <td class="p-2.5 text-textmain">${row["CCI"] ?? '-'}</td>
+                    <td class="p-2.5 text-textmain">${row["ROC"] ?? '-'}</td>
+                    <td class="p-2.5 text-textmain">${row["Williams %R"] ?? '-'}</td>
+                    <td class="p-2.5 text-textmain">${row["UO"] ?? '-'}</td>
+                    <td class="p-2.5 text-textmain">${row["Bull/Bear Power"] ?? '-'}</td>
+                    <td class="p-2.5 text-textmain">${row["Highs/Lows"] ?? '-'}</td>
+                    <td class="p-2.5 text-sky-400 font-semibold">${row["Relative Value Score"] ?? '-'}</td>
+                    <td class="p-2.5 text-sky-400 font-semibold">${row["Price Momentum Score"] ?? '-'}</td>
+                    <td class="p-2.5 text-textmuted" title="Estimated from dividend sustainability - not a cash-flow-statement figure">${row["Cash Flow Health Score (est.)"] ?? '-'}</td>
+                    <td class="p-2.5 text-textmuted" title="Estimated from earnings yield (1/P-E) - not a reported margin">${row["Profitability Health Score (est.)"] ?? '-'}</td>
+                    <td class="p-2.5 text-textmuted" title="Estimated from 1Y/3Y price return - not reported earnings/revenue growth">${row["Growth Health Score (est.)"] ?? '-'}</td>
                 `;
                 tbody.appendChild(tr);
             });
-            if (total === 0) tbody.innerHTML = `<tr><td colspan="22" class="p-8 text-center text-textmuted font-sans">${tt('lbl_no_filter_matches')}</td></tr>`;
+            if (total === 0) tbody.innerHTML = `<tr><td colspan="44" class="p-8 text-center text-textmuted font-sans">${tt('lbl_no_filter_matches')}</td></tr>`;
             applyColumnOrder('thead-matrix-tr', 'tbody-matrix', 'quant_col_order_matrix');
             applyColumnVisibility();
+            initMatrixSort();
+            updateSortIndicators();
             renderMatrixPaginationControls();
         }
 
@@ -5483,7 +5791,7 @@
                 prefetchChartHistoryInBackground();
             } catch (error) {
                 console.error("Failed to load market data:", error);
-                document.getElementById('tbody-matrix').innerHTML = `<tr><td colspan="22" class="p-8 text-center text-rose-400 font-sans">⚠️ ${tt('lbl_data_unavailable')}</td></tr>`;
+                document.getElementById('tbody-matrix').innerHTML = `<tr><td colspan="44" class="p-8 text-center text-rose-400 font-sans">⚠️ ${tt('lbl_data_unavailable')}</td></tr>`;
             }
         }
 
