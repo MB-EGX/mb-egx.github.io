@@ -704,47 +704,81 @@ class StockSectorChartWidget(QWidget):
         return "QPushButton { background-color: #2d3748; color: #cbd5e0; border-radius: 3px; border: none; font-size: 11px; } QPushButton:hover { background-color: #4a5568; color: white; }"
 
     # -----------------------------------------------------------------
-    # Day-1 Breakout marker (NEW). When the loaded ticker's own bar
-    # qualifies as a Day-1 Breakout (fresh 20-day high + volume
-    # confirmation + not extended) per config.DAY1_BREAKOUT, draws a
-    # glowing green halo over today's candle and a small badge above
-    # the close with the cause. The badge text is bilingual so users
-    # who flip the chart to AR see the same evidence in Arabic.
+    # Day-1 Breakout marker. When the loaded ticker's own bar qualifies
+    # as a Day-1 Breakout per config.DAY1_BREAKOUT, draws a glowing
+    # green halo over today's candle and a small badge above the close
+    # with the cause. The badge text is bilingual so users who flip the
+    # chart to AR see the same evidence in Arabic.
+    #
+    # Checks all FOUR of config.DAY1_BREAKOUT's criteria - fresh 20-day
+    # high, volume confirmation, not extended vs 20D VWAP, and 5-day
+    # return not already a multi-day runner - the exact same test
+    # decision_matrix.analyze_market() uses for the Action Matrix's own
+    # "Day-1 Breakout" column (and, downstream, the Pre-Breakout
+    # Watchlist backfill and Session Picks' day1_breakout slots). This
+    # used to check only the first two criteria, so a candle could show
+    # the badge here while reading "Day-1 Breakout: false" everywhere
+    # else in the app (e.g. already extended >8% above VWAP, or already
+    # up >20% over the last 5 sessions) - confusing, since both were
+    # "correct" for what they individually tested, just not the same
+    # test. Matching the matrix's exact formula makes the badge mean
+    # the same thing everywhere it appears.
     # -----------------------------------------------------------------
     def _compute_day1_flag(self, df: pd.DataFrame) -> dict | None:
         """Return a Day-1 dict (matching decision_matrix.analyze_market's
-        per-row schema) if THIS bar qualifies, else None. Uses 20-bar
-        lookback window for the fresh-high test so the marker only fires
-        for the very candle where the breakout actually happens, not for
-        subsequent sessions that just happen to sit near the new level.
+        per-row schema) if THIS bar qualifies, else None.
+
+        Reuses the SAME precomputed indicator columns decision_matrix.py
+        reads off this same df (both go through qe.compute_indicators() -
+        see self.qe.compute_indicators(df) at load time) rather than
+        recomputing rolling windows by hand: "high" 20-day-max includes
+        today's own bar (matches decision_matrix's `df_ind["high"].
+        iloc[-20:].max()`), and volume_ratio is analytics.compute_
+        indicators' own trailing rolling(20, min_periods=1) average that
+        also includes today (matches decision_matrix's `latest.get(
+        "volume_ratio", 1.0)`). Reading the same columns the matrix reads
+        - rather than re-deriving similar-looking numbers independently -
+        is what keeps this badge and the Action Matrix's "Day-1 Breakout"
+        column (and, downstream, the Pre-Breakout Watchlist backfill and
+        Session Picks' day1_breakout slots, which both read that same
+        matrix-computed flag) in agreement.
         """
         try:
             from config import DAY1_BREAKOUT
         except ImportError:
             return None
-        if df is None or df.empty or len(df) < 21:
+        # 20 bars for the high/volume window, +6 more (index -6) for the
+        # 5-day-return check below - same 6-bar lookback decision_matrix.py
+        # uses via df_ind["close"].iloc[-6].
+        if df is None or df.empty or len(df) < 20 or "close" not in df.columns:
             return None
         try:
             d = DAY1_BREAKOUT
-            closes = df["close"].iloc[-21:]
-            highs = df["high"].iloc[-21:]
-            vols = df["volume"].iloc[-21:] if "volume" in df.columns else None
-            cur_c = float(closes.iloc[-1])
-            cur_h = float(highs.iloc[-1])
-            cur_v = float(vols.iloc[-1]) if vols is not None and vols.iloc[-1] is not None else 0.0
-            avg_v20 = float(vols.iloc[:-1].mean()) if vols is not None and len(vols) > 1 else 0.0
-            hi20 = float(highs.iloc[:-1].max())
+            cur_c = float(df["close"].iloc[-1])
+            hi20 = float(df["high"].iloc[-20:].max())
             dist_hi20 = ((cur_c / hi20) - 1.0) * 100.0 if hi20 > 0 else 999.0
-            rvol = cur_v / avg_v20 if avg_v20 > 0 else 0.0
+            rvol = float(df["volume_ratio"].iloc[-1]) if "volume_ratio" in df.columns and pd.notna(df["volume_ratio"].iloc[-1]) else 0.0
+            vwap = float(df["vwap_20"].iloc[-1]) if "vwap_20" in df.columns and pd.notna(df["vwap_20"].iloc[-1]) else cur_c
+            ext_vwap = ((cur_c / vwap) - 1.0) * 100.0 if vwap > 0 else 999.0
+            if len(df) >= 6:
+                c5 = float(df["close"].iloc[-6])
+                t5d = ((cur_c - c5) / c5) * 100.0 if c5 > 0 else 999.0
+            else:
+                t5d = 999.0
+
             ok = (dist_hi20 <= d.get("dist_hi20_max_pct", 0.5)
-                  and rvol >= d.get("min_rvol", 2.0))
+                  and rvol >= d.get("min_rvol", 2.0)
+                  and ext_vwap <= d.get("max_ext_vwap_pct", 8.0)
+                  and t5d <= d.get("max_5d_return_pct", 20.0))
             if not ok:
                 return None
             reasons = [
                 f"Fresh 20d high (dist {dist_hi20:+.1f}%)",
                 f"Volume {rvol:.1f}x 20-day avg",
+                f"Not extended ({ext_vwap:+.1f}% vs VWAP)",
             ]
-            return {"is_day1": True, "rvol": rvol, "dist_hi20": dist_hi20, "reasons": reasons}
+            return {"is_day1": True, "rvol": rvol, "dist_hi20": dist_hi20,
+                    "ext_vwap": ext_vwap, "t5d": t5d, "reasons": reasons}
         except Exception:
             return None
 

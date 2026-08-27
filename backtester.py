@@ -72,6 +72,7 @@ itself is tier-agnostic pure compute.
 """
 from __future__ import annotations
 
+import math
 from collections import defaultdict
 
 import numpy as np
@@ -100,6 +101,27 @@ logger = get_logger("backtester")
 QUALIFYING_ACTIONS = ("STRONG BUY", "BREAKOUT BUY", "BUY ON DIP", "ACCUMULATE")
 
 
+def _n_of_m_confirmation(factors: list[tuple[str, bool]], min_pass_ratio: float) -> tuple[bool, int, int, list[str]]:
+    """DUPLICATED from decision_matrix.py's function of the same name -
+    NOT imported, because decision_matrix.py already imports FROM this
+    module (load_win_rate_cache, _action_family), so importing back would
+    be a circular import. Keep this in lockstep with decision_matrix.py's
+    copy by hand; see that module's docstring for the full N-of-M
+    rationale (fractional-pass confluence instead of a strict
+    all-must-pass AND, which left every buy bucket empty on noisy/short
+    history).
+
+    Returns (confirmed, passed_count, required_count, [unmet factor labels]).
+    """
+    total = len(factors)
+    if total == 0:
+        return True, 0, 0, []
+    required = max(1, math.ceil(min_pass_ratio * total))
+    passed_labels = [label for label, ok in factors if ok]
+    unmet_labels = [label for label, ok in factors if not ok]
+    return len(passed_labels) >= required, len(passed_labels), required, unmet_labels
+
+
 def _point_in_time_signal(df_upto: pd.DataFrame) -> dict | None:
     """Classify the LAST row of ``df_upto`` exactly like decision_matrix.
     analyze_market()'s buy-scoring block, using only rows visible up to
@@ -108,14 +130,35 @@ def _point_in_time_signal(df_upto: pd.DataFrame) -> dict | None:
     unconfirmed signal fails the same ADX/volume confirmation gate the
     live matrix applies.
 
-    Mirrors decision_matrix.py 1:1 in the RULES (branch order/conditions)
-    and is driven by the same config.ACTION_THRESHOLDS, so threshold
-    tuning stays in sync automatically. If the branch LOGIC in
-    decision_matrix.py ever changes (not just a threshold), mirror the
-    change here too - there is no single shared function (see module
-    docstring for why: analyze_market's block is entangled with
-    portfolio/pattern state this pure point-in-time classifier
-    deliberately doesn't depend on).
+    Mirrors decision_matrix.py 1:1 in the RULES (branch order/conditions,
+    the overbought/oversold confluence gate, and the N-of-M confirmation
+    logic - see _n_of_m_confirmation above) and is driven by the same
+    config.ACTION_THRESHOLDS, so threshold tuning stays in sync
+    automatically. If the branch LOGIC in decision_matrix.py ever changes
+    (not just a threshold), mirror the change here too - there is no
+    single shared function (see module docstring for why: analyze_
+    market's block is entangled with portfolio/pattern state this pure
+    point-in-time classifier deliberately doesn't depend on).
+
+    LAST VERIFIED against decision_matrix.py: this now matches, factor
+    for factor -
+      - the overbought_confluence gate (`and not overbought_confluence`)
+        on STRONG BUY and all 3 BREAKOUT BUY variants,
+      - the close_location_ratio-based close_strength_ok confirmation
+        factor,
+      - _n_of_m_confirmation (fractional-pass, not strict AND) for both
+        the STRONG BUY/BREAKOUT BUY confirmation gate and the BUY ON DIP
+        confirmation gate, including BUY ON DIP's oversold_confluence
+        and dip_close_ok factors.
+    A prior version of this function only checked the first two of
+    decision_matrix.py's four Day-1-Breakout-style criteria worth of
+    gating logic (no confluence gate, no close-strength factor, a strict
+    AND instead of N-of-M) - which meant the win-rate cache this produces
+    (refresh_win_rate_cache.py -> config.BACKTEST_WIN_RATE_CACHE_PATH,
+    read by decision_matrix.py's live position sizing) was measuring a
+    looser, stale rule set than the one actually generating live
+    recommendations. Re-run refresh_win_rate_cache.py after this change
+    so the live cache reflects the current rules.
     """
     n_bars = len(df_upto)
     if n_bars < 15:
@@ -139,6 +182,9 @@ def _point_in_time_signal(df_upto: pd.DataFrame) -> dict | None:
     atr = QuantitativeEngine.estimate_atr(latest, curr_price)
     vwap = float(latest.get("vwap_20", curr_price) or curr_price)
     cmf = float(latest.get("cmf_20", 0.0) or 0.0)
+    stoch_k = float(latest.get("stoch_k", 50.0) or 50.0)
+    stochrsi = float(latest.get("stochrsi", 50.0) or 50.0)
+    cci_20 = float(latest.get("cci_20", 0.0) or 0.0)
     is_squeezed = bool(latest.get("bb_kc_squeeze", False))
     w_sma50 = float(latest.get("w_sma_50", curr_price) or curr_price)
     w_rsi = float(latest.get("w_rsi", 50.0) or 50.0)
@@ -146,6 +192,33 @@ def _point_in_time_signal(df_upto: pd.DataFrame) -> dict | None:
 
     is_liquid = avg_volume_20 >= MIN_AVG_VOLUME
     gap_pct = ((curr_price - prev_close) / prev_close * 100.0) if prev_close > 0 else 0.0
+
+    # Same-session close strength (close_location_ratio) - matches
+    # decision_matrix.py's own computation exactly, including its 0.5
+    # fallback for a zero-range bar.
+    day_high = float(latest.get("high", curr_price) or curr_price)
+    day_low = float(latest.get("low", curr_price) or curr_price)
+    close_location_ratio = (
+        (curr_price - day_low) / (day_high - day_low)
+        if (day_high - day_low) > 0 else 0.5
+    )
+
+    # Overbought/oversold oscillator confluence (Stoch %K / StochRSI /
+    # CCI, 2-of-3) - same as decision_matrix.py's momentum_flag gate.
+    # overbought_confluence blocks STRONG BUY/BREAKOUT BUY below;
+    # oversold_confluence feeds BUY ON DIP's confirmation factors further
+    # down. Never an independent trigger on its own, matching the live
+    # matrix's treatment.
+    overbought_confluence = sum([
+        stoch_k >= ACTION_THRESHOLDS["overbought_stoch_k_min"],
+        stochrsi >= ACTION_THRESHOLDS["overbought_stochrsi_min"],
+        cci_20 >= ACTION_THRESHOLDS["overbought_cci_min"],
+    ]) >= 2
+    oversold_confluence = sum([
+        stoch_k <= ACTION_THRESHOLDS["oversold_stoch_k_max"],
+        stochrsi <= ACTION_THRESHOLDS["oversold_stochrsi_max"],
+        cci_20 <= ACTION_THRESHOLDS["oversold_cci_max"],
+    ]) >= 2
 
     lookback = min(250, n_bars)
     range_high = float(df_upto["high"].iloc[-lookback:].max())
@@ -169,16 +242,17 @@ def _point_in_time_signal(df_upto: pd.DataFrame) -> dict | None:
         range_pos_pct >= ACTION_THRESHOLDS["strong_buy_range_pos_min"]
         and ACTION_THRESHOLDS["strong_buy_rsi_min"] <= rsi <= ACTION_THRESHOLDS["strong_buy_rsi_max"]
         and gap_pct >= ACTION_THRESHOLDS["strong_buy_gap_min"]
+        and not overbought_confluence
     ):
         raw_action = "STRONG BUY"
         needs_confirmation = True
-    elif ma_crossover and momentum_signal and gap_pct >= ACTION_THRESHOLDS["breakout_gap_min"]:
+    elif ma_crossover and momentum_signal and gap_pct >= ACTION_THRESHOLDS["breakout_gap_min"] and not overbought_confluence:
         raw_action = "BREAKOUT BUY (X-OVER + MOMENTUM)"
         needs_confirmation = True
-    elif ma_crossover and gap_pct >= ACTION_THRESHOLDS["breakout_gap_min"]:
+    elif ma_crossover and gap_pct >= ACTION_THRESHOLDS["breakout_gap_min"] and not overbought_confluence:
         raw_action = "BREAKOUT BUY (X-OVER)"
         needs_confirmation = True
-    elif momentum_signal and gap_pct >= ACTION_THRESHOLDS["breakout_gap_min"]:
+    elif momentum_signal and gap_pct >= ACTION_THRESHOLDS["breakout_gap_min"] and not overbought_confluence:
         raw_action = "BREAKOUT BUY (MOMENTUM)"
         needs_confirmation = True
     elif (
@@ -215,13 +289,41 @@ def _point_in_time_signal(df_upto: pd.DataFrame) -> dict | None:
         or vol_z >= ACTION_THRESHOLDS["volume_z_score_threshold"]
     )
     vwap_ok = curr_price >= vwap * ACTION_THRESHOLDS["vwap_acceptance_ratio"]
-    squeeze_ok = is_squeezed if "BREAKOUT BUY" in raw_action else True
-    confirmed = strong_trend and vol_confirmed and vwap_ok and squeeze_ok
+    close_strength_ok = close_location_ratio >= ACTION_THRESHOLDS["close_strength_min_ratio"]
+    # Squeeze-release only applies to the reactive BREAKOUT BUY labels
+    # (not STRONG BUY) - same as decision_matrix.py, it's only added to
+    # the factor list for a breakout signal rather than passed in as
+    # always-True, so the required-count math doesn't silently treat it
+    # as a free pass for STRONG BUY rows.
+    is_breakout_signal = "BREAKOUT BUY" in raw_action
+    squeeze_ok = is_squeezed
+
+    confirmation_factors = [
+        ("low ADX (trend not confirmed)", strong_trend),
+        ("low volume (RVOL/Z-score not confirmed)", vol_confirmed),
+        ("below VWAP", vwap_ok),
+        ("weak session close (near day's low)", close_strength_ok),
+    ]
+    if is_breakout_signal:
+        confirmation_factors.append(("no squeeze release", squeeze_ok))
+
+    confirmed, _n_passed, _n_required, _unmet = _n_of_m_confirmation(
+        confirmation_factors, ACTION_THRESHOLDS["confirmation_min_pass_ratio"]
+    )
     if needs_confirmation and not confirmed:
         return None
 
     if raw_action == "BUY ON DIP":
-        dip_confirmed = weekly_aligned and cmf >= ACTION_THRESHOLDS["medium_term_cmf_min"]
+        dip_close_ok = close_location_ratio >= ACTION_THRESHOLDS["dip_close_strength_min_ratio"]
+        dip_factors = [
+            ("weekly trend not aligned", weekly_aligned),
+            ("CMF below accumulation floor", cmf >= ACTION_THRESHOLDS["medium_term_cmf_min"]),
+            ("still closing near session low (no support found)", dip_close_ok),
+            ("no oversold-oscillator support (STOCH/StochRSI/CCI)", oversold_confluence),
+        ]
+        dip_confirmed, _dip_n_passed, _dip_n_required, _dip_unmet = _n_of_m_confirmation(
+            dip_factors, ACTION_THRESHOLDS["dip_confirmation_min_pass_ratio"]
+        )
         if not dip_confirmed:
             return None
 
