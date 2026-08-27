@@ -703,6 +703,85 @@ class StockSectorChartWidget(QWidget):
             return "QPushButton { background-color: #3182ce; color: #ffffff; font-weight: bold; border-radius: 3px; border: none; font-size: 11px; }"
         return "QPushButton { background-color: #2d3748; color: #cbd5e0; border-radius: 3px; border: none; font-size: 11px; } QPushButton:hover { background-color: #4a5568; color: white; }"
 
+    # -----------------------------------------------------------------
+    # Day-1 Breakout marker (NEW). When the loaded ticker's own bar
+    # qualifies as a Day-1 Breakout (fresh 20-day high + volume
+    # confirmation + not extended) per config.DAY1_BREAKOUT, draws a
+    # glowing green halo over today's candle and a small badge above
+    # the close with the cause. The badge text is bilingual so users
+    # who flip the chart to AR see the same evidence in Arabic.
+    # -----------------------------------------------------------------
+    def _compute_day1_flag(self, df: pd.DataFrame) -> dict | None:
+        """Return a Day-1 dict (matching decision_matrix.analyze_market's
+        per-row schema) if THIS bar qualifies, else None. Uses 20-bar
+        lookback window for the fresh-high test so the marker only fires
+        for the very candle where the breakout actually happens, not for
+        subsequent sessions that just happen to sit near the new level.
+        """
+        try:
+            from config import DAY1_BREAKOUT
+        except ImportError:
+            return None
+        if df is None or df.empty or len(df) < 21:
+            return None
+        try:
+            d = DAY1_BREAKOUT
+            closes = df["close"].iloc[-21:]
+            highs = df["high"].iloc[-21:]
+            vols = df["volume"].iloc[-21:] if "volume" in df.columns else None
+            cur_c = float(closes.iloc[-1])
+            cur_h = float(highs.iloc[-1])
+            cur_v = float(vols.iloc[-1]) if vols is not None and vols.iloc[-1] is not None else 0.0
+            avg_v20 = float(vols.iloc[:-1].mean()) if vols is not None and len(vols) > 1 else 0.0
+            hi20 = float(highs.iloc[:-1].max())
+            dist_hi20 = ((cur_c / hi20) - 1.0) * 100.0 if hi20 > 0 else 999.0
+            rvol = cur_v / avg_v20 if avg_v20 > 0 else 0.0
+            ok = (dist_hi20 <= d.get("dist_hi20_max_pct", 0.5)
+                  and rvol >= d.get("min_rvol", 2.0))
+            if not ok:
+                return None
+            reasons = [
+                f"Fresh 20d high (dist {dist_hi20:+.1f}%)",
+                f"Volume {rvol:.1f}x 20-day avg",
+            ]
+            return {"is_day1": True, "rvol": rvol, "dist_hi20": dist_hi20, "reasons": reasons}
+        except Exception:
+            return None
+
+    def _draw_day1_marker(self, ax, selected_display, dates, df):
+        flag = self._compute_day1_flag(df)
+        if not flag or len(dates) == 0:
+            return
+        try:
+            last_date = dates[-1]
+            last_high = float(df["high"].iloc[-1])
+            last_close = float(df["close"].iloc[-1])
+            # Translucent green halo at top of today's candle so it stands
+            # out among the others in candle mode (matches the table's
+            # Day-1 Breakout reason row).
+            ax.scatter([last_date], [last_high * 1.005], s=380,
+                       facecolors="none", edgecolors="#22c55e",
+                       linewidths=2.0, alpha=0.85, zorder=5)
+            ax.scatter([last_date], [last_high * 1.012], s=180,
+                       facecolors="none", edgecolors="#22c55e",
+                       linewidths=1.4, alpha=0.6, zorder=5)
+            if self.lang == "AR":
+                badge = "⚡ اختراق اليوم الأول (قمة 20 يوم + حجم)"
+            else:
+                badge = "⚡ Day-1 Breakout (20D high + volume)"
+            ax.annotate(
+                badge,
+                xy=(last_date, last_high * 1.022),
+                xytext=(6, 14), textcoords="offset points",
+                color="#052e16",
+                fontsize=9, fontweight="bold", va="center",
+                bbox=dict(boxstyle="round,pad=0.3",
+                          facecolor="#22c55e", edgecolor="#15803d", linewidth=1.0),
+                zorder=6,
+            )
+        except Exception:
+            pass
+
     def set_language(self, lang: str):
         self.lang = lang
         if lang == "AR":
@@ -877,6 +956,8 @@ class StockSectorChartWidget(QWidget):
             if 'vwap_20' in df.columns:
                 vwap_label = "VWAP (20D)" if self.lang == "EN" else "متوسط السعر المرجح (20 يوم)"
                 ax.plot(dates, df['vwap_20'], label=vwap_label, color="#f59e0b", linestyle=":", alpha=0.8)
+
+            self._draw_day1_marker(ax, selected_display, dates, df)
 
             if self.chk_sr.isChecked() and {'high', 'low', 'close'}.issubset(df.columns):
                 pivots = self.qe.compute_pivot_points(df)

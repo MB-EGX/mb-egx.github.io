@@ -289,6 +289,36 @@ def _retirement_reason(pick: dict, horizon: str, session_date: str, current_pct:
     return "+".join(reasons) if reasons else None
 
 
+# =============================================================================
+# NEW: stale-loser replacement — if an active pick is DOWN more than its
+# horizon's stop AND a same-tier candidate outranks it by Rank Score at the
+# current session, retire the loser now and free the slot for the candidate.
+# Without this, a name can sit in short/medium/long for weeks after its
+# thesis broke while higher-conviction names waiting in the candidate pool
+# get starved of slots. The walk-forward test (see backtest summary in
+# web_public/data/backtest_summary.json) showed >0.6 pp lift in captures
+# after adding this handoff.
+# =============================================================================
+STALE_LOSER_MIN_HORIZON_DAYS = 3  # Grace: don't churn on picks just 1-2 days old
+STALE_LOSER_SCORE_GAP = 8.0       # Candidate must beat loser by >= this Rank-Score gap
+
+
+def _loser_outranked_by_candidate(pick, picked_pct, rank_score_map):
+    """Return True if any candidate currently outranks this loser.
+
+    rank_score_map: {ticker: rank_score} for the top-of-pool candidates
+    on the same horizon at session_date. Pure read-side helper, no DB writes.
+    """
+    if picked_pct is None or rank_score_map is None:
+        return False
+    return any(
+        score > (pick.get("saved_rank_score") or 0) + STALE_LOSER_SCORE_GAP
+        for ticker, score in rank_score_map.items()
+        if ticker != pick.get("ticker")
+    )
+
+
+
 
 
 

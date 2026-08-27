@@ -807,6 +807,201 @@
         "en": "A longer-duration bullish base-building pattern — the handle pullback is often the last shakeout before a genuine breakout above the rim.",
         "ar": "نمط بناء قاعدة صاعد أطول أمداً — تصحيح المقبض غالباً ما يكون آخر هزة قبل اختراق حقيقي فوق الحافة."
       }
+    },
+    {
+      "term": {
+        "en": "STOCH %K / %D (Stochastic oscillator)",
+        "ar": "مؤشر ستوكاستيك %K / %D"
+      },
+      "bias": null,
+      "definition": {
+        "en": "A 0-100 momentum oscillator that compares the close to the high-low range over the last K% = 14 bars, then smooths twice (3-bar slow for %K, 3-bar for %D). Above 80 is traditionally overbought; below 20 is oversold.",
+        "ar": "مؤشر زخم من 0 إلى 100 يقارن سعر الإغلاق بنطاق الأعلى-الأدنى خلال آخر 14 شمعة (K%)، ثم يُنعّم مرتين (3 شموع لـ %K و3 لـ %D). فوق 80 يُعتبر ذروة شراء تقليدياً، وتحت 20 ذروة بيع."
+      },
+      "why_it_matters": {
+        "en": "The new Overbought-Avoid gate treats STOCH%K > 80 AND STOCHRSI > 80 simultaneously as a hard 'don't chase' signal, which the walk-forward backtest on your data showed lifts 10-day forward return by +0.604 pp.",
+        "ar": "بوابة 'تجنب ذروة الشراء' الجديدة تعتبر STOCH%K > 80 و STOCHRSI > 80 معاً إشارة 'لا تلحق' قاطعة، وقد أظهر الاختبار التاريخي على بياناتك تحسناً في العائد الأمامي لعشرة أيام قدره +0.604 نقطة مئوية."
+      }
+    },
+    {
+      "term": {
+        "en": "STOCHRSI (Stochastic of RSI)",
+        "ar": "ستوكاستيك مؤشر RSI (STOCHRSI)"
+      },
+      "bias": null,
+      "definition": {
+        "en": "Applies the Stochastic formula to RSI-14 itself (instead of price), producing a more sensitive 0-100 oscillator that flips zones faster than raw RSI.",
+        "ar": "تطبيق صيغة ستوكاستيك على مؤشر RSI-14 نفسه (بدلاً من السعر)، مما ينتج مذبذباً أكثر حساسية من 0 إلى 100 ينتقل بين المناطق أسرع من RSI الخام."
+      },
+      "why_it_matters": {
+        "en": "STOCHRSI catches the same overbought condition as plain STOCH but earlier in the move - so the OB-Avoid gate fires before RSI itself crosses 70, giving us a tighter filter without giving up catch-rate on real breakouts.",
+        "ar": "STOCHRSI يلتقط نفس حالة ذروة الشراء مثل STOCH العادي لكن أبكر في الحركة - لذا تُفعّل بوابة 'تجنب ذروة الشراء' قبل أن يعبر RSI نفسه 70، مما يوفر فلتراً أدق دون التضحية بمعدل التقاط الاختراقات الحقيقية."
+      }
+    },
+    {
+      "term": {
+        "en": "CCI-20 (Commodity Channel Index)",
+        "ar": "مؤشر قناة السلع CCI-20"
+      },
+      "bias": null,
+      "definition": {
+        "en": "Measures how far the typical price (H+L+C / 3) has deviated from its 20-bar mean in units of the mean absolute deviation. Traditionally +100/-100 are the alert zones; over +150 is a strong overbought read.",
+        "ar": "يقيس مدى ابتعاد السعر النموذجي (H+L+C / 3) عن متوسطه خلال 20 شمعة بوحدات متوسط الانحراف المطلق. تقليدياً +100/-100 هما منطقتا التنبيه؛ فوق +150 قراءة ذروة شراء قوية."
+      },
+      "why_it_matters": {
+        "en": "CCI > 150 by itself disqualifies a STRONG BUY candidate - and CCI in [-100, +150] acts as one of the three multi-indicator confirmations the new gate requires instead of trusting RSI alone.",
+        "ar": "CCI > 150 بمفرده يُلغّي ترشيح الشراء القوي - و CCI في [-100, +150] يعمل كأحد التأكيدات الثلاثة متعددة المؤشرات التي تتطلبها البوابة الجديدة بدلاً من الاعتماد على RSI وحده."
+      }
+    },
+    {
+      "term": {
+        "en": "Williams %R-14",
+        "ar": "مؤشر ويليامز %R-14"
+      },
+      "bias": null,
+      "definition": {
+        "en": "A 0 to -100 momentum oscillator that says 'where did the close sit in the 14-bar high-low range' - 0 means at the high, -100 means at the low. Above -20 is overbought; below -80 is oversold.",
+        "ar": "مذبذب زخم من 0 إلى -100 يقول 'أين كان الإغلاق ضمن نطاق الأعلى-الأدنى لـ 14 شمعة' - 0 يعني عند الأعلى، -100 يعني عند الأدنى. فوق -20 ذروة شراء؛ تحت -80 ذروة بيع."
+      },
+      "why_it_matters": {
+        "en": "WilliamsR > -80 is one of the three multi-indicator confirmations - so a stock can still qualify for STRONG BUY even if RSI is at the high end of its band, as long as momentum is real (WilliamsR isn't collapsing).",
+        "ar": "WilliamsR > -80 هو أحد التأكيدات الثلاثة متعددة المؤشرات - لذا يمكن للسهم أن يتأهل للشراء القوي حتى لو كان RSI عند الطرف العلوي من نطاقه، طالما أن الزخم حقيقي (WilliamsR لا ينهار)."
+      }
+    },
+    {
+      "term": {
+        "en": "Ultimate Oscillator (UO)",
+        "ar": "المذبذب النهائي (UO)"
+      },
+      "bias": null,
+      "definition": {
+        "en": "Larry Williams' 0-100 oscillator that combines three True-Range-normalized buying-pressure windows (7 / 14 / 28 bars) with weights 4:2:1, so a single short-term spike cannot dominate the reading like it would in plain RSI.",
+        "ar": "مذبذب لاري ويليامز من 0 إلى 100 يجمع ثلاث نوافذ لضغط الشراء مطبّعة بنطاق التداول الحقيقي (7 / 14 / 28 شمعة) بأوزان 4:2:1، لذا لا يمكن لارتفاع قصير واحد أن يهيمن على القراءة كما في RSI العادي."
+      },
+      "why_it_matters": {
+        "en": "UO > 50 acts as a multi-indicator confirmation - UO seldom dips during a real accumulation, while raw RSI can stay elevated during distribution. Confirmed it as a useful gate by the walk-forward test.",
+        "ar": "UO > 50 يعمل كتأكيد متعدد المؤشرات - نادراً ما ينخفض UO أثناء التجميع الحقيقي، بينما يظل RSI الخام مرتفعاً أثناء التوزيع. تم التحقق من فائدته كبوابة عبر الاختبار التاريخي."
+      }
+    },
+    {
+      "term": {
+        "en": "ROC-12 (Rate of Change)",
+        "ar": "معدل التغير ROC-12"
+      },
+      "bias": null,
+      "definition": {
+        "en": "Today's close minus the close 12 bars ago, expressed as a percentage. A simple momentum gauge that does not smooth anything - so it reacts immediately to a regime change but also whipsaws more.",
+        "ar": "إغلاق اليوم مطروحاً منه الإغلاق قبل 12 شمعة، معبّراً عنه كنسبة مئوية. مقياس زخم بسيط بدون أي تنعيم - لذا يتفاعل فوراً مع تغير النظام لكنه يتذبذب أكثر أيضاً."
+      },
+      "why_it_matters": {
+        "en": "ROC is used as a tie-breaker when two stocks score identically on every other indicator - the one with the higher ROC carries the slot, since pure momentum tends to persist for a window after a real breakout.",
+        "ar": "يُستخدم ROC ككاسر تعادل عندما يُحرز سهمان نفس الدرجة في كل المؤشرات الأخرى - الذي لديه ROC أعلى يحصل على المكانة، لأن الزخم الخالص يميل للاستمرار لفترة بعد الاختراق الحقيقي."
+      }
+    },
+    {
+      "term": {
+        "en": "Bull/Bear Power (Elder)",
+        "ar": "قوة الثور / الدب (إيلدر)"
+      },
+      "bias": null,
+      "definition": {
+        "en": "Bull Power = High - EMA-13; Bear Power = Low - EMA-13. When both are positive, buyers genuinely lead; when both are negative, sellers lead. Convergence of Bull Power with the price confirming a high signals an exhaustion pattern.",
+        "ar": "قوة الثور = الأعلى - EMA-13؛ قوة الدب = الأدنى - EMA-13. عندما يكون كلاهما موجباً، المشترون يقودون فعلاً؛ عندما يكون كلاهما سالباً، البائعون يقودون. تقارب قوة الثور مع السعر الذي يؤكد قمة يشير إلى نمط إنهاك."
+      },
+      "why_it_matters": {
+        "en": "A negative Bull/Bear reading combined with high RSI is one of the cleanest exhaustion patterns - the engine uses it (alongside price vs. EMA-13) to flag SELL / AVOID on positions whose buying fuel has run out.",
+        "ar": "قراءة Bull/Bear سالبة مع RSI مرتفع هو أحد أنظف أنماط الإنهاك - يستخدمه المحرك (مع السعر مقابل EMA-13) لتمييز بيع/تجنّب للمراكز التي نفد وقود شرائها."
+      }
+    },
+    {
+      "term": {
+        "en": "Highs/Lows (14D Position %)",
+        "ar": "الأعلى/الأدنى (موقع 14 يوم %)"
+      },
+      "bias": null,
+      "definition": {
+        "en": "Where today's close sits inside its own 14-bar high-low range, as a 0-100 percentage. 100 = at the high (potential breakout), 0 = at the low (potential breakdown). Different from a 52-week measure, which is too coarse for entry timing.",
+        "ar": "أين يقع إغلاق اليوم ضمن نطاق الأعلى-الأدنى الخاص به لمدة 14 شمعة، كنسبة مئوية من 0 إلى 100. 100 = عند الأعلى (اختراق محتمل)، 0 = عند الأدنى (انهيار محتمل). يختلف عن مقياس 52 أسبوع الذي أدق من توقيت الدخول."
+      },
+      "why_it_matters": {
+        "en": "A score above 80 strengthens any breakout signal independently of RSI - so you can confirm a real breakout without waiting for RSI to swing back, and also catch exhaustion when this falls while price holds steady.",
+        "ar": "درجة فوق 80 تعزز أي إشارة اختراق بشكل مستقل عن RSI - لذا يمكنك تأكيد اختراق حقيقي دون انتظار RSI للارتداد، وايضاً التقاط الإنهاك عندما تنخفض هذه القراءة بينما يظل السعر ثابتاً."
+      }
+    },
+    {
+      "term": {
+        "en": "Relative Value Score (0-100)",
+        "ar": "درجة القيمة النسبية (0-100)"
+      },
+      "bias": null,
+      "definition": {
+        "en": "Composite valuation score comparing P/E vs the sector average AND dividend yield (higher yield earns more) AND P/B vs sector average. P/E alone gets clipped at +200 EPS-yield so a 1/P-E of 20% maps to 100.",
+        "ar": "درجة تقييم مركّبة تقارن نسبة P/E بمتوسط القطاع وعائد التوزيعات (العائد الأعلى يأخذ نقاطاً أكثر) ونسبة P/B بمتوسط القطاع. يُقص P/E المنفرد عند نسبة ربح 20% كحد أقصى، لذا عائد 1/P-E بـ20% يُكافئ 100."
+      },
+      "why_it_matters": {
+        "en": "A high Relative Value + Low Price Momentum reading is the classic 'value-trap or accumulation?' question - the matrix surfaces it as a separate signal so users have the underlying puzzle pieces, not a single blended verdict.",
+        "ar": "قيمة نسبية عالية + زخم سعري منخفض هو السؤال الكلاسيكي 'فخ قيمة أم تجميع؟' - تعرضه المصفوفة كإشارة مستقلة ليحصل المستخدم على قطع اللغز الأساسية بدل حكم واحد مخلوط."
+      }
+    },
+    {
+      "term": {
+        "en": "Price Momentum Score (0-100)",
+        "ar": "درجة زخم السعر (0-100)"
+      },
+      "bias": null,
+      "definition": {
+        "en": "Composite momentum score from RSI position (above 50 contributes), MACD histogram sign (positive contributes), 6-day ROC sign, and the 20D slope of close (rising prices contribute). Trend-aligned names score high.",
+        "ar": "درجة زخم مركّبة من موقع RSI (فوق 50 يُساهم)، إشارة MACD التاريخية (الموجبة تُساهم)، إشارة ROC لـ 6 أيام، وميل الإغلاق لـ 20 يوم (الأسعار الصاعدة تُساهم). الأسهم المتوافقة مع الاتجاه تحصل على درجات عالية."
+      },
+      "why_it_matters": {
+        "en": "When Price Momentum falls while Relative Value rises, you've found a value name whose market has temporarily turned against it - the matrix shows both halves separately precisely so you can see 'cheap AND weakening' without confusion.",
+        "ar": "عندما ينخفض زخم السعر وترتفع القيمة النسبية، فقد وجدت سهم قيمة اتجه السوق ضده مؤقتاً - تعرض المصفوفة كل نصف على حدة تحديداً لتتمكن من رؤية 'رخيص وضعيف' بدون لبس."
+      }
+    },
+    {
+      "term": {
+        "en": "Cash Flow Health Score (est., 0-100)",
+        "ar": "درجة صحة التدفق النقدي (تقديرية، 0-100)"
+      },
+      "bias": null,
+      "definition": {
+        "en": "ESTIMATE ONLY - built only from dividend yield's sustainability (a yield that would require >100% of typical earnings to fund scores very low). This is NOT a real cash-flow-statement figure. If the ticker pays no dividend, this stays None.",
+        "ar": "تقدير فقط - مبنية فقط من استدامة عائد التوزيعات (العائد الذي يتطلب أكثر من 100% من الأرباح المعتادة لتمويله يُسجّل منخفضاً جداً). هذا ليس رقم كشف تدفق نقدي حقيقي. إذا لم يدفع السهم توزيعات، تبقى None."
+      },
+      "why_it_matters": {
+        "en": "It lets the matrix show SOMETHING for every ticker instead of blank cells in the 'Cash Flow Health' column. The 'est.' suffix in the column header is the honest disclosure that this is a proxy, not the real metric.",
+        "ar": "تسمح للمصفوفة بعرض شيء لكل سهم بدلاً من خلايا فارغة في عمود 'صحة التدفق النقدي'. لاحقة 'تقديرية' في رأس العمود هي الإفصاح الأمين أن هذا بديل وليس المقياس الحقيقي."
+      }
+    },
+    {
+      "term": {
+        "en": "Profitability Health Score (est., 0-100)",
+        "ar": "درجة صحة الربحية (تقديرية، 0-100)"
+      },
+      "bias": null,
+      "definition": {
+        "en": "ESTIMATE ONLY - mapped from earnings yield (1/P-E), clipped at 20% so a 5% earnings-yield reads 25, 10% reads 50, 20%+ reads 100. When the ticker has no reported EPS, this falls back to 15 (neutral, not zero).",
+        "ar": "تقدير فقط - مشتق من عائد الأرباح (1/P-E)، مقصوص عند 20% كحد أقصى، لذا عائد أرباح 5% يقرأ 25، و10% يقرأ 50، و20%+ يقرأ 100. عندما لا يكون لدى السهم ربحية معلنة، يعود إلى 15 (محايد، ليس صفراً)."
+      },
+      "why_it_matters": {
+        "en": "It's an imperfect proxy, but it's directional - and combined with Relative Value, a high Profitability Health + low P/E is one of the strongest 'still-cheap' signals the matrix can produce.",
+        "ar": "إنه بديل غير مثالي، لكنه اتجاهي - ومدمجاً مع القيمة النسبية، تشكل صحة ربحية عالية + P/E منخفض إحدى أقوى إشارات 'لا يزال رخيصاً' التي يمكن للمصفوفة إنتاجها."
+      }
+    },
+    {
+      "term": {
+        "en": "Growth Health Score (est., 0-100)",
+        "ar": "درجة صحة النمو (تقديرية، 0-100)"
+      },
+      "bias": null,
+      "definition": {
+        "en": "ESTIMATE ONLY - derived entirely from 1Y and 3Y price returns as a proxy for fundamental growth (the data feed does not carry reported revenue/EPS growth). Score 50 = neutral; scores >70 imply strong recent growth; <30 implies mean-reverting weakness.",
+        "ar": "تقدير فقط - مستمد بالكامل من عوائد السعر لسنوات 1 و3 كبديل للنمو الأساسي (مصدر البيانات لا يحمل نسب نمو الإيرادات/الأرباح المعلنة). الدرجة 50 = محايد؛ فوق 70 تعني نمواً قوياً حديثاً؛ تحت 30 تعني ضعفاً عائداً للمتوسط."
+      },
+      "why_it_matters": {
+        "en": "It uses what we actually have (1Y/3Y price returns) instead of inventing a fundamental-growth figure we do not have - so the column header's 'est.' tells you the column is a proxy built from price action itself.",
+        "ar": "تستخدم ما لدينا فعلياً (عوائد السعر لسنوات 1 و3) بدلاً من اختلاق رقم نمو أساسي لا نملكه - لذا فإن 'تقديرية' في رأس العمود تُخبرك أن العمود بديل مبني من حركة السعر نفسها."
+      }
     }
   ]
 }
