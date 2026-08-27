@@ -4643,7 +4643,12 @@ class QuantDashboard(QMainWindow):
     def _build_movers_tab(self):
         container = QWidget()
         v_layout = QVBoxLayout(container)
-        v_layout.setSpacing(4)
+        # More breathing room between sections - the tight 4px spacing
+        # this tab shipped with, combined with 7 stacked sections and no
+        # scroll area (see below), is what made everything look crammed
+        # and overlapping.
+        v_layout.setSpacing(18)
+        v_layout.setContentsMargins(6, 6, 6, 6)
 
         intro = QLabel(tr(
             "📊 Best 5 Gainers / Worst 5 Losers of the latest session - "
@@ -4652,7 +4657,7 @@ class QuantDashboard(QMainWindow):
             "and names trading at their 52-week High/Low. Click any column header to sort."
         ))
         intro.setWordWrap(True)
-        intro.setStyleSheet("font-size: 11px; color: #a0aec0; padding: 2px 2px 6px 2px;")
+        intro.setStyleSheet("font-size: 11px; color: #a0aec0; padding: 2px 2px 10px 2px;")
         v_layout.addWidget(intro)
 
         sections = [
@@ -4666,14 +4671,30 @@ class QuantDashboard(QMainWindow):
         ]
         for title, attr_name, cols in sections:
             lbl = QLabel(tr(title))
-            lbl.setStyleSheet("font-weight: bold; font-size: 13px; padding: 4px 2px 2px 2px;")
+            lbl.setStyleSheet("font-weight: bold; font-size: 14px; padding: 6px 2px 4px 2px;")
             v_layout.addWidget(lbl)
             tbl = self._make_picks_table(cols)
-            tbl.setMinimumHeight(140)
+            # Fixed, generous height (header + up to 5 data rows + a
+            # little breathing room) so every section shows its full
+            # top-5 list without its own internal scrollbar - same
+            # min==max pattern the Top 10 Overview tab already uses.
+            tbl.setMinimumHeight(220)
+            tbl.setMaximumHeight(220)
             setattr(self, attr_name, tbl)
             v_layout.addWidget(tbl)
 
-        return container
+        v_layout.addStretch()
+
+        # Wrap in a scroll area so the WHOLE tab scrolls once its 7
+        # sections don't all fit in the visible window height, instead
+        # of Qt squeezing/clipping everything into whatever space is
+        # left (which is what produced the overlapping-looking rows) -
+        # same pattern already used by the Top 10 Overview and Session
+        # Picks tabs.
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setWidget(container)
+        return scroll
 
     def _compute_daily_movers(self, top_n: int = 5) -> dict:
         """Full Daily Movers bundle (gainers/losers/most_active/valuation
