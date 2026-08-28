@@ -196,16 +196,33 @@ def enable_movable_columns(header: QHeaderView, settings_key: str) -> None:
     QHeaderView.saveState()/restoreState() bundle section order, widths,
     AND per-section hidden state into one opaque blob, which is exactly
     what we want here: whatever the user last dragged into place (and
-    whatever the existing 👁️ Columns chooser last hid/showed) both come
-    back together on the next launch.
+    whatever the 👁️ Columns chooser last hid/showed - see
+    ColumnChooserDialog, which calls _persist_header_state() on every
+    checkbox toggle using this exact same settings_key) both come back
+    together on the next launch.
     """
     header.setSectionsMovable(True)
     saved = _SETTINGS.value(f"header_state/{settings_key}")
     if saved is not None:
         header.restoreState(saved)
     header.sectionMoved.connect(
-        lambda *_args, h=header, key=settings_key: _SETTINGS.setValue(f"header_state/{key}", h.saveState())
+        lambda *_args, h=header, key=settings_key: _persist_header_state(h, key)
     )
+
+
+def _persist_header_state(header: QHeaderView, settings_key: str | None) -> None:
+    """Writes ``header``'s current saveState() (order + widths + hidden
+    state) to the same QSettings key enable_movable_columns() restores
+    from at startup. BUGFIX: previously only a drag-reorder
+    (header.sectionMoved) ever triggered this write - toggling a column's
+    visibility via ColumnChooserDialog's checkboxes changed the header in
+    memory but never got persisted, so hide/show choices were silently
+    lost the moment the app was closed and reopened (drag-reordering the
+    same columns, on the same tab, DID survive - only visibility didn't).
+    ColumnChooserDialog now calls this directly on every toggle."""
+    if not settings_key:
+        return
+    _SETTINGS.setValue(f"header_state/{settings_key}", header.saveState())
 
 # Keyed by the exact English string used at the call site — this lets us
 # retrofit i18n onto an existing codebase without inventing a parallel set
@@ -1525,10 +1542,17 @@ class NumericTableWidgetItem(QTableWidgetItem):
 
 
 class ColumnChooserDialog(QDialog):
-    def __init__(self, table_view, lang="EN", parent=None):
+    def __init__(self, table_view, lang="EN", parent=None, settings_key: str | None = None):
         super().__init__(parent)
         self.table_view = table_view
         self.lang = lang
+        # BUGFIX: when set, every checkbox toggle below is persisted to
+        # QSettings under the SAME key enable_movable_columns() already
+        # uses for this table's drag-order/width state (see that
+        # function's docstring) - so a hide/show choice made here now
+        # survives an app restart exactly like a drag-reorder already did.
+        # None only for tabs with no persisted header state at all.
+        self.settings_key = settings_key
         t = TRANSLATIONS[lang]
         self.setWindowTitle(t["col_dialog_title"])
         self.resize(350, 400)
@@ -1570,7 +1594,7 @@ class ColumnChooserDialog(QDialog):
 
             chk = QCheckBox(col_name)
             chk.setChecked(not self.table_view.isColumnHidden(col))
-            chk.toggled.connect(lambda state, c=col: self.table_view.setColumnHidden(c, not state))
+            chk.toggled.connect(lambda state, c=col: self._on_toggle(c, state))
             self.vbox.addWidget(chk)
             self.checkboxes.append(chk)
 
@@ -1583,12 +1607,17 @@ class ColumnChooserDialog(QDialog):
         btn_close.clicked.connect(self.accept)
         layout.addWidget(btn_close)
 
+    def _on_toggle(self, col: int, state: bool) -> None:
+        self.table_view.setColumnHidden(col, not state)
+        _persist_header_state(self.table_view.horizontalHeader(), self.settings_key)
+
     def set_all(self, state: bool):
         for idx, chk in enumerate(self.checkboxes):
             chk.blockSignals(True)
             chk.setChecked(state)
             self.table_view.setColumnHidden(idx, not state)
             chk.blockSignals(False)
+        _persist_header_state(self.table_view.horizontalHeader(), self.settings_key)
 
 
 class ThemeSettingsDialog(QDialog):
@@ -4376,8 +4405,9 @@ class QuantDashboard(QMainWindow):
         self._fin_stmt_cols = ["Accounting Metric / Line Item", "Value (EGP / %)"]
         self.tbl_fin_stmt.setHorizontalHeaderLabels([tr(c) for c in self._fin_stmt_cols])
         self.tbl_fin_stmt.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        enable_movable_columns(self.tbl_fin_stmt.horizontalHeader(), "fin_stmt")
 
-        self.tbl_top_strong = self._create_matrix_table()
+        self.tbl_top_strong = self._create_matrix_table(settings_key="top10")
         self.tbl_top_breakout = self._create_matrix_table()
         self.tbl_top_accum = self._create_matrix_table()
         self.tbl_top_dip = self._create_matrix_table()
@@ -4416,23 +4446,28 @@ class QuantDashboard(QMainWindow):
     def open_column_chooser(self):
         current_idx = self.tabs.currentIndex()
         view = None
+        # Matches the settings_key each table was already given at
+        # creation time (see enable_movable_columns() call sites above) -
+        # this is what makes a hide/show choice here land in the SAME
+        # QSettings entry that table already restores from on startup.
+        settings_key = None
         if current_idx == 0:
-            view = self.tbl_buys
+            view = self.tbl_buys; settings_key = "matrix"
         elif current_idx == 1:
-            view = self.tbl_sectors
+            view = self.tbl_sectors; settings_key = "sectors"
         elif current_idx == 2:
-            view = self.tbl_exits
+            view = self.tbl_exits; settings_key = "exits"
         elif current_idx == 3:
-            view = self.tbl_breakout_watch
+            view = self.tbl_breakout_watch; settings_key = "breakout_watch"
         elif current_idx == 4:
-            view = self.tbl_closed
+            view = self.tbl_closed; settings_key = "closed"
         elif current_idx == 5:
-            view = self.tbl_fin_stmt
+            view = self.tbl_fin_stmt; settings_key = "fin_stmt"
         elif current_idx == 6:
-            view = self.tbl_top_strong
+            view = self.tbl_top_strong; settings_key = "top10"
             
         if view:
-            dlg = ColumnChooserDialog(view, self.current_lang, self)
+            dlg = ColumnChooserDialog(view, self.current_lang, self, settings_key=settings_key)
             dlg.exec()
         else:
             msg = "Column selection is not applicable for this tab." if self.current_lang == "EN" else "تحديد الأعمدة غير متاح في هذه التبويبة."
