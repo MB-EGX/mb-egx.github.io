@@ -2472,6 +2472,27 @@
             "⚪ CONSOLIDATION": "⚪ تماسك",
         };
 
+        // Strips only the long, auto-generated confirmation-gate explanation
+        // parenthetical from an Action string for DISPLAY purposes (e.g.
+        // "🟡 HOLD / NEUTRAL (Signal unconfirmed: 2/4 factors passed, need 3 -
+        // low ADX, below VWAP) [💥 SQUEEZE]" -> "🟡 HOLD / NEUTRAL [💥 SQUEEZE]").
+        // Short, meaningful qualifiers like "(X-OVER + MOMENTUM)" or "(Below
+        // VWAP)" are left alone - only the "factors passed" / "reward:risk"
+        // gate explanations (decision_matrix.py's own wording, see that
+        // module's action_cmd assignments) are ever this long, so matching on
+        // those two phrases is enough to target them specifically without a
+        // length heuristic that could clip a short label by accident. The
+        // full, untouched string is still shown via the row's title=
+        // tooltip (Signal Reason already carries it verbatim) - nothing here
+        // changes row.Action itself, only what's rendered in the cell.
+        function actionShortLabel(raw) {
+            if (!raw) return '';
+            // Allows one level of nested parens inside the explanation itself
+            // (e.g. "...need 3 - ... (no support found), ... (STOCH/StochRSI/CCI))")
+            // - a plain [^()]* stops at the FIRST inner ")" and leaves the rest
+            // of the explanation (plus a stray trailing ")") in the short label.
+            return raw.replace(/\s*\((?:[^()]|\([^()]*\))*(?:factors passed|reward:risk)(?:[^()]|\([^()]*\))*\)/i, '').trim();
+        }
         function trAction(raw) {
             if (!raw) return '';
             let display = raw;
@@ -5594,7 +5615,7 @@
                 const tr = document.createElement('tr');
                 tr.className = 'border-b border-bordercol/40 hover:bg-panelbg transition';
                 tr.innerHTML = `
-                    <td class="p-2.5 font-sans text-textmuted">${rowCount}</td><td class="p-2.5 font-bold text-sky-400">${escapeHtml(row.Ticker) || '-'}</td><td class="p-2.5 text-center font-sans ${posStyle}">${posLabel}</td><td class="p-2 text-center font-sans ${actionStyle} rounded-full shadow-sm px-3" title="${escapeHtml(row['Signal Reason'] || '')}">${trAction(row.Action) || '-'}</td>
+                    <td class="p-2.5 font-sans text-textmuted">${rowCount}</td><td class="p-2.5 font-bold text-sky-400">${escapeHtml(row.Ticker) || '-'}</td><td class="p-2.5 text-center font-sans ${posStyle}">${posLabel}</td><td class="p-2 text-center font-sans ${actionStyle} rounded-full shadow-sm px-3 max-w-[200px] truncate cursor-help" title="${escapeHtml(row['Signal Reason'] || row.Action || '')}">${trAction(actionShortLabel(row.Action)) || '-'}</td>
                     <td class="p-2.5 text-center font-sans">${momentumBadge}</td>
                     <td class="p-2.5 text-textmain font-bold">${row["Rank Score"] || 0} <span class="text-[10px] font-normal text-textmuted" title="Kelly %: ${row["Kelly %"] ?? '-'}">K ${row["Kelly %"] ?? '-'}</span></td><td class="p-2.5 font-bold text-white">${row["Current Price"] || 0}</td><td class="p-2.5 text-textmain">${row["Target Entry (VWAP)"] || 0}</td>
                     <td class="p-2.5 text-rose-400 font-semibold">${row["Suggested Stop-Loss"] || 0}</td><td class="p-2.5 text-textmain" title="Estimated from your own cash balance">${estimateSuggestedShares(row["Target Entry (VWAP)"], row["Suggested Stop-Loss"]).toLocaleString()}</td>

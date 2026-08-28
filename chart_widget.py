@@ -424,7 +424,12 @@ class StockSectorChartWidget(QWidget):
         style_layout.addWidget(self.lbl_time_zoom)
         self._timeframe_buttons = {}
         self._timeframe_limit = 0
-        for tf, bars in (("1M", 22), ("3M", 66), ("6M", 132), ("1Y", 252), ("ALL", 0)):
+        # BUGFIX: web dashboard's timeframe-buttons bar has 1W/2W (index.html:
+        # applyTimeFrame('1W')/('2W'), barCount 5/10 respectively) that this
+        # "parity port" (see comment above) never actually included - added
+        # here with the same 5/10-bar mapping so both apps offer the same
+        # zoom levels.
+        for tf, bars in (("1W", 5), ("2W", 10), ("1M", 22), ("3M", 66), ("6M", 132), ("1Y", 252), ("ALL", 0)):
             btn = QPushButton(tf)
             btn.setCheckable(True)
             btn.setChecked(bars == 0)

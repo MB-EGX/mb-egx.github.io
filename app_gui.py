@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import time
 import traceback
@@ -1172,6 +1173,29 @@ THEMES_MAP = {
 }
 
 
+# Strips only the long, auto-generated confirmation-gate explanation
+# parenthetical from an Action string for DISPLAY purposes (e.g.
+# "🟡 HOLD / NEUTRAL (Signal unconfirmed: 2/4 factors passed, need 3 - low
+# ADX, below VWAP) [💥 SQUEEZE]" -> "🟡 HOLD / NEUTRAL [💥 SQUEEZE]"). Short,
+# meaningful qualifiers like "(X-OVER + MOMENTUM)" or "(Below VWAP)" are
+# left alone - only decision_matrix.py's "factors passed"/"reward:risk" gate
+# explanations are ever this long, so matching those two phrases targets
+# them specifically without a length heuristic that could clip a short
+# label by accident. Mirrors index.html's actionShortLabel() so both apps
+# show the same short label; the full text is still available via the
+# Action column's ToolTipRole (Signal Reason, see MatrixTableModel.data()).
+_ACTION_LONG_EXPLANATION_RE = re.compile(
+    r"\s*\((?:[^()]|\([^()]*\))*(?:factors passed|reward:risk)(?:[^()]|\([^()]*\))*\)",
+    re.IGNORECASE,
+)
+
+
+def _action_short_label(raw: str) -> str:
+    if not raw:
+        return raw
+    return _ACTION_LONG_EXPLANATION_RE.sub("", raw).strip()
+
+
 class MatrixTableModel(QAbstractTableModel):
     def __init__(self, data=None, parent=None):
         super().__init__(parent)
@@ -1320,7 +1344,9 @@ class MatrixTableModel(QAbstractTableModel):
         val_str = str(val)
 
         if role == Qt.ItemDataRole.DisplayRole:
-            if key in ("Action", "Trend Class", "Data Confidence", "Position"):
+            if key == "Action":
+                return tr(_action_short_label(val_str))
+            if key in ("Trend Class", "Data Confidence", "Position"):
                 return tr(val_str)
             if key == "Momentum":
                 return tr(val_str) if val_str and val_str != "-" else "—"

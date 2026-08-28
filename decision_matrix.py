@@ -2004,6 +2004,17 @@ class DecisionMatrix:
                                     "Breakout Score": round(bw_score, 1),
                                     "Tier": tier,
                                     "Current Price": round(curr_price, 4),
+                                    # BUGFIX: was never set, so every row showed "-" in both
+                                    # apps (app_gui.py's tbl_breakout_watch and index.html's
+                                    # hdr_entry_price both already read this key - see each
+                                    # file's own "Entry Price" column - the backend just never
+                                    # populated it). Per app_gui.py's own column tooltip this is
+                                    # the reference entry level the setup is being scored
+                                    # against right now - i.e. today's close, same figure as
+                                    # "Current Price" here - not a separate computed trigger
+                                    # price, so no new calculation is needed, just surfacing
+                                    # the value that already exists.
+                                    "Entry Price": round(curr_price, 4),
                                     "Dist. to Resistance (%)": dist_to_resistance,
                                     "Momentum": momentum_flag,
                                     "RSI-14": round(rsi, 1),
