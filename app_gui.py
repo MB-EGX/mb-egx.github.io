@@ -4357,6 +4357,7 @@ class QuantDashboard(QMainWindow):
             ("Tier", "Watching (below the confirmed bar) / Confirmed / High Confidence (also pushes a Telegram alert)"),
             ("Breakout Score", "0-100 composite pre-breakout score (higher = more setup elements aligned)"),
             ("Price", "Current close price"),
+            ("Entry Price", "Reference entry — the price at which this setup is being scored (current close). Your reference level if the breakout confirms."),
             ("Dist. to Resistance %", "% move still needed to reach the recent high"),
             ("RSI-14", "14-period Relative Strength Index"),
             ("ADX-14", "14-period trend-strength index"),
