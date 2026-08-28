@@ -4375,6 +4375,15 @@ class QuantDashboard(QMainWindow):
         self.exits_chart_widget.rad_sector.setVisible(False)
         self.exits_chart_widget.lbl_select.setVisible(False)
         self.exits_chart_widget.alpha_container.setVisible(False)
+        # Generous fixed floor so the chart gets real room to breathe
+        # (candles/patterns/S-R are hard to read squeezed into a sliver) -
+        # the table's own minimum below is set to roughly its normal
+        # comfortable size too, so neither one is shrunk to make room for
+        # the other. The two floors combined are taller than most screens
+        # at once, which is exactly why this whole tab lives inside a
+        # QScrollArea below - extra height needed is reached by scrolling
+        # the tab, not by squeezing either panel.
+        self.exits_chart_widget.setMinimumHeight(700)
 
         self.exits_chart_container = QWidget()
         exits_chart_layout = QVBoxLayout(self.exits_chart_container)
@@ -4393,13 +4402,30 @@ class QuantDashboard(QMainWindow):
         exits_chart_header.addWidget(btn_close_exits_chart)
         exits_chart_layout.addLayout(exits_chart_header)
         exits_chart_layout.addWidget(self.exits_chart_widget)
+        self.exits_chart_container.setMinimumHeight(730)
         self.exits_chart_container.setVisible(False)  # hidden until a ticker is clicked
+
+        # The table keeps a comfortable minimum height of its own (close
+        # to what it had full-tab before this panel existed) rather than
+        # being squeezed down to fit whatever's left once the chart
+        # appears - both floors below are why the scroll area is needed.
+        self.tbl_exits.setMinimumHeight(360)
 
         self.exits_splitter = QSplitter(Qt.Orientation.Vertical)
         self.exits_splitter.addWidget(self.tbl_exits)
         self.exits_splitter.addWidget(self.exits_chart_container)
         self.exits_splitter.setStretchFactor(0, 1)
         self.exits_splitter.setStretchFactor(1, 1)
+
+        # Wrap in a scroll area: the table's minimum + the chart's minimum
+        # together are taller than most windows can show at once. Rather
+        # than trading one panel's space for the other's, the tab itself
+        # scrolls - both keep their full intended size, and the extra is
+        # reached by scrolling down instead of by compression.
+        self.exits_scroll_area = QScrollArea()
+        self.exits_scroll_area.setWidgetResizable(True)
+        self.exits_scroll_area.setFrameShape(QFrame.Shape.NoFrame)
+        self.exits_scroll_area.setWidget(self.exits_splitter)
 
         self.tbl_exits.cellClicked.connect(self._on_exits_ticker_clicked)
 
@@ -4475,7 +4501,7 @@ class QuantDashboard(QMainWindow):
         # Precise 8 Tab mappings matching TRANSLATIONS
         self.tabs.addTab(self.tbl_buys, "📈 Action Matrix")
         self.tabs.addTab(self.tbl_sectors, "🏢 Sectors")
-        self.tabs.addTab(self.exits_splitter, "🛡️ Exits")
+        self.tabs.addTab(self.exits_scroll_area, "🛡️ Exits")
         self.tabs.addTab(self.tbl_breakout_watch, "🎯 Pre-Breakout Watchlist")
         self.tabs.addTab(self.session_picks_widget, "🎯 Session Picks")
         logger.info(f"Session Picks tab added. Total tab count is now: {self.tabs.count()}")
@@ -6248,8 +6274,17 @@ class QuantDashboard(QMainWindow):
         self.exits_chart_widget.select_ticker(ticker)
         if not self.exits_chart_container.isVisible():
             self.exits_chart_container.setVisible(True)
-            total_h = self.exits_splitter.height() or 800
-            self.exits_splitter.setSizes([int(total_h * 0.4), int(total_h * 0.6)])
+            # Fixed target sizes rather than a % split of current height:
+            # exits_scroll_area lets the splitter grow past the visible
+            # viewport now, so there's no fixed "total" to divide - just
+            # ask each pane for its natural size (its minimumHeight floor
+            # from above) and let the scroll area handle the overflow.
+            self.exits_splitter.setSizes([360, 730])
+            # Scroll down so the newly-revealed chart is actually in view
+            # instead of staying below the fold until the user notices it.
+            QTimer.singleShot(0, lambda: self.exits_scroll_area.verticalScrollBar().setValue(
+                self.exits_scroll_area.verticalScrollBar().maximum()
+            ))
 
     def apply_screener_preset(self, preset_id: str):
         # Single-select, toggle-off-on-repeat-click - identical behavior to
