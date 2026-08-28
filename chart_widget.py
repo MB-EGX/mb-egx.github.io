@@ -908,6 +908,34 @@ class StockSectorChartWidget(QWidget):
         self.cmb_selector.blockSignals(False)
         self.plot_chart()
 
+    def select_ticker(self, ticker: str):
+        """Programmatic ticker selection — e.g. from another widget's
+        table (Exits tab row click), rather than a user interacting with
+        this widget's own controls directly. Switches to Per-Stock mode
+        (candles/patterns/S-R only apply to a single stock's own OHLC
+        series - see the mode-toggle comment in _init_ui) and clears any
+        alphabet quick-filter that could otherwise hide the requested
+        ticker from cmb_selector, then selects it. A no-op on an empty/
+        blank ticker (e.g. a summary row's descriptive text, which
+        callers should already be filtering out before calling this -
+        this is just a defensive second check)."""
+        ticker = (ticker or "").strip().upper()
+        if not ticker:
+            return
+        if not self.rad_stock.isChecked():
+            self.rad_stock.setChecked(True)  # triggers on_mode_changed -> populate_selector
+        if self.current_letter_filter != "ALL":
+            self.apply_letter_filter("ALL")  # repopulates cmb_selector without a letter filter
+        idx = self.cmb_selector.findText(ticker)
+        if idx < 0:
+            # Selector may not have been populated yet on a cold widget.
+            self.populate_selector()
+            idx = self.cmb_selector.findText(ticker)
+        if idx >= 0:
+            self.cmb_selector.setCurrentIndex(idx)  # triggers plot_chart via currentIndexChanged
+        else:
+            self.plot_chart()
+
     def _save_chart(self):
         file_path, _ = QFileDialog.getSaveFileName(self, "Save Chart" if self.lang == "EN" else "حفظ الرسم", "mb_egx_chart.png", "PNG Files (*.png)")
         if file_path:

@@ -35,7 +35,7 @@ from PyQt6.QtWidgets import (
     QLineEdit, QMainWindow, QMessageBox, QProgressBar, QPushButton, QScrollArea,
     QTableWidget, QTableWidgetItem, QTableView, QTabWidget, QVBoxLayout, QWidget,
     QCheckBox, QTextEdit, QSizePolicy, QFrame, QTextBrowser,
-    QSystemTrayIcon, QGridLayout
+    QSystemTrayIcon, QGridLayout, QSplitter
 )
 
 try:
@@ -4351,6 +4351,58 @@ class QuantDashboard(QMainWindow):
         # overrides these defaults, since it's the user's own last layout.
         enable_movable_columns(self.tbl_exits.horizontalHeader(), "exits")
 
+        # Which logical column holds "Ticker" — looked up by name rather
+        # than hard-coded as 0, so this keeps working even if a column
+        # gets inserted/reordered in _exit_columns later. Movable-column
+        # drag reordering (enable_movable_columns above) only changes the
+        # VISUAL position, not this logical index, so this stays correct
+        # even after the user drags columns around.
+        self._exit_ticker_col = next(i for i, (h, _t) in enumerate(self._exit_columns) if h == "Ticker")
+
+        # Inline chart panel: click a ticker's name in the Exits table and
+        # its chart (Candle/Line, patterns, Support/Resistance, Time
+        # Horizon — same controls as the standalone Charts tab, reusing
+        # that exact widget class) drops in below the table instead of
+        # having to flip to a separate tab and re-select the ticker there.
+        self.exits_chart_widget = StockSectorChartWidget(self.qe, self.dbm, self)
+        # Per-Stock/Per-Sector mode + the A-Z quick filter are redundant
+        # here (a row click always means "this one stock", and the letter
+        # filter only helps when browsing the full universe via the
+        # dropdown) — hidden to keep this panel compact under the table.
+        # Doesn't affect chart_widget's own internal logic: rad_stock
+        # stays checked (its default), it's just not shown/clickable here.
+        self.exits_chart_widget.rad_stock.setVisible(False)
+        self.exits_chart_widget.rad_sector.setVisible(False)
+        self.exits_chart_widget.lbl_select.setVisible(False)
+        self.exits_chart_widget.alpha_container.setVisible(False)
+
+        self.exits_chart_container = QWidget()
+        exits_chart_layout = QVBoxLayout(self.exits_chart_container)
+        exits_chart_layout.setContentsMargins(0, 4, 0, 0)
+        exits_chart_layout.setSpacing(2)
+        exits_chart_header = QHBoxLayout()
+        self.lbl_exits_chart_title = QLabel("📊")
+        self.lbl_exits_chart_title.setStyleSheet("font-weight: bold; padding-left: 4px;")
+        btn_close_exits_chart = QPushButton(tr("✖ Hide Chart"))
+        btn_close_exits_chart.setStyleSheet(
+            "QPushButton { background-color: #2d3748; color: #cbd5e0; border-radius: 4px; border: none; padding: 3px 10px; font-size: 11px; font-weight: bold; }"
+            "QPushButton:hover { background-color: #4a5568; }"
+        )
+        btn_close_exits_chart.clicked.connect(lambda: self.exits_chart_container.setVisible(False))
+        exits_chart_header.addWidget(self.lbl_exits_chart_title, stretch=1)
+        exits_chart_header.addWidget(btn_close_exits_chart)
+        exits_chart_layout.addLayout(exits_chart_header)
+        exits_chart_layout.addWidget(self.exits_chart_widget)
+        self.exits_chart_container.setVisible(False)  # hidden until a ticker is clicked
+
+        self.exits_splitter = QSplitter(Qt.Orientation.Vertical)
+        self.exits_splitter.addWidget(self.tbl_exits)
+        self.exits_splitter.addWidget(self.exits_chart_container)
+        self.exits_splitter.setStretchFactor(0, 1)
+        self.exits_splitter.setStretchFactor(1, 1)
+
+        self.tbl_exits.cellClicked.connect(self._on_exits_ticker_clicked)
+
         self.tbl_breakout_watch = QTableWidget()
         self._breakout_watch_columns = [
             ("Ticker", "Stock ticker symbol"),
@@ -4423,7 +4475,7 @@ class QuantDashboard(QMainWindow):
         # Precise 8 Tab mappings matching TRANSLATIONS
         self.tabs.addTab(self.tbl_buys, "📈 Action Matrix")
         self.tabs.addTab(self.tbl_sectors, "🏢 Sectors")
-        self.tabs.addTab(self.tbl_exits, "🛡️ Exits")
+        self.tabs.addTab(self.exits_splitter, "🛡️ Exits")
         self.tabs.addTab(self.tbl_breakout_watch, "🎯 Pre-Breakout Watchlist")
         self.tabs.addTab(self.session_picks_widget, "🎯 Session Picks")
         logger.info(f"Session Picks tab added. Total tab count is now: {self.tabs.count()}")
@@ -4543,6 +4595,8 @@ class QuantDashboard(QMainWindow):
 
         if hasattr(self, "chart_widget"):
             self.chart_widget.set_language(self.current_lang)
+        if hasattr(self, "exits_chart_widget"):
+            self.exits_chart_widget.set_language(self.current_lang)
         self.update_last_data_date_display()
         self.refresh_account_header()
 
@@ -6144,6 +6198,8 @@ class QuantDashboard(QMainWindow):
 
         if hasattr(self, "chart_widget"):
             self.chart_widget.populate_selector()
+        if hasattr(self, "exits_chart_widget"):
+            self.exits_chart_widget.refresh_data()
         self.apply_filters()
         self._fill_movers(self._compute_daily_movers())
 
@@ -6170,6 +6226,30 @@ class QuantDashboard(QMainWindow):
         model = getattr(table_view, "source_model", None) or table_view.model()
         if hasattr(model, "update_data"):
             model.update_data(data_list)
+
+    def _on_exits_ticker_clicked(self, row: int, column: int):
+        """Ticker cell clicked in the Exits table -> load that ticker
+        into the inline chart panel and reveal it (see exits_splitter /
+        exits_chart_widget, built alongside tbl_exits above)."""
+        if column != self._exit_ticker_col:
+            return
+        item = self.tbl_exits.item(row, self._exit_ticker_col)
+        if not item:
+            return
+        ticker = item.text().strip()
+        # Skip the "OPEN POSITIONS TOTAL" / "ACCOUNT TOTAL" summary rows -
+        # their Ticker cell holds a descriptive sentence, not a real
+        # ticker (see the two rows appended in _fill_matrix_view/wherever
+        # exits totals are built). Validate against the real universe
+        # instead of guessing at the sentence's shape.
+        if not ticker or ticker.upper() not in {t.upper() for t in self.dbm.get_unique_tickers()}:
+            return
+        self.lbl_exits_chart_title.setText(f"📊 {ticker}")
+        self.exits_chart_widget.select_ticker(ticker)
+        if not self.exits_chart_container.isVisible():
+            self.exits_chart_container.setVisible(True)
+            total_h = self.exits_splitter.height() or 800
+            self.exits_splitter.setSizes([int(total_h * 0.4), int(total_h * 0.6)])
 
     def apply_screener_preset(self, preset_id: str):
         # Single-select, toggle-off-on-repeat-click - identical behavior to
