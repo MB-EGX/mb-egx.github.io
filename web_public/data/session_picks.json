@@ -1,7 +1,27 @@
 {
-  "last_data_date": "2026-08-26",
+  "last_data_date": "2026-08-30",
   "session_picks": {
     "short": [
+      {
+        "id": 38,
+        "ticker": "BONY.CA",
+        "horizon": "short",
+        "pick_date": "2026-08-30",
+        "ref_price": 4.57,
+        "source": "day1_breakout",
+        "rank_score": 42.5,
+        "rank_origin": "Day-1 Breakout",
+        "expected_from": "2026-08-31",
+        "expected_by": "2026-09-02",
+        "expected_pct": 3.0,
+        "stop_loss_pct": 3.0,
+        "days_active": 0,
+        "days_overdue": 0,
+        "is_overdue": false,
+        "benchmark_pct": 0.0,
+        "current_pct": 0.0,
+        "alpha_vs_benchmark_pct": 0.0
+      },
       {
         "id": 33,
         "ticker": "EGAL.CA",
@@ -15,32 +35,12 @@
         "expected_by": "2026-08-31",
         "expected_pct": 3.0,
         "stop_loss_pct": 3.0,
-        "days_active": 0,
+        "days_active": 4,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.0,
-        "current_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
-      },
-      {
-        "id": 32,
-        "ticker": "EMFD.CA",
-        "horizon": "short",
-        "pick_date": "2026-08-26",
-        "ref_price": 12.17,
-        "source": "pre_breakout",
-        "rank_score": 109.1,
-        "rank_origin": "Pre-Breakout Watchlist",
-        "expected_from": "2026-08-27",
-        "expected_by": "2026-08-31",
-        "expected_pct": 3.0,
-        "stop_loss_pct": 3.0,
-        "days_active": 0,
-        "days_overdue": 0,
-        "is_overdue": false,
-        "benchmark_pct": 0.0,
-        "current_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
+        "benchmark_pct": -0.307,
+        "current_pct": 0.55,
+        "alpha_vs_benchmark_pct": 0.86
       },
       {
         "id": 31,
@@ -55,12 +55,12 @@
         "expected_by": "2026-08-31",
         "expected_pct": 3.0,
         "stop_loss_pct": 3.0,
-        "days_active": 0,
+        "days_active": 4,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.0,
-        "current_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
+        "benchmark_pct": -0.307,
+        "current_pct": 0.52,
+        "alpha_vs_benchmark_pct": 0.83
       },
       {
         "id": 30,
@@ -75,12 +75,12 @@
         "expected_by": "2026-08-31",
         "expected_pct": 3.0,
         "stop_loss_pct": 3.0,
-        "days_active": 0,
+        "days_active": 4,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.0,
-        "current_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
+        "benchmark_pct": -0.307,
+        "current_pct": 1.43,
+        "alpha_vs_benchmark_pct": 1.74
       },
       {
         "id": 29,
@@ -95,12 +95,12 @@
         "expected_by": "2026-08-31",
         "expected_pct": 3.0,
         "stop_loss_pct": 3.0,
-        "days_active": 0,
+        "days_active": 4,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.0,
-        "current_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
+        "benchmark_pct": -0.307,
+        "current_pct": 0.46,
+        "alpha_vs_benchmark_pct": 0.77
       }
     ],
     "medium": [
@@ -117,12 +117,12 @@
         "expected_by": "2026-10-28",
         "expected_pct": 8.0,
         "stop_loss_pct": 6.0,
-        "days_active": 0,
+        "days_active": 4,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.0,
-        "current_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
+        "benchmark_pct": -0.307,
+        "current_pct": 4.8,
+        "alpha_vs_benchmark_pct": 5.11
       },
       {
         "id": 34,
@@ -137,15 +137,35 @@
         "expected_by": "2026-10-28",
         "expected_pct": 8.0,
         "stop_loss_pct": 6.0,
+        "days_active": 4,
+        "days_overdue": 0,
+        "is_overdue": false,
+        "benchmark_pct": -0.307,
+        "current_pct": 5.58,
+        "alpha_vs_benchmark_pct": 5.89
+      }
+    ],
+    "long": [
+      {
+        "id": 39,
+        "ticker": "AMOC.CA",
+        "horizon": "long",
+        "pick_date": "2026-08-30",
+        "ref_price": 11.44,
+        "source": "signal",
+        "rank_score": 15.7,
+        "rank_origin": "🟡 HOLD / NEUTRAL (Signal unconfirmed: 3/5 factors passed, need 4 - low volume (RVOL/Z-score not confirmed), no squeeze release)",
+        "expected_from": "2026-11-22",
+        "expected_by": "2027-05-09",
+        "expected_pct": 15.0,
+        "stop_loss_pct": 10.0,
         "days_active": 0,
         "days_overdue": 0,
         "is_overdue": false,
         "benchmark_pct": 0.0,
         "current_pct": 0.0,
         "alpha_vs_benchmark_pct": 0.0
-      }
-    ],
-    "long": [
+      },
       {
         "id": 37,
         "ticker": "PRMH.CA",
@@ -159,32 +179,12 @@
         "expected_by": "2027-05-05",
         "expected_pct": 15.0,
         "stop_loss_pct": 10.0,
-        "days_active": 0,
+        "days_active": 4,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.0,
-        "current_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
-      },
-      {
-        "id": 36,
-        "ticker": "POUL.CA",
-        "horizon": "long",
-        "pick_date": "2026-08-26",
-        "ref_price": 38.44,
-        "source": "signal",
-        "rank_score": 54.1,
-        "rank_origin": "🟡 HOLD / NEUTRAL (Signal unconfirmed: 2/5 factors passed, need 4 - low ADX (trend not confirmed), low volume (RVOL/Z-score not confirmed), no squeeze release)",
-        "expected_from": "2026-11-18",
-        "expected_by": "2027-05-05",
-        "expected_pct": 15.0,
-        "stop_loss_pct": 10.0,
-        "days_active": 0,
-        "days_overdue": 0,
-        "is_overdue": false,
-        "benchmark_pct": 0.0,
-        "current_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
+        "benchmark_pct": -0.307,
+        "current_pct": 5.69,
+        "alpha_vs_benchmark_pct": 6.0
       },
       {
         "id": 28,
@@ -199,71 +199,60 @@
         "expected_by": "2027-05-04",
         "expected_pct": 15.0,
         "stop_loss_pct": 10.0,
-        "days_active": 1,
+        "days_active": 5,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": -0.308,
-        "current_pct": -5.32,
-        "alpha_vs_benchmark_pct": -5.01
+        "benchmark_pct": -0.615,
+        "current_pct": 8.19,
+        "alpha_vs_benchmark_pct": 8.8
       }
     ],
     "achieved_today": [
       {
-        "id": 8,
-        "ticker": "HDBK.CA",
-        "horizon": "medium",
-        "pick_date": "2026-08-13",
-        "ref_price": 87.45,
-        "achieved_date": "2026-08-26",
-        "achieved_price": 96.4,
-        "achieved_pct": 10.23,
-        "source": "signal",
-        "rank_score": 29.1,
-        "rank_origin": "🟡 HOLD / NEUTRAL (Poor reward:risk 0.29x < 0.80x floor)"
-      },
-      {
-        "id": 26,
-        "ticker": "FIRE.CA",
+        "id": 32,
+        "ticker": "EMFD.CA",
         "horizon": "short",
-        "pick_date": "2026-08-24",
-        "ref_price": 5.37,
-        "achieved_date": "2026-08-26",
-        "achieved_price": 5.74,
-        "achieved_pct": 6.89,
-        "source": "signal",
-        "rank_score": 11.8,
-        "rank_origin": "🟡 HOLD / NEUTRAL (Signal unconfirmed: low ADX/volume)"
-      },
-      {
-        "id": 27,
-        "ticker": "OIH.CA",
-        "horizon": "short",
-        "pick_date": "2026-08-24",
-        "ref_price": 1.91,
-        "achieved_date": "2026-08-26",
-        "achieved_price": 2.0,
-        "achieved_pct": 4.71,
-        "source": "signal",
-        "rank_score": 9.8,
-        "rank_origin": "🟡 HOLD / NEUTRAL (Signal unconfirmed: low ADX/volume)"
-      },
-      {
-        "id": 24,
-        "ticker": "ACGC.CA",
-        "horizon": "short",
-        "pick_date": "2026-08-24",
-        "ref_price": 14.08,
-        "achieved_date": "2026-08-26",
-        "achieved_price": 14.64,
-        "achieved_pct": 3.98,
-        "source": "signal",
-        "rank_score": 14.1,
-        "rank_origin": "🟡 HOLD / NEUTRAL (Poor reward:risk 0.19x < 0.80x floor)"
+        "pick_date": "2026-08-26",
+        "ref_price": 12.17,
+        "achieved_date": "2026-08-30",
+        "achieved_price": 12.7,
+        "achieved_pct": 4.35,
+        "source": "pre_breakout",
+        "rank_score": 109.1,
+        "rank_origin": "Pre-Breakout Watchlist"
       }
     ],
-    "retired_today": [],
+    "retired_today": [
+      {
+        "id": 36,
+        "ticker": "POUL.CA",
+        "horizon": "long",
+        "pick_date": "2026-08-26",
+        "ref_price": 38.44,
+        "source": "signal",
+        "rank_score": 54.1,
+        "rank_origin": "🟡 HOLD / NEUTRAL (Signal unconfirmed: 2/5 factors passed, need 4 - low ADX (trend not confirmed), low volume (RVOL/Z-score not confirmed), no squeeze release)",
+        "retired_date": "2026-08-30",
+        "retired_price": 38.43,
+        "retired_pct": -0.03,
+        "retired_reason": "outranked_by_higher_scored_candidate"
+      }
+    ],
     "achieved_this_week": [
       {
+        "id": 32,
+        "ticker": "EMFD.CA",
+        "horizon": "short",
+        "pick_date": "2026-08-26",
+        "ref_price": 12.17,
+        "achieved_date": "2026-08-30",
+        "achieved_price": 12.7,
+        "achieved_pct": 4.35,
+        "source": "pre_breakout",
+        "rank_score": 109.1,
+        "rank_origin": "Pre-Breakout Watchlist"
+      },
+      {
         "id": 8,
         "ticker": "HDBK.CA",
         "horizon": "medium",
@@ -314,24 +303,24 @@
         "source": "signal",
         "rank_score": 14.1,
         "rank_origin": "🟡 HOLD / NEUTRAL (Poor reward:risk 0.19x < 0.80x floor)"
-      },
-      {
-        "id": 22,
-        "ticker": "ICID.CA",
-        "horizon": "short",
-        "pick_date": "2026-08-18",
-        "ref_price": 15.72,
-        "achieved_date": "2026-08-20",
-        "achieved_price": 16.69,
-        "achieved_pct": 6.17,
-        "source": "signal",
-        "rank_score": null,
-        "rank_origin": null
       }
     ],
-    "session_date": "2026-08-26",
+    "session_date": "2026-08-30",
     "benchmark_label": "EGX 30",
     "achieved_history": [
+      {
+        "id": 32,
+        "ticker": "EMFD.CA",
+        "horizon": "short",
+        "pick_date": "2026-08-26",
+        "ref_price": 12.17,
+        "achieved_date": "2026-08-30",
+        "achieved_price": 12.7,
+        "achieved_pct": 4.35,
+        "source": "pre_breakout",
+        "rank_score": 109.1,
+        "rank_origin": "Pre-Breakout Watchlist"
+      },
       {
         "id": 8,
         "ticker": "HDBK.CA",

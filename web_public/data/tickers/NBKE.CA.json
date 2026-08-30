@@ -1,10 +1,10 @@
 {
   "ticker": "NBKE.CA",
-  "last_data_date": "2026-08-26",
+  "last_data_date": "2026-08-30",
   "sector": "Banks",
   "matrix": {
     "Ticker": "NBKE.CA",
-    "Last Bar Date": "2026-08-26",
+    "Last Bar Date": "2026-08-30",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -21,28 +21,28 @@
     "Dividend Yield %": null,
     "Market Cap": 17420000000.0,
     "1W Return %": -9.46,
-    "1M Return %": 9.63,
+    "1M Return %": 5.93,
     "YTD Return %": 20.14,
     "1Y Return %": 47.94,
-    "3Y Return %": 133.83,
+    "3Y Return %": 168.0,
     "External Rating Consensus": 0.375,
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL",
     "Momentum": "Oversold",
-    "Rank Score": -26.9,
-    "Reward:Risk": 0.06,
-    "Win Rate Estimate (%)": 60.0,
+    "Rank Score": -9.7,
+    "Reward:Risk": 0.17,
+    "Win Rate Estimate (%)": 100.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 34.84,
     "Target Entry (VWAP)": 34.8316,
-    "Suggested Stop-Loss": 19.593,
+    "Suggested Stop-Loss": 19.995,
     "Stop-Loss Reliable": true,
-    "Take-Profit Target": 35.7807,
+    "Take-Profit Target": 37.4042,
     "Resistance (52W High)": 85.99,
     "Support (52W Low)": 12.26,
-    "Open": 38.16,
-    "Previous Close": 38.16,
+    "Open": 37.99,
+    "Previous Close": 34.84,
     "Day High": 37.99,
     "Day Low": 33.18,
     "Day's Range": "33.18 - 37.99",
@@ -51,19 +51,19 @@
     "Day Range %": 13.81,
     "Bid": null,
     "Ask": null,
-    "Relative Value Score": 94.6,
-    "Price Momentum Score": 47.5,
+    "Relative Value Score": 94.2,
+    "Price Momentum Score": 47.2,
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": 100.0,
     "Growth Health Score (est.)": 100.0,
-    "STOCH %K": 12.91,
-    "STOCH %D": 14.81,
-    "STOCHRSI": 3.79,
-    "CCI": -14.58,
+    "STOCH %K": 10.94,
+    "STOCH %D": 13.1,
+    "STOCHRSI": 0.0,
+    "CCI": -19.12,
     "ROC": 0.61,
     "Williams %R": -91.03,
-    "UO": 68.86,
-    "Bull/Bear Power": -2.3789,
+    "UO": 63.85,
+    "Bull/Bear Power": -1.8262,
     "Highs/Lows": 8.97,
     "Nearest Resistance": null,
     "Resistance Touches": null,
@@ -76,14 +76,14 @@
     "S1": 34.1433,
     "S2": 29.8067,
     "S3": 27.6133,
-    "Projected Gain (%)": -0.79,
-    "Pattern Conf (%)": 17.98,
-    "Projected Range 95%": "-5.67% to 2.88%",
-    "Kelly %": 0.0,
-    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Very Strong Bullish Trend | no decisive edge | weekly aligned | vol x1.86 | oversold",
+    "Projected Gain (%)": 6.66,
+    "Pattern Conf (%)": 52.31,
+    "Projected Range 95%": "1.56% to 11.11%",
+    "Kelly %": 25.0,
+    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Very Strong Bullish Trend | no decisive edge | weekly aligned | oversold",
     "Score Breakdown": {
-      "pattern": 5.39,
-      "projected": -1.19,
+      "pattern": 15.69,
+      "projected": 9.99,
       "range": 1.53,
       "trend_bonus": -40.0,
       "confidence_weight": 0.76
@@ -91,17 +91,16 @@
     "Regime": "Trending / Volatile",
     "Trend Class": "Very Strong Bullish Trend",
     "RSI-14": 47.2,
-    "ADX-14": 63.2,
-    "Vol Z-Score": 0.43,
-    "MACD Signal": "🔴 Bearish Cross",
-    "MACD Histogram": -0.0786,
-    "Bollinger %B": 0.453,
+    "ADX-14": 64.5,
+    "Vol Z-Score": -0.49,
+    "MACD Signal": "Bearish",
+    "MACD Histogram": -0.2781,
+    "Bollinger %B": 0.445,
     "Avg Volume (20D)": 684,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
     "dates": [
-      "2025-08-27 00:00:00",
       "2025-09-01 00:00:00",
       "2025-09-03 00:00:00",
       "2025-09-08 00:00:00",
@@ -234,10 +233,10 @@
       "2026-08-23 00:00:00",
       "2026-08-24 00:00:00",
       "2026-08-25 00:00:00",
-      "2026-08-26 00:00:00"
+      "2026-08-26 00:00:00",
+      "2026-08-30 00:00:00"
     ],
     "close": [
-      23.55,
       22.5,
       22.5,
       22.2,
@@ -370,10 +369,10 @@
       38.48,
       38.16,
       38.16,
+      34.84,
       34.84
     ],
     "open": [
-      21.5,
       23.0,
       23.0,
       25.0,
@@ -506,10 +505,10 @@
       38.45,
       38.48,
       38.39,
-      38.16
+      38.16,
+      37.99
     ],
     "high": [
-      23.55,
       23.0,
       23.0,
       25.0,
@@ -642,10 +641,10 @@
       38.48,
       38.39,
       38.39,
+      37.99,
       37.99
     ],
     "low": [
-      21.5,
       22.5,
       22.33,
       22.2,
@@ -778,10 +777,10 @@
       33.0,
       33.15,
       33.15,
+      33.18,
       33.18
     ],
     "volume": [
-      1460,
       70,
       1800,
       1620,
@@ -914,29 +913,29 @@
       0,
       4,
       4,
-      1275
+      1275,
+      0
     ],
     "vwap": [
-      22.8667,
-      22.8575,
-      22.7237,
-      22.8578,
-      22.855,
-      22.5232,
-      22.5232,
-      22.456,
-      22.456,
-      22.4401,
-      22.4982,
-      22.4988,
-      22.4891,
-      22.7534,
-      22.7534,
-      22.7527,
-      22.8393,
-      22.8613,
-      22.886,
-      23.1094,
+      22.6667,
+      22.6121,
+      22.8541,
+      22.8502,
+      22.4518,
+      22.4518,
+      22.3835,
+      22.3835,
+      22.3777,
+      22.451,
+      22.4518,
+      22.4418,
+      22.742,
+      22.742,
+      22.7412,
+      22.8368,
+      22.8608,
+      22.8877,
+      23.1277,
       26.5353,
       27.0359,
       27.5884,
@@ -1050,6 +1049,7 @@
       34.3919,
       34.4655,
       34.544,
+      34.8316,
       34.8316
     ],
     "resistance": 85.99,
@@ -1067,8 +1067,8 @@
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 14,
-        "end_index": 39,
+        "start_index": 13,
+        "end_index": 38,
         "start_date": "2025-10-15",
         "end_date": "2026-01-06",
         "levels": {
@@ -1079,13 +1079,13 @@
           "apex_price": 31.7113
         },
         "quality": 1.0,
-        "apex_index": 43.89690721649485
+        "apex_index": 42.89690721649485
       },
       {
         "pattern": "Ascending Triangle",
         "direction": "bullish",
-        "start_index": 26,
-        "end_index": 52,
+        "start_index": 25,
+        "end_index": 51,
         "start_date": "2025-11-26",
         "end_date": "2026-02-18",
         "levels": {
@@ -1095,13 +1095,13 @@
           "apex_price": 33.0
         },
         "quality": 1.0,
-        "apex_index": 225.99999999999952
+        "apex_index": 224.99999999999955
       },
       {
         "pattern": "Double Top",
         "direction": "bearish",
-        "start_index": 39,
-        "end_index": 52,
+        "start_index": 38,
+        "end_index": 51,
         "start_date": "2026-01-06",
         "end_date": "2026-02-18",
         "levels": {
@@ -1115,8 +1115,8 @@
       {
         "pattern": "Price Channel (Flat)",
         "direction": "neutral",
-        "start_index": 39,
-        "end_index": 56,
+        "start_index": 38,
+        "end_index": 55,
         "start_date": "2026-01-06",
         "end_date": "2026-03-04",
         "levels": {
@@ -1130,8 +1130,8 @@
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 52,
-        "end_index": 74,
+        "start_index": 51,
+        "end_index": 73,
         "start_date": "2026-02-18",
         "end_date": "2026-05-01",
         "levels": {
@@ -1142,13 +1142,13 @@
           "apex_price": 29.3533
         },
         "quality": 1.0,
-        "apex_index": 76.09736921681284
+        "apex_index": 75.09736921681284
       },
       {
         "pattern": "Price Channel (Rising)",
         "direction": "bullish",
-        "start_index": 56,
-        "end_index": 87,
+        "start_index": 55,
+        "end_index": 86,
         "start_date": "2026-03-04",
         "end_date": "2026-06-10",
         "levels": {
@@ -1162,8 +1162,8 @@
       {
         "pattern": "Double Bottom",
         "direction": "bullish",
-        "start_index": 74,
-        "end_index": 85,
+        "start_index": 73,
+        "end_index": 84,
         "start_date": "2026-05-01",
         "end_date": "2026-06-05",
         "levels": {
@@ -1177,8 +1177,8 @@
       {
         "pattern": "Descending Triangle",
         "direction": "bearish",
-        "start_index": 74,
-        "end_index": 87,
+        "start_index": 73,
+        "end_index": 86,
         "start_date": "2026-05-01",
         "end_date": "2026-06-10",
         "levels": {
@@ -1188,7 +1188,7 @@
           "apex_price": 29.266
         },
         "quality": 0.94,
-        "apex_index": 114.25797728501892
+        "apex_index": 113.25797728501894
       }
     ]
   }
