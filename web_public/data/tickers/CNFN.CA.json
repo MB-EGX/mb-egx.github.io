@@ -1,101 +1,101 @@
 {
   "ticker": "CNFN.CA",
-  "last_data_date": "2026-08-30",
+  "last_data_date": "2026-08-31",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "CNFN.CA",
-    "Last Bar Date": "2026-08-30",
+    "Last Bar Date": "2026-08-31",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
     "Sector": "Non-Bank Financial Services",
-    "Long-Term Setup Confirmed": false,
+    "Long-Term Setup Confirmed": true,
     "Long-Term Setup Reasons": [
-      "No confirmed higher-low swing structure yet",
-      "No bullish pattern match at required quality"
+      "Higher-low swing structure confirmed",
+      "Ascending Triangle match (quality 1.00)"
     ],
-    "P/E Ratio": 17.94,
+    "P/E Ratio": 18.09,
     "EPS": 0.2659,
     "Beta": 0.36,
     "Dividend Yield %": null,
-    "Market Cap": 5700000000.0,
-    "1W Return %": -2.86,
-    "1M Return %": 0.0,
-    "YTD Return %": -8.29,
-    "1Y Return %": -1.86,
-    "3Y Return %": 30.77,
-    "External Rating Consensus": -1.5,
+    "Market Cap": 5760000000.0,
+    "1W Return %": 0.0,
+    "1M Return %": 1.89,
+    "YTD Return %": -6.55,
+    "1Y Return %": -1.22,
+    "3Y Return %": 33.24,
+    "External Rating Consensus": -0.625,
     "External Rating Note": null,
-    "Action": "🟡 HOLD / NEUTRAL",
+    "Action": "🟡 HOLD / NEUTRAL (Signal unconfirmed: 1/5 factors passed, need 4 - low ADX (trend not confirmed), low volume (RVOL/Z-score not confirmed), below VWAP, no squeeze release)",
     "Momentum": null,
-    "Rank Score": 5.2,
-    "Reward:Risk": 0.35,
+    "Rank Score": 12.3,
+    "Reward:Risk": 0.37,
     "Win Rate Estimate (%)": 60.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
-    "Current Price": 4.76,
-    "Target Entry (VWAP)": 4.76,
-    "Suggested Stop-Loss": 4.4293,
+    "Current Price": 4.85,
+    "Target Entry (VWAP)": 4.85,
+    "Suggested Stop-Loss": 4.5258,
     "Stop-Loss Reliable": true,
-    "Take-Profit Target": 4.8885,
+    "Take-Profit Target": 4.9809,
     "Resistance (52W High)": 5.41,
     "Support (52W Low)": 3.71,
-    "Open": 4.78,
-    "Previous Close": 4.78,
-    "Day High": 4.83,
-    "Day Low": 4.75,
-    "Day's Range": "4.75 - 4.83",
+    "Open": 4.76,
+    "Previous Close": 4.76,
+    "Day High": 4.88,
+    "Day Low": 4.76,
+    "Day's Range": "4.76 - 4.88",
     "52 Week Range": "3.71 - 5.41",
-    "Day Range Position": 0.125,
-    "Day Range %": 1.68,
+    "Day Range Position": 0.75,
+    "Day Range %": 2.47,
     "Bid": null,
     "Ask": null,
     "Relative Value Score": 100.0,
-    "Price Momentum Score": 36.5,
+    "Price Momentum Score": 38.8,
     "Cash Flow Health Score (est.)": null,
-    "Profitability Health Score (est.)": 27.9,
-    "Growth Health Score (est.)": 64.5,
-    "STOCH %K": 27.35,
-    "STOCH %D": 46.8,
-    "STOCHRSI": 0.0,
-    "CCI": 0.0,
-    "ROC": -3.64,
-    "Williams %R": -90.0,
-    "UO": 34.07,
-    "Bull/Bear Power": -0.0664,
-    "Highs/Lows": 10.0,
+    "Profitability Health Score (est.)": 27.6,
+    "Growth Health Score (est.)": 66.0,
+    "STOCH %K": 23.2,
+    "STOCH %D": 31.94,
+    "STOCHRSI": 50.07,
+    "CCI": 12.6,
+    "ROC": -2.41,
+    "Williams %R": -55.56,
+    "UO": 40.65,
+    "Bull/Bear Power": -0.0141,
+    "Highs/Lows": 44.44,
     "Nearest Resistance": 4.946,
     "Resistance Touches": 5,
     "Nearest Support": 4.3,
     "Support Touches": 3,
-    "Pivot Point": 4.88,
-    "R1": 5.0,
-    "R2": 5.1,
-    "R3": 5.22,
-    "S1": 4.78,
-    "S2": 4.66,
-    "S3": 4.56,
-    "Projected Gain (%)": -0.22,
-    "Pattern Conf (%)": 8.93,
-    "Projected Range 95%": "-4.65% to 2.25%",
+    "Pivot Point": 4.82,
+    "R1": 4.91,
+    "R2": 5.06,
+    "R3": 5.15,
+    "S1": 4.67,
+    "S2": 4.58,
+    "S3": 4.43,
+    "Projected Gain (%)": -0.54,
+    "Pattern Conf (%)": 11.87,
+    "Projected Range 95%": "-7.48% to 3.52%",
     "Kelly %": 0.0,
-    "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Consolidation / Neutral | no decisive edge | weekly aligned",
+    "Signal Reason": "🟡 HOLD / NEUTRAL (Signal unconfirmed: 1/5 factors passed, need 4 - low ADX (trend not confirmed), low volume (RVOL/Z-score not confirmed), below VWAP, no squeeze release) | trend=Consolidation / Neutral | no decisive edge | weekly aligned",
     "Score Breakdown": {
-      "pattern": 2.68,
-      "projected": -0.33,
-      "range": 3.09,
+      "pattern": 3.56,
+      "projected": -0.81,
+      "range": 3.35,
       "trend_bonus": 0.0,
       "confidence_weight": 1.0
     },
     "Regime": "Range / Consolidation",
     "Trend Class": "Consolidation / Neutral",
-    "RSI-14": 48.1,
-    "ADX-14": 10.4,
-    "Vol Z-Score": -1.26,
+    "RSI-14": 51.7,
+    "ADX-14": 9.7,
+    "Vol Z-Score": -0.25,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0128,
-    "Bollinger %B": 0.489,
-    "Avg Volume (20D)": 3768160,
+    "MACD Histogram": -0.0095,
+    "Bollinger %B": 0.559,
+    "Avg Volume (20D)": 3884976,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -350,7 +350,8 @@
       "2026-08-24 00:00:00",
       "2026-08-25 00:00:00",
       "2026-08-26 00:00:00",
-      "2026-08-30 00:00:00"
+      "2026-08-30 00:00:00",
+      "2026-08-31 00:00:00"
     ],
     "close": [
       4.85,
@@ -603,7 +604,8 @@
       4.85,
       4.81,
       4.78,
-      4.76
+      4.76,
+      4.85
     ],
     "open": [
       5.3,
@@ -856,7 +858,8 @@
       4.9,
       4.85,
       4.81,
-      4.78
+      4.78,
+      4.76
     ],
     "high": [
       5.3,
@@ -1109,7 +1112,8 @@
       4.97,
       4.9,
       4.82,
-      4.83
+      4.83,
+      4.88
     ],
     "low": [
       4.84,
@@ -1362,7 +1366,8 @@
       4.85,
       4.76,
       4.73,
-      4.75
+      4.75,
+      4.76
     ],
     "volume": [
       1930000,
@@ -1615,7 +1620,8 @@
       1996102,
       2416668,
       2319922,
-      614415
+      614415,
+      3288779
     ],
     "vwap": [
       4.9967,
@@ -1868,18 +1874,19 @@
       4.8577,
       4.8567,
       4.8577,
-      4.8566
+      4.8566,
+      4.8606
     ],
     "resistance": 4.946,
     "support": 4.3,
     "pivots": {
-      "pp": 4.88,
-      "r1": 5.0,
-      "r2": 5.1,
-      "r3": 5.22,
-      "s1": 4.78,
-      "s2": 4.66,
-      "s3": 4.56
+      "pp": 4.82,
+      "r1": 4.91,
+      "r2": 5.06,
+      "r3": 5.15,
+      "s1": 4.67,
+      "s2": 4.58,
+      "s3": 4.43
     },
     "patterns": [
       {
@@ -1964,6 +1971,23 @@
         "apex_index": 766.8052716514386
       },
       {
+        "pattern": "Symmetrical Triangle",
+        "direction": "neutral",
+        "start_index": 204,
+        "end_index": 250,
+        "start_date": "2026-06-23",
+        "end_date": "2026-08-30",
+        "levels": {
+          "resistance_start": 5.1118,
+          "resistance_end": 4.901,
+          "support_start": 3.8846,
+          "support_end": 4.615,
+          "apex_price": 4.8369
+        },
+        "quality": 0.82,
+        "apex_index": 263.9722649164579
+      },
+      {
         "pattern": "Price Channel (Flat)",
         "direction": "neutral",
         "start_index": 211,
@@ -1979,6 +2003,22 @@
         "quality": 0.75
       },
       {
+        "pattern": "Ascending Triangle",
+        "direction": "bullish",
+        "start_index": 211,
+        "end_index": 250,
+        "start_date": "2026-07-04",
+        "end_date": "2026-08-30",
+        "levels": {
+          "resistance": 4.99,
+          "support_start": 3.9957,
+          "support_end": 4.615,
+          "apex_price": 4.99
+        },
+        "quality": 1.0,
+        "apex_index": 273.61322314049585
+      },
+      {
         "pattern": "Double Top",
         "direction": "bearish",
         "start_index": 219,
@@ -1992,6 +2032,22 @@
           "target": 3.13
         },
         "quality": 1.0
+      },
+      {
+        "pattern": "Bull Flag",
+        "direction": "bullish",
+        "start_index": 232,
+        "end_index": 251,
+        "start_date": "2026-08-03",
+        "end_date": "2026-08-31",
+        "levels": {
+          "pole_start": 4.06,
+          "pole_end": 4.99,
+          "flag_resistance_end": 4.85,
+          "flag_support_end": 4.75,
+          "measured_move_target": 5.92
+        },
+        "quality": 0.75
       }
     ]
   }

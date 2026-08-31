@@ -1,10 +1,10 @@
 {
   "ticker": "GTEX.CA",
-  "last_data_date": "2026-08-30",
+  "last_data_date": "2026-08-31",
   "sector": "Textiles & Durables",
   "matrix": {
     "Ticker": "GTEX.CA",
-    "Last Bar Date": "2026-08-30",
+    "Last Bar Date": "2026-08-31",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -35,9 +35,9 @@
     "Backtested Sample Size": null,
     "Current Price": 0.04,
     "Target Entry (VWAP)": 0.0399,
-    "Suggested Stop-Loss": 0.0364,
+    "Suggested Stop-Loss": 0.0367,
     "Stop-Loss Reliable": true,
-    "Take-Profit Target": 0.0447,
+    "Take-Profit Target": 0.0444,
     "Resistance (52W High)": 0.04,
     "Support (52W Low)": 0.03,
     "Open": 0.04,
@@ -55,14 +55,14 @@
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": null,
     "Growth Health Score (est.)": 58.1,
-    "STOCH %K": 66.67,
-    "STOCH %D": 83.33,
+    "STOCH %K": 50.0,
+    "STOCH %D": 66.67,
     "STOCHRSI": 50.0,
-    "CCI": 41.67,
+    "CCI": 39.22,
     "ROC": 0.0,
     "Williams %R": -50.0,
-    "UO": 52.38,
-    "Bull/Bear Power": 0.0008,
+    "UO": 51.43,
+    "Bull/Bear Power": 0.0007,
     "Highs/Lows": 50.0,
     "Nearest Resistance": null,
     "Resistance Touches": null,
@@ -78,8 +78,8 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 4.61,
-    "Signal Reason": "🟡 HOLD / NEUTRAL (Signal unconfirmed: 0/5 factors passed, need 4 - low ADX (trend not confirmed), low volume (RVOL/Z-score not confirmed), below VWAP, weak session close (near day's low), no squeeze release) | trend=Consolidation / Neutral | no decisive edge | weekly aligned",
+    "Kelly %": 4.66,
+    "Signal Reason": "🟡 HOLD / NEUTRAL (Signal unconfirmed: 0/5 factors passed, need 4 - low ADX (trend not confirmed), low volume (RVOL/Z-score not confirmed), below VWAP, weak session close (near day's low), no squeeze release) | trend=Consolidation / Neutral | no decisive edge | weekly aligned | vol x1.41",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
@@ -90,12 +90,12 @@
     "Regime": "N/A",
     "Trend Class": "Consolidation / Neutral",
     "RSI-14": 55.9,
-    "ADX-14": 9.8,
-    "Vol Z-Score": -0.53,
+    "ADX-14": 9.4,
+    "Vol Z-Score": 0.25,
     "MACD Signal": "Bearish",
     "MACD Histogram": -0.0001,
     "Bollinger %B": 0.602,
-    "Avg Volume (20D)": 232151,
+    "Avg Volume (20D)": 247268,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -350,7 +350,8 @@
       "2026-08-24 00:00:00",
       "2026-08-25 00:00:00",
       "2026-08-26 00:00:00",
-      "2026-08-30 00:00:00"
+      "2026-08-30 00:00:00",
+      "2026-08-31 00:00:00"
     ],
     "close": [
       0.04,
@@ -589,6 +590,7 @@
       0.03,
       0.04,
       0.03,
+      0.04,
       0.04,
       0.04,
       0.04,
@@ -856,6 +858,7 @@
       0.04,
       0.04,
       0.04,
+      0.04,
       0.04
     ],
     "high": [
@@ -1095,6 +1098,7 @@
       0.03,
       0.04,
       0.03,
+      0.04,
       0.04,
       0.04,
       0.04,
@@ -1362,6 +1366,7 @@
       0.04,
       0.04,
       0.04,
+      0.04,
       0.04
     ],
     "volume": [
@@ -1615,7 +1620,8 @@
       130103,
       27500,
       78033,
-      18484
+      18484,
+      349740
     ],
     "vwap": [
       0.04,
@@ -1861,6 +1867,7 @@
       0.0388,
       0.0393,
       0.0393,
+      0.0399,
       0.0399,
       0.0399,
       0.0399,
