@@ -1,10 +1,10 @@
 {
   "ticker": "DCRC.CA",
-  "last_data_date": "2026-08-31",
+  "last_data_date": "2026-09-01",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "DCRC.CA",
-    "Last Bar Date": "2026-08-31",
+    "Last Bar Date": "2026-09-01",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -29,20 +29,20 @@
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL",
     "Momentum": "Overbought",
-    "Rank Score": -14.5,
-    "Reward:Risk": 0.23,
+    "Rank Score": -14.6,
+    "Reward:Risk": 0.22,
     "Win Rate Estimate (%)": 100.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 59.0,
-    "Target Entry (VWAP)": 48.3831,
-    "Suggested Stop-Loss": 47.5261,
+    "Target Entry (VWAP)": 48.4265,
+    "Suggested Stop-Loss": 46.8456,
     "Stop-Loss Reliable": true,
     "Take-Profit Target": 61.773,
     "Resistance (52W High)": 59.0,
     "Support (52W Low)": 21.3,
-    "Open": 55.0,
-    "Previous Close": 55.0,
+    "Open": 48.5,
+    "Previous Close": 59.0,
     "Day High": 59.0,
     "Day Low": 48.5,
     "Day's Range": "48.5 - 59.0",
@@ -52,18 +52,18 @@
     "Bid": null,
     "Ask": null,
     "Relative Value Score": 100.0,
-    "Price Momentum Score": 77.5,
+    "Price Momentum Score": 78.1,
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": 100.0,
     "Growth Health Score (est.)": 100.0,
     "STOCH %K": 100.0,
     "STOCH %D": 100.0,
     "STOCHRSI": 100.0,
-    "CCI": 195.17,
+    "CCI": 163.92,
     "ROC": 38.73,
     "Williams %R": -0.0,
-    "UO": 92.17,
-    "Bull/Bear Power": 3.2282,
+    "UO": 93.21,
+    "Bull/Bear Power": 1.267,
     "Highs/Lows": 100.0,
     "Nearest Resistance": null,
     "Resistance Touches": null,
@@ -77,12 +77,12 @@
     "S2": 39.0,
     "S3": 35.0,
     "Projected Gain (%)": 4.0,
-    "Pattern Conf (%)": 9.32,
+    "Pattern Conf (%)": 9.23,
     "Projected Range 95%": "4.0% to 4.0%",
     "Kelly %": 25.0,
     "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Very Strong Bearish Trend | no decisive edge | weekly aligned | overbought",
     "Score Breakdown": {
-      "pattern": 2.8,
+      "pattern": 2.77,
       "projected": 6.0,
       "range": 5.0,
       "trend_bonus": -40.0,
@@ -91,12 +91,12 @@
     "Regime": "Trending / Volatile",
     "Trend Class": "Very Strong Bearish Trend",
     "RSI-14": 74.9,
-    "ADX-14": 74.9,
+    "ADX-14": 72.3,
     "Vol Z-Score": -0.27,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 1.1357,
-    "Bollinger %B": 1.064,
-    "Avg Volume (20D)": 4149,
+    "MACD Histogram": 1.2425,
+    "Bollinger %B": 0.979,
+    "Avg Volume (20D)": 4168,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
@@ -235,7 +235,8 @@
       "2026-08-25 00:00:00",
       "2026-08-26 00:00:00",
       "2026-08-30 00:00:00",
-      "2026-08-31 00:00:00"
+      "2026-08-31 00:00:00",
+      "2026-09-01 00:00:00"
     ],
     "close": [
       50.0,
@@ -372,6 +373,7 @@
       52.0,
       55.0,
       55.0,
+      59.0,
       59.0
     ],
     "open": [
@@ -509,7 +511,8 @@
       43.0,
       52.0,
       51.0,
-      55.0
+      55.0,
+      48.5
     ],
     "high": [
       50.0,
@@ -646,6 +649,7 @@
       52.0,
       55.0,
       55.0,
+      59.0,
       59.0
     ],
     "low": [
@@ -783,6 +787,7 @@
       43.0,
       51.0,
       51.0,
+      48.5,
       48.5
     ],
     "volume": [
@@ -920,6 +925,7 @@
       870,
       3600,
       0,
+      498,
       498
     ],
     "vwap": [
@@ -1057,7 +1063,8 @@
       48.1007,
       48.3402,
       48.3402,
-      48.3831
+      48.3831,
+      48.4265
     ],
     "resistance": 59.0,
     "support": 44.76,

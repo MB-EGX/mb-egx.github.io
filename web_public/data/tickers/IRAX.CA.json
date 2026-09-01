@@ -1,10 +1,10 @@
 {
   "ticker": "IRAX.CA",
-  "last_data_date": "2026-08-31",
+  "last_data_date": "2026-09-01",
   "sector": "Basic Resources",
   "matrix": {
     "Ticker": "IRAX.CA",
-    "Last Bar Date": "2026-08-31",
+    "Last Bar Date": "2026-09-01",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -28,7 +28,7 @@
     "External Rating Consensus": 0.625,
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL",
-    "Momentum": null,
+    "Momentum": "Oversold",
     "Rank Score": -15.6,
     "Reward:Risk": 1.15,
     "Win Rate Estimate (%)": 50.0,
@@ -36,9 +36,9 @@
     "Backtested Sample Size": null,
     "Current Price": 1250.0,
     "Target Entry (VWAP)": 1250.0,
-    "Suggested Stop-Loss": 1235.7815,
+    "Suggested Stop-Loss": 1236.7971,
     "Stop-Loss Reliable": true,
-    "Take-Profit Target": 1276.5231,
+    "Take-Profit Target": 1275.2536,
     "Resistance (52W High)": 1255.0,
     "Support (52W Low)": 600.0,
     "Open": 1250.0,
@@ -58,12 +58,12 @@
     "Growth Health Score (est.)": 51.2,
     "STOCH %K": 0.0,
     "STOCH %D": 0.0,
-    "STOCHRSI": 50.0,
+    "STOCHRSI": 0.0,
     "CCI": -51.28,
     "ROC": 0.0,
     "Williams %R": -100.0,
     "UO": 35.38,
-    "Bull/Bear Power": 2.9623,
+    "Bull/Bear Power": 2.5391,
     "Highs/Lows": 0.0,
     "Nearest Resistance": null,
     "Resistance Touches": null,
@@ -79,8 +79,8 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 3.35,
-    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Consolidation / Neutral | no decisive edge | weekly aligned",
+    "Kelly %": 3.27,
+    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Consolidation / Neutral | no decisive edge | weekly aligned | oversold",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
@@ -91,10 +91,10 @@
     "Regime": "N/A",
     "Trend Class": "Consolidation / Neutral",
     "RSI-14": 54.0,
-    "ADX-14": 12.4,
+    "ADX-14": 12.2,
     "Vol Z-Score": -0.27,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.4719,
+    "MACD Histogram": -0.5829,
     "Bollinger %B": 0.5,
     "Avg Volume (20D)": 34,
     "Data Confidence": "Medium (<1 Year)"
@@ -198,7 +198,8 @@
       "2026-08-25 00:00:00",
       "2026-08-26 00:00:00",
       "2026-08-30 00:00:00",
-      "2026-08-31 00:00:00"
+      "2026-08-31 00:00:00",
+      "2026-09-01 00:00:00"
     ],
     "close": [
       1250.0,
@@ -274,6 +275,7 @@
       1245.0,
       1000.0,
       1000.0,
+      1250.0,
       1250.0,
       1250.0,
       1250.0,
@@ -398,6 +400,7 @@
       1250.0,
       1250.0,
       1250.0,
+      1250.0,
       1250.0
     ],
     "high": [
@@ -498,6 +501,7 @@
       1250.0,
       1250.0,
       1250.0,
+      1250.0,
       1250.0
     ],
     "low": [
@@ -576,6 +580,7 @@
       1000.0,
       1245.0,
       1245.0,
+      1250.0,
       1250.0,
       1250.0,
       1250.0,
@@ -698,6 +703,7 @@
       30,
       4,
       0,
+      0,
       0
     ],
     "vwap": [
@@ -798,7 +804,8 @@
       1250.1304,
       1250.1312,
       1250.1312,
-      1250.1312
+      1250.1312,
+      1250.1314
     ],
     "resistance": 1255.0,
     "support": 1055.0,

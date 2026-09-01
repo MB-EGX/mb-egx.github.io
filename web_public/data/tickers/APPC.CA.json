@@ -1,10 +1,10 @@
 {
   "ticker": "APPC.CA",
-  "last_data_date": "2026-08-31",
+  "last_data_date": "2026-09-01",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "APPC.CA",
-    "Last Bar Date": "2026-08-31",
+    "Last Bar Date": "2026-09-01",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -29,20 +29,20 @@
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL",
     "Momentum": "Overbought",
-    "Rank Score": -22.7,
-    "Reward:Risk": 0.19,
-    "Win Rate Estimate (%)": 40.0,
+    "Rank Score": -22.8,
+    "Reward:Risk": 0.18,
+    "Win Rate Estimate (%)": 20.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 1.8,
-    "Target Entry (VWAP)": 1.485,
-    "Suggested Stop-Loss": 1.5571,
+    "Target Entry (VWAP)": 1.5151,
+    "Suggested Stop-Loss": 1.5459,
     "Stop-Loss Reliable": true,
     "Take-Profit Target": 1.8486,
     "Resistance (52W High)": 1.85,
     "Support (52W Low)": 0.85,
-    "Open": 1.65,
-    "Previous Close": 1.65,
+    "Open": 1.75,
+    "Previous Close": 1.8,
     "Day High": 1.8,
     "Day Low": 1.6,
     "Day's Range": "1.6 - 1.8",
@@ -52,18 +52,18 @@
     "Bid": null,
     "Ask": null,
     "Relative Value Score": null,
-    "Price Momentum Score": 90.5,
+    "Price Momentum Score": 90.1,
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": 15.0,
     "Growth Health Score (est.)": 100.0,
-    "STOCH %K": 89.9,
-    "STOCH %D": 66.09,
+    "STOCH %K": 94.95,
+    "STOCH %D": 83.09,
     "STOCHRSI": 100.0,
-    "CCI": 331.48,
+    "CCI": 226.57,
     "ROC": 28.57,
     "Williams %R": -0.0,
-    "UO": 57.66,
-    "Bull/Bear Power": 0.3939,
+    "UO": 66.02,
+    "Bull/Bear Power": 0.3091,
     "Highs/Lows": 100.0,
     "Nearest Resistance": null,
     "Resistance Touches": null,
@@ -76,14 +76,14 @@
     "S1": 1.4467,
     "S2": 1.2433,
     "S3": 1.1167,
-    "Projected Gain (%)": -7.31,
-    "Pattern Conf (%)": 32.44,
-    "Projected Range 95%": "-18.82% to 3.95%",
+    "Projected Gain (%)": -8.2,
+    "Pattern Conf (%)": 36.97,
+    "Projected Range 95%": "-18.07% to 0.93%",
     "Kelly %": 0.0,
-    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Strong Bullish Trend | no decisive edge | weekly aligned | vol x2.58 | overbought",
+    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Strong Bullish Trend | no decisive edge | weekly aligned | vol x2.34 | overbought",
     "Score Breakdown": {
-      "pattern": 9.73,
-      "projected": -10.96,
+      "pattern": 11.09,
+      "projected": -12.3,
       "range": 4.75,
       "trend_bonus": -40.0,
       "confidence_weight": 0.77
@@ -91,12 +91,12 @@
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish Trend",
     "RSI-14": 79.7,
-    "ADX-14": 37.8,
-    "Vol Z-Score": 1.42,
+    "ADX-14": 40.0,
+    "Vol Z-Score": 1.28,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0378,
-    "Bollinger %B": 1.226,
-    "Avg Volume (20D)": 26781,
+    "MACD Histogram": 0.0448,
+    "Bollinger %B": 1.079,
+    "Avg Volume (20D)": 29502,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
@@ -236,7 +236,8 @@
       "2026-08-25 00:00:00",
       "2026-08-26 00:00:00",
       "2026-08-30 00:00:00",
-      "2026-08-31 00:00:00"
+      "2026-08-31 00:00:00",
+      "2026-09-01 00:00:00"
     ],
     "close": [
       1.17,
@@ -374,6 +375,7 @@
       1.37,
       1.65,
       1.65,
+      1.8,
       1.8
     ],
     "open": [
@@ -512,7 +514,8 @@
       1.41,
       1.37,
       1.41,
-      1.65
+      1.65,
+      1.75
     ],
     "high": [
       1.23,
@@ -650,6 +653,7 @@
       1.45,
       1.7,
       1.7,
+      1.8,
       1.8
     ],
     "low": [
@@ -788,6 +792,7 @@
       1.37,
       1.4,
       1.4,
+      1.6,
       1.6
     ],
     "volume": [
@@ -926,6 +931,7 @@
       51069,
       117150,
       0,
+      68998,
       68998
     ],
     "vwap": [
@@ -1064,7 +1070,8 @@
       1.403,
       1.4483,
       1.4483,
-      1.485
+      1.485,
+      1.5151
     ],
     "resistance": 1.85,
     "support": 1.2467,

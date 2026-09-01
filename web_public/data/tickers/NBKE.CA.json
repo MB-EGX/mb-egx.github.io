@@ -1,10 +1,10 @@
 {
   "ticker": "NBKE.CA",
-  "last_data_date": "2026-08-31",
+  "last_data_date": "2026-09-01",
   "sector": "Banks",
   "matrix": {
     "Ticker": "NBKE.CA",
-    "Last Bar Date": "2026-08-31",
+    "Last Bar Date": "2026-09-01",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -29,20 +29,20 @@
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
     "Momentum": null,
-    "Rank Score": 29.3,
+    "Rank Score": 29.4,
     "Reward:Risk": 1.25,
     "Win Rate Estimate (%)": 48.4,
     "Win Rate Source": "backtest",
     "Backtested Sample Size": 432,
     "Current Price": 38.0,
-    "Target Entry (VWAP)": 34.8372,
-    "Suggested Stop-Loss": 23.7639,
+    "Target Entry (VWAP)": 35.0592,
+    "Suggested Stop-Loss": 24.3293,
     "Stop-Loss Reliable": true,
-    "Take-Profit Target": 56.0611,
+    "Take-Profit Target": 55.3543,
     "Resistance (52W High)": 85.99,
     "Support (52W Low)": 12.26,
-    "Open": 34.84,
-    "Previous Close": 34.84,
+    "Open": 38.0,
+    "Previous Close": 38.0,
     "Day High": 38.0,
     "Day Low": 34.84,
     "Day's Range": "34.84 - 38.0",
@@ -51,20 +51,20 @@
     "Day Range %": 8.32,
     "Bid": null,
     "Ask": null,
-    "Relative Value Score": 91.7,
-    "Price Momentum Score": 49.8,
+    "Relative Value Score": 92.1,
+    "Price Momentum Score": 49.5,
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": 100.0,
     "Growth Health Score (est.)": 100.0,
-    "STOCH %K": 10.84,
-    "STOCH %D": 11.56,
+    "STOCH %K": 38.79,
+    "STOCH %D": 20.19,
     "STOCHRSI": 52.93,
-    "CCI": 11.45,
+    "CCI": 5.62,
     "ROC": -1.27,
-    "Williams %R": -85.41,
-    "UO": 67.42,
-    "Bull/Bear Power": -0.5853,
-    "Highs/Lows": 14.59,
+    "Williams %R": -7.19,
+    "UO": 76.69,
+    "Bull/Bear Power": -0.9532,
+    "Highs/Lows": 92.81,
     "Nearest Resistance": null,
     "Resistance Touches": null,
     "Nearest Support": 28.95,
@@ -79,7 +79,7 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 3.52,
+    "Kelly %": 3.51,
     "Signal Reason": "🚫 ILLIQUID - ⚡ BREAKOUT BUY (MOMENTUM) [💥 SQUEEZE] [👑 WEEKLY ALIGNED] | trend=Very Strong Bullish Trend | confirmed | weekly aligned | volatility squeeze | positive money flow",
     "Score Breakdown": {
       "pattern": 0.0,
@@ -91,12 +91,12 @@
     "Regime": "N/A",
     "Trend Class": "Very Strong Bullish Trend",
     "RSI-14": 61.4,
-    "ADX-14": 65.7,
-    "Vol Z-Score": -0.47,
+    "ADX-14": 66.9,
+    "Vol Z-Score": -0.44,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.2001,
-    "Bollinger %B": 0.672,
-    "Avg Volume (20D)": 686,
+    "MACD Histogram": -0.1534,
+    "Bollinger %B": 0.653,
+    "Avg Volume (20D)": 643,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
@@ -235,7 +235,8 @@
       "2026-08-25 00:00:00",
       "2026-08-26 00:00:00",
       "2026-08-30 00:00:00",
-      "2026-08-31 00:00:00"
+      "2026-08-31 00:00:00",
+      "2026-09-01 00:00:00"
     ],
     "close": [
       22.5,
@@ -372,6 +373,7 @@
       38.16,
       34.84,
       34.84,
+      38.0,
       38.0
     ],
     "open": [
@@ -509,7 +511,8 @@
       38.39,
       38.16,
       37.99,
-      34.84
+      34.84,
+      38.0
     ],
     "high": [
       23.0,
@@ -646,6 +649,7 @@
       38.39,
       37.99,
       37.99,
+      38.0,
       38.0
     ],
     "low": [
@@ -783,6 +787,7 @@
       33.15,
       33.18,
       33.18,
+      34.84,
       34.84
     ],
     "volume": [
@@ -920,6 +925,7 @@
       4,
       1275,
       0,
+      36,
       36
     ],
     "vwap": [
@@ -1057,7 +1063,8 @@
       34.544,
       34.8316,
       34.8316,
-      34.8372
+      34.8372,
+      35.0592
     ],
     "resistance": 85.99,
     "support": 28.95,
