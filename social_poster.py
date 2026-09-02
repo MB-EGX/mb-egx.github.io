@@ -146,13 +146,15 @@ REQUIRED SETUP (one-time, cannot be done from code):
 
          IG_ACCESS_TOKEN  = the long-lived token from step 5
 
-         PAGES_BASE_URL   = e.g. https://<user>.github.io/<repo>  (used
+         PAGES_BASE_URL   = optional fallback only (used to fetch
 
-                             only to fetch market_data.json; the image
+                             market_data.json if no local file path is
 
-                             itself is served from raw.githubusercontent
+                             supplied; normal CI render should read the
 
-                             so it doesn't wait on a Pages rebuild)
+                             checked-out repo copy directly so posting
+
+                             never waits on a Pages rebuild/CDN cache)
 
          GITHUB_REPO      = "<owner>/<repo>"  (for building the raw
 
@@ -248,7 +250,43 @@ TEXT_MUTED = (160, 174, 192)
 
 # =============================================================================
 
-def fetch_market_data(pages_base_url: str) -> dict:
+def fetch_market_data(pages_base_url: str | None = None, market_data_path: str | None = None) -> dict:
+
+    """Load market_data.json from the local checked-out repo when available,
+
+    falling back to the deployed Pages URL only as a manual/legacy escape
+
+    hatch. Rendering from the local file is the authoritative path inside
+
+    GitHub Actions: the workflow is triggered BY the fresh commit itself, so
+
+    waiting for Pages/CDN propagation here can make the poster fetch
+
+    yesterday's JSON and refuse to render for no market-data reason at all.
+
+    """
+
+    if market_data_path:
+
+        path = Path(market_data_path)
+
+        if path.exists():
+
+            with path.open("r", encoding="utf-8") as f:
+
+                return json.load(f)
+
+    if not pages_base_url:
+
+        missing = market_data_path or os.path.join("web_public", "data", "market_data.json")
+
+        raise SystemExit(
+
+            "market_data.json not found locally at "
+
+            f"{missing} and no PAGES_BASE_URL/--pages-base-url fallback was provided."
+
+        )
 
     url = pages_base_url.rstrip("/") + "/data/market_data.json"
 
@@ -2435,7 +2473,7 @@ def main():
 
 
 
-    p_render = sub.add_parser("render", help="Fetch data, pick highlights, write image + caption")
+    p_render = sub.add_parser("render", help="Load data, pick highlights, write image + caption")
 
     p_render.add_argument(
 
@@ -2449,7 +2487,11 @@ def main():
 
     )
 
-    p_render.add_argument("--pages-base-url", default=os.environ.get("PAGES_BASE_URL"))
+    p_render.add_argument("--market-data", default=os.path.join("web_public", "data", "market_data.json"),
+                          help="Local market_data.json path to render from (preferred in CI)")
+
+    p_render.add_argument("--pages-base-url", default=os.environ.get("PAGES_BASE_URL"),
+                          help="Fallback deployed site base URL if the local market_data.json is unavailable")
 
     p_render.add_argument("--out-dir", default=str(OUT_DIR))
 
@@ -2507,11 +2549,7 @@ def main():
 
     if args.cmd == "render":
 
-        if not args.pages_base_url:
-
-            sys.exit("PAGES_BASE_URL is required (env var or --pages-base-url)")
-
-        market_data = fetch_market_data(args.pages_base_url)
+        market_data = fetch_market_data(args.pages_base_url, args.market_data)
 
 
         # ROOT-CAUSE FIX: never render/publish a previous session's card.

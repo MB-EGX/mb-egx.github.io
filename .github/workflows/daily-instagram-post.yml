@@ -111,8 +111,6 @@ jobs:
 
       - name: Render + commit due card(s)
         if: steps.due.outputs.types != ''
-        env:
-          PAGES_BASE_URL: ${{ vars.PAGES_BASE_URL }}
         run: |
           set -e
           git config user.name "mb-egx-bot"
@@ -122,7 +120,13 @@ jobs:
 
           for TYPE in $TYPES; do
             echo "::group::Rendering $TYPE"
-            python social_poster.py render --post-type "$TYPE"
+            # Render from the just-checked-out repo copy of market_data.json,
+            # not the deployed Pages URL. The workflow is triggered by the
+            # commit that changed this file, while Pages/CDN propagation can
+            # lag behind; fetching the site here can return yesterday's JSON
+            # and suppress today's post even though the repo already has the
+            # fresh session.
+            python social_poster.py render               --post-type "$TYPE"               --market-data "web_public/data/market_data.json"
             echo "::endgroup::"
           done
 
@@ -132,7 +136,7 @@ jobs:
           # tiles' cost bounded to once/day instead of once per due-type/run.
           if echo "$TYPES" | grep -qw "market"; then
             echo "::group::Rendering chart tiles (N19)"
-            python social_poster.py render --post-type chart_tiles --tile-limit 30
+            python social_poster.py render               --post-type chart_tiles               --market-data "web_public/data/market_data.json"               --tile-limit 30
             echo "::endgroup::"
           fi
 
