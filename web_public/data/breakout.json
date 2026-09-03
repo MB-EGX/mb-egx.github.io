@@ -50,8 +50,12 @@
       "Signals": "Volatility squeeze, ADX trend just building, RSI bullish with room to run, Volume trending up, Near recent high (resistance test), Weekly trend aligned, Outperforming its sector, Outperforming its sector index (EGX Non-Bank Financial Services), Bullish historical-analog pattern match, Volume dried up during base (supply exhausted), Volatility contraction (tightening range), Buyers absorbing supply (up-volume > down-volume), Broad market in confirmed uptrend (EGX 30), Overbought (STOCH/StochRSI/CCI confluence) - extended, less room before resistance",
       "Data Confidence": "High (1Y+)",
       "Market Regime (EGX30)": "bull",
-      "Day-1 Breakout": false,
-      "Day-1 Breakout Reasons": []
+      "Day-1 Breakout": true,
+      "Day-1 Breakout Reasons": [
+        "Fresh 20-day high (dist -0.7%)",
+        "Volume 2.9x 20-day avg",
+        "Not extended (3.9% vs VWAP)"
+      ]
     },
     {
       "Ticker": "BINV.CA",

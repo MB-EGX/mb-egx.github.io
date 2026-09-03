@@ -1,0 +1,300 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ============================================================================
+    // MB-EGX Firestore Security Rules
+    // ============================================================================
+    //
+    // SECURITY MODEL
+    // --------------
+    //   /users/{uid}    : owner-only read/write; admin read.
+    //                     - update is gated on:
+    //                         (a) request.auth.uid == uid         (owner)
+    //                         (b) only fields in allowedUserFields()
+    //                             can change (scoped to affectedKeys)
+    //                         (c) each *changed* field passes its own
+    //                             validator (validPartialUpdate)
+    //                         (d) if ANY consent field changes, the consent
+    //                             block as a whole is validated
+    //                             (validConsentChange)
+    //                         (e) subscription_expires_at can NEVER change
+    //                             from the client (Worker-only via Admin SDK)
+    //                         (f) subscription_status can only transition
+    //                             TO 'trial' from the client (Worker is the
+    //                             only path to 'active')
+    //   /sessions/{sid} : owner-only create/update; admin read/delete.
+    //                     - Updates are restricted to ONLY 'lastSeen'
+    //                       (uid/email/name/source are immutable post-create).
+    //
+    // Roots of a recent in-app bug that this rewrite fixes
+    // --------------------------------------------------------
+    //   The previous update rule carried an extra, history-dependent check:
+    //       !("agreed_to_terms" in resource.data)
+    //       || resource.data.agreed_to_terms == true
+    //   This asked "was the OLD doc already in an agreed state?" -- a
+    //   question wrong on two counts: (1) the existing per-write `==
+    //   true` check on the NEW doc already protects against a write
+    //   suddenly setting agreed_to_terms to false; (2) it's not
+    //   type-tolerant, so any account whose old `agreed_to_terms` field
+    //   was false, null, or any non-bool type was permanently stuck
+    //   behind the re-consent modal with `permission-denied`. Owner-only
+    //   auth (a) is sufficient; the bad check is gone.
+    //
+    // ============================================================================
+
+    // -- Admin identity -------------------------------------------------------------
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email in ['drmo071990@gmail.com'];
+    }
+
+    // -- Shared low-level type/limit helpers ----------------------------------------
+    // Used both by create (validAccountData) and update (validPartialUpdate,
+    // validConsentChange). Kept tiny and composable so per-field changes only
+    // touch one place.
+    function isCash(n) {
+      return n is number && n >= 0 && n <= 100000000;
+    }
+    function isListBounded(l, maxSize) {
+      return l is list && l.size() <= maxSize;
+    }
+    function isShortString(s, maxLen) {
+      return s is string && s.size() > 0 && s.size() <= maxLen;
+    }
+    function isStringOrNull(s, maxLen) {
+      return s == null || isShortString(s, maxLen);
+    }
+
+    match /users/{userId} {
+
+      // The signed-in owner can read their own doc; the admin can read any.
+      allow read: if (request.auth != null && request.auth.uid == userId)
+                   || isAdmin();
+
+      // Whitelist of legal client-touched fields on users/{uid}.
+      //   * subscription_expires_at and subscription_status are listed
+      //     even though the client cannot change them (see (e) and (f)
+      //     below). They MUST be in the whitelist so that when the Worker
+      //     (Admin SDK, bypasses rules) writes them, a later CLIENT
+      //     write of unrelated fields (e.g. cash/portfolio, or consent
+      //     re-acceptance) is not blocked by hasOnly() permanently.
+      function allowedUserFields() {
+        return [
+          'cash', 'portfolio', 'history',
+          'paper_cash', 'paper_portfolio', 'paper_history',
+          'agreed_to_terms', 'terms_version', 'agreed_at', 'ip_address',
+          'web_stats', 'desktop_stats',
+          'trial_ends_at', 'subscription_status', 'subscription_expires_at'
+        ];
+      }
+
+      // Validator for the web_stats / desktop_stats maps. Same shape from
+      // two different writers (index.html's computeWebDealingStats and
+      // app_gui.py's push_dealing_stats) -- one shared rule instead of
+      // two duplicates.
+      function validStatsMap(m) {
+        return m.keys().hasOnly(['trade_count', 'total_trade_value_egp', 'portfolio_value_egp', 'updated'])
+          && m.trade_count is int
+          && m.trade_count >= 0
+          && m.trade_count <= 1000000
+          && m.total_trade_value_egp is number
+          && m.total_trade_value_egp >= 0
+          && m.total_trade_value_egp <= 1000000000000
+          && m.portfolio_value_egp is number
+          && m.portfolio_value_egp >= 0
+          && m.portfolio_value_egp <= 1000000000000
+          && m.updated is timestamp;
+      }
+
+      // Unconditional whole-new-document validator for `create`.
+      // A brand-new account starts from a valid state, full stop.
+      function validAccountData() {
+        return isCash(request.resource.data.cash)
+          && isListBounded(request.resource.data.portfolio, 200)
+          && isListBounded(request.resource.data.history, 5000)
+          && isCash(request.resource.data.paper_cash)
+          && isListBounded(request.resource.data.paper_portfolio, 200)
+          && isListBounded(request.resource.data.paper_history, 5000)
+          && isStringOrNull(
+                ('ip_address' in request.resource.data
+                    ? request.resource.data.ip_address
+                    : null),
+                64)
+          && (
+                !('trial_ends_at' in request.resource.data)
+                || request.resource.data.trial_ends_at is timestamp
+             )
+          && (
+                !('subscription_status' in request.resource.data)
+                || request.resource.data.subscription_status is string
+             )
+          && (
+                !('web_stats' in request.resource.data)
+                || (request.resource.data.web_stats is map
+                    && validStatsMap(request.resource.data.web_stats))
+             )
+          && (
+                !('desktop_stats' in request.resource.data)
+                || (request.resource.data.desktop_stats is map
+                    && validStatsMap(request.resource.data.desktop_stats))
+             );
+      }
+
+      // Per-update partial validator. Only keys that THIS write actually
+      // changes are validated -- so legacy accounts that pre-date, say,
+      // paper trading (and therefore lack paper_history) are not
+      // permanently locked out of updating unrelated fields like consent
+      // or cash. Conservative principle: validate what *this write*
+      // touches, never the whole existing doc.
+      function validPartialUpdate() {
+        let changed = request.resource.data.diff(resource.data).affectedKeys();
+        return (
+                  !('cash' in changed)              || isCash(request.resource.data.cash)
+               )
+            && (!('portfolio' in changed)         || isListBounded(request.resource.data.portfolio, 200))
+            && (!('history' in changed)           || isListBounded(request.resource.data.history, 5000))
+            && (!('paper_cash' in changed)        || isCash(request.resource.data.paper_cash))
+            && (!('paper_portfolio' in changed)   || isListBounded(request.resource.data.paper_portfolio, 200))
+            && (!('paper_history' in changed)     || isListBounded(request.resource.data.paper_history, 5000))
+            && (
+                  !('trial_ends_at' in changed)
+                  || request.resource.data.trial_ends_at is timestamp
+               )
+            && (
+                  !('web_stats' in changed)
+                  || (request.resource.data.web_stats is map
+                      && validStatsMap(request.resource.data.web_stats))
+               )
+            && (
+                  !('desktop_stats' in changed)
+                  || (request.resource.data.desktop_stats is map
+                      && validStatsMap(request.resource.data.desktop_stats))
+               );
+      }
+
+      // Re-consent write validator. The standard re-consent payload is
+      // exactly these four fields, set(...) with merge:true against an
+      // existing account (see index.html:7167-7217 buildConsentFields):
+      //
+      //     { agreed_to_terms: <true>,
+      //       terms_version:   TERMS_VERSION,
+      //       agreed_at:       serverTimestamp(),
+      //       ip_address:      <ip or null> }
+      //
+      // Whenever any of these four keys is in `affectedKeys()`, the
+      // corresponding field MUST validate. In particular:
+      //   * agreed_to_terms must be the literal boolean `true` (Firestore
+      //     `==` is strict-typed, so "true" the string fails). The
+      //     previous rule only checked when THIS specific key was
+      //     affected, so a write that touched only terms_version or
+      //     agreed_at slipped past validation entirely.
+      function validConsentChange() {
+        let changed = request.resource.data.diff(resource.data).affectedKeys();
+        let agreedT =
+             !('agreed_to_terms' in changed)
+          || (
+                request.resource.data.agreed_to_terms is bool
+             && request.resource.data.agreed_to_terms == true
+            );
+        let versionT =
+             !('terms_version' in changed)
+          || (
+                request.resource.data.terms_version is string
+             && request.resource.data.terms_version.size() > 0
+             && request.resource.data.terms_version.size() <= 50
+            );
+        let agreedAT =
+             !('agreed_at' in changed)
+          || (request.resource.data.agreed_at is timestamp);
+        let ipT =
+             !('ip_address' in changed)
+          || isStringOrNull(request.resource.data.ip_address, 64);
+        return agreedT && versionT && agreedAT && ipT;
+      }
+
+      // -- create: a brand-new account on first login/signup ----------------
+      allow create: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.keys().hasOnly(allowedUserFields())
+        // Consent fields are mandatory and valid in every brand-new doc.
+        && request.resource.data.agreed_to_terms == true
+        && request.resource.data.terms_version is string
+        && request.resource.data.terms_version.size() > 0
+        && request.resource.data.terms_version.size() <= 50
+        && request.resource.data.agreed_at is timestamp
+        && validAccountData()
+        // A brand-new account may only ever be created as a free trial.
+        // subscription_expires_at can only come from the Worker.
+        && (!('subscription_status' in request.resource.data)
+            || request.resource.data.subscription_status == 'trial')
+        && !('subscription_expires_at' in request.resource.data);
+
+      // -- update: any subsequent write by the signed-in owner -------------
+      allow update: if request.auth != null
+        && request.auth.uid == userId
+
+        // (b) only keys in the whitelist may change.
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(allowedUserFields())
+
+        // (c) every changed account field passes its own validator.
+        && validPartialUpdate()
+
+        // (d) if any consent field changes, the whole consent block
+        //     validates as a coherent update.
+        && validConsentChange()
+
+        // (e) Worker-only: client cannot touch subscription_expires_at.
+        && !('subscription_expires_at' in request.resource.data.diff(resource.data).affectedKeys())
+
+        // (f) Worker-only: client can only transition subscription_status
+        //     to 'trial' (used by trial-eligibility migration); 'active'
+        //     is exclusively set by the Worker.
+        && (
+              !('subscription_status' in request.resource.data.diff(resource.data).affectedKeys())
+              || request.resource.data.subscription_status == 'trial'
+           );
+    }
+
+    // ============================================================================
+    // SESSIONS: lightweight session-heartbeat tracking.
+    // ============================================================================
+    match /sessions/{sessionId} {
+
+      // Whole-new-document validator. Mirrors exactly what
+      // index.html's startSessionTracking() and app_gui.py's
+      // create_session_doc() actually write.
+      function validSessionCreate() {
+        return request.resource.data.keys().hasOnly(['uid', 'email', 'name', 'source', 'start', 'lastSeen'])
+          && request.resource.data.uid is string
+          && (
+                !('email' in request.resource.data)
+                || request.resource.data.email == null
+                || (request.resource.data.email is string
+                    && request.resource.data.email.size() <= 200)
+             )
+          && request.resource.data.name is string
+          && request.resource.data.name.size() <= 200
+          && request.resource.data.source is string
+          && request.resource.data.source in ['web', 'desktop']
+          && request.resource.data.start is timestamp
+          && request.resource.data.lastSeen is timestamp;
+      }
+
+      allow create: if request.auth != null
+        && request.resource.data.uid == request.auth.uid
+        && validSessionCreate();
+
+      // Updates are restricted to exactly lastSeen -- the only field any
+      // observed writer (web tab heartbeat, desktop touch_session_doc)
+      // actually updates. uid/email/name/source are immutable post-create.
+      allow update: if request.auth != null
+        && resource.data.uid == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastSeen'])
+        && request.resource.data.lastSeen is timestamp;
+
+      allow read:   if isAdmin();
+      allow delete: if isAdmin();
+    }
+  }
+}

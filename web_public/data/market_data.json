@@ -2702,8 +2702,12 @@
       "Ticker": "VLMRA.CA",
       "Last Bar Date": "2026-09-02",
       "Days Stale": 0,
-      "Day-1 Breakout": false,
-      "Day-1 Breakout Reasons": [],
+      "Day-1 Breakout": true,
+      "Day-1 Breakout Reasons": [
+        "Fresh 20-day high (dist -0.7%)",
+        "Volume 2.9x 20-day avg",
+        "Not extended (3.9% vs VWAP)"
+      ],
       "Sector": "Non-Bank Financial Services",
       "Long-Term Setup Confirmed": true,
       "Long-Term Setup Reasons": [
@@ -8096,8 +8100,12 @@
       "Ticker": "ALCN.CA",
       "Last Bar Date": "2026-09-02",
       "Days Stale": 0,
-      "Day-1 Breakout": false,
-      "Day-1 Breakout Reasons": [],
+      "Day-1 Breakout": true,
+      "Day-1 Breakout Reasons": [
+        "Fresh 20-day high (dist -0.2%)",
+        "Volume 2.3x 20-day avg",
+        "Not extended (4.9% vs VWAP)"
+      ],
       "Sector": "Shipping & Transportation Services",
       "Long-Term Setup Confirmed": true,
       "Long-Term Setup Reasons": [
@@ -26010,8 +26018,12 @@
       "Signals": "Volatility squeeze, ADX trend just building, RSI bullish with room to run, Volume trending up, Near recent high (resistance test), Weekly trend aligned, Outperforming its sector, Outperforming its sector index (EGX Non-Bank Financial Services), Bullish historical-analog pattern match, Volume dried up during base (supply exhausted), Volatility contraction (tightening range), Buyers absorbing supply (up-volume > down-volume), Broad market in confirmed uptrend (EGX 30), Overbought (STOCH/StochRSI/CCI confluence) - extended, less room before resistance",
       "Data Confidence": "High (1Y+)",
       "Market Regime (EGX30)": "bull",
-      "Day-1 Breakout": false,
-      "Day-1 Breakout Reasons": []
+      "Day-1 Breakout": true,
+      "Day-1 Breakout Reasons": [
+        "Fresh 20-day high (dist -0.7%)",
+        "Volume 2.9x 20-day avg",
+        "Not extended (3.9% vs VWAP)"
+      ]
     },
     {
       "Ticker": "BINV.CA",
@@ -27265,50 +27277,7 @@
       }
     ],
     "achieved_today": [],
-    "retired_today": [
-      {
-        "id": 46,
-        "ticker": "AMII.CA",
-        "horizon": "short",
-        "pick_date": "2026-09-01",
-        "ref_price": 16.0,
-        "source": "signal",
-        "rank_score": 33.0,
-        "rank_origin": "⚡ BREAKOUT BUY (MOMENTUM) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
-        "retired_date": "2026-09-02",
-        "retired_price": 15.35,
-        "retired_pct": -4.06,
-        "retired_reason": "stop_loss_3pct"
-      },
-      {
-        "id": 45,
-        "ticker": "VERT.CA",
-        "horizon": "short",
-        "pick_date": "2026-08-31",
-        "ref_price": 6.64,
-        "source": "day1_breakout",
-        "rank_score": 37.8,
-        "rank_origin": "Day-1 Breakout",
-        "retired_date": "2026-09-02",
-        "retired_price": 6.41,
-        "retired_pct": -3.46,
-        "retired_reason": "stop_loss_3pct"
-      },
-      {
-        "id": 38,
-        "ticker": "BONY.CA",
-        "horizon": "short",
-        "pick_date": "2026-08-30",
-        "ref_price": 4.57,
-        "source": "day1_breakout",
-        "rank_score": 42.5,
-        "rank_origin": "Day-1 Breakout",
-        "retired_date": "2026-09-02",
-        "retired_price": 4.52,
-        "retired_pct": -1.09,
-        "retired_reason": "outranked_by_higher_scored_candidate"
-      }
-    ],
+    "retired_today": [],
     "achieved_this_week": [
       {
         "id": 42,
@@ -511704,29 +511673,29 @@
     "AMII.CA": "Real Estate",
     "AMII": "Real Estate",
     "EGPE.SI": "IT, Media & Communication Services",
-    ".EGX35LV": "General / Diversified",
-    ".EGTRDB": "General / Diversified",
     ".EGNBFC": "General / Diversified",
     ".SHARIAH": "General / Diversified",
     ".EGTRVL": "General / Diversified",
     ".EGIGSA": "General / Diversified",
     ".EGREAL": "General / Diversified",
+    ".EGX35LV": "General / Diversified",
+    ".EGTRDB": "General / Diversified",
+    ".EGX100EWI": "General / Diversified",
+    ".EGEDUS": "General / Diversified",
     ".EGX30": "General / Diversified",
     ".EGBASC": "General / Diversified",
     ".EGCOCE": "General / Diversified",
     ".EGX30USD": "General / Diversified",
-    ".EGX100EWI": "General / Diversified",
-    ".EGEDUS": "General / Diversified",
-    ".EGSHTS": "General / Diversified",
-    ".EGBANK": "General / Diversified",
-    ".EGX70EWI": "General / Diversified",
-    ".EGFOBT": "General / Diversified",
     ".EGBULM": "General / Diversified",
     ".EGHLTH": "General / Diversified",
+    ".EGSHTS": "General / Diversified",
     ".EGX30CAP": "General / Diversified",
     ".EGTEDU": "General / Diversified",
     ".EGXTBONDS": "General / Diversified",
-    ".EGIMCS": "General / Diversified"
+    ".EGIMCS": "General / Diversified",
+    ".EGBANK": "General / Diversified",
+    ".EGX70EWI": "General / Diversified",
+    ".EGFOBT": "General / Diversified"
   },
   "leaderboard": [
     {

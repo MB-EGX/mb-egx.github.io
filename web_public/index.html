@@ -6595,6 +6595,7 @@
                 const ip = await fetchClientIp();
                 await db.collection('users').doc(cred.user.uid).set({
                     cash: 0, portfolio: [], history: [],
+                    paper_cash: PAPER_TRADING_STARTING_CASH_EGP, paper_portfolio: [], paper_history: [],
                     ...buildConsentFields(ip),
                 }, { merge: true });
                 resetAuthRateLimit();
@@ -6699,6 +6700,7 @@
                 const ip = await fetchClientIp();
                 await db.collection('users').doc(result.user.uid).set({
                     cash: 0, portfolio: [], history: [],
+                    paper_cash: PAPER_TRADING_STARTING_CASH_EGP, paper_portfolio: [], paper_history: [],
                     ...buildConsentFields(ip),
                 }, { merge: true });
             }
@@ -7194,6 +7196,9 @@
                     payload.cash = 0;
                     payload.portfolio = [];
                     payload.history = [];
+                    payload.paper_cash = PAPER_TRADING_STARTING_CASH_EGP;
+                    payload.paper_portfolio = [];
+                    payload.paper_history = [];
                 }
                 await docRef.set(payload, { merge: true });
                 document.getElementById('terms-reconsent-gate').classList.add('hidden');
