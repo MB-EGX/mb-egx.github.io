@@ -1,10 +1,10 @@
 {
   "ticker": "SMPP.CA",
-  "last_data_date": "2026-09-02",
+  "last_data_date": "2026-09-03",
   "sector": "Paper & Packaging",
   "matrix": {
     "Ticker": "SMPP.CA",
-    "Last Bar Date": "2026-09-02",
+    "Last Bar Date": "2026-09-03",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -29,20 +29,20 @@
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL (Dip unconfirmed: 1/4 factors passed, need 3 - CMF below accumulation floor, still closing near session low (no support found), no oversold-oscillator support (STOCH/StochRSI/CCI))",
     "Momentum": "Overbought",
-    "Rank Score": -40.2,
+    "Rank Score": -44.4,
     "Reward:Risk": 0.13,
     "Win Rate Estimate (%)": 0.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 129.9,
-    "Target Entry (VWAP)": 116.5462,
-    "Suggested Stop-Loss": 102.9263,
+    "Target Entry (VWAP)": 119.9208,
+    "Suggested Stop-Loss": 104.6958,
     "Stop-Loss Reliable": true,
     "Take-Profit Target": 133.4073,
     "Resistance (52W High)": 473.04,
     "Support (52W Low)": 64.0,
     "Open": 129.9,
-    "Previous Close": 126.08,
+    "Previous Close": 129.9,
     "Day High": 131.0,
     "Day Low": 129.9,
     "Day's Range": "129.9 - 131.0",
@@ -51,19 +51,19 @@
     "Day Range %": 0.85,
     "Bid": null,
     "Ask": null,
-    "Relative Value Score": 95.1,
-    "Price Momentum Score": 81.0,
+    "Relative Value Score": 95.2,
+    "Price Momentum Score": 81.3,
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": 69.1,
     "Growth Health Score (est.)": 74.3,
-    "STOCH %K": 84.91,
-    "STOCH %D": 57.83,
+    "STOCH %K": 89.05,
+    "STOCH %D": 76.8,
     "STOCHRSI": 100.0,
-    "CCI": 227.44,
+    "CCI": 181.26,
     "ROC": 26.06,
     "Williams %R": -6.82,
-    "UO": 55.69,
-    "Bull/Bear Power": 31.2558,
+    "UO": 70.71,
+    "Bull/Bear Power": 26.9479,
     "Highs/Lows": 93.18,
     "Nearest Resistance": null,
     "Resistance Touches": null,
@@ -76,27 +76,27 @@
     "S1": 103.5333,
     "S2": 103.4667,
     "S3": 103.4333,
-    "Projected Gain (%)": -13.48,
-    "Pattern Conf (%)": 35.39,
-    "Projected Range 95%": "-18.41% to -6.13%",
+    "Projected Gain (%)": -17.4,
+    "Pattern Conf (%)": 36.9,
+    "Projected Range 95%": "-22.79% to -13.97%",
     "Kelly %": 0.0,
-    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL (Dip unconfirmed: 1/4 factors passed, need 3 - CMF below accumulation floor, still closing near session low (no support found), no oversold-oscillator support (STOCH/StochRSI/CCI)) | trend=Range / Consolidation | no decisive edge | weekly aligned | vol x6.27 | overbought",
+    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL (Dip unconfirmed: 1/4 factors passed, need 3 - CMF below accumulation floor, still closing near session low (no support found), no oversold-oscillator support (STOCH/StochRSI/CCI)) | trend=Range / Consolidation | no decisive edge | weekly aligned | vol x4.90 | overbought",
     "Score Breakdown": {
-      "pattern": 10.62,
-      "projected": -20.22,
+      "pattern": 11.07,
+      "projected": -26.1,
       "range": 0.81,
       "trend_bonus": -40.0,
-      "confidence_weight": 0.76
+      "confidence_weight": 0.77
     },
     "Regime": "Volatile Range",
     "Trend Class": "Range / Consolidation",
     "RSI-14": 65.4,
-    "ADX-14": 13.6,
-    "Vol Z-Score": 2.89,
+    "ADX-14": 16.1,
+    "Vol Z-Score": 2.3,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 2.6121,
-    "Bollinger %B": 1.045,
-    "Avg Volume (20D)": 38,
+    "MACD Histogram": 2.9222,
+    "Bollinger %B": 0.976,
+    "Avg Volume (20D)": 49,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
@@ -234,7 +234,8 @@
       "2026-08-30 00:00:00",
       "2026-08-31 00:00:00",
       "2026-09-01 00:00:00",
-      "2026-09-02 00:00:00"
+      "2026-09-02 00:00:00",
+      "2026-09-03 00:00:00"
     ],
     "close": [
       99.1,
@@ -370,6 +371,7 @@
       103.6,
       126.08,
       126.08,
+      129.9,
       129.9
     ],
     "open": [
@@ -506,6 +508,7 @@
       103.5,
       103.6,
       126.08,
+      129.9,
       129.9
     ],
     "high": [
@@ -642,6 +645,7 @@
       103.6,
       126.08,
       126.08,
+      131.0,
       131.0
     ],
     "low": [
@@ -778,6 +782,7 @@
       103.5,
       126.08,
       126.08,
+      129.9,
       129.9
     ],
     "volume": [
@@ -914,6 +919,7 @@
       0,
       8,
       8,
+      240,
       240
     ],
     "vwap": [
@@ -1050,7 +1056,8 @@
       111.0496,
       111.2294,
       111.0442,
-      116.5462
+      116.5462,
+      119.9208
     ],
     "resistance": 473.04,
     "support": 75.11,

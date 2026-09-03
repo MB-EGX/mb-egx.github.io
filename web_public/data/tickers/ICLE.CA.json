@@ -1,10 +1,10 @@
 {
   "ticker": "ICLE.CA",
-  "last_data_date": "2026-09-02",
+  "last_data_date": "2026-09-03",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "ICLE.CA",
-    "Last Bar Date": "2026-09-02",
+    "Last Bar Date": "2026-09-03",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -36,9 +36,9 @@
     "Backtested Sample Size": null,
     "Current Price": 15.76,
     "Target Entry (VWAP)": 15.76,
-    "Suggested Stop-Loss": 13.4369,
+    "Suggested Stop-Loss": 13.6028,
     "Stop-Loss Reliable": true,
-    "Take-Profit Target": 18.7742,
+    "Take-Profit Target": 18.5668,
     "Resistance (52W High)": 41.0,
     "Support (52W Low)": 15.38,
     "Open": 15.76,
@@ -59,11 +59,11 @@
     "STOCH %K": 50.0,
     "STOCH %D": 50.0,
     "STOCHRSI": 50.0,
-    "CCI": -35.09,
+    "CCI": 0.0,
     "ROC": 0.0,
     "Williams %R": -50.0,
-    "UO": 48.35,
-    "Bull/Bear Power": -0.2428,
+    "UO": 48.62,
+    "Bull/Bear Power": -0.2081,
     "Highs/Lows": 50.0,
     "Nearest Resistance": null,
     "Resistance Touches": null,
@@ -79,7 +79,7 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 4.82,
+    "Kelly %": 4.8,
     "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL (Dip unconfirmed: 1/4 factors passed, need 3 - weekly trend not aligned, CMF below accumulation floor, no oversold-oscillator support (STOCH/StochRSI/CCI)) | trend=Consolidation / Neutral | no decisive edge | vol x1.00",
     "Score Breakdown": {
       "pattern": 0.0,
@@ -91,17 +91,16 @@
     "Regime": "N/A",
     "Trend Class": "Consolidation / Neutral",
     "RSI-14": 48.1,
-    "ADX-14": 5.3,
+    "ADX-14": 5.0,
     "Vol Z-Score": 0.0,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0154,
+    "MACD Histogram": -0.0036,
     "Bollinger %B": 0.5,
     "Avg Volume (20D)": 0,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
     "dates": [
-      "2025-09-02 00:00:00",
       "2025-09-03 00:00:00",
       "2025-09-07 00:00:00",
       "2025-09-08 00:00:00",
@@ -358,10 +357,10 @@
       "2026-08-30 00:00:00",
       "2026-08-31 00:00:00",
       "2026-09-01 00:00:00",
-      "2026-09-02 00:00:00"
+      "2026-09-02 00:00:00",
+      "2026-09-03 00:00:00"
     ],
     "close": [
-      41.0,
       15.76,
       41.0,
       15.76,
@@ -597,6 +596,7 @@
       15.76,
       15.76,
       41.0,
+      15.76,
       15.76,
       15.76,
       15.76,
@@ -621,7 +621,6 @@
       15.76
     ],
     "open": [
-      41.0,
       18.91,
       49.2,
       18.91,
@@ -878,10 +877,10 @@
       15.76,
       15.76,
       15.76,
+      15.76,
       15.76
     ],
     "high": [
-      41.0,
       18.91,
       41.0,
       18.91,
@@ -1138,10 +1137,10 @@
       15.76,
       15.76,
       15.76,
+      15.76,
       15.76
     ],
     "low": [
-      41.0,
       18.91,
       41.0,
       18.91,
@@ -1398,10 +1397,10 @@
       15.76,
       15.76,
       15.76,
+      15.76,
       15.76
     ],
     "volume": [
-      0,
       10,
       0,
       10,
@@ -1658,10 +1657,10 @@
       0,
       0,
       0,
+      0,
       0
     ],
     "vwap": [
-      41.0,
       17.86,
       17.86,
       17.86,
@@ -1914,6 +1913,7 @@
       16.81,
       16.81,
       16.81,
+      15.76,
       15.76,
       15.76,
       15.76,

@@ -1,10 +1,10 @@
 {
   "ticker": "TORA.CA",
-  "last_data_date": "2026-09-02",
+  "last_data_date": "2026-09-03",
   "sector": "Building Materials",
   "matrix": {
     "Ticker": "TORA.CA",
-    "Last Bar Date": "2026-09-02",
+    "Last Bar Date": "2026-09-03",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -29,20 +29,20 @@
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - 🛑 SELL / AVOID",
     "Momentum": "Oversold",
-    "Rank Score": -30.6,
-    "Reward:Risk": 0.41,
-    "Win Rate Estimate (%)": 80.0,
+    "Rank Score": -45.0,
+    "Reward:Risk": 0.26,
+    "Win Rate Estimate (%)": 40.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 65.5,
     "Target Entry (VWAP)": 65.5,
-    "Suggested Stop-Loss": 59.0297,
+    "Suggested Stop-Loss": 59.1276,
     "Stop-Loss Reliable": true,
-    "Take-Profit Target": 68.3492,
+    "Take-Profit Target": 67.2685,
     "Resistance (52W High)": 99.0,
     "Support (52W Low)": 31.03,
     "Open": 66.0,
-    "Previous Close": 65.75,
+    "Previous Close": 65.5,
     "Day High": 67.75,
     "Day Low": 65.2,
     "Day's Range": "65.2 - 67.75",
@@ -52,18 +52,18 @@
     "Bid": null,
     "Ask": null,
     "Relative Value Score": null,
-    "Price Momentum Score": 32.4,
+    "Price Momentum Score": 33.0,
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": 15.0,
     "Growth Health Score (est.)": 100.0,
-    "STOCH %K": 9.52,
-    "STOCH %D": 19.39,
+    "STOCH %K": 8.33,
+    "STOCH %D": 13.02,
     "STOCHRSI": 0.0,
-    "CCI": -113.96,
-    "ROC": -3.68,
+    "CCI": -103.99,
+    "ROC": -2.96,
     "Williams %R": -92.86,
-    "UO": 37.81,
-    "Bull/Bear Power": -1.0709,
+    "UO": 34.87,
+    "Bull/Bear Power": -0.6394,
     "Highs/Lows": 7.14,
     "Nearest Resistance": 74.5,
     "Resistance Touches": 2,
@@ -76,14 +76,14 @@
     "S1": 65.7033,
     "S2": 63.4267,
     "S3": 61.8033,
-    "Projected Gain (%)": 3.65,
-    "Pattern Conf (%)": 63.51,
-    "Projected Range 95%": "-0.3% to 7.48%",
-    "Kelly %": 15.68,
+    "Projected Gain (%)": -1.02,
+    "Pattern Conf (%)": 30.13,
+    "Projected Range 95%": "-5.44% to 1.78%",
+    "Kelly %": 0.0,
     "Signal Reason": "🚫 ILLIQUID - 🛑 SELL / AVOID | trend=Strong Bearish Trend | awaiting confirmation | volatility squeeze | oversold",
     "Score Breakdown": {
-      "pattern": 19.05,
-      "projected": 5.47,
+      "pattern": 9.04,
+      "projected": -1.53,
       "range": 2.54,
       "trend_bonus": -67.0,
       "confidence_weight": 0.77
@@ -91,12 +91,12 @@
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bearish Trend",
     "RSI-14": 39.1,
-    "ADX-14": 27.5,
-    "Vol Z-Score": -0.59,
+    "ADX-14": 28.0,
+    "Vol Z-Score": -0.52,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.1862,
-    "Bollinger %B": 0.184,
-    "Avg Volume (20D)": 9310,
+    "MACD Histogram": -0.1982,
+    "Bollinger %B": 0.213,
+    "Avg Volume (20D)": 8308,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
@@ -237,7 +237,8 @@
       "2026-08-30 00:00:00",
       "2026-08-31 00:00:00",
       "2026-09-01 00:00:00",
-      "2026-09-02 00:00:00"
+      "2026-09-02 00:00:00",
+      "2026-09-03 00:00:00"
     ],
     "close": [
       46.8,
@@ -376,6 +377,7 @@
       67.98,
       65.75,
       65.75,
+      65.5,
       65.5
     ],
     "open": [
@@ -515,6 +517,7 @@
       67.99,
       67.98,
       67.0,
+      66.0,
       66.0
     ],
     "high": [
@@ -654,6 +657,7 @@
       68.95,
       67.74,
       67.74,
+      67.75,
       67.75
     ],
     "low": [
@@ -793,6 +797,7 @@
       66.0,
       65.0,
       65.0,
+      65.2,
       65.2
     ],
     "volume": [
@@ -932,6 +937,7 @@
       0,
       5623,
       5623,
+      4364,
       4364
     ],
     "vwap": [
@@ -1071,7 +1077,8 @@
       69.5601,
       69.4708,
       69.4331,
-      69.2823
+      69.2823,
+      68.8263
     ],
     "resistance": 74.5,
     "support": 31.03,

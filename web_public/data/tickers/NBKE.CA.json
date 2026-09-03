@@ -1,10 +1,10 @@
 {
   "ticker": "NBKE.CA",
-  "last_data_date": "2026-09-02",
+  "last_data_date": "2026-09-03",
   "sector": "Banks",
   "matrix": {
     "Ticker": "NBKE.CA",
-    "Last Bar Date": "2026-09-02",
+    "Last Bar Date": "2026-09-03",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -36,13 +36,13 @@
     "Backtested Sample Size": null,
     "Current Price": 36.5,
     "Target Entry (VWAP)": 36.5,
-    "Suggested Stop-Loss": 23.3515,
+    "Suggested Stop-Loss": 23.8364,
     "Stop-Loss Reliable": true,
-    "Take-Profit Target": 53.1911,
+    "Take-Profit Target": 52.585,
     "Resistance (52W High)": 85.99,
     "Support (52W Low)": 12.26,
     "Open": 38.0,
-    "Previous Close": 38.0,
+    "Previous Close": 36.5,
     "Day High": 38.4,
     "Day Low": 35.22,
     "Day's Range": "35.22 - 38.4",
@@ -51,19 +51,19 @@
     "Day Range %": 8.71,
     "Bid": null,
     "Ask": null,
-    "Relative Value Score": 93.2,
-    "Price Momentum Score": 44.2,
+    "Relative Value Score": 93.7,
+    "Price Momentum Score": 44.0,
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": 100.0,
     "Growth Health Score (est.)": 100.0,
-    "STOCH %K": 59.95,
-    "STOCH %D": 36.53,
+    "STOCH %K": 79.24,
+    "STOCH %D": 59.33,
     "STOCHRSI": 23.46,
-    "CCI": -8.49,
-    "ROC": -5.17,
+    "CCI": -15.16,
+    "ROC": -5.07,
     "Williams %R": -27.54,
-    "UO": 71.24,
-    "Bull/Bear Power": -0.0598,
+    "UO": 65.71,
+    "Bull/Bear Power": 0.0373,
     "Highs/Lows": 72.46,
     "Nearest Resistance": null,
     "Resistance Touches": null,
@@ -80,7 +80,7 @@
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
     "Kelly %": 4.92,
-    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Very Strong Bullish Trend | no decisive edge | weekly aligned | vol x3.76",
+    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Very Strong Bullish Trend | no decisive edge | weekly aligned | vol x3.17",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
@@ -91,12 +91,12 @@
     "Regime": "N/A",
     "Trend Class": "Very Strong Bullish Trend",
     "RSI-14": 53.5,
-    "ADX-14": 67.9,
-    "Vol Z-Score": 1.93,
+    "ADX-14": 68.9,
+    "Vol Z-Score": 1.67,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.2241,
-    "Bollinger %B": 0.506,
-    "Avg Volume (20D)": 417,
+    "MACD Histogram": -0.2685,
+    "Bollinger %B": 0.479,
+    "Avg Volume (20D)": 495,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
@@ -236,7 +236,8 @@
       "2026-08-30 00:00:00",
       "2026-08-31 00:00:00",
       "2026-09-01 00:00:00",
-      "2026-09-02 00:00:00"
+      "2026-09-02 00:00:00",
+      "2026-09-03 00:00:00"
     ],
     "close": [
       22.5,
@@ -374,6 +375,7 @@
       34.84,
       38.0,
       38.0,
+      36.5,
       36.5
     ],
     "open": [
@@ -511,6 +513,7 @@
       38.16,
       37.99,
       34.84,
+      38.0,
       38.0,
       38.0
     ],
@@ -650,6 +653,7 @@
       37.99,
       38.0,
       38.0,
+      38.4,
       38.4
     ],
     "low": [
@@ -788,6 +792,7 @@
       33.18,
       34.84,
       34.84,
+      35.22,
       35.22
     ],
     "volume": [
@@ -926,6 +931,7 @@
       0,
       36,
       36,
+      1570,
       1570
     ],
     "vwap": [
@@ -1064,7 +1070,8 @@
       34.8316,
       34.8372,
       35.0592,
-      38.8938
+      38.8938,
+      38.5475
     ],
     "resistance": 85.99,
     "support": 28.95,

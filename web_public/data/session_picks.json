@@ -1,7 +1,27 @@
 {
-  "last_data_date": "2026-09-02",
+  "last_data_date": "2026-09-03",
   "session_picks": {
     "short": [
+      {
+        "id": 54,
+        "ticker": "AMES.CA",
+        "horizon": "short",
+        "pick_date": "2026-09-03",
+        "ref_price": 87.0,
+        "source": "day1_breakout",
+        "rank_score": 88.3,
+        "rank_origin": "Day-1 Breakout",
+        "expected_from": "2026-09-06",
+        "expected_by": "2026-09-08",
+        "expected_pct": 3.0,
+        "stop_loss_pct": 3.0,
+        "days_active": 0,
+        "days_overdue": 0,
+        "is_overdue": false,
+        "benchmark_pct": 0.0,
+        "current_pct": 0.0,
+        "alpha_vs_benchmark_pct": 0.0
+      },
       {
         "id": 53,
         "ticker": "MEPA.CA",
@@ -15,12 +35,12 @@
         "expected_by": "2026-09-07",
         "expected_pct": 3.0,
         "stop_loss_pct": 3.0,
-        "days_active": 0,
+        "days_active": 1,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.0,
+        "benchmark_pct": 1.061,
         "current_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
+        "alpha_vs_benchmark_pct": -1.06
       },
       {
         "id": 52,
@@ -35,32 +55,12 @@
         "expected_by": "2026-09-07",
         "expected_pct": 3.0,
         "stop_loss_pct": 3.0,
-        "days_active": 0,
+        "days_active": 1,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.0,
-        "current_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
-      },
-      {
-        "id": 51,
-        "ticker": "AMES.CA",
-        "horizon": "short",
-        "pick_date": "2026-09-02",
-        "ref_price": 92.33,
-        "source": "day1_breakout",
-        "rank_score": 57.3,
-        "rank_origin": "Day-1 Breakout",
-        "expected_from": "2026-09-03",
-        "expected_by": "2026-09-07",
-        "expected_pct": 3.0,
-        "stop_loss_pct": 3.0,
-        "days_active": 0,
-        "days_overdue": 0,
-        "is_overdue": false,
-        "benchmark_pct": 0.0,
-        "current_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
+        "benchmark_pct": 1.061,
+        "current_pct": 1.34,
+        "alpha_vs_benchmark_pct": 0.28
       },
       {
         "id": 48,
@@ -75,12 +75,12 @@
         "expected_by": "2026-09-06",
         "expected_pct": 3.0,
         "stop_loss_pct": 3.0,
-        "days_active": 1,
+        "days_active": 2,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.448,
-        "current_pct": -1.22,
-        "alpha_vs_benchmark_pct": -1.67
+        "benchmark_pct": 1.514,
+        "current_pct": -2.21,
+        "alpha_vs_benchmark_pct": -3.72
       },
       {
         "id": 47,
@@ -95,12 +95,12 @@
         "expected_by": "2026-09-06",
         "expected_pct": 3.0,
         "stop_loss_pct": 3.0,
-        "days_active": 1,
+        "days_active": 2,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.448,
-        "current_pct": -2.33,
-        "alpha_vs_benchmark_pct": -2.78
+        "benchmark_pct": 1.514,
+        "current_pct": -1.86,
+        "alpha_vs_benchmark_pct": -3.37
       }
     ],
     "medium": [
@@ -117,12 +117,12 @@
         "expected_by": "2026-11-03",
         "expected_pct": 8.0,
         "stop_loss_pct": 6.0,
-        "days_active": 1,
+        "days_active": 2,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.448,
-        "current_pct": 3.74,
-        "alpha_vs_benchmark_pct": 3.29
+        "benchmark_pct": 1.514,
+        "current_pct": 2.24,
+        "alpha_vs_benchmark_pct": 0.73
       },
       {
         "id": 44,
@@ -137,12 +137,12 @@
         "expected_by": "2026-11-02",
         "expected_pct": 8.0,
         "stop_loss_pct": 6.0,
-        "days_active": 2,
+        "days_active": 3,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 1.483,
-        "current_pct": 0.41,
-        "alpha_vs_benchmark_pct": -1.07
+        "benchmark_pct": 2.559,
+        "current_pct": 0.08,
+        "alpha_vs_benchmark_pct": -2.48
       },
       {
         "id": 34,
@@ -157,12 +157,12 @@
         "expected_by": "2026-10-28",
         "expected_pct": 8.0,
         "stop_loss_pct": 6.0,
-        "days_active": 7,
+        "days_active": 8,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 1.04,
-        "current_pct": 1.21,
-        "alpha_vs_benchmark_pct": 0.17
+        "benchmark_pct": 2.112,
+        "current_pct": 1.73,
+        "alpha_vs_benchmark_pct": -0.38
       }
     ],
     "long": [
@@ -179,12 +179,12 @@
         "expected_by": "2027-05-11",
         "expected_pct": 15.0,
         "stop_loss_pct": 10.0,
-        "days_active": 1,
+        "days_active": 2,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.448,
+        "benchmark_pct": 1.514,
         "current_pct": 1.89,
-        "alpha_vs_benchmark_pct": 1.44
+        "alpha_vs_benchmark_pct": 0.38
       },
       {
         "id": 37,
@@ -199,12 +199,12 @@
         "expected_by": "2027-05-05",
         "expected_pct": 15.0,
         "stop_loss_pct": 10.0,
-        "days_active": 7,
+        "days_active": 8,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 1.04,
+        "benchmark_pct": 2.112,
         "current_pct": 13.82,
-        "alpha_vs_benchmark_pct": 12.78
+        "alpha_vs_benchmark_pct": 11.71
       },
       {
         "id": 28,
@@ -219,16 +219,31 @@
         "expected_by": "2027-05-04",
         "expected_pct": 15.0,
         "stop_loss_pct": 10.0,
-        "days_active": 8,
+        "days_active": 9,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.728,
-        "current_pct": 1.2,
-        "alpha_vs_benchmark_pct": 0.47
+        "benchmark_pct": 1.797,
+        "current_pct": 5.58,
+        "alpha_vs_benchmark_pct": 3.78
       }
     ],
     "achieved_today": [],
-    "retired_today": [],
+    "retired_today": [
+      {
+        "id": 51,
+        "ticker": "AMES.CA",
+        "horizon": "short",
+        "pick_date": "2026-09-02",
+        "ref_price": 92.33,
+        "source": "day1_breakout",
+        "rank_score": 57.3,
+        "rank_origin": "Day-1 Breakout",
+        "retired_date": "2026-09-03",
+        "retired_price": 87.0,
+        "retired_pct": -5.77,
+        "retired_reason": "stop_loss_3pct"
+      }
+    ],
     "achieved_this_week": [
       {
         "id": 42,
@@ -322,7 +337,7 @@
         "rank_origin": "Pre-Breakout Watchlist"
       }
     ],
-    "session_date": "2026-09-02",
+    "session_date": "2026-09-03",
     "benchmark_label": "EGX 30",
     "achieved_history": [
       {
