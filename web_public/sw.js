@@ -4,10 +4,16 @@
  * Two caching strategies, split by what's being requested:
  *
  *   1. App shell (index.html, this script, manifest.json, and anything
- *      else in SHELL_ASSETS) — cache-first. These rarely change within a
- *      single day and the dashboard is unusable at all without them, so
- *      serving the cached copy instantly (falling back to network only
- *      on a cache miss) is the right trade-off.
+ *      else in SHELL_ASSETS) — network-first, cache as fallback ONLY.
+ *      index.html carries live app logic (auth, Firestore writes, terms/
+ *      consent handling) that gets bug-fixed and redeployed, sometimes
+ *      more than once in a day - serving a stale cached copy first (the
+ *      old strategy) meant every visit ran code from the *previous*
+ *      deploy while silently fetching the new one for NEXT time, so a
+ *      user reloading once after a fix shipped would still hit the bug
+ *      that was supposedly already fixed. Try the network first; only
+ *      fall back to the cached shell when the network request itself
+ *      fails (actually offline), so "online" always means "current code."
  *
  *   2. Data shards (web_public/data/*.json - matrix.json, sectors.json,
  *      chart_history.json, strategy_performance.json, etc., written by
@@ -22,10 +28,13 @@
  * through untouched - this worker never intercepts cross-origin requests,
  * so auth/analytics/CDN behavior is unaffected.
  *
- * Bump CACHE_VERSION whenever SHELL_ASSETS changes so old clients pick up
- * the new shell instead of serving a stale cached index.html forever.
+ * Bump CACHE_VERSION whenever SHELL_ASSETS changes (or, as here, whenever
+ * this file's own caching logic changes) so returning clients discard
+ * whatever they had cached under the old version instead of continuing
+ * to fall back to it. skipWaiting()/clients.claim() below mean a bumped
+ * version takes over immediately on next load, no tab-closing required.
  */
-const CACHE_VERSION = 'mb-egx-v1';
+const CACHE_VERSION = 'mb-egx-v2';
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const DATA_CACHE = `${CACHE_VERSION}-data`;
 
@@ -84,19 +93,20 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // App shell / static assets: cache-first, network fallback, and
-    // opportunistically refresh the cache so the next offline session
-    // has whatever was last successfully loaded.
+    // App shell / static assets: network-first, so an online visitor
+    // always gets the currently-deployed code. The cache is only ever
+    // used as a fallback when the network request itself fails (i.e.
+    // actually offline) - it must never be what an online user sees.
+    // {cache: 'no-store'} bypasses the browser's own HTTP disk cache too,
+    // so a fetch() here can't be silently answered by a stale disk-cached
+    // response out from under the service worker.
     event.respondWith(
-        caches.match(req).then((cached) => {
-            const network = fetch(req)
-                .then((res) => {
-                    const copy = res.clone();
-                    caches.open(SHELL_CACHE).then((cache) => cache.put(req, copy));
-                    return res;
-                })
-                .catch(() => cached);
-            return cached || network;
-        })
+        fetch(req, { cache: 'no-store' })
+            .then((res) => {
+                const copy = res.clone();
+                caches.open(SHELL_CACHE).then((cache) => cache.put(req, copy));
+                return res;
+            })
+            .catch(() => caches.match(req))
     );
 });
