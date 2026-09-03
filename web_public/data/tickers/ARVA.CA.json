@@ -1,11 +1,11 @@
 {
   "ticker": "ARVA.CA",
-  "last_data_date": "2026-09-01",
+  "last_data_date": "2026-09-02",
   "sector": "Building Materials",
   "matrix": {
     "Ticker": "ARVA.CA",
     "Last Bar Date": "2026-08-06",
-    "Days Stale": 26,
+    "Days Stale": 27,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
     "Sector": "Building Materials",
@@ -26,7 +26,7 @@
     "3Y Return %": null,
     "External Rating Consensus": null,
     "External Rating Note": null,
-    "Action": "⏸️ STALE - NO NEW DATA (26d, last: 2026-08-06) [ARCHIVED/DELISTED - excluded from picks/watchlist/movers]",
+    "Action": "⏸️ STALE - NO NEW DATA (27d, last: 2026-08-06) [ARCHIVED/DELISTED - excluded from picks/watchlist/movers]",
     "Momentum": null,
     "Rank Score": 0.0,
     "Reward:Risk": 0.13,
@@ -79,7 +79,7 @@
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
     "Kelly %": 0.0,
-    "Signal Reason": "⏸️ STALE - NO NEW DATA (26d, last: 2026-08-06) [ARCHIVED/DELISTED - excluded from picks/watchlist/movers] - no bar for this session; the figures on this row reflect 2026-08-06, not today",
+    "Signal Reason": "⏸️ STALE - NO NEW DATA (27d, last: 2026-08-06) [ARCHIVED/DELISTED - excluded from picks/watchlist/movers] - no bar for this session; the figures on this row reflect 2026-08-06, not today",
     "Score Breakdown": {
       "pattern": 4.87,
       "projected": 2.22,
@@ -100,7 +100,6 @@
   },
   "chart_history": {
     "dates": [
-      "2025-09-01 00:00:00",
       "2025-09-02 00:00:00",
       "2025-09-03 00:00:00",
       "2025-09-07 00:00:00",
@@ -334,7 +333,6 @@
       "2026-08-06 00:00:00"
     ],
     "close": [
-      5.69,
       6.27,
       6.1,
       6.52,
@@ -568,7 +566,6 @@
       11.37
     ],
     "open": [
-      5.73,
       5.7,
       6.25,
       6.29,
@@ -802,7 +799,6 @@
       11.0
     ],
     "high": [
-      5.82,
       6.27,
       6.29,
       6.64,
@@ -1036,7 +1032,6 @@
       11.39
     ],
     "low": [
-      5.55,
       5.7,
       6.04,
       6.16,
@@ -1270,7 +1265,6 @@
       10.83
     ],
     "volume": [
-      2210000,
       13340000,
       3230000,
       8010000,
@@ -1504,26 +1498,25 @@
       2890000
     ],
     "vwap": [
-      5.6867,
-      6.0241,
-      6.0446,
-      6.1628,
-      6.2703,
-      6.2909,
-      6.3001,
-      6.3372,
-      6.3823,
-      6.416,
-      6.4603,
-      6.5215,
-      6.5624,
-      6.6002,
-      6.6234,
-      6.6374,
-      6.6446,
-      6.6898,
-      6.7394,
-      6.7676,
+      6.08,
+      6.0923,
+      6.2056,
+      6.3105,
+      6.3297,
+      6.3377,
+      6.3732,
+      6.4178,
+      6.4511,
+      6.4946,
+      6.5552,
+      6.5958,
+      6.6335,
+      6.6564,
+      6.6701,
+      6.6771,
+      6.722,
+      6.7719,
+      6.8002,
       6.8215,
       6.993,
       7.0522,
@@ -1752,25 +1745,25 @@
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 16,
-        "end_index": 35,
-        "start_date": "2025-09-24",
+        "start_index": 1,
+        "end_index": 34,
+        "start_date": "2025-09-03",
         "end_date": "2025-10-22",
         "levels": {
-          "resistance_start": 8.708,
+          "resistance_start": 9.156,
           "resistance_end": 8.1,
-          "support_start": 7.12,
-          "support_end": 7.9038,
-          "apex_price": 8.0143
+          "support_start": 6.1,
+          "support_end": 7.948,
+          "apex_price": 8.0447
         },
         "quality": 1.0,
-        "apex_index": 37.679180887372006
+        "apex_index": 35.72727272727273
       },
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 62,
-        "end_index": 106,
+        "start_index": 61,
+        "end_index": 105,
         "start_date": "2025-11-30",
         "end_date": "2026-02-01",
         "levels": {
@@ -1781,13 +1774,13 @@
           "apex_price": 8.3164
         },
         "quality": 1.0,
-        "apex_index": 114.8634020618557
+        "apex_index": 113.8634020618557
       },
       {
         "pattern": "Double Top",
         "direction": "bearish",
-        "start_index": 111,
-        "end_index": 132,
+        "start_index": 110,
+        "end_index": 131,
         "start_date": "2026-02-06",
         "end_date": "2026-03-06",
         "levels": {
@@ -1801,8 +1794,8 @@
       {
         "pattern": "Ascending Triangle",
         "direction": "bullish",
-        "start_index": 111,
-        "end_index": 150,
+        "start_index": 110,
+        "end_index": 149,
         "start_date": "2026-02-06",
         "end_date": "2026-04-03",
         "levels": {
@@ -1812,13 +1805,13 @@
           "apex_price": 11.7
         },
         "quality": 0.9,
-        "apex_index": 678.0000000000034
+        "apex_index": 677.0000000000033
       },
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 127,
-        "end_index": 158,
+        "start_index": 126,
+        "end_index": 157,
         "start_date": "2026-03-01",
         "end_date": "2026-04-15",
         "levels": {
@@ -1829,13 +1822,13 @@
           "apex_price": 6.627
         },
         "quality": 1.0,
-        "apex_index": 170.70229007633588
+        "apex_index": 169.70229007633588
       },
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 198,
-        "end_index": 218,
+        "start_index": 197,
+        "end_index": 217,
         "start_date": "2026-06-14",
         "end_date": "2026-07-14",
         "levels": {
@@ -1846,7 +1839,7 @@
           "apex_price": 10.6601
         },
         "quality": 1.0,
-        "apex_index": 218.0618971061093
+        "apex_index": 217.0618971061093
       }
     ]
   }
