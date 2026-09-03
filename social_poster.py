@@ -2211,7 +2211,46 @@ def build_shorts_payload(post_type: str, caption: str) -> dict:
 
 # =============================================================================
 
+INSTAGRAM_CAPTION_LIMIT = 2200
+
+_INSTAGRAM_TRUNCATION_SUFFIX = "\n… (see the dashboard for the full list)"
+
+
+def _truncate_caption(caption: str, limit: int, suffix: str) -> str:
+    """Shared truncation logic for any platform with a hard caption-length
+    cap (Instagram: 2200, Telegram: 1024 - see each platform's own
+    CAPTION_LIMIT constant). Measures via UTF-16 code units (see
+    _utf16_units's docstring) - the same way both platforms' own APIs
+    count length server-side - so a caption this returns as "fits" is
+    actually guaranteed to fit, not just under the limit by Python's
+    plain len(). Trims from the end until the body (plus suffix) is
+    within budget, then backs up to the last full line so the cut never
+    lands mid-word/mid-tag."""
+    if _utf16_units(caption) <= limit:
+        return caption
+    limit_for_body = limit - _utf16_units(suffix)
+    body = caption
+    while body and _utf16_units(body) > limit_for_body:
+        body = body[:-1]
+    body = body.rsplit("\n", 1)[0]
+    return body + suffix
+
+
 def publish_to_instagram(ig_user_id: str, access_token: str, image_url: str, caption: str) -> str:
+    """Posts one image+caption to Instagram via the Graph API.
+
+    Instagram's media-creation endpoint hard-rejects any caption over
+    2,200 characters (measured in UTF-16 code units server-side - the
+    same counting Telegram uses, see _utf16_units) with a validation
+    error - unlike Telegram's own publish function, this used to have NO
+    guard at all, so a caption that grew past the cap (e.g. the "tickers"
+    post once several picks carry a Day-1 Breakout reason string) failed
+    outright every run until the picks list happened to shrink. Truncate
+    the same way publish_to_telegram already does for its own 1024-unit
+    cap, so a long caption degrades gracefully instead of blocking the
+    whole post.
+    """
+    caption = _truncate_caption(caption, INSTAGRAM_CAPTION_LIMIT, _INSTAGRAM_TRUNCATION_SUFFIX)
 
     create_resp = requests.post(
 
@@ -2313,23 +2352,31 @@ def publish_to_facebook(page_id: str, page_access_token: str, image_url: str, ca
 
 
 
-def _telegram_units(text: str) -> int:
+def _utf16_units(text: str) -> int:
 
-    """Telegram measures caption/message length in UTF-16 code units, not
+    """Both Telegram and Instagram measure caption/message length in
 
-    Python characters. len("🔥") == 1 in Python, but 🔥 (U+1F525) sits
+    UTF-16 code units, not Python characters. len("🔥") == 1 in Python,
 
-    outside the Basic Multilingual Plane, so Telegram counts it as 2 units
+    but 🔥 (U+1F525) sits outside the Basic Multilingual Plane, so both
 
-    (a surrogate pair) — same for most emoji used in these captions
+    platforms count it as 2 units (a surrogate pair) — same for most
 
-    (📈🏛️📊🎯 etc). A caption that measures <=1024 via plain len() can
+    emoji used in these captions (📈🏛️📊🎯 etc). A caption that measures
 
-    still be rejected by the API as too long once it's emoji-heavy, which
+    <=LIMIT via plain len() can still be rejected by either API as too
 
-    is exactly what happened to the bilingual "tickers" caption. Counting
+    long once it's emoji-heavy, which is exactly what happened to the
 
-    via UTF-16 encoding matches what Telegram actually checks server-side.
+    bilingual "tickers" caption on Instagram. Counting via UTF-16
+
+    encoding matches what both platforms actually check server-side.
+
+    Shared by _truncate_caption() for both Telegram's 1024-unit cap and
+
+    Instagram's 2200-unit cap - one counting function, one truth about
+
+    what "fits" means, instead of two copies that could drift apart.
 
     """
 
@@ -2359,33 +2406,19 @@ def publish_to_telegram(chat_id: str, bot_token: str, image_url: str, caption: s
 
     Telegram captions are capped at 1024 UTF-16 code units for sendPhoto;
 
-    longer text is truncated (measuring the same way Telegram does, so the
+    longer text is truncated via the shared _truncate_caption() helper
 
-    truncated result is actually guaranteed to fit) with a pointer to the
+    (measuring the same way Telegram does, so the truncated result is
 
-    full post rather than failing.
+    actually guaranteed to fit) with a pointer to the full post rather
+
+    than failing. See _truncate_caption / _utf16_units - publish_to_
+
+    instagram now uses the exact same helper for its own 2200-unit cap.
 
     """
 
-    if _telegram_units(caption) > TELEGRAM_CAPTION_LIMIT:
-
-        limit_for_body = TELEGRAM_CAPTION_LIMIT - _telegram_units(_TELEGRAM_TRUNCATION_SUFFIX)
-
-        body = caption
-
-        # Trim from the end until the body itself (in Telegram's own
-
-        # counting units) fits, then back up to the last full line so we
-
-        # don't cut mid-word/mid-tag.
-
-        while body and _telegram_units(body) > limit_for_body:
-
-            body = body[:-1]
-
-        body = body.rsplit("\n", 1)[0]
-
-        caption = body + _TELEGRAM_TRUNCATION_SUFFIX
+    caption = _truncate_caption(caption, TELEGRAM_CAPTION_LIMIT, _TELEGRAM_TRUNCATION_SUFFIX)
 
     resp = requests.post(
 
