@@ -1,10 +1,10 @@
 {
   "ticker": "NBKE.CA",
-  "last_data_date": "2026-09-07",
+  "last_data_date": "2026-09-08",
   "sector": "Banks",
   "matrix": {
     "Ticker": "NBKE.CA",
-    "Last Bar Date": "2026-09-07",
+    "Last Bar Date": "2026-09-08",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -29,20 +29,20 @@
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL",
     "Momentum": null,
-    "Rank Score": -23.6,
-    "Reward:Risk": 0.1,
-    "Win Rate Estimate (%)": 25.0,
+    "Rank Score": -28.5,
+    "Reward:Risk": 0.08,
+    "Win Rate Estimate (%)": 50.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 34.84,
     "Target Entry (VWAP)": 34.84,
-    "Suggested Stop-Loss": 23.2619,
+    "Suggested Stop-Loss": 23.8518,
     "Stop-Loss Reliable": true,
-    "Take-Profit Target": 36.0455,
+    "Take-Profit Target": 35.7807,
     "Resistance (52W High)": 85.99,
     "Support (52W Low)": 12.26,
     "Open": 36.5,
-    "Previous Close": 36.5,
+    "Previous Close": 34.84,
     "Day High": 36.5,
     "Day Low": 34.84,
     "Day's Range": "34.84 - 36.5",
@@ -52,19 +52,19 @@
     "Bid": null,
     "Ask": null,
     "Relative Value Score": 95.3,
-    "Price Momentum Score": 37.7,
+    "Price Momentum Score": 37.6,
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": 100.0,
     "Growth Health Score (est.)": 100.0,
-    "STOCH %K": 61.62,
-    "STOCH %D": 70.71,
+    "STOCH %K": 48.66,
+    "STOCH %D": 60.52,
     "STOCHRSI": 0.0,
-    "CCI": -62.26,
+    "CCI": -80.21,
     "ROC": -9.46,
-    "Williams %R": -56.51,
-    "UO": 58.19,
-    "Bull/Bear Power": -1.6138,
-    "Highs/Lows": 43.49,
+    "Williams %R": -66.42,
+    "UO": 56.66,
+    "Bull/Bear Power": -1.1461,
+    "Highs/Lows": 33.58,
     "Nearest Resistance": null,
     "Resistance Touches": null,
     "Nearest Support": 28.95,
@@ -76,27 +76,27 @@
     "S1": 34.76,
     "S2": 33.02,
     "S3": 31.2,
-    "Projected Gain (%)": 2.76,
-    "Pattern Conf (%)": 25.81,
-    "Projected Range 95%": "-3.13% to 13.9%",
+    "Projected Gain (%)": 1.56,
+    "Pattern Conf (%)": 11.67,
+    "Projected Range 95%": "-2.85% to 5.96%",
     "Kelly %": 0.0,
     "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Very Strong Bullish Trend | no decisive edge | weekly aligned",
     "Score Breakdown": {
-      "pattern": 7.74,
-      "projected": 4.14,
+      "pattern": 3.5,
+      "projected": 2.34,
       "range": 1.53,
       "trend_bonus": -40.0,
-      "confidence_weight": 0.77
+      "confidence_weight": 0.78
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Very Strong Bullish Trend",
     "RSI-14": 45.4,
-    "ADX-14": 70.4,
-    "Vol Z-Score": -0.21,
+    "ADX-14": 71.0,
+    "Vol Z-Score": -0.12,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.4102,
-    "Bollinger %B": 0.132,
-    "Avg Volume (20D)": 578,
+    "MACD Histogram": -0.4715,
+    "Bollinger %B": 0.126,
+    "Avg Volume (20D)": 513,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
@@ -238,7 +238,8 @@
       "2026-09-02 00:00:00",
       "2026-09-03 00:00:00",
       "2026-09-06 00:00:00",
-      "2026-09-07 00:00:00"
+      "2026-09-07 00:00:00",
+      "2026-09-08 00:00:00"
     ],
     "close": [
       22.2,
@@ -378,6 +379,7 @@
       36.5,
       36.5,
       36.5,
+      34.84,
       34.84
     ],
     "open": [
@@ -518,6 +520,7 @@
       38.0,
       38.0,
       38.0,
+      36.5,
       36.5
     ],
     "high": [
@@ -658,6 +661,7 @@
       38.4,
       38.4,
       38.4,
+      36.5,
       36.5
     ],
     "low": [
@@ -798,6 +802,7 @@
       35.22,
       35.22,
       35.22,
+      34.84,
       34.84
     ],
     "volume": [
@@ -938,6 +943,7 @@
       1570,
       1570,
       1570,
+      439,
       439
     ],
     "vwap": [
@@ -1078,7 +1084,8 @@
       38.8938,
       38.5475,
       38.5014,
-      38.3834
+      38.3834,
+      36.2639
     ],
     "resistance": 85.99,
     "support": 28.95,

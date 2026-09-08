@@ -1,10 +1,10 @@
 {
   "ticker": "DCRC.CA",
-  "last_data_date": "2026-09-07",
+  "last_data_date": "2026-09-08",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "DCRC.CA",
-    "Last Bar Date": "2026-09-07",
+    "Last Bar Date": "2026-09-08",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -36,13 +36,13 @@
     "Backtested Sample Size": null,
     "Current Price": 50.0,
     "Target Entry (VWAP)": 50.0,
-    "Suggested Stop-Loss": 38.3983,
+    "Suggested Stop-Loss": 39.227,
     "Stop-Loss Reliable": true,
-    "Take-Profit Target": 64.8521,
+    "Take-Profit Target": 63.8163,
     "Resistance (52W High)": 60.0,
     "Support (52W Low)": 21.3,
-    "Open": 55.0,
-    "Previous Close": 55.0,
+    "Open": 50.0,
+    "Previous Close": 50.0,
     "Day High": 50.0,
     "Day Low": 50.0,
     "Day's Range": "50.0 - 50.0",
@@ -52,18 +52,18 @@
     "Bid": null,
     "Ask": null,
     "Relative Value Score": 100.0,
-    "Price Momentum Score": 53.0,
+    "Price Momentum Score": 33.0,
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": 100.0,
     "Growth Health Score (est.)": 100.0,
-    "STOCH %K": 62.25,
-    "STOCH %D": 73.04,
+    "STOCH %K": 50.98,
+    "STOCH %D": 62.25,
     "STOCHRSI": 0.0,
-    "CCI": -7.74,
+    "CCI": -9.81,
     "ROC": 0.0,
     "Williams %R": -58.82,
-    "UO": 63.27,
-    "Bull/Bear Power": -6.5381,
+    "UO": 59.75,
+    "Bull/Bear Power": -5.6041,
     "Highs/Lows": 41.18,
     "Nearest Resistance": 51.0,
     "Resistance Touches": 4,
@@ -79,23 +79,23 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 4.88,
+    "Kelly %": 4.87,
     "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Very Strong Bearish Trend | no decisive edge | weekly aligned",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
       "range": 3.71,
       "trend_bonus": -40.0,
-      "confidence_weight": 0.77
+      "confidence_weight": 0.78
     },
     "Regime": "N/A",
     "Trend Class": "Very Strong Bearish Trend",
     "RSI-14": 44.9,
-    "ADX-14": 63.1,
+    "ADX-14": 61.9,
     "Vol Z-Score": -0.48,
-    "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0896,
-    "Bollinger %B": 0.447,
+    "MACD Signal": "🔴 Bearish Cross",
+    "MACD Histogram": -0.2277,
+    "Bollinger %B": 0.441,
     "Avg Volume (20D)": 7868,
     "Data Confidence": "Medium (<1 Year)"
   },
@@ -238,7 +238,8 @@
       "2026-09-02 00:00:00",
       "2026-09-03 00:00:00",
       "2026-09-06 00:00:00",
-      "2026-09-07 00:00:00"
+      "2026-09-07 00:00:00",
+      "2026-09-08 00:00:00"
     ],
     "close": [
       47.0,
@@ -378,6 +379,7 @@
       55.0,
       55.0,
       55.0,
+      50.0,
       50.0
     ],
     "open": [
@@ -518,7 +520,8 @@
       60.0,
       60.0,
       60.0,
-      55.0
+      55.0,
+      50.0
     ],
     "high": [
       47.0,
@@ -658,6 +661,7 @@
       60.0,
       60.0,
       60.0,
+      50.0,
       50.0
     ],
     "low": [
@@ -798,6 +802,7 @@
       55.0,
       55.0,
       55.0,
+      50.0,
       50.0
     ],
     "volume": [
@@ -938,6 +943,7 @@
       30000,
       30000,
       30000,
+      2,
       2
     ],
     "vwap": [
@@ -1078,6 +1084,7 @@
       50.607,
       51.8749,
       52.979,
+      52.9789,
       52.9789
     ],
     "resistance": 51.0,

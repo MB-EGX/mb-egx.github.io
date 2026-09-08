@@ -1,10 +1,10 @@
 {
   "ticker": "APPC.CA",
-  "last_data_date": "2026-09-07",
+  "last_data_date": "2026-09-08",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "APPC.CA",
-    "Last Bar Date": "2026-09-07",
+    "Last Bar Date": "2026-09-08",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -27,22 +27,22 @@
     "3Y Return %": 100.0,
     "External Rating Consensus": 2.0,
     "External Rating Note": null,
-    "Action": "🟡 HOLD / NEUTRAL (Poor reward:risk 0.15x < 0.80x floor)",
+    "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL (Signal unconfirmed: 3/5 factors passed, need 4 - low volume (RVOL/Z-score not confirmed), no squeeze release)",
     "Momentum": null,
-    "Rank Score": 21.1,
-    "Reward:Risk": 0.15,
-    "Win Rate Estimate (%)": 0.0,
+    "Rank Score": -14.9,
+    "Reward:Risk": 0.14,
+    "Win Rate Estimate (%)": 20.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 1.84,
-    "Target Entry (VWAP)": 1.5622,
-    "Suggested Stop-Loss": 1.5157,
+    "Target Entry (VWAP)": 1.5782,
+    "Suggested Stop-Loss": 1.4974,
     "Stop-Loss Reliable": true,
     "Take-Profit Target": 1.8897,
     "Resistance (52W High)": 1.85,
     "Support (52W Low)": 1.0,
-    "Open": 1.55,
-    "Previous Close": 1.55,
+    "Open": 1.75,
+    "Previous Close": 1.84,
     "Day High": 1.85,
     "Day Low": 1.56,
     "Day's Range": "1.56 - 1.85",
@@ -52,18 +52,18 @@
     "Bid": null,
     "Ask": null,
     "Relative Value Score": null,
-    "Price Momentum Score": 84.8,
+    "Price Momentum Score": 84.4,
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": 15.0,
     "Growth Health Score (est.)": 100.0,
-    "STOCH %K": 60.55,
-    "STOCH %D": 54.55,
+    "STOCH %K": 79.23,
+    "STOCH %D": 60.55,
     "STOCHRSI": 65.2,
-    "CCI": 133.24,
+    "CCI": 115.22,
     "ROC": 33.33,
     "Williams %R": -2.08,
-    "UO": 50.63,
-    "Bull/Bear Power": 0.232,
+    "UO": 53.97,
+    "Bull/Bear Power": 0.1603,
     "Highs/Lows": 97.92,
     "Nearest Resistance": null,
     "Resistance Touches": null,
@@ -76,28 +76,28 @@
     "S1": 1.4667,
     "S2": 1.3833,
     "S3": 1.2167,
-    "Projected Gain (%)": -2.37,
-    "Pattern Conf (%)": 65.61,
-    "Projected Range 95%": "-4.08% to -1.41%",
+    "Projected Gain (%)": -1.06,
+    "Pattern Conf (%)": 37.99,
+    "Projected Range 95%": "-4.52% to 1.69%",
     "Kelly %": 0.0,
-    "Signal Reason": "🟡 HOLD / NEUTRAL (Poor reward:risk 0.15x < 0.80x floor) | trend=Strong Bullish Trend | no decisive edge | weekly aligned | vol x1.22",
+    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL (Signal unconfirmed: 3/5 factors passed, need 4 - low volume (RVOL/Z-score not confirmed), no squeeze release) | trend=Strong Bullish Trend | no decisive edge | weekly aligned | vol x1.19",
     "Score Breakdown": {
-      "pattern": 19.68,
-      "projected": -3.56,
+      "pattern": 11.4,
+      "projected": -1.59,
       "range": 4.94,
-      "trend_bonus": 0.0,
+      "trend_bonus": -40.0,
       "confidence_weight": 0.78
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish Trend",
     "RSI-14": 69.0,
-    "ADX-14": 43.5,
-    "Vol Z-Score": 0.21,
+    "ADX-14": 44.4,
+    "Vol Z-Score": 0.19,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0233,
-    "Bollinger %B": 1.021,
-    "Avg Volume (20D)": 29956,
-    "Data Confidence": "Medium (<1 Year)"
+    "MACD Histogram": 0.0292,
+    "Bollinger %B": 0.947,
+    "Avg Volume (20D)": 30665,
+    "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
     "dates": [
@@ -239,7 +239,8 @@
       "2026-09-02 00:00:00",
       "2026-09-03 00:00:00",
       "2026-09-06 00:00:00",
-      "2026-09-07 00:00:00"
+      "2026-09-07 00:00:00",
+      "2026-09-08 00:00:00"
     ],
     "close": [
       1.19,
@@ -380,6 +381,7 @@
       1.55,
       1.55,
       1.55,
+      1.84,
       1.84
     ],
     "open": [
@@ -521,7 +523,8 @@
       1.8,
       1.8,
       1.8,
-      1.55
+      1.55,
+      1.75
     ],
     "high": [
       1.19,
@@ -662,6 +665,7 @@
       1.8,
       1.8,
       1.8,
+      1.85,
       1.85
     ],
     "low": [
@@ -803,6 +807,7 @@
       1.55,
       1.55,
       1.55,
+      1.56,
       1.56
     ],
     "volume": [
@@ -944,6 +949,7 @@
       22502,
       22502,
       22502,
+      36403,
       36403
     ],
     "vwap": [
@@ -1085,7 +1091,8 @@
       1.5245,
       1.5349,
       1.5423,
-      1.5622
+      1.5622,
+      1.5782
     ],
     "resistance": 1.85,
     "support": 1.2467,

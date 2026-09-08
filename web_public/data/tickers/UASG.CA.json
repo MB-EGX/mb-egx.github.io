@@ -1,10 +1,10 @@
 {
   "ticker": "UASG.CA",
-  "last_data_date": "2026-09-07",
+  "last_data_date": "2026-09-08",
   "sector": "Shipping & Transportation Services",
   "matrix": {
     "Ticker": "UASG.CA",
-    "Last Bar Date": "2026-09-07",
+    "Last Bar Date": "2026-09-08",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -28,20 +28,20 @@
     "External Rating Note": null,
     "Action": "🟡 HOLD / NEUTRAL",
     "Momentum": "Overbought",
-    "Rank Score": 7.7,
-    "Reward:Risk": 0.3,
+    "Rank Score": 13.3,
+    "Reward:Risk": 0.29,
     "Win Rate Estimate (%)": 0.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 0.43,
-    "Target Entry (VWAP)": 0.4145,
-    "Suggested Stop-Loss": 0.3938,
+    "Target Entry (VWAP)": 0.4149,
+    "Suggested Stop-Loss": 0.3936,
     "Stop-Loss Reliable": true,
     "Take-Profit Target": 0.4416,
     "Resistance (52W High)": 0.57,
     "Support (52W Low)": 0.39,
-    "Open": 0.42,
-    "Previous Close": 0.42,
+    "Open": 0.41,
+    "Previous Close": 0.43,
     "Day High": 0.43,
     "Day Low": 0.41,
     "Day's Range": "0.41 - 0.43",
@@ -55,14 +55,14 @@
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": 15.0,
     "Growth Health Score (est.)": 17.1,
-    "STOCH %K": 77.78,
-    "STOCH %D": 62.96,
+    "STOCH %K": 88.89,
+    "STOCH %D": 77.78,
     "STOCHRSI": 100.0,
-    "CCI": 160.31,
+    "CCI": 148.42,
     "ROC": 2.38,
     "Williams %R": -0.0,
-    "UO": 58.46,
-    "Bull/Bear Power": 0.0105,
+    "UO": 69.25,
+    "Bull/Bear Power": 0.0061,
     "Highs/Lows": 100.0,
     "Nearest Resistance": null,
     "Resistance Touches": null,
@@ -75,14 +75,14 @@
     "S1": 0.4033,
     "S2": 0.3867,
     "S3": 0.3733,
-    "Projected Gain (%)": -5.24,
-    "Pattern Conf (%)": 29.09,
-    "Projected Range 95%": "-8.18% to -2.29%",
+    "Projected Gain (%)": -4.25,
+    "Pattern Conf (%)": 47.97,
+    "Projected Range 95%": "-7.7% to -0.77%",
     "Kelly %": 0.0,
     "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Weak Bullish (Forming) | no decisive edge | overbought",
     "Score Breakdown": {
-      "pattern": 8.73,
-      "projected": -7.86,
+      "pattern": 14.39,
+      "projected": -6.38,
       "range": 1.11,
       "trend_bonus": 0.0,
       "confidence_weight": 0.78
@@ -90,13 +90,13 @@
     "Regime": "Volatile Range",
     "Trend Class": "Weak Bullish (Forming)",
     "RSI-14": 62.1,
-    "ADX-14": 23.1,
-    "Vol Z-Score": -0.07,
+    "ADX-14": 24.8,
+    "Vol Z-Score": -0.09,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0021,
-    "Bollinger %B": 0.992,
-    "Avg Volume (20D)": 362090,
-    "Data Confidence": "Medium (<1 Year)"
+    "MACD Histogram": 0.0026,
+    "Bollinger %B": 0.942,
+    "Avg Volume (20D)": 369775,
+    "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
     "dates": [
@@ -238,7 +238,8 @@
       "2026-09-02 00:00:00",
       "2026-09-03 00:00:00",
       "2026-09-06 00:00:00",
-      "2026-09-07 00:00:00"
+      "2026-09-07 00:00:00",
+      "2026-09-08 00:00:00"
     ],
     "close": [
       0.5,
@@ -379,6 +380,7 @@
       0.42,
       0.42,
       0.42,
+      0.43,
       0.43
     ],
     "open": [
@@ -520,7 +522,8 @@
       0.4,
       0.4,
       0.4,
-      0.42
+      0.42,
+      0.41
     ],
     "high": [
       0.5,
@@ -658,6 +661,7 @@
       0.42,
       0.4,
       0.4,
+      0.43,
       0.43,
       0.43,
       0.43,
@@ -802,6 +806,7 @@
       0.4,
       0.4,
       0.4,
+      0.41,
       0.41
     ],
     "volume": [
@@ -943,6 +948,7 @@
       1360782,
       1360782,
       1360782,
+      330223,
       330223
     ],
     "vwap": [
@@ -1084,7 +1090,8 @@
       0.4149,
       0.4154,
       0.4141,
-      0.4145
+      0.4145,
+      0.4149
     ],
     "resistance": 0.57,
     "support": 0.39,

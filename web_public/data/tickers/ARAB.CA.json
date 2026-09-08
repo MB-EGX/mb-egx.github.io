@@ -1,73 +1,69 @@
 {
   "ticker": "ARAB.CA",
-  "last_data_date": "2026-09-07",
+  "last_data_date": "2026-09-08",
   "sector": "Real Estate",
   "matrix": {
     "Ticker": "ARAB.CA",
-    "Last Bar Date": "2026-09-07",
+    "Last Bar Date": "2026-09-08",
     "Days Stale": 0,
-    "Day-1 Breakout": true,
-    "Day-1 Breakout Reasons": [
-      "Fresh 20-day high (dist -5.9%)",
-      "Volume 2.5x 20-day avg",
-      "Not extended (1.5% vs VWAP)"
-    ],
+    "Day-1 Breakout": false,
+    "Day-1 Breakout Reasons": [],
     "Sector": "Real Estate",
     "Long-Term Setup Confirmed": true,
     "Long-Term Setup Reasons": [
       "Higher-low swing structure confirmed",
       "Ascending Triangle match (quality 0.87)"
     ],
-    "P/E Ratio": 30.6,
+    "P/E Ratio": 30.24,
     "EPS": 0.0084,
     "Beta": -0.09,
     "Dividend Yield %": null,
     "Market Cap": 6140000000.0,
-    "1W Return %": 0.78,
-    "1M Return %": 5.76,
-    "YTD Return %": 21.8,
-    "1Y Return %": 38.92,
-    "3Y Return %": 154.87,
-    "External Rating Consensus": -0.125,
+    "1W Return %": -3.07,
+    "1M Return %": 1.61,
+    "YTD Return %": 19.91,
+    "1Y Return %": 38.25,
+    "3Y Return %": 150.91,
+    "External Rating Consensus": -0.5,
     "External Rating Note": null,
     "Action": "🟡 HOLD / NEUTRAL",
     "Momentum": null,
-    "Rank Score": 7.1,
+    "Rank Score": 4.2,
     "Reward:Risk": 0.28,
     "Win Rate Estimate (%)": 40.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
-    "Current Price": 0.257,
-    "Target Entry (VWAP)": 0.2533,
-    "Suggested Stop-Loss": 0.2337,
+    "Current Price": 0.253,
+    "Target Entry (VWAP)": 0.253,
+    "Suggested Stop-Loss": 0.2304,
     "Stop-Loss Reliable": true,
-    "Take-Profit Target": 0.2639,
+    "Take-Profit Target": 0.2598,
     "Resistance (52W High)": 0.284,
     "Support (52W Low)": 0.168,
-    "Open": 0.258,
-    "Previous Close": 0.258,
-    "Day High": 0.271,
-    "Day Low": 0.257,
-    "Day's Range": "0.26 - 0.27",
+    "Open": 0.259,
+    "Previous Close": 0.257,
+    "Day High": 0.259,
+    "Day Low": 0.252,
+    "Day's Range": "0.25 - 0.26",
     "52 Week Range": "0.17 - 0.28",
-    "Day Range Position": 0.0,
-    "Day Range %": 5.45,
+    "Day Range Position": 0.143,
+    "Day Range %": 2.77,
     "Bid": null,
     "Ask": null,
     "Relative Value Score": 100.0,
-    "Price Momentum Score": 70.9,
+    "Price Momentum Score": 49.0,
     "Cash Flow Health Score (est.)": null,
-    "Profitability Health Score (est.)": 16.3,
+    "Profitability Health Score (est.)": 16.5,
     "Growth Health Score (est.)": 100.0,
-    "STOCH %K": 58.12,
-    "STOCH %D": 58.97,
-    "STOCHRSI": 57.7,
-    "CCI": 98.64,
-    "ROC": 8.9,
-    "Williams %R": -41.03,
-    "UO": 29.64,
-    "Bull/Bear Power": 0.0221,
-    "Highs/Lows": 58.97,
+    "STOCH %K": 56.41,
+    "STOCH %D": 57.55,
+    "STOCHRSI": 33.56,
+    "CCI": 35.64,
+    "ROC": 8.12,
+    "Williams %R": -51.28,
+    "UO": 29.45,
+    "Bull/Bear Power": 0.0051,
+    "Highs/Lows": 48.72,
     "Nearest Resistance": null,
     "Resistance Touches": null,
     "Nearest Support": 0.2335,
@@ -79,32 +75,31 @@
     "S1": 0.252,
     "S2": 0.246,
     "S3": 0.239,
-    "Projected Gain (%)": -2.95,
-    "Pattern Conf (%)": 33.1,
-    "Projected Range 95%": "-13.24% to 2.41%",
+    "Projected Gain (%)": -4.84,
+    "Pattern Conf (%)": 28.53,
+    "Projected Range 95%": "-19.07% to 1.82%",
     "Kelly %": 0.0,
-    "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Consolidation / Neutral | no decisive edge | weekly aligned | vol x2.47",
+    "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Consolidation / Neutral | no decisive edge | weekly aligned",
     "Score Breakdown": {
-      "pattern": 9.93,
-      "projected": -4.43,
-      "range": 3.84,
+      "pattern": 8.56,
+      "projected": -7.26,
+      "range": 3.66,
       "trend_bonus": 0.0,
       "confidence_weight": 1.0
     },
     "Regime": "Volatile Range",
     "Trend Class": "Consolidation / Neutral",
-    "RSI-14": 56.2,
-    "ADX-14": 18.3,
-    "Vol Z-Score": 2.31,
-    "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0004,
-    "Bollinger %B": 0.72,
-    "Avg Volume (20D)": 403486833,
+    "RSI-14": 53.8,
+    "ADX-14": 18.5,
+    "Vol Z-Score": -0.1,
+    "MACD Signal": "🔴 Bearish Cross",
+    "MACD Histogram": -0.0002,
+    "Bollinger %B": 0.596,
+    "Avg Volume (20D)": 405639178,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
     "dates": [
-      "2025-09-07 00:00:00",
       "2025-09-08 00:00:00",
       "2025-09-09 00:00:00",
       "2025-09-10 00:00:00",
@@ -357,10 +352,10 @@
       "2026-09-02 00:00:00",
       "2026-09-03 00:00:00",
       "2026-09-06 00:00:00",
-      "2026-09-07 00:00:00"
+      "2026-09-07 00:00:00",
+      "2026-09-08 00:00:00"
     ],
     "close": [
-      0.186,
       0.185,
       0.183,
       0.183,
@@ -613,10 +608,10 @@
       0.257,
       0.255,
       0.258,
-      0.257
+      0.257,
+      0.253
     ],
     "open": [
-      0.187,
       0.186,
       0.185,
       0.183,
@@ -869,10 +864,10 @@
       0.262,
       0.26,
       0.257,
-      0.258
+      0.258,
+      0.259
     ],
     "high": [
-      0.188,
       0.187,
       0.186,
       0.184,
@@ -1125,10 +1120,10 @@
       0.266,
       0.26,
       0.262,
-      0.271
+      0.271,
+      0.259
     ],
     "low": [
-      0.185,
       0.184,
       0.182,
       0.182,
@@ -1381,10 +1376,10 @@
       0.257,
       0.254,
       0.256,
-      0.257
+      0.257,
+      0.252
     ],
     "volume": [
-      39530000,
       29650000,
       41670000,
       20690000,
@@ -1637,26 +1632,26 @@
       372998544,
       225685382,
       432838658,
-      997731267
+      997731267,
+      379373883
     ],
     "vwap": [
-      0.1863,
-      0.1859,
-      0.1851,
-      0.1847,
-      0.1872,
-      0.1884,
+      0.1853,
+      0.1844,
+      0.1841,
+      0.1873,
+      0.1886,
+      0.1892,
       0.1891,
       0.189,
-      0.1889,
-      0.1887,
-      0.1885,
+      0.1888,
+      0.1886,
+      0.1884,
       0.1883,
-      0.1882,
       0.1881,
       0.188,
+      0.188,
       0.1879,
-      0.1878,
       0.1875,
       0.1874,
       0.1873,
@@ -1893,7 +1888,8 @@
       0.2488,
       0.2494,
       0.2518,
-      0.2533
+      0.2533,
+      0.2535
     ],
     "resistance": 0.284,
     "support": 0.2335,
@@ -1910,8 +1906,8 @@
       {
         "pattern": "Double Top",
         "direction": "bearish",
-        "start_index": 5,
-        "end_index": 33,
+        "start_index": 4,
+        "end_index": 32,
         "start_date": "2025-09-14",
         "end_date": "2025-10-23",
         "levels": {
@@ -1925,8 +1921,8 @@
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 42,
-        "end_index": 139,
+        "start_index": 41,
+        "end_index": 138,
         "start_date": "2025-11-05",
         "end_date": "2026-03-24",
         "levels": {
@@ -1937,13 +1933,13 @@
           "apex_price": 0.202
         },
         "quality": 1.0,
-        "apex_index": 228.86893203883486
+        "apex_index": 227.86893203883486
       },
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 208,
-        "end_index": 223,
+        "start_index": 207,
+        "end_index": 222,
         "start_date": "2026-07-04",
         "end_date": "2026-07-27",
         "levels": {
@@ -1954,13 +1950,13 @@
           "apex_price": 0.2493
         },
         "quality": 1.0,
-        "apex_index": 224.9342105263158
+        "apex_index": 223.93421052631578
       },
       {
         "pattern": "Inverse Head & Shoulders",
         "direction": "bullish",
-        "start_index": 221,
-        "end_index": 242,
+        "start_index": 220,
+        "end_index": 241,
         "start_date": "2026-07-22",
         "end_date": "2026-08-20",
         "levels": {
@@ -1975,8 +1971,8 @@
       {
         "pattern": "Price Channel (Flat)",
         "direction": "neutral",
-        "start_index": 221,
-        "end_index": 242,
+        "start_index": 220,
+        "end_index": 241,
         "start_date": "2026-07-22",
         "end_date": "2026-08-20",
         "levels": {
@@ -1990,8 +1986,8 @@
       {
         "pattern": "Ascending Triangle",
         "direction": "bullish",
-        "start_index": 223,
-        "end_index": 242,
+        "start_index": 222,
+        "end_index": 241,
         "start_date": "2026-07-27",
         "end_date": "2026-08-20",
         "levels": {
@@ -2001,7 +1997,7 @@
           "apex_price": 0.2466
         },
         "quality": 0.87,
-        "apex_index": 244.75958188153305
+        "apex_index": 243.75958188153308
       }
     ]
   }

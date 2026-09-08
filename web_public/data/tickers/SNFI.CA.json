@@ -1,10 +1,10 @@
 {
   "ticker": "SNFI.CA",
-  "last_data_date": "2026-09-07",
+  "last_data_date": "2026-09-08",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "SNFI.CA",
-    "Last Bar Date": "2026-09-07",
+    "Last Bar Date": "2026-09-08",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -29,20 +29,20 @@
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - 🛑 SELL / AVOID",
     "Momentum": "Oversold",
-    "Rank Score": -44.2,
-    "Reward:Risk": 0.28,
-    "Win Rate Estimate (%)": 40.0,
+    "Rank Score": -46.2,
+    "Reward:Risk": 0.3,
+    "Win Rate Estimate (%)": 20.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 10.4,
     "Target Entry (VWAP)": 10.4,
-    "Suggested Stop-Loss": 9.4829,
+    "Suggested Stop-Loss": 9.5484,
     "Stop-Loss Reliable": true,
     "Take-Profit Target": 10.6808,
     "Resistance (52W High)": 13.0,
     "Support (52W Low)": 6.8,
-    "Open": 10.55,
-    "Previous Close": 10.55,
+    "Open": 10.4,
+    "Previous Close": 10.4,
     "Day High": 10.4,
     "Day Low": 10.4,
     "Day's Range": "10.4 - 10.4",
@@ -52,18 +52,18 @@
     "Bid": null,
     "Ask": null,
     "Relative Value Score": null,
-    "Price Momentum Score": 31.2,
+    "Price Momentum Score": 31.1,
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": null,
     "Growth Health Score (est.)": 100.0,
-    "STOCH %K": 6.99,
-    "STOCH %D": 8.1,
+    "STOCH %K": 3.55,
+    "STOCH %D": 6.99,
     "STOCHRSI": 0.0,
-    "CCI": -85.93,
+    "CCI": -78.77,
     "ROC": -8.77,
     "Williams %R": -100.0,
-    "UO": 25.03,
-    "Bull/Bear Power": -0.522,
+    "UO": 39.25,
+    "Bull/Bear Power": -0.4475,
     "Highs/Lows": 0.0,
     "Nearest Resistance": 12.7825,
     "Resistance Touches": 4,
@@ -76,28 +76,28 @@
     "S1": 10.4567,
     "S2": 10.3633,
     "S3": 10.3067,
-    "Projected Gain (%)": 0.64,
-    "Pattern Conf (%)": 10.96,
-    "Projected Range 95%": "-4.65% to 8.96%",
+    "Projected Gain (%)": -0.43,
+    "Pattern Conf (%)": 7.77,
+    "Projected Range 95%": "-4.65% to 7.89%",
     "Kelly %": 0.0,
-    "Signal Reason": "🚫 ILLIQUID - 🛑 SELL / AVOID | trend=Weak Bullish (Forming) | awaiting confirmation | oversold",
+    "Signal Reason": "🚫 ILLIQUID - 🛑 SELL / AVOID | trend=Consolidation / Neutral | awaiting confirmation | oversold",
     "Score Breakdown": {
-      "pattern": 3.29,
-      "projected": 0.96,
+      "pattern": 2.33,
+      "projected": -0.65,
       "range": 2.9,
       "trend_bonus": -67.0,
       "confidence_weight": 0.78
     },
     "Regime": "Volatile Range",
-    "Trend Class": "Weak Bullish (Forming)",
+    "Trend Class": "Consolidation / Neutral",
     "RSI-14": 41.7,
-    "ADX-14": 20.6,
+    "ADX-14": 19.4,
     "Vol Z-Score": -0.53,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0654,
-    "Bollinger %B": 0.242,
-    "Avg Volume (20D)": 1967,
-    "Data Confidence": "Medium (<1 Year)"
+    "MACD Histogram": -0.057,
+    "Bollinger %B": 0.265,
+    "Avg Volume (20D)": 1968,
+    "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
     "dates": [
@@ -239,7 +239,8 @@
       "2026-09-02 00:00:00",
       "2026-09-03 00:00:00",
       "2026-09-06 00:00:00",
-      "2026-09-07 00:00:00"
+      "2026-09-07 00:00:00",
+      "2026-09-08 00:00:00"
     ],
     "close": [
       7.65,
@@ -380,6 +381,7 @@
       10.55,
       10.55,
       10.55,
+      10.4,
       10.4
     ],
     "open": [
@@ -521,7 +523,8 @@
       10.57,
       10.57,
       10.57,
-      10.55
+      10.55,
+      10.4
     ],
     "high": [
       7.95,
@@ -662,6 +665,7 @@
       10.57,
       10.57,
       10.57,
+      10.4,
       10.4
     ],
     "low": [
@@ -803,6 +807,7 @@
       10.55,
       10.55,
       10.55,
+      10.4,
       10.4
     ],
     "volume": [
@@ -944,6 +949,7 @@
       1096,
       1096,
       1096,
+      30,
       30
     ],
     "vwap": [
@@ -1085,7 +1091,8 @@
       10.9321,
       10.9203,
       10.7429,
-      10.7398
+      10.7398,
+      10.7395
     ],
     "resistance": 12.7825,
     "support": 10.03,

@@ -1,10 +1,10 @@
 {
   "ticker": "HCFI.CA",
-  "last_data_date": "2026-09-07",
+  "last_data_date": "2026-09-08",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "HCFI.CA",
-    "Last Bar Date": "2026-09-07",
+    "Last Bar Date": "2026-09-08",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -24,24 +24,24 @@
     "YTD Return %": -10.1,
     "1Y Return %": 9.81,
     "3Y Return %": 207.08,
-    "External Rating Consensus": -0.625,
+    "External Rating Consensus": -0.5,
     "External Rating Note": null,
     "Action": "🟡 HOLD / NEUTRAL",
     "Momentum": null,
-    "Rank Score": 4.3,
+    "Rank Score": 5.6,
     "Reward:Risk": 0.21,
-    "Win Rate Estimate (%)": 40.0,
+    "Win Rate Estimate (%)": 20.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 3.47,
-    "Target Entry (VWAP)": 3.451,
-    "Suggested Stop-Loss": 3.052,
+    "Target Entry (VWAP)": 3.4554,
+    "Suggested Stop-Loss": 3.0433,
     "Stop-Loss Reliable": true,
     "Take-Profit Target": 3.5637,
     "Resistance (52W High)": 4.3,
     "Support (52W Low)": 2.01,
     "Open": 3.55,
-    "Previous Close": 3.55,
+    "Previous Close": 3.47,
     "Day High": 3.64,
     "Day Low": 3.37,
     "Day's Range": "3.37 - 3.64",
@@ -55,14 +55,14 @@
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": null,
     "Growth Health Score (est.)": 100.0,
-    "STOCH %K": 65.99,
-    "STOCH %D": 72.79,
+    "STOCH %K": 60.54,
+    "STOCH %D": 65.99,
     "STOCHRSI": 40.22,
-    "CCI": 53.12,
+    "CCI": 47.61,
     "ROC": 4.2,
     "Williams %R": -44.9,
-    "UO": 61.35,
-    "Bull/Bear Power": 0.0263,
+    "UO": 56.29,
+    "Bull/Bear Power": 0.0325,
     "Highs/Lows": 55.1,
     "Nearest Resistance": 3.885,
     "Resistance Touches": 2,
@@ -75,14 +75,14 @@
     "S1": 3.3833,
     "S2": 3.2167,
     "S3": 3.0633,
-    "Projected Gain (%)": -1.22,
-    "Pattern Conf (%)": 11.23,
-    "Projected Range 95%": "-12.01% to 10.02%",
+    "Projected Gain (%)": -1.1,
+    "Pattern Conf (%)": 16.36,
+    "Projected Range 95%": "-5.94% to 8.44%",
     "Kelly %": 0.0,
     "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Consolidation / Neutral | no decisive edge",
     "Score Breakdown": {
-      "pattern": 3.37,
-      "projected": -1.83,
+      "pattern": 4.91,
+      "projected": -1.65,
       "range": 3.19,
       "trend_bonus": 0.0,
       "confidence_weight": 0.78
@@ -90,13 +90,13 @@
     "Regime": "Volatile Range",
     "Trend Class": "Consolidation / Neutral",
     "RSI-14": 49.0,
-    "ADX-14": 18.2,
-    "Vol Z-Score": -0.39,
+    "ADX-14": 17.2,
+    "Vol Z-Score": -0.36,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0204,
-    "Bollinger %B": 0.569,
-    "Avg Volume (20D)": 200967,
-    "Data Confidence": "Medium (<1 Year)"
+    "MACD Histogram": 0.0142,
+    "Bollinger %B": 0.562,
+    "Avg Volume (20D)": 193851,
+    "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
     "dates": [
@@ -238,7 +238,8 @@
       "2026-09-02 00:00:00",
       "2026-09-03 00:00:00",
       "2026-09-06 00:00:00",
-      "2026-09-07 00:00:00"
+      "2026-09-07 00:00:00",
+      "2026-09-08 00:00:00"
     ],
     "close": [
       3.16,
@@ -379,6 +380,7 @@
       3.55,
       3.55,
       3.55,
+      3.47,
       3.47
     ],
     "open": [
@@ -520,6 +522,7 @@
       3.69,
       3.69,
       3.69,
+      3.55,
       3.55
     ],
     "high": [
@@ -661,6 +664,7 @@
       3.69,
       3.69,
       3.69,
+      3.64,
       3.64
     ],
     "low": [
@@ -802,6 +806,7 @@
       3.5,
       3.5,
       3.5,
+      3.37,
       3.37
     ],
     "volume": [
@@ -943,6 +948,7 @@
       81130,
       81130,
       81130,
+      121915,
       121915
     ],
     "vwap": [
@@ -1084,7 +1090,8 @@
       3.4855,
       3.4898,
       3.4488,
-      3.451
+      3.451,
+      3.4554
     ],
     "resistance": 4.2,
     "support": 3.0133,
