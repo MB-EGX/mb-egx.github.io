@@ -1,10 +1,10 @@
 {
   "ticker": "HCFI.CA",
-  "last_data_date": "2026-09-09",
+  "last_data_date": "2026-09-10",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "HCFI.CA",
-    "Last Bar Date": "2026-09-09",
+    "Last Bar Date": "2026-09-10",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -23,25 +23,25 @@
     "1M Return %": -1.76,
     "YTD Return %": -13.47,
     "1Y Return %": 0.6,
-    "3Y Return %": 195.58,
+    "3Y Return %": 190.43,
     "External Rating Consensus": -1.75,
     "External Rating Note": null,
     "Action": "🟡 HOLD / NEUTRAL",
     "Momentum": null,
-    "Rank Score": 11.2,
-    "Reward:Risk": 0.2,
-    "Win Rate Estimate (%)": 0.0,
+    "Rank Score": 10.2,
+    "Reward:Risk": 0.21,
+    "Win Rate Estimate (%)": 20.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 3.34,
     "Target Entry (VWAP)": 3.34,
-    "Suggested Stop-Loss": 2.921,
+    "Suggested Stop-Loss": 2.928,
     "Stop-Loss Reliable": true,
     "Take-Profit Target": 3.4302,
     "Resistance (52W High)": 4.3,
     "Support (52W Low)": 2.01,
-    "Open": 3.47,
-    "Previous Close": 3.47,
+    "Open": 3.37,
+    "Previous Close": 3.34,
     "Day High": 3.47,
     "Day Low": 3.31,
     "Day's Range": "3.31 - 3.47",
@@ -51,18 +51,18 @@
     "Bid": null,
     "Ask": null,
     "Relative Value Score": null,
-    "Price Momentum Score": 57.4,
+    "Price Momentum Score": 38.1,
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": null,
     "Growth Health Score (est.)": 100.0,
-    "STOCH %K": 46.26,
-    "STOCH %D": 57.6,
+    "STOCH %K": 37.41,
+    "STOCH %D": 48.07,
     "STOCHRSI": 8.94,
-    "CCI": -41.5,
-    "ROC": 0.3,
+    "CCI": -39.56,
+    "ROC": 1.21,
     "Williams %R": -71.43,
-    "UO": 48.68,
-    "Bull/Bear Power": -0.155,
+    "UO": 39.47,
+    "Bull/Bear Power": -0.1186,
     "Highs/Lows": 28.57,
     "Nearest Resistance": 4.2,
     "Resistance Touches": 2,
@@ -75,14 +75,14 @@
     "S1": 3.3833,
     "S2": 3.2167,
     "S3": 3.0633,
-    "Projected Gain (%)": -3.43,
-    "Pattern Conf (%)": 58.98,
-    "Projected Range 95%": "-6.37% to -0.81%",
+    "Projected Gain (%)": -2.19,
+    "Pattern Conf (%)": 48.52,
+    "Projected Range 95%": "-6.1% to 1.53%",
     "Kelly %": 0.0,
     "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Consolidation / Neutral | no decisive edge | vol x1.11",
     "Score Breakdown": {
-      "pattern": 17.69,
-      "projected": -5.15,
+      "pattern": 14.56,
+      "projected": -3.29,
       "range": 2.9,
       "trend_bonus": 0.0,
       "confidence_weight": 0.78
@@ -90,12 +90,12 @@
     "Regime": "Volatile Range",
     "Trend Class": "Consolidation / Neutral",
     "RSI-14": 41.8,
-    "ADX-14": 16.8,
-    "Vol Z-Score": 0.12,
-    "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0013,
-    "Bollinger %B": 0.291,
-    "Avg Volume (20D)": 205254,
+    "ADX-14": 16.5,
+    "Vol Z-Score": 0.11,
+    "MACD Signal": "🔴 Bearish Cross",
+    "MACD Histogram": -0.0067,
+    "Bollinger %B": 0.306,
+    "Avg Volume (20D)": 205453,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -239,7 +239,8 @@
       "2026-09-06 00:00:00",
       "2026-09-07 00:00:00",
       "2026-09-08 00:00:00",
-      "2026-09-09 00:00:00"
+      "2026-09-09 00:00:00",
+      "2026-09-10 00:00:00"
     ],
     "close": [
       3.32,
@@ -381,6 +382,7 @@
       3.55,
       3.47,
       3.47,
+      3.34,
       3.34
     ],
     "open": [
@@ -523,7 +525,8 @@
       3.69,
       3.55,
       3.55,
-      3.47
+      3.47,
+      3.37
     ],
     "high": [
       3.32,
@@ -665,6 +668,7 @@
       3.69,
       3.64,
       3.64,
+      3.47,
       3.47
     ],
     "low": [
@@ -807,6 +811,7 @@
       3.5,
       3.37,
       3.37,
+      3.31,
       3.31
     ],
     "volume": [
@@ -949,6 +954,7 @@
       81130,
       121915,
       121915,
+      228066,
       228066
     ],
     "vwap": [
@@ -1091,7 +1097,8 @@
       3.4488,
       3.451,
       3.4554,
-      3.4508
+      3.4508,
+      3.4488
     ],
     "resistance": 4.2,
     "support": 3.0133,

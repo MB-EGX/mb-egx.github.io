@@ -1,10 +1,10 @@
 {
   "ticker": "NBKE.CA",
-  "last_data_date": "2026-09-09",
+  "last_data_date": "2026-09-10",
   "sector": "Banks",
   "matrix": {
     "Ticker": "NBKE.CA",
-    "Last Bar Date": "2026-09-09",
+    "Last Bar Date": "2026-09-10",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -24,25 +24,25 @@
     "1M Return %": 18.34,
     "YTD Return %": 41.31,
     "1Y Return %": 84.93,
-    "3Y Return %": 215.23,
+    "3Y Return %": 203.56,
     "External Rating Consensus": 2.0,
     "External Rating Note": null,
-    "Action": "🟡 HOLD / NEUTRAL (Poor reward:risk 0.13x < 0.80x floor)",
+    "Action": "🟡 HOLD / NEUTRAL (Poor reward:risk 0.38x < 0.80x floor)",
     "Momentum": null,
-    "Rank Score": 12.5,
-    "Reward:Risk": 0.13,
+    "Rank Score": 26.3,
+    "Reward:Risk": 0.38,
     "Win Rate Estimate (%)": 50.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 40.98,
-    "Target Entry (VWAP)": 36.299,
-    "Suggested Stop-Loss": 29.8967,
+    "Target Entry (VWAP)": 36.3677,
+    "Suggested Stop-Loss": 30.3355,
     "Stop-Loss Reliable": true,
-    "Take-Profit Target": 42.443,
+    "Take-Profit Target": 45.0985,
     "Resistance (52W High)": 85.99,
     "Support (52W Low)": 12.26,
-    "Open": 34.84,
-    "Previous Close": 34.84,
+    "Open": 38.53,
+    "Previous Close": 40.98,
     "Day High": 41.0,
     "Day Low": 38.53,
     "Day's Range": "38.53 - 41.0",
@@ -51,19 +51,19 @@
     "Day Range %": 6.03,
     "Bid": null,
     "Ask": null,
-    "Relative Value Score": 88.7,
-    "Price Momentum Score": 57.8,
+    "Relative Value Score": 88.6,
+    "Price Momentum Score": 78.2,
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": 100.0,
     "Growth Health Score (est.)": 100.0,
-    "STOCH %K": 58.94,
-    "STOCH %D": 56.41,
+    "STOCH %K": 77.69,
+    "STOCH %D": 61.76,
     "STOCHRSI": 75.56,
-    "CCI": 409.27,
-    "ROC": 6.5,
+    "CCI": 307.19,
+    "ROC": 7.39,
     "Williams %R": -0.25,
-    "UO": 60.45,
-    "Bull/Bear Power": 5.6904,
+    "UO": 59.17,
+    "Bull/Bear Power": 4.5304,
     "Highs/Lows": 99.75,
     "Nearest Resistance": null,
     "Resistance Touches": null,
@@ -76,14 +76,14 @@
     "S1": 34.76,
     "S2": 33.02,
     "S3": 31.2,
-    "Projected Gain (%)": 2.87,
-    "Pattern Conf (%)": 12.39,
-    "Projected Range 95%": "-4.47% to 10.21%",
+    "Projected Gain (%)": 9.35,
+    "Pattern Conf (%)": 30.44,
+    "Projected Range 95%": "-6.17% to 33.93%",
     "Kelly %": 0.0,
-    "Signal Reason": "🟡 HOLD / NEUTRAL (Poor reward:risk 0.13x < 0.80x floor) | trend=Very Strong Bullish Trend | no decisive edge | weekly aligned",
+    "Signal Reason": "🟡 HOLD / NEUTRAL (Poor reward:risk 0.38x < 0.80x floor) | trend=Very Strong Bullish Trend | no decisive edge | weekly aligned",
     "Score Breakdown": {
-      "pattern": 3.72,
-      "projected": 4.3,
+      "pattern": 9.13,
+      "projected": 14.02,
       "range": 1.95,
       "trend_bonus": 0.0,
       "confidence_weight": 0.78
@@ -91,13 +91,13 @@
     "Regime": "Trending / Volatile",
     "Trend Class": "Very Strong Bullish Trend",
     "RSI-14": 66.9,
-    "ADX-14": 71.8,
-    "Vol Z-Score": -0.7,
-    "MACD Signal": "Bearish",
-    "MACD Histogram": -0.1019,
-    "Bollinger %B": 1.024,
-    "Avg Volume (20D)": 517,
-    "Data Confidence": "Medium (<1 Year)"
+    "ADX-14": 72.6,
+    "Vol Z-Score": -0.62,
+    "MACD Signal": "🟢 Bullish Cross",
+    "MACD Histogram": 0.1268,
+    "Bollinger %B": 0.96,
+    "Avg Volume (20D)": 464,
+    "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
     "dates": [
@@ -239,7 +239,8 @@
       "2026-09-06 00:00:00",
       "2026-09-07 00:00:00",
       "2026-09-08 00:00:00",
-      "2026-09-09 00:00:00"
+      "2026-09-09 00:00:00",
+      "2026-09-10 00:00:00"
     ],
     "close": [
       22.16,
@@ -380,6 +381,7 @@
       36.5,
       34.84,
       34.84,
+      40.98,
       40.98
     ],
     "open": [
@@ -521,7 +523,8 @@
       38.0,
       36.5,
       36.5,
-      34.84
+      34.84,
+      38.53
     ],
     "high": [
       22.2,
@@ -662,6 +665,7 @@
       38.4,
       36.5,
       36.5,
+      41.0,
       41.0
     ],
     "low": [
@@ -803,6 +807,7 @@
       35.22,
       34.84,
       34.84,
+      38.53,
       38.53
     ],
     "volume": [
@@ -944,6 +949,7 @@
       1570,
       439,
       439,
+      93,
       93
     ],
     "vwap": [
@@ -1085,7 +1091,8 @@
       38.5014,
       38.3834,
       36.2639,
-      36.299
+      36.299,
+      36.3677
     ],
     "resistance": 85.99,
     "support": 28.95,

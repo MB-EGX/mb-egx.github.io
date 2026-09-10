@@ -1,7 +1,47 @@
 {
-  "last_data_date": "2026-09-09",
+  "last_data_date": "2026-09-10",
   "session_picks": {
     "short": [
+      {
+        "id": 69,
+        "ticker": "POUL.CA",
+        "horizon": "short",
+        "pick_date": "2026-09-10",
+        "ref_price": 39.89,
+        "source": "day1_breakout",
+        "rank_score": 36.7,
+        "rank_origin": "Day-1 Breakout",
+        "expected_from": "2026-09-13",
+        "expected_by": "2026-09-15",
+        "expected_pct": 3.0,
+        "stop_loss_pct": 3.0,
+        "days_active": 0,
+        "days_overdue": 0,
+        "is_overdue": false,
+        "benchmark_pct": 0.0,
+        "current_pct": 0.0,
+        "alpha_vs_benchmark_pct": 0.0
+      },
+      {
+        "id": 68,
+        "ticker": "EPCO.CA",
+        "horizon": "short",
+        "pick_date": "2026-09-10",
+        "ref_price": 11.72,
+        "source": "day1_breakout",
+        "rank_score": 51.8,
+        "rank_origin": "Day-1 Breakout",
+        "expected_from": "2026-09-13",
+        "expected_by": "2026-09-15",
+        "expected_pct": 3.0,
+        "stop_loss_pct": 3.0,
+        "days_active": 0,
+        "days_overdue": 0,
+        "is_overdue": false,
+        "benchmark_pct": 0.0,
+        "current_pct": 0.0,
+        "alpha_vs_benchmark_pct": 0.0
+      },
       {
         "id": 65,
         "ticker": "ALCN.CA",
@@ -15,12 +55,12 @@
         "expected_by": "2026-09-13",
         "expected_pct": 3.0,
         "stop_loss_pct": 3.0,
-        "days_active": 1,
+        "days_active": 2,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.581,
-        "current_pct": 1.56,
-        "alpha_vs_benchmark_pct": 0.98
+        "benchmark_pct": 0.188,
+        "current_pct": 1.47,
+        "alpha_vs_benchmark_pct": 1.28
       },
       {
         "id": 64,
@@ -35,32 +75,12 @@
         "expected_by": "2026-09-13",
         "expected_pct": 3.0,
         "stop_loss_pct": 3.0,
-        "days_active": 1,
+        "days_active": 2,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.581,
-        "current_pct": -1.75,
-        "alpha_vs_benchmark_pct": -2.33
-      },
-      {
-        "id": 63,
-        "ticker": "SMFR.CA",
-        "horizon": "short",
-        "pick_date": "2026-09-08",
-        "ref_price": 259.29,
-        "source": "day1_breakout",
-        "rank_score": 52.0,
-        "rank_origin": "Day-1 Breakout",
-        "expected_from": "2026-09-09",
-        "expected_by": "2026-09-13",
-        "expected_pct": 3.0,
-        "stop_loss_pct": 3.0,
-        "days_active": 1,
-        "days_overdue": 0,
-        "is_overdue": false,
-        "benchmark_pct": 0.581,
-        "current_pct": -2.18,
-        "alpha_vs_benchmark_pct": -2.76
+        "benchmark_pct": 0.188,
+        "current_pct": -2.46,
+        "alpha_vs_benchmark_pct": -2.65
       },
       {
         "id": 62,
@@ -75,32 +95,12 @@
         "expected_by": "2026-09-13",
         "expected_pct": 3.0,
         "stop_loss_pct": 3.0,
-        "days_active": 1,
-        "days_overdue": 0,
-        "is_overdue": false,
-        "benchmark_pct": 0.581,
-        "current_pct": -1.19,
-        "alpha_vs_benchmark_pct": -1.77
-      },
-      {
-        "id": 61,
-        "ticker": "VLMRA.CA",
-        "horizon": "short",
-        "pick_date": "2026-09-07",
-        "ref_price": 32.42,
-        "source": "day1_breakout",
-        "rank_score": 30.9,
-        "rank_origin": "Day-1 Breakout",
-        "expected_from": "2026-09-08",
-        "expected_by": "2026-09-10",
-        "expected_pct": 3.0,
-        "stop_loss_pct": 3.0,
         "days_active": 2,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": -0.224,
-        "current_pct": 0.52,
-        "alpha_vs_benchmark_pct": 0.74
+        "benchmark_pct": 0.188,
+        "current_pct": 0.8,
+        "alpha_vs_benchmark_pct": 0.61
       }
     ],
     "medium": [
@@ -117,12 +117,12 @@
         "expected_by": "2026-11-11",
         "expected_pct": 8.0,
         "stop_loss_pct": 6.0,
-        "days_active": 0,
+        "days_active": 1,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.0,
-        "current_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
+        "benchmark_pct": -0.39,
+        "current_pct": -0.92,
+        "alpha_vs_benchmark_pct": -0.53
       },
       {
         "id": 44,
@@ -137,12 +137,12 @@
         "expected_by": "2026-11-02",
         "expected_pct": 8.0,
         "stop_loss_pct": 6.0,
-        "days_active": 9,
+        "days_active": 10,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 2.979,
-        "current_pct": 6.45,
-        "alpha_vs_benchmark_pct": 3.47
+        "benchmark_pct": 2.577,
+        "current_pct": 5.56,
+        "alpha_vs_benchmark_pct": 2.98
       },
       {
         "id": 34,
@@ -157,12 +157,12 @@
         "expected_by": "2026-10-28",
         "expected_pct": 8.0,
         "stop_loss_pct": 6.0,
-        "days_active": 14,
+        "days_active": 15,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 2.53,
-        "current_pct": 1.89,
-        "alpha_vs_benchmark_pct": -0.64
+        "benchmark_pct": 2.13,
+        "current_pct": 2.26,
+        "alpha_vs_benchmark_pct": 0.13
       }
     ],
     "long": [
@@ -179,12 +179,12 @@
         "expected_by": "2027-05-19",
         "expected_pct": 15.0,
         "stop_loss_pct": 10.0,
-        "days_active": 0,
+        "days_active": 1,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.0,
+        "benchmark_pct": -0.39,
         "current_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
+        "alpha_vs_benchmark_pct": 0.39
       },
       {
         "id": 50,
@@ -199,12 +199,12 @@
         "expected_by": "2027-05-11",
         "expected_pct": 15.0,
         "stop_loss_pct": 10.0,
-        "days_active": 8,
+        "days_active": 9,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 1.929,
-        "current_pct": 8.6,
-        "alpha_vs_benchmark_pct": 6.67
+        "benchmark_pct": 1.531,
+        "current_pct": 2.64,
+        "alpha_vs_benchmark_pct": 1.11
       },
       {
         "id": 37,
@@ -219,42 +219,42 @@
         "expected_by": "2027-05-05",
         "expected_pct": 15.0,
         "stop_loss_pct": 10.0,
-        "days_active": 14,
+        "days_active": 15,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 2.53,
-        "current_pct": 13.41,
-        "alpha_vs_benchmark_pct": 10.88
+        "benchmark_pct": 2.13,
+        "current_pct": 10.57,
+        "alpha_vs_benchmark_pct": 8.44
       }
     ],
     "achieved_today": [],
     "retired_today": [
       {
-        "id": 58,
-        "ticker": "ISMA.CA",
-        "horizon": "medium",
-        "pick_date": "2026-09-06",
-        "ref_price": 32.62,
-        "source": "signal",
-        "rank_score": 156.4,
-        "rank_origin": "📈 ACCUMULATE",
-        "retired_date": "2026-09-09",
-        "retired_price": 32.13,
-        "retired_pct": -1.5,
-        "retired_reason": "outranked_by_higher_scored_candidate"
+        "id": 63,
+        "ticker": "SMFR.CA",
+        "horizon": "short",
+        "pick_date": "2026-09-08",
+        "ref_price": 259.29,
+        "source": "day1_breakout",
+        "rank_score": 52.0,
+        "rank_origin": "Day-1 Breakout",
+        "retired_date": "2026-09-10",
+        "retired_price": 251.22,
+        "retired_pct": -3.11,
+        "retired_reason": "stop_loss_3pct"
       },
       {
-        "id": 28,
-        "ticker": "GRCA.CA",
-        "horizon": "long",
-        "pick_date": "2026-08-25",
-        "ref_price": 76.72,
-        "source": "signal",
-        "rank_score": 51.9,
-        "rank_origin": "🟡 HOLD / NEUTRAL",
-        "retired_date": "2026-09-09",
-        "retired_price": 74.54,
-        "retired_pct": -2.84,
+        "id": 61,
+        "ticker": "VLMRA.CA",
+        "horizon": "short",
+        "pick_date": "2026-09-07",
+        "ref_price": 32.42,
+        "source": "day1_breakout",
+        "rank_score": 30.9,
+        "rank_origin": "Day-1 Breakout",
+        "retired_date": "2026-09-10",
+        "retired_price": 32.01,
+        "retired_pct": -1.26,
         "retired_reason": "outranked_by_higher_scored_candidate"
       }
     ],
@@ -273,7 +273,7 @@
         "rank_origin": "Pre-Breakout Watchlist"
       }
     ],
-    "session_date": "2026-09-09",
+    "session_date": "2026-09-10",
     "benchmark_label": "EGX 30",
     "achieved_history": [
       {
