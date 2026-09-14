@@ -1,10 +1,10 @@
 {
   "ticker": "GTEX.CA",
-  "last_data_date": "2026-09-13",
+  "last_data_date": "2026-09-14",
   "sector": "Textiles & Durables",
   "matrix": {
     "Ticker": "GTEX.CA",
-    "Last Bar Date": "2026-09-13",
+    "Last Bar Date": "2026-09-14",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -24,18 +24,18 @@
     "YTD Return %": 11.11,
     "1Y Return %": 8.11,
     "3Y Return %": null,
-    "External Rating Consensus": 0.75,
+    "External Rating Consensus": 0.625,
     "External Rating Note": null,
     "Action": "🟡 HOLD / NEUTRAL",
     "Momentum": "Oversold",
-    "Rank Score": 7.4,
-    "Reward:Risk": 0.14,
+    "Rank Score": 7.0,
+    "Reward:Risk": 0.15,
     "Win Rate Estimate (%)": 0.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 0.04,
     "Target Entry (VWAP)": 0.04,
-    "Suggested Stop-Loss": 0.0322,
+    "Suggested Stop-Loss": 0.0327,
     "Stop-Loss Reliable": true,
     "Take-Profit Target": 0.0411,
     "Resistance (52W High)": 0.05,
@@ -62,7 +62,7 @@
     "ROC": 0.0,
     "Williams %R": -100.0,
     "UO": 9.52,
-    "Bull/Bear Power": -0.0016,
+    "Bull/Bear Power": -0.0014,
     "Highs/Lows": 0.0,
     "Nearest Resistance": null,
     "Resistance Touches": null,
@@ -76,12 +76,12 @@
     "S2": 0.0333,
     "S3": 0.0267,
     "Projected Gain (%)": 0.0,
-    "Pattern Conf (%)": 11.77,
+    "Pattern Conf (%)": 9.99,
     "Projected Range 95%": "0.0% to 0.0%",
     "Kelly %": 0.0,
-    "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Consolidation / Neutral | no decisive edge | weekly aligned | oversold",
+    "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Consolidation / Neutral | no decisive edge | weekly aligned | vol x1.07 | oversold",
     "Score Breakdown": {
-      "pattern": 3.53,
+      "pattern": 3.0,
       "projected": 0.0,
       "range": 2.5,
       "trend_bonus": 0.0,
@@ -90,12 +90,12 @@
     "Regime": "Volatile Range",
     "Trend Class": "Consolidation / Neutral",
     "RSI-14": 49.7,
-    "ADX-14": 8.9,
-    "Vol Z-Score": -0.72,
+    "ADX-14": 8.4,
+    "Vol Z-Score": 0.06,
     "MACD Signal": "Bearish",
     "MACD Histogram": -0.0005,
     "Bollinger %B": 0.419,
-    "Avg Volume (20D)": 338353,
+    "Avg Volume (20D)": 265273,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -351,7 +351,8 @@
       "2026-09-08 00:00:00",
       "2026-09-09 00:00:00",
       "2026-09-10 00:00:00",
-      "2026-09-13 00:00:00"
+      "2026-09-13 00:00:00",
+      "2026-09-14 00:00:00"
     ],
     "close": [
       0.04,
@@ -599,6 +600,7 @@
       0.04,
       0.05,
       0.05,
+      0.04,
       0.04,
       0.04,
       0.04,
@@ -859,6 +861,7 @@
       0.04,
       0.04,
       0.04,
+      0.04,
       0.04
     ],
     "high": [
@@ -1113,6 +1116,7 @@
       0.05,
       0.05,
       0.04,
+      0.04,
       0.04
     ],
     "low": [
@@ -1361,6 +1365,7 @@
       0.04,
       0.04,
       0.05,
+      0.04,
       0.04,
       0.04,
       0.04,
@@ -1621,7 +1626,8 @@
       31068,
       438767,
       33101,
-      22062
+      22062,
+      283448
     ],
     "vwap": [
       0.04,
@@ -1875,7 +1881,8 @@
       0.0418,
       0.0419,
       0.0419,
-      0.0419
+      0.0419,
+      0.0425
     ],
     "resistance": 0.05,
     "support": 0.03,
