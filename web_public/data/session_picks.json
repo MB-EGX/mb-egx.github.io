@@ -1,7 +1,47 @@
 {
-  "last_data_date": "2026-09-14",
+  "last_data_date": "2026-09-15",
   "session_picks": {
     "short": [
+      {
+        "id": 81,
+        "ticker": "AMER.CA",
+        "horizon": "short",
+        "pick_date": "2026-09-15",
+        "ref_price": 5.52,
+        "source": "day1_breakout",
+        "rank_score": 40.4,
+        "rank_origin": "Day-1 Breakout",
+        "expected_from": "2026-09-16",
+        "expected_by": "2026-09-20",
+        "expected_pct": 3.0,
+        "stop_loss_pct": 3.0,
+        "days_active": 0,
+        "days_overdue": 0,
+        "is_overdue": false,
+        "benchmark_pct": 0.0,
+        "current_pct": 0.0,
+        "alpha_vs_benchmark_pct": 0.0
+      },
+      {
+        "id": 80,
+        "ticker": "MBEG.CA",
+        "horizon": "short",
+        "pick_date": "2026-09-15",
+        "ref_price": 7.27,
+        "source": "signal",
+        "rank_score": 142.2,
+        "rank_origin": "🔥 STRONG BUY [👑 WEEKLY ALIGNED]",
+        "expected_from": "2026-09-16",
+        "expected_by": "2026-09-20",
+        "expected_pct": 3.0,
+        "stop_loss_pct": 3.0,
+        "days_active": 0,
+        "days_overdue": 0,
+        "is_overdue": false,
+        "benchmark_pct": 0.0,
+        "current_pct": 0.0,
+        "alpha_vs_benchmark_pct": 0.0
+      },
       {
         "id": 77,
         "ticker": "CERA.CA",
@@ -15,12 +55,12 @@
         "expected_by": "2026-09-17",
         "expected_pct": 3.0,
         "stop_loss_pct": 3.0,
-        "days_active": 0,
+        "days_active": 1,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.0,
-        "current_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
+        "benchmark_pct": 0.206,
+        "current_pct": 2.17,
+        "alpha_vs_benchmark_pct": 1.96
       },
       {
         "id": 76,
@@ -35,32 +75,12 @@
         "expected_by": "2026-09-17",
         "expected_pct": 3.0,
         "stop_loss_pct": 3.0,
-        "days_active": 0,
-        "days_overdue": 0,
-        "is_overdue": false,
-        "benchmark_pct": 0.0,
-        "current_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
-      },
-      {
-        "id": 75,
-        "ticker": "SIPC.CA",
-        "horizon": "short",
-        "pick_date": "2026-09-13",
-        "ref_price": 6.12,
-        "source": "day1_breakout",
-        "rank_score": 11.9,
-        "rank_origin": "Day-1 Breakout",
-        "expected_from": "2026-09-14",
-        "expected_by": "2026-09-16",
-        "expected_pct": 3.0,
-        "stop_loss_pct": 3.0,
         "days_active": 1,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": -1.56,
-        "current_pct": -2.94,
-        "alpha_vs_benchmark_pct": -1.38
+        "benchmark_pct": 0.206,
+        "current_pct": 0.41,
+        "alpha_vs_benchmark_pct": 0.2
       },
       {
         "id": 72,
@@ -75,32 +95,12 @@
         "expected_by": "2026-09-16",
         "expected_pct": 3.0,
         "stop_loss_pct": 3.0,
-        "days_active": 1,
+        "days_active": 2,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": -1.56,
-        "current_pct": -0.93,
-        "alpha_vs_benchmark_pct": 0.63
-      },
-      {
-        "id": 71,
-        "ticker": "POUL.CA",
-        "horizon": "short",
-        "pick_date": "2026-09-13",
-        "ref_price": 39.8,
-        "source": "day1_breakout",
-        "rank_score": 27.4,
-        "rank_origin": "Day-1 Breakout",
-        "expected_from": "2026-09-14",
-        "expected_by": "2026-09-16",
-        "expected_pct": 3.0,
-        "stop_loss_pct": 3.0,
-        "days_active": 1,
-        "days_overdue": 0,
-        "is_overdue": false,
-        "benchmark_pct": -1.56,
-        "current_pct": -2.69,
-        "alpha_vs_benchmark_pct": -1.13
+        "benchmark_pct": -1.357,
+        "current_pct": 1.25,
+        "alpha_vs_benchmark_pct": 2.61
       }
     ],
     "medium": [
@@ -117,12 +117,12 @@
         "expected_by": "2026-11-16",
         "expected_pct": 8.0,
         "stop_loss_pct": 6.0,
-        "days_active": 0,
+        "days_active": 1,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.0,
-        "current_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
+        "benchmark_pct": 0.206,
+        "current_pct": 0.65,
+        "alpha_vs_benchmark_pct": 0.44
       },
       {
         "id": 73,
@@ -137,12 +137,12 @@
         "expected_by": "2026-11-15",
         "expected_pct": 8.0,
         "stop_loss_pct": 6.0,
-        "days_active": 1,
+        "days_active": 2,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": -1.56,
-        "current_pct": -1.82,
-        "alpha_vs_benchmark_pct": -0.26
+        "benchmark_pct": -1.357,
+        "current_pct": -1.49,
+        "alpha_vs_benchmark_pct": -0.13
       },
       {
         "id": 44,
@@ -157,12 +157,12 @@
         "expected_by": "2026-11-02",
         "expected_pct": 8.0,
         "stop_loss_pct": 6.0,
-        "days_active": 14,
+        "days_active": 15,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": -0.127,
-        "current_pct": 2.53,
-        "alpha_vs_benchmark_pct": 2.66
+        "benchmark_pct": 0.079,
+        "current_pct": 1.88,
+        "alpha_vs_benchmark_pct": 1.8
       }
     ],
     "long": [
@@ -179,12 +179,12 @@
         "expected_by": "2027-05-24",
         "expected_pct": 15.0,
         "stop_loss_pct": 10.0,
-        "days_active": 0,
+        "days_active": 1,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.0,
-        "current_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
+        "benchmark_pct": 0.206,
+        "current_pct": 1.2,
+        "alpha_vs_benchmark_pct": 0.99
       },
       {
         "id": 67,
@@ -199,12 +199,12 @@
         "expected_by": "2027-05-19",
         "expected_pct": 15.0,
         "stop_loss_pct": 10.0,
-        "days_active": 5,
+        "days_active": 6,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": -3.016,
+        "benchmark_pct": -2.817,
         "current_pct": 1.11,
-        "alpha_vs_benchmark_pct": 4.13
+        "alpha_vs_benchmark_pct": 3.93
       },
       {
         "id": 37,
@@ -219,30 +219,45 @@
         "expected_by": "2027-05-05",
         "expected_pct": 15.0,
         "stop_loss_pct": 10.0,
-        "days_active": 19,
+        "days_active": 20,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": -0.563,
-        "current_pct": 3.25,
-        "alpha_vs_benchmark_pct": 3.81
+        "benchmark_pct": -0.358,
+        "current_pct": 5.69,
+        "alpha_vs_benchmark_pct": 6.05
       }
     ],
-    "achieved_today": [
+    "achieved_today": [],
+    "retired_today": [
       {
-        "id": 70,
-        "ticker": "TALM.CA",
+        "id": 75,
+        "ticker": "SIPC.CA",
         "horizon": "short",
         "pick_date": "2026-09-13",
-        "ref_price": 18.9,
-        "achieved_date": "2026-09-14",
-        "achieved_price": 22.68,
-        "achieved_pct": 20.0,
+        "ref_price": 6.12,
         "source": "day1_breakout",
-        "rank_score": 28.8,
-        "rank_origin": "Day-1 Breakout"
+        "rank_score": 11.9,
+        "rank_origin": "Day-1 Breakout",
+        "retired_date": "2026-09-15",
+        "retired_price": 5.88,
+        "retired_pct": -3.92,
+        "retired_reason": "stop_loss_3pct"
+      },
+      {
+        "id": 71,
+        "ticker": "POUL.CA",
+        "horizon": "short",
+        "pick_date": "2026-09-13",
+        "ref_price": 39.8,
+        "source": "day1_breakout",
+        "rank_score": 27.4,
+        "rank_origin": "Day-1 Breakout",
+        "retired_date": "2026-09-15",
+        "retired_price": 37.99,
+        "retired_pct": -4.55,
+        "retired_reason": "stop_loss_3pct"
       }
     ],
-    "retired_today": [],
     "achieved_this_week": [
       {
         "id": 70,
@@ -258,7 +273,7 @@
         "rank_origin": "Day-1 Breakout"
       }
     ],
-    "session_date": "2026-09-14",
+    "session_date": "2026-09-15",
     "benchmark_label": "EGX 30",
     "achieved_history": [
       {

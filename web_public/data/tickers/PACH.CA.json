@@ -1,10 +1,10 @@
 {
   "ticker": "PACH.CA",
-  "last_data_date": "2026-09-14",
+  "last_data_date": "2026-09-15",
   "sector": "Chemicals",
   "matrix": {
     "Ticker": "PACH.CA",
-    "Last Bar Date": "2026-09-14",
+    "Last Bar Date": "2026-09-15",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -27,22 +27,22 @@
     "3Y Return %": 148.81,
     "External Rating Consensus": 1.5,
     "External Rating Note": null,
-    "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL",
-    "Momentum": "Overbought",
-    "Rank Score": -29.3,
-    "Reward:Risk": 0.18,
+    "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL (Signal unconfirmed: 3/5 factors passed, need 4 - low volume (RVOL/Z-score not confirmed), weak session close (near day's low))",
+    "Momentum": null,
+    "Rank Score": -29.5,
+    "Reward:Risk": 0.16,
     "Win Rate Estimate (%)": 80.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 92.06,
-    "Target Entry (VWAP)": 88.458,
-    "Suggested Stop-Loss": 78.8579,
+    "Target Entry (VWAP)": 88.6599,
+    "Suggested Stop-Loss": 77.3581,
     "Stop-Loss Reliable": true,
     "Take-Profit Target": 94.5456,
     "Resistance (52W High)": 109.16,
     "Support (52W Low)": 65.0,
     "Open": 109.16,
-    "Previous Close": 91.05,
+    "Previous Close": 92.06,
     "Day High": 109.16,
     "Day Low": 92.06,
     "Day's Range": "92.06 - 109.16",
@@ -52,18 +52,18 @@
     "Bid": null,
     "Ask": null,
     "Relative Value Score": 66.7,
-    "Price Momentum Score": 82.6,
+    "Price Momentum Score": 82.1,
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": 0.9,
     "Growth Health Score (est.)": 100.0,
-    "STOCH %K": 37.02,
-    "STOCH %D": 43.18,
+    "STOCH %K": 38.15,
+    "STOCH %D": 37.02,
     "STOCHRSI": 100.0,
-    "CCI": 158.79,
+    "CCI": 135.72,
     "ROC": 13.65,
     "Williams %R": -60.72,
-    "UO": 20.39,
-    "Bull/Bear Power": 25.378,
+    "UO": 15.35,
+    "Bull/Bear Power": 24.1954,
     "Highs/Lows": 39.28,
     "Nearest Resistance": null,
     "Resistance Touches": null,
@@ -77,12 +77,12 @@
     "S2": 74.0833,
     "S3": 60.8667,
     "Projected Gain (%)": 0.49,
-    "Pattern Conf (%)": 5.75,
+    "Pattern Conf (%)": 5.79,
     "Projected Range 95%": "-10.62% to 4.94%",
     "Kelly %": 0.0,
-    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Strong Bullish Trend | no decisive edge | weekly aligned | overbought",
+    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL (Signal unconfirmed: 3/5 factors passed, need 4 - low volume (RVOL/Z-score not confirmed), weak session close (near day's low)) | trend=Strong Bullish Trend | no decisive edge | weekly aligned",
     "Score Breakdown": {
-      "pattern": 1.72,
+      "pattern": 1.74,
       "projected": 0.73,
       "range": 3.06,
       "trend_bonus": -40.0,
@@ -91,12 +91,12 @@
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish Trend",
     "RSI-14": 73.5,
-    "ADX-14": 31.8,
-    "Vol Z-Score": -0.54,
+    "ADX-14": 34.5,
+    "Vol Z-Score": -0.95,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.7842,
-    "Bollinger %B": 0.909,
-    "Avg Volume (20D)": 353,
+    "MACD Histogram": 0.7026,
+    "Bollinger %B": 0.863,
+    "Avg Volume (20D)": 343,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -240,7 +240,8 @@
       "2026-09-09 00:00:00",
       "2026-09-10 00:00:00",
       "2026-09-13 00:00:00",
-      "2026-09-14 00:00:00"
+      "2026-09-14 00:00:00",
+      "2026-09-15 00:00:00"
     ],
     "close": [
       73.02,
@@ -382,6 +383,7 @@
       91.05,
       91.05,
       91.05,
+      92.06,
       92.06
     ],
     "open": [
@@ -524,6 +526,7 @@
       88.85,
       89.0,
       89.0,
+      109.16,
       109.16
     ],
     "high": [
@@ -666,6 +669,7 @@
       109.0,
       109.0,
       109.0,
+      109.16,
       109.16
     ],
     "low": [
@@ -808,6 +812,7 @@
       89.0,
       89.0,
       89.0,
+      92.06,
       92.06
     ],
     "volume": [
@@ -950,7 +955,8 @@
       1000,
       1000,
       0,
-      163
+      163,
+      0
     ],
     "vwap": [
       75.3467,
@@ -1092,7 +1098,8 @@
       86.2035,
       87.8656,
       87.8656,
-      88.458
+      88.458,
+      88.6599
     ],
     "resistance": 109.16,
     "support": 69.85,

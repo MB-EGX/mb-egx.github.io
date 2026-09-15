@@ -1,10 +1,10 @@
 {
   "ticker": "GTHE.CA",
-  "last_data_date": "2026-09-14",
+  "last_data_date": "2026-09-15",
   "sector": "IT, Media & Communication Services",
   "matrix": {
     "Ticker": "GTHE.CA",
-    "Last Bar Date": "2026-09-14",
+    "Last Bar Date": "2026-09-15",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -27,22 +27,22 @@
     "3Y Return %": 160.42,
     "External Rating Consensus": 1.875,
     "External Rating Note": null,
-    "Action": "🟡 HOLD / NEUTRAL (Poor reward:risk 0.42x < 0.80x floor)",
+    "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL (Signal unconfirmed: 3/5 factors passed, need 4 - low volume (RVOL/Z-score not confirmed), weak session close (near day's low))",
     "Momentum": null,
-    "Rank Score": 35.4,
-    "Reward:Risk": 0.42,
+    "Rank Score": -5.2,
+    "Reward:Risk": 0.25,
     "Win Rate Estimate (%)": 80.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 5.0,
-    "Target Entry (VWAP)": 4.8291,
-    "Suggested Stop-Loss": 3.6392,
+    "Target Entry (VWAP)": 4.8361,
+    "Suggested Stop-Loss": 3.5893,
     "Stop-Loss Reliable": true,
-    "Take-Profit Target": 5.5895,
+    "Take-Profit Target": 5.356,
     "Resistance (52W High)": 5.6,
     "Support (52W Low)": 1.8,
     "Open": 4.46,
-    "Previous Close": 5.49,
+    "Previous Close": 5.0,
     "Day High": 5.49,
     "Day Low": 4.46,
     "Day's Range": "4.46 - 5.49",
@@ -52,19 +52,19 @@
     "Bid": null,
     "Ask": null,
     "Relative Value Score": null,
-    "Price Momentum Score": 78.4,
+    "Price Momentum Score": 78.0,
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": null,
     "Growth Health Score (est.)": 100.0,
-    "STOCH %K": 81.61,
-    "STOCH %D": 89.25,
+    "STOCH %K": 69.82,
+    "STOCH %D": 81.39,
     "STOCHRSI": 29.11,
-    "CCI": 88.04,
+    "CCI": 79.17,
     "ROC": 16.28,
-    "Williams %R": -40.54,
-    "UO": 76.12,
-    "Bull/Bear Power": 0.0994,
-    "Highs/Lows": 59.46,
+    "Williams %R": -42.55,
+    "UO": 71.67,
+    "Bull/Bear Power": 0.0781,
+    "Highs/Lows": 57.45,
     "Nearest Resistance": null,
     "Resistance Touches": null,
     "Nearest Support": 2.1267,
@@ -76,27 +76,27 @@
     "S1": 4.6733,
     "S2": 3.8567,
     "S3": 3.3933,
-    "Projected Gain (%)": 11.09,
-    "Pattern Conf (%)": 65.92,
-    "Projected Range 95%": "-2.08% to 26.18%",
-    "Kelly %": 16.34,
-    "Signal Reason": "🟡 HOLD / NEUTRAL (Poor reward:risk 0.42x < 0.80x floor) | trend=Strong Bullish Trend | no decisive edge | weekly aligned",
+    "Projected Gain (%)": 6.42,
+    "Pattern Conf (%)": 56.16,
+    "Projected Range 95%": "-1.77% to 21.72%",
+    "Kelly %": 0.0,
+    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL (Signal unconfirmed: 3/5 factors passed, need 4 - low volume (RVOL/Z-score not confirmed), weak session close (near day's low)) | trend=Strong Bullish Trend | no decisive edge | weekly aligned",
     "Score Breakdown": {
-      "pattern": 19.78,
-      "projected": 16.63,
+      "pattern": 16.85,
+      "projected": 9.63,
       "range": 4.21,
-      "trend_bonus": 0.0,
-      "confidence_weight": 0.78
+      "trend_bonus": -40.0,
+      "confidence_weight": 0.79
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish Trend",
     "RSI-14": 59.2,
     "ADX-14": 41.7,
-    "Vol Z-Score": -0.39,
+    "Vol Z-Score": -0.82,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0547,
-    "Bollinger %B": 0.691,
-    "Avg Volume (20D)": 31377,
+    "MACD Histogram": 0.0254,
+    "Bollinger %B": 0.673,
+    "Avg Volume (20D)": 31011,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -243,7 +243,8 @@
       "2026-09-09 00:00:00",
       "2026-09-10 00:00:00",
       "2026-09-13 00:00:00",
-      "2026-09-14 00:00:00"
+      "2026-09-14 00:00:00",
+      "2026-09-15 00:00:00"
     ],
     "close": [
       2.11,
@@ -388,6 +389,7 @@
       5.49,
       5.49,
       5.49,
+      5.0,
       5.0
     ],
     "open": [
@@ -533,6 +535,7 @@
       4.95,
       4.95,
       4.95,
+      4.46,
       4.46
     ],
     "high": [
@@ -678,6 +681,7 @@
       5.6,
       5.6,
       5.6,
+      5.49,
       5.49
     ],
     "low": [
@@ -823,6 +827,7 @@
       4.73,
       4.73,
       4.73,
+      4.46,
       4.46
     ],
     "volume": [
@@ -968,7 +973,8 @@
       121336,
       121336,
       0,
-      16630
+      16630,
+      0
     ],
     "vwap": [
       2.1733,
@@ -1113,7 +1119,8 @@
       4.7039,
       4.8196,
       4.8196,
-      4.8291
+      4.8291,
+      4.8361
     ],
     "resistance": 5.6,
     "support": 2.135,

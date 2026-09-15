@@ -1,10 +1,10 @@
 {
   "ticker": "TORA.CA",
-  "last_data_date": "2026-09-14",
+  "last_data_date": "2026-09-15",
   "sector": "Building Materials",
   "matrix": {
     "Ticker": "TORA.CA",
-    "Last Bar Date": "2026-09-14",
+    "Last Bar Date": "2026-09-15",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -29,20 +29,20 @@
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - 🛑 SELL / AVOID",
     "Momentum": null,
-    "Rank Score": -40.1,
-    "Reward:Risk": 0.26,
+    "Rank Score": -39.3,
+    "Reward:Risk": 0.27,
     "Win Rate Estimate (%)": 60.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 64.0,
     "Target Entry (VWAP)": 64.0,
-    "Suggested Stop-Loss": 57.9064,
+    "Suggested Stop-Loss": 57.7717,
     "Stop-Loss Reliable": true,
-    "Take-Profit Target": 65.728,
+    "Take-Profit Target": 65.792,
     "Resistance (52W High)": 99.0,
     "Support (52W Low)": 31.03,
     "Open": 67.8,
-    "Previous Close": 65.89,
+    "Previous Close": 64.0,
     "Day High": 67.99,
     "Day Low": 64.0,
     "Day's Range": "64.0 - 67.99",
@@ -52,18 +52,18 @@
     "Bid": null,
     "Ask": null,
     "Relative Value Score": null,
-    "Price Momentum Score": 30.4,
+    "Price Momentum Score": 30.5,
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": 15.0,
     "Growth Health Score (est.)": 100.0,
-    "STOCH %K": 31.49,
-    "STOCH %D": 33.46,
+    "STOCH %K": 22.58,
+    "STOCH %D": 31.49,
     "STOCHRSI": 23.34,
-    "CCI": -86.83,
+    "CCI": -80.71,
     "ROC": -5.85,
     "Williams %R": -88.71,
-    "UO": 28.37,
-    "Bull/Bear Power": 0.7205,
+    "UO": 25.07,
+    "Bull/Bear Power": 1.1875,
     "Highs/Lows": 11.29,
     "Nearest Resistance": 74.5,
     "Resistance Touches": 2,
@@ -76,14 +76,14 @@
     "S1": 63.6567,
     "S2": 61.4233,
     "S3": 59.4767,
-    "Projected Gain (%)": 1.94,
-    "Pattern Conf (%)": 42.68,
-    "Projected Range 95%": "-3.61% to 6.52%",
+    "Projected Gain (%)": 2.1,
+    "Pattern Conf (%)": 45.32,
+    "Projected Range 95%": "-3.61% to 6.67%",
     "Kelly %": 0.0,
-    "Signal Reason": "🚫 ILLIQUID - 🛑 SELL / AVOID | trend=Strong Bearish Trend | awaiting confirmation | volatility squeeze | vol x2.84",
+    "Signal Reason": "🚫 ILLIQUID - 🛑 SELL / AVOID | trend=Strong Bearish Trend | awaiting confirmation | volatility squeeze",
     "Score Breakdown": {
-      "pattern": 12.8,
-      "projected": 2.91,
+      "pattern": 13.6,
+      "projected": 3.15,
       "range": 2.43,
       "trend_bonus": -67.0,
       "confidence_weight": 0.78
@@ -91,12 +91,12 @@
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bearish Trend",
     "RSI-14": 37.0,
-    "ADX-14": 28.3,
-    "Vol Z-Score": 2.07,
-    "MACD Signal": "🔴 Bearish Cross",
-    "MACD Histogram": -0.0676,
-    "Bollinger %B": 0.084,
-    "Avg Volume (20D)": 6381,
+    "ADX-14": 28.2,
+    "Vol Z-Score": -1.17,
+    "MACD Signal": "Bearish",
+    "MACD Histogram": -0.0993,
+    "Bollinger %B": 0.132,
+    "Avg Volume (20D)": 5299,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -242,7 +242,8 @@
       "2026-09-09 00:00:00",
       "2026-09-10 00:00:00",
       "2026-09-13 00:00:00",
-      "2026-09-14 00:00:00"
+      "2026-09-14 00:00:00",
+      "2026-09-15 00:00:00"
     ],
     "close": [
       47.01,
@@ -386,6 +387,7 @@
       65.89,
       65.89,
       65.89,
+      64.0,
       64.0
     ],
     "open": [
@@ -530,6 +532,7 @@
       64.0,
       65.0,
       65.0,
+      67.8,
       67.8
     ],
     "high": [
@@ -674,6 +677,7 @@
       67.55,
       67.55,
       67.55,
+      67.99,
       67.99
     ],
     "low": [
@@ -818,6 +822,7 @@
       65.0,
       65.0,
       65.0,
+      64.0,
       64.0
     ],
     "volume": [
@@ -962,7 +967,8 @@
       4102,
       4102,
       0,
-      18100
+      18100,
+      0
     ],
     "vwap": [
       46.82,
@@ -1106,7 +1112,8 @@
       67.462,
       67.2035,
       67.2035,
-      66.7006
+      66.7006,
+      66.4419
     ],
     "resistance": 74.5,
     "support": 31.03,

@@ -1,10 +1,10 @@
 {
   "ticker": "SMPP.CA",
-  "last_data_date": "2026-09-14",
+  "last_data_date": "2026-09-15",
   "sector": "Paper & Packaging",
   "matrix": {
     "Ticker": "SMPP.CA",
-    "Last Bar Date": "2026-09-14",
+    "Last Bar Date": "2026-09-15",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -29,20 +29,20 @@
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - 🛑 SELL / AVOID",
     "Momentum": null,
-    "Rank Score": -61.7,
-    "Reward:Risk": 0.15,
-    "Win Rate Estimate (%)": 20.0,
+    "Rank Score": -52.3,
+    "Reward:Risk": 0.14,
+    "Win Rate Estimate (%)": 0.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 106.0,
     "Target Entry (VWAP)": 106.0,
-    "Suggested Stop-Loss": 87.5911,
+    "Suggested Stop-Loss": 86.906,
     "Stop-Loss Reliable": true,
     "Take-Profit Target": 108.862,
     "Resistance (52W High)": 473.04,
     "Support (52W Low)": 64.0,
     "Open": 120.0,
-    "Previous Close": 126.06,
+    "Previous Close": 106.0,
     "Day High": 120.0,
     "Day Low": 106.0,
     "Day's Range": "106.0 - 120.0",
@@ -51,19 +51,19 @@
     "Day Range %": 13.21,
     "Bid": null,
     "Ask": null,
-    "Relative Value Score": 94.5,
-    "Price Momentum Score": 36.7,
+    "Relative Value Score": 95.0,
+    "Price Momentum Score": 36.8,
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": 69.1,
     "Growth Health Score (est.)": 43.5,
-    "STOCH %K": 57.79,
-    "STOCH %D": 75.6,
+    "STOCH %K": 33.41,
+    "STOCH %D": 57.79,
     "STOCHRSI": 0.0,
-    "CCI": -50.31,
+    "CCI": -49.48,
     "ROC": 2.32,
     "Williams %R": -90.91,
-    "UO": 18.16,
-    "Bull/Bear Power": -15.7479,
+    "UO": 15.08,
+    "Bull/Bear Power": -11.4982,
     "Highs/Lows": 9.09,
     "Nearest Resistance": null,
     "Resistance Touches": null,
@@ -76,14 +76,14 @@
     "S1": 124.78,
     "S2": 123.5,
     "S3": 120.94,
-    "Projected Gain (%)": -12.09,
-    "Pattern Conf (%)": 28.55,
-    "Projected Range 95%": "-31.18% to 4.99%",
+    "Projected Gain (%)": -5.6,
+    "Pattern Conf (%)": 37.51,
+    "Projected Range 95%": "-11.72% to 0.0%",
     "Kelly %": 0.0,
     "Signal Reason": "🚫 ILLIQUID - 🛑 SELL / AVOID | trend=Weak Bearish (Forming) | awaiting confirmation",
     "Score Breakdown": {
-      "pattern": 8.56,
-      "projected": -18.13,
+      "pattern": 11.25,
+      "projected": -8.4,
       "range": 0.51,
       "trend_bonus": -67.0,
       "confidence_weight": 0.78
@@ -91,13 +91,13 @@
     "Regime": "Volatile Range",
     "Trend Class": "Weak Bearish (Forming)",
     "RSI-14": 38.0,
-    "ADX-14": 24.5,
-    "Vol Z-Score": -0.38,
-    "MACD Signal": "🔴 Bearish Cross",
-    "MACD Histogram": -0.4773,
-    "Bollinger %B": 0.247,
+    "ADX-14": 24.1,
+    "Vol Z-Score": -0.55,
+    "MACD Signal": "Bearish",
+    "MACD Histogram": -1.4987,
+    "Bollinger %B": 0.239,
     "Avg Volume (20D)": 46,
-    "Data Confidence": "Medium (<1 Year)"
+    "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
     "dates": [
@@ -239,7 +239,8 @@
       "2026-09-09 00:00:00",
       "2026-09-10 00:00:00",
       "2026-09-13 00:00:00",
-      "2026-09-14 00:00:00"
+      "2026-09-14 00:00:00",
+      "2026-09-15 00:00:00"
     ],
     "close": [
       117.0,
@@ -380,6 +381,7 @@
       126.06,
       126.06,
       126.06,
+      106.0,
       106.0
     ],
     "open": [
@@ -521,6 +523,7 @@
       129.9,
       126.06,
       126.06,
+      120.0,
       120.0
     ],
     "high": [
@@ -662,6 +665,7 @@
       126.06,
       126.06,
       126.06,
+      120.0,
       120.0
     ],
     "low": [
@@ -803,6 +807,7 @@
       126.06,
       126.06,
       126.06,
+      106.0,
       106.0
     ],
     "volume": [
@@ -944,7 +949,8 @@
       1,
       1,
       0,
-      14
+      14,
+      0
     ],
     "vwap": [
       117.0,
@@ -1085,6 +1091,7 @@
       126.9011,
       126.9002,
       126.9002,
+      126.6553,
       126.6553
     ],
     "resistance": 473.04,

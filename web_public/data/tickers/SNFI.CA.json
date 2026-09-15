@@ -1,10 +1,10 @@
 {
   "ticker": "SNFI.CA",
-  "last_data_date": "2026-09-14",
+  "last_data_date": "2026-09-15",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "SNFI.CA",
-    "Last Bar Date": "2026-09-14",
+    "Last Bar Date": "2026-09-15",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -29,20 +29,20 @@
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL",
     "Momentum": "Overbought",
-    "Rank Score": -19.1,
-    "Reward:Risk": 0.32,
-    "Win Rate Estimate (%)": 40.0,
+    "Rank Score": -18.8,
+    "Reward:Risk": 0.33,
+    "Win Rate Estimate (%)": 20.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 11.4,
-    "Target Entry (VWAP)": 10.8197,
-    "Suggested Stop-Loss": 10.5132,
+    "Target Entry (VWAP)": 10.7949,
+    "Suggested Stop-Loss": 10.5479,
     "Stop-Loss Reliable": true,
     "Take-Profit Target": 11.7078,
     "Resistance (52W High)": 13.0,
     "Support (52W Low)": 6.8,
     "Open": 11.2,
-    "Previous Close": 11.0,
+    "Previous Close": 11.4,
     "Day High": 11.4,
     "Day Low": 11.2,
     "Day's Range": "11.2 - 11.4",
@@ -56,14 +56,14 @@
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": null,
     "Growth Health Score (est.)": 100.0,
-    "STOCH %K": 85.02,
-    "STOCH %D": 63.91,
+    "STOCH %K": 100.0,
+    "STOCH %D": 85.02,
     "STOCHRSI": 100.0,
-    "CCI": 117.69,
+    "CCI": 116.21,
     "ROC": 9.4,
     "Williams %R": -0.0,
-    "UO": 77.59,
-    "Bull/Bear Power": 0.8919,
+    "UO": 80.77,
+    "Bull/Bear Power": 0.7359,
     "Highs/Lows": 100.0,
     "Nearest Resistance": 12.7825,
     "Resistance Touches": 4,
@@ -76,14 +76,14 @@
     "S1": 10.6,
     "S2": 10.2,
     "S3": 10.0,
-    "Projected Gain (%)": -3.83,
-    "Pattern Conf (%)": 31.37,
-    "Projected Range 95%": "-14.65% to 5.51%",
+    "Projected Gain (%)": -4.07,
+    "Pattern Conf (%)": 33.74,
+    "Projected Range 95%": "-14.61% to 5.25%",
     "Kelly %": 0.0,
-    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Weak Bullish (Forming) | no decisive edge | vol x3.01 | overbought",
+    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Weak Bullish (Forming) | no decisive edge | overbought",
     "Score Breakdown": {
-      "pattern": 9.41,
-      "projected": -5.75,
+      "pattern": 10.12,
+      "projected": -6.11,
       "range": 3.71,
       "trend_bonus": -40.0,
       "confidence_weight": 0.78
@@ -91,12 +91,12 @@
     "Regime": "Volatile Range",
     "Trend Class": "Weak Bullish (Forming)",
     "RSI-14": 60.1,
-    "ADX-14": 22.9,
-    "Vol Z-Score": 1.28,
+    "ADX-14": 24.3,
+    "Vol Z-Score": -0.6,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0789,
-    "Bollinger %B": 0.875,
-    "Avg Volume (20D)": 2401,
+    "MACD Histogram": 0.0987,
+    "Bollinger %B": 0.852,
+    "Avg Volume (20D)": 2280,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -242,7 +242,8 @@
       "2026-09-09 00:00:00",
       "2026-09-10 00:00:00",
       "2026-09-13 00:00:00",
-      "2026-09-14 00:00:00"
+      "2026-09-14 00:00:00",
+      "2026-09-15 00:00:00"
     ],
     "close": [
       8.05,
@@ -386,6 +387,7 @@
       11.0,
       11.0,
       11.0,
+      11.4,
       11.4
     ],
     "open": [
@@ -530,6 +532,7 @@
       10.4,
       10.51,
       10.51,
+      11.2,
       11.2
     ],
     "high": [
@@ -674,6 +677,7 @@
       11.0,
       11.0,
       11.0,
+      11.4,
       11.4
     ],
     "low": [
@@ -818,6 +822,7 @@
       10.5,
       10.5,
       10.5,
+      11.2,
       11.2
     ],
     "volume": [
@@ -962,7 +967,8 @@
       1220,
       1220,
       0,
-      7233
+      7233,
+      0
     ],
     "vwap": [
       8.0267,
@@ -1106,7 +1112,8 @@
       10.7423,
       10.7369,
       10.7369,
-      10.8197
+      10.8197,
+      10.7949
     ],
     "resistance": 12.7825,
     "support": 10.03,

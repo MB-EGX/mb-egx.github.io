@@ -1,10 +1,10 @@
 {
   "ticker": "IRAX.CA",
-  "last_data_date": "2026-09-14",
+  "last_data_date": "2026-09-15",
   "sector": "Basic Resources",
   "matrix": {
     "Ticker": "IRAX.CA",
-    "Last Bar Date": "2026-09-14",
+    "Last Bar Date": "2026-09-15",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -30,15 +30,15 @@
     "Action": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE]",
     "Momentum": null,
     "Rank Score": -4.1,
-    "Reward:Risk": 1.11,
+    "Reward:Risk": 1.1,
     "Win Rate Estimate (%)": 50.6,
     "Win Rate Source": "backtest",
     "Backtested Sample Size": 1987,
     "Current Price": 1250.0,
     "Target Entry (VWAP)": 1250.0,
-    "Suggested Stop-Loss": 1243.2235,
+    "Suggested Stop-Loss": 1243.7075,
     "Stop-Loss Reliable": true,
-    "Take-Profit Target": 1267.2207,
+    "Take-Profit Target": 1266.6156,
     "Resistance (52W High)": 1255.0,
     "Support (52W Low)": 600.0,
     "Open": 1250.0,
@@ -63,7 +63,7 @@
     "ROC": 0.0,
     "Williams %R": -50.0,
     "UO": 42.86,
-    "Bull/Bear Power": 0.6341,
+    "Bull/Bear Power": 0.5435,
     "Highs/Lows": 50.0,
     "Nearest Resistance": null,
     "Resistance Touches": null,
@@ -79,24 +79,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 3.03,
+    "Kelly %": 2.94,
     "Signal Reason": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE] | trend=Consolidation / Neutral | awaiting confirmation | weekly aligned | volatility squeeze",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
       "range": 4.96,
       "trend_bonus": -22.0,
-      "confidence_weight": 0.68
+      "confidence_weight": 0.69
     },
     "Regime": "N/A",
     "Trend Class": "Consolidation / Neutral",
     "RSI-14": 54.0,
     "ADX-14": 11.2,
-    "Vol Z-Score": -0.15,
+    "Vol Z-Score": -0.44,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.7823,
+    "MACD Histogram": -0.7597,
     "Bollinger %B": 0.5,
-    "Avg Volume (20D)": 32,
+    "Avg Volume (20D)": 4,
     "Data Confidence": "Medium (<1 Year)"
   },
   "chart_history": {
@@ -208,7 +208,8 @@
       "2026-09-09 00:00:00",
       "2026-09-10 00:00:00",
       "2026-09-13 00:00:00",
-      "2026-09-14 00:00:00"
+      "2026-09-14 00:00:00",
+      "2026-09-15 00:00:00"
     ],
     "close": [
       1250.0,
@@ -284,6 +285,7 @@
       1245.0,
       1000.0,
       1000.0,
+      1250.0,
       1250.0,
       1250.0,
       1250.0,
@@ -428,6 +430,7 @@
       1250.0,
       1250.0,
       1250.0,
+      1250.0,
       1250.0
     ],
     "high": [
@@ -538,6 +541,7 @@
       1250.0,
       1250.0,
       1250.0,
+      1250.0,
       1250.0
     ],
     "low": [
@@ -616,6 +620,7 @@
       1000.0,
       1245.0,
       1245.0,
+      1250.0,
       1250.0,
       1250.0,
       1250.0,
@@ -758,7 +763,8 @@
       0,
       0,
       0,
-      13
+      13,
+      0
     ],
     "vwap": [
       1250.0,
@@ -863,6 +869,7 @@
       1250.1312,
       1250.0682,
       1250.0681,
+      1250.0,
       1250.0,
       1250.0,
       1250.0,

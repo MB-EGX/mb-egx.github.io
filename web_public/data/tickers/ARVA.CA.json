@@ -1,11 +1,11 @@
 {
   "ticker": "ARVA.CA",
-  "last_data_date": "2026-09-14",
+  "last_data_date": "2026-09-15",
   "sector": "Building Materials",
   "matrix": {
     "Ticker": "ARVA.CA",
     "Last Bar Date": "2026-08-06",
-    "Days Stale": 39,
+    "Days Stale": 40,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
     "Sector": "Building Materials",
@@ -26,7 +26,7 @@
     "3Y Return %": null,
     "External Rating Consensus": null,
     "External Rating Note": null,
-    "Action": "⏸️ STALE - NO NEW DATA (39d, last: 2026-08-06) [ARCHIVED/DELISTED - excluded from picks/watchlist/movers]",
+    "Action": "⏸️ STALE - NO NEW DATA (40d, last: 2026-08-06) [ARCHIVED/DELISTED - excluded from picks/watchlist/movers]",
     "Momentum": null,
     "Rank Score": 0.0,
     "Reward:Risk": 0.13,
@@ -39,13 +39,13 @@
     "Stop-Loss Reliable": true,
     "Take-Profit Target": 11.677,
     "Resistance (52W High)": 13.1,
-    "Support (52W Low)": 4.11,
+    "Support (52W Low)": 4.12,
     "Open": 11.0,
     "Previous Close": 7.29,
     "Day High": 11.39,
     "Day Low": 10.83,
     "Day's Range": "10.83 - 11.39",
-    "52 Week Range": "4.11 - 13.1",
+    "52 Week Range": "4.12 - 13.1",
     "Day Range Position": 0.964,
     "Day Range %": 4.93,
     "Bid": null,
@@ -79,13 +79,13 @@
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
     "Kelly %": 0.0,
-    "Signal Reason": "⏸️ STALE - NO NEW DATA (39d, last: 2026-08-06) [ARCHIVED/DELISTED - excluded from picks/watchlist/movers] - no bar for this session; the figures on this row reflect 2026-08-06, not today",
+    "Signal Reason": "⏸️ STALE - NO NEW DATA (40d, last: 2026-08-06) [ARCHIVED/DELISTED - excluded from picks/watchlist/movers] - no bar for this session; the figures on this row reflect 2026-08-06, not today",
     "Score Breakdown": {
       "pattern": 4.87,
       "projected": 2.22,
       "range": 4.04,
       "trend_bonus": 0.0,
-      "confidence_weight": 1.0
+      "confidence_weight": 0.99
     },
     "Regime": "N/A",
     "Trend Class": "Weak Bullish (Forming)",
@@ -100,7 +100,6 @@
   },
   "chart_history": {
     "dates": [
-      "2025-09-14 00:00:00",
       "2025-09-15 00:00:00",
       "2025-09-16 00:00:00",
       "2025-09-17 00:00:00",
@@ -326,7 +325,6 @@
       "2026-08-06 00:00:00"
     ],
     "close": [
-      6.87,
       6.94,
       6.94,
       7.28,
@@ -552,7 +550,6 @@
       11.37
     ],
     "open": [
-      6.96,
       6.94,
       6.97,
       6.91,
@@ -778,7 +775,6 @@
       11.0
     ],
     "high": [
-      7.07,
       7.17,
       7.25,
       7.36,
@@ -1004,7 +1000,6 @@
       11.39
     ],
     "low": [
-      6.85,
       6.9,
       6.8,
       6.91,
@@ -1230,7 +1225,6 @@
       10.83
     ],
     "volume": [
-      3470000,
       2610000,
       3980000,
       4820000,
@@ -1456,26 +1450,25 @@
       2890000
     ],
     "vwap": [
-      6.93,
-      6.9615,
-      6.9754,
-      7.0428,
-      7.0906,
-      7.1363,
-      7.1503,
-      7.1542,
-      7.1546,
-      7.2013,
-      7.2706,
-      7.31,
-      7.336,
-      7.3463,
-      7.3594,
-      7.4205,
-      7.4482,
-      7.5142,
-      7.5526,
-      7.5832,
+      7.0033,
+      6.9993,
+      7.077,
+      7.1291,
+      7.178,
+      7.1897,
+      7.1912,
+      7.1902,
+      7.2382,
+      7.3122,
+      7.3541,
+      7.3811,
+      7.3914,
+      7.4047,
+      7.4681,
+      7.4967,
+      7.5647,
+      7.6033,
+      7.633,
       7.6518,
       7.6934,
       7.7628,
@@ -1696,8 +1689,8 @@
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 8,
-        "end_index": 27,
+        "start_index": 7,
+        "end_index": 26,
         "start_date": "2025-09-24",
         "end_date": "2025-10-22",
         "levels": {
@@ -1708,13 +1701,13 @@
           "apex_price": 8.0143
         },
         "quality": 1.0,
-        "apex_index": 29.679180887372002
+        "apex_index": 28.679180887372006
       },
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 54,
-        "end_index": 98,
+        "start_index": 53,
+        "end_index": 97,
         "start_date": "2025-11-30",
         "end_date": "2026-02-01",
         "levels": {
@@ -1725,13 +1718,13 @@
           "apex_price": 8.3164
         },
         "quality": 1.0,
-        "apex_index": 106.8634020618557
+        "apex_index": 105.8634020618557
       },
       {
         "pattern": "Double Top",
         "direction": "bearish",
-        "start_index": 103,
-        "end_index": 124,
+        "start_index": 102,
+        "end_index": 123,
         "start_date": "2026-02-06",
         "end_date": "2026-03-06",
         "levels": {
@@ -1745,8 +1738,8 @@
       {
         "pattern": "Ascending Triangle",
         "direction": "bullish",
-        "start_index": 103,
-        "end_index": 142,
+        "start_index": 102,
+        "end_index": 141,
         "start_date": "2026-02-06",
         "end_date": "2026-04-03",
         "levels": {
@@ -1756,13 +1749,13 @@
           "apex_price": 11.7
         },
         "quality": 0.9,
-        "apex_index": 670.0000000000034
+        "apex_index": 669.0000000000033
       },
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 119,
-        "end_index": 150,
+        "start_index": 118,
+        "end_index": 149,
         "start_date": "2026-03-01",
         "end_date": "2026-04-15",
         "levels": {
@@ -1773,13 +1766,13 @@
           "apex_price": 6.627
         },
         "quality": 1.0,
-        "apex_index": 162.70229007633588
+        "apex_index": 161.7022900763359
       },
       {
         "pattern": "Symmetrical Triangle",
         "direction": "neutral",
-        "start_index": 190,
-        "end_index": 210,
+        "start_index": 189,
+        "end_index": 209,
         "start_date": "2026-06-14",
         "end_date": "2026-07-14",
         "levels": {
@@ -1790,7 +1783,7 @@
           "apex_price": 10.6601
         },
         "quality": 1.0,
-        "apex_index": 210.06189710610937
+        "apex_index": 209.06189710610934
       }
     ]
   }
