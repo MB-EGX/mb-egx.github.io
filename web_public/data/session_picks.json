@@ -1,18 +1,18 @@
 {
-  "last_data_date": "2026-09-16",
+  "last_data_date": "2026-09-17",
   "session_picks": {
     "short": [
       {
-        "id": 84,
-        "ticker": "HELI.CA",
+        "id": 86,
+        "ticker": "SDTI.CA",
         "horizon": "short",
-        "pick_date": "2026-09-16",
-        "ref_price": 8.23,
-        "source": "pre_breakout",
-        "rank_score": 141.2,
-        "rank_origin": "Pre-Breakout Watchlist",
-        "expected_from": "2026-09-17",
-        "expected_by": "2026-09-21",
+        "pick_date": "2026-09-17",
+        "ref_price": 77.01,
+        "source": "day1_breakout",
+        "rank_score": 34.9,
+        "rank_origin": "Day-1 Breakout",
+        "expected_from": "2026-09-20",
+        "expected_by": "2026-09-22",
         "expected_pct": 3.0,
         "stop_loss_pct": 3.0,
         "days_active": 0,
@@ -23,16 +23,16 @@
         "alpha_vs_benchmark_pct": 0.0
       },
       {
-        "id": 83,
-        "ticker": "UNIT.CA",
+        "id": 85,
+        "ticker": "ISPH.CA",
         "horizon": "short",
-        "pick_date": "2026-09-16",
-        "ref_price": 19.61,
+        "pick_date": "2026-09-17",
+        "ref_price": 12.16,
         "source": "day1_breakout",
-        "rank_score": 7.3,
+        "rank_score": 37.6,
         "rank_origin": "Day-1 Breakout",
-        "expected_from": "2026-09-17",
-        "expected_by": "2026-09-21",
+        "expected_from": "2026-09-20",
+        "expected_by": "2026-09-22",
         "expected_pct": 3.0,
         "stop_loss_pct": 3.0,
         "days_active": 0,
@@ -55,12 +55,12 @@
         "expected_by": "2026-09-21",
         "expected_pct": 3.0,
         "stop_loss_pct": 3.0,
-        "days_active": 0,
+        "days_active": 1,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.0,
-        "current_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
+        "benchmark_pct": 1.233,
+        "current_pct": -2.8,
+        "alpha_vs_benchmark_pct": -4.03
       },
       {
         "id": 81,
@@ -75,12 +75,12 @@
         "expected_by": "2026-09-20",
         "expected_pct": 3.0,
         "stop_loss_pct": 3.0,
-        "days_active": 1,
+        "days_active": 2,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": -0.158,
-        "current_pct": -2.17,
-        "alpha_vs_benchmark_pct": -2.01
+        "benchmark_pct": 1.074,
+        "current_pct": -0.91,
+        "alpha_vs_benchmark_pct": -1.98
       },
       {
         "id": 80,
@@ -95,15 +95,35 @@
         "expected_by": "2026-09-20",
         "expected_pct": 3.0,
         "stop_loss_pct": 3.0,
-        "days_active": 1,
+        "days_active": 2,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": -0.158,
-        "current_pct": -0.69,
-        "alpha_vs_benchmark_pct": -0.53
+        "benchmark_pct": 1.074,
+        "current_pct": 0.96,
+        "alpha_vs_benchmark_pct": -0.11
       }
     ],
     "medium": [
+      {
+        "id": 87,
+        "ticker": "UBEE.CA",
+        "horizon": "medium",
+        "pick_date": "2026-09-17",
+        "ref_price": 16.51,
+        "source": "signal",
+        "rank_score": 57.5,
+        "rank_origin": "📈 ACCUMULATE",
+        "expected_from": "2026-10-07",
+        "expected_by": "2026-11-19",
+        "expected_pct": 8.0,
+        "stop_loss_pct": 6.0,
+        "days_active": 0,
+        "days_overdue": 0,
+        "is_overdue": false,
+        "benchmark_pct": 0.0,
+        "current_pct": 0.0,
+        "alpha_vs_benchmark_pct": 0.0
+      },
       {
         "id": 78,
         "ticker": "ETRS.CA",
@@ -117,12 +137,12 @@
         "expected_by": "2026-11-16",
         "expected_pct": 8.0,
         "stop_loss_pct": 6.0,
-        "days_active": 2,
+        "days_active": 3,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.048,
-        "current_pct": 0.93,
-        "alpha_vs_benchmark_pct": 0.88
+        "benchmark_pct": 1.281,
+        "current_pct": 3.61,
+        "alpha_vs_benchmark_pct": 2.33
       },
       {
         "id": 44,
@@ -137,12 +157,12 @@
         "expected_by": "2026-11-02",
         "expected_pct": 8.0,
         "stop_loss_pct": 6.0,
-        "days_active": 16,
+        "days_active": 17,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": -0.079,
-        "current_pct": 1.88,
-        "alpha_vs_benchmark_pct": 1.96
+        "benchmark_pct": 1.153,
+        "current_pct": 5.88,
+        "alpha_vs_benchmark_pct": 4.73
       }
     ],
     "long": [
@@ -159,12 +179,12 @@
         "expected_by": "2027-05-24",
         "expected_pct": 15.0,
         "stop_loss_pct": 10.0,
-        "days_active": 2,
+        "days_active": 3,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.048,
-        "current_pct": 1.5,
-        "alpha_vs_benchmark_pct": 1.45
+        "benchmark_pct": 1.281,
+        "current_pct": 1.2,
+        "alpha_vs_benchmark_pct": -0.08
       },
       {
         "id": 67,
@@ -179,12 +199,12 @@
         "expected_by": "2027-05-19",
         "expected_pct": 15.0,
         "stop_loss_pct": 10.0,
-        "days_active": 7,
+        "days_active": 8,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": -2.97,
+        "benchmark_pct": -1.773,
         "current_pct": 0.97,
-        "alpha_vs_benchmark_pct": 3.94
+        "alpha_vs_benchmark_pct": 2.74
       },
       {
         "id": 37,
@@ -199,72 +219,59 @@
         "expected_by": "2027-05-05",
         "expected_pct": 15.0,
         "stop_loss_pct": 10.0,
-        "days_active": 21,
+        "days_active": 22,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": -0.515,
-        "current_pct": 2.85,
-        "alpha_vs_benchmark_pct": 3.36
+        "benchmark_pct": 0.712,
+        "current_pct": 9.76,
+        "alpha_vs_benchmark_pct": 9.05
       }
     ],
     "achieved_today": [
       {
-        "id": 72,
-        "ticker": "RUBX.CA",
+        "id": 84,
+        "ticker": "HELI.CA",
         "horizon": "short",
-        "pick_date": "2026-09-13",
-        "ref_price": 12.84,
-        "achieved_date": "2026-09-16",
-        "achieved_price": 13.95,
-        "achieved_pct": 8.64,
+        "pick_date": "2026-09-16",
+        "ref_price": 8.23,
+        "achieved_date": "2026-09-17",
+        "achieved_price": 8.5,
+        "achieved_pct": 3.28,
         "source": "pre_breakout",
-        "rank_score": 142.4,
+        "rank_score": 141.2,
         "rank_origin": "Pre-Breakout Watchlist"
-      },
-      {
-        "id": 77,
-        "ticker": "CERA.CA",
-        "horizon": "short",
-        "pick_date": "2026-09-14",
-        "ref_price": 1.38,
-        "achieved_date": "2026-09-16",
-        "achieved_price": 1.47,
-        "achieved_pct": 6.52,
-        "source": "day1_breakout",
-        "rank_score": 29.2,
-        "rank_origin": "Day-1 Breakout"
-      },
-      {
-        "id": 76,
-        "ticker": "NARE.CA",
-        "horizon": "short",
-        "pick_date": "2026-09-14",
-        "ref_price": 17.05,
-        "achieved_date": "2026-09-16",
-        "achieved_price": 17.8,
-        "achieved_pct": 4.4,
-        "source": "day1_breakout",
-        "rank_score": 133.3,
-        "rank_origin": "Day-1 Breakout"
       }
     ],
     "retired_today": [
       {
-        "id": 73,
-        "ticker": "CANA.CA",
-        "horizon": "medium",
-        "pick_date": "2026-09-13",
-        "ref_price": 42.34,
-        "source": "signal",
-        "rank_score": 97.4,
-        "rank_origin": "📈 ACCUMULATE [💥 SQUEEZE]",
-        "retired_date": "2026-09-16",
-        "retired_price": 41.75,
-        "retired_pct": -1.39,
-        "retired_reason": "outranked_by_higher_scored_candidate"
+        "id": 83,
+        "ticker": "UNIT.CA",
+        "horizon": "short",
+        "pick_date": "2026-09-16",
+        "ref_price": 19.61,
+        "source": "day1_breakout",
+        "rank_score": 7.3,
+        "rank_origin": "Day-1 Breakout",
+        "retired_date": "2026-09-17",
+        "retired_price": 18.99,
+        "retired_pct": -3.16,
+        "retired_reason": "stop_loss_3pct"
       }
     ],
     "achieved_this_week": [
+      {
+        "id": 84,
+        "ticker": "HELI.CA",
+        "horizon": "short",
+        "pick_date": "2026-09-16",
+        "ref_price": 8.23,
+        "achieved_date": "2026-09-17",
+        "achieved_price": 8.5,
+        "achieved_pct": 3.28,
+        "source": "pre_breakout",
+        "rank_score": 141.2,
+        "rank_origin": "Pre-Breakout Watchlist"
+      },
       {
         "id": 72,
         "ticker": "RUBX.CA",
@@ -318,9 +325,22 @@
         "rank_origin": "Day-1 Breakout"
       }
     ],
-    "session_date": "2026-09-16",
+    "session_date": "2026-09-17",
     "benchmark_label": "EGX 30",
     "achieved_history": [
+      {
+        "id": 84,
+        "ticker": "HELI.CA",
+        "horizon": "short",
+        "pick_date": "2026-09-16",
+        "ref_price": 8.23,
+        "achieved_date": "2026-09-17",
+        "achieved_price": 8.5,
+        "achieved_pct": 3.28,
+        "source": "pre_breakout",
+        "rank_score": 141.2,
+        "rank_origin": "Pre-Breakout Watchlist"
+      },
       {
         "id": 72,
         "ticker": "RUBX.CA",
