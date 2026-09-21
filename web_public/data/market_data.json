@@ -6842,8 +6842,12 @@
       "Ticker": "ACTF.CA",
       "Last Bar Date": "2026-09-20",
       "Days Stale": 0,
-      "Day-1 Breakout": false,
-      "Day-1 Breakout Reasons": [],
+      "Day-1 Breakout": true,
+      "Day-1 Breakout Reasons": [
+        "Fresh 20-day high (dist -3.7%)",
+        "Volume 11.2x 20-day avg",
+        "Not extended (7.5% vs VWAP)"
+      ],
       "Sector": "Non-Bank Financial Services",
       "Long-Term Setup Confirmed": true,
       "Long-Term Setup Reasons": [
@@ -26842,6 +26846,26 @@
   "session_picks": {
     "short": [
       {
+        "id": 92,
+        "ticker": "ENGC.CA",
+        "horizon": "short",
+        "pick_date": "2026-09-20",
+        "ref_price": 44.27,
+        "source": "day1_breakout",
+        "rank_score": 30.7,
+        "rank_origin": "Day-1 Breakout",
+        "expected_from": "2026-09-21",
+        "expected_by": "2026-09-23",
+        "expected_pct": 3.0,
+        "stop_loss_pct": 3.0,
+        "days_active": 0,
+        "days_overdue": 0,
+        "is_overdue": false,
+        "benchmark_pct": 0.0,
+        "current_pct": 0.0,
+        "alpha_vs_benchmark_pct": 0.0
+      },
+      {
         "id": 90,
         "ticker": "HELI.CA",
         "horizon": "short",
@@ -27061,64 +27085,7 @@
         "rank_origin": "Day-1 Breakout"
       }
     ],
-    "retired_today": [
-      {
-        "id": 85,
-        "ticker": "ISPH.CA",
-        "horizon": "short",
-        "pick_date": "2026-09-17",
-        "ref_price": 12.16,
-        "source": "day1_breakout",
-        "rank_score": 37.6,
-        "rank_origin": "Day-1 Breakout",
-        "retired_date": "2026-09-20",
-        "retired_price": 12.12,
-        "retired_pct": -0.33,
-        "retired_reason": "outranked_by_higher_scored_candidate"
-      },
-      {
-        "id": 81,
-        "ticker": "AMER.CA",
-        "horizon": "short",
-        "pick_date": "2026-09-15",
-        "ref_price": 5.52,
-        "source": "day1_breakout",
-        "rank_score": 40.4,
-        "rank_origin": "Day-1 Breakout",
-        "retired_date": "2026-09-20",
-        "retired_price": 5.36,
-        "retired_pct": -2.9,
-        "retired_reason": "outranked_by_higher_scored_candidate"
-      },
-      {
-        "id": 80,
-        "ticker": "MBEG.CA",
-        "horizon": "short",
-        "pick_date": "2026-09-15",
-        "ref_price": 7.27,
-        "source": "signal",
-        "rank_score": 142.2,
-        "rank_origin": "🔥 STRONG BUY [👑 WEEKLY ALIGNED]",
-        "retired_date": "2026-09-20",
-        "retired_price": 7.2,
-        "retired_pct": -0.96,
-        "retired_reason": "outranked_by_higher_scored_candidate"
-      },
-      {
-        "id": 87,
-        "ticker": "UBEE.CA",
-        "horizon": "medium",
-        "pick_date": "2026-09-17",
-        "ref_price": 16.51,
-        "source": "signal",
-        "rank_score": 57.5,
-        "rank_origin": "📈 ACCUMULATE",
-        "retired_date": "2026-09-20",
-        "retired_price": 16.26,
-        "retired_pct": -1.51,
-        "retired_reason": "outranked_by_higher_scored_candidate"
-      }
-    ],
+    "retired_today": [],
     "achieved_this_week": [
       {
         "id": 82,
@@ -515293,29 +515260,29 @@
     "AMII.CA": "Real Estate",
     "AMII": "Real Estate",
     "EGPE.SI": "IT, Media & Communication Services",
-    ".EGX30": "General / Diversified",
     ".EGBASC": "General / Diversified",
-    ".EGCOCE": "General / Diversified",
     ".EGX30USD": "General / Diversified",
-    ".EGX35LV": "General / Diversified",
-    ".EGTRDB": "General / Diversified",
-    ".EGNBFC": "General / Diversified",
-    ".SHARIAH": "General / Diversified",
-    ".EGTRVL": "General / Diversified",
+    ".EGCOCE": "General / Diversified",
+    ".EGX30": "General / Diversified",
     ".EGIGSA": "General / Diversified",
     ".EGREAL": "General / Diversified",
-    ".EGBULM": "General / Diversified",
-    ".EGHLTH": "General / Diversified",
-    ".EGSHTS": "General / Diversified",
-    ".EGBANK": "General / Diversified",
-    ".EGX70EWI": "General / Diversified",
-    ".EGFOBT": "General / Diversified",
+    ".EGTRVL": "General / Diversified",
+    ".SHARIAH": "General / Diversified",
+    ".EGNBFC": "General / Diversified",
     ".EGX100EWI": "General / Diversified",
     ".EGEDUS": "General / Diversified",
+    ".EGTRDB": "General / Diversified",
+    ".EGX35LV": "General / Diversified",
+    ".EGSHTS": "General / Diversified",
+    ".EGFOBT": "General / Diversified",
+    ".EGX70EWI": "General / Diversified",
+    ".EGBANK": "General / Diversified",
+    ".EGBULM": "General / Diversified",
+    ".EGHLTH": "General / Diversified",
     ".EGX30CAP": "General / Diversified",
-    ".EGTEDU": "General / Diversified",
+    ".EGIMCS": "General / Diversified",
     ".EGXTBONDS": "General / Diversified",
-    ".EGIMCS": "General / Diversified"
+    ".EGTEDU": "General / Diversified"
   },
   "leaderboard": [
     {

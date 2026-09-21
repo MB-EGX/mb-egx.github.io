@@ -6842,8 +6842,12 @@
       "Ticker": "ACTF.CA",
       "Last Bar Date": "2026-09-20",
       "Days Stale": 0,
-      "Day-1 Breakout": false,
-      "Day-1 Breakout Reasons": [],
+      "Day-1 Breakout": true,
+      "Day-1 Breakout Reasons": [
+        "Fresh 20-day high (dist -3.7%)",
+        "Volume 11.2x 20-day avg",
+        "Not extended (7.5% vs VWAP)"
+      ],
       "Sector": "Non-Bank Financial Services",
       "Long-Term Setup Confirmed": true,
       "Long-Term Setup Reasons": [
