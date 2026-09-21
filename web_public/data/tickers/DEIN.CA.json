@@ -1,10 +1,10 @@
 {
   "ticker": "DEIN.CA",
-  "last_data_date": "2026-09-20",
+  "last_data_date": "2026-09-21",
   "sector": "Non-Bank Financial Services",
   "matrix": {
     "Ticker": "DEIN.CA",
-    "Last Bar Date": "2026-09-20",
+    "Last Bar Date": "2026-09-21",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -27,8 +27,8 @@
     "3Y Return %": 0.01,
     "External Rating Consensus": -0.625,
     "External Rating Note": null,
-    "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL (Dip unconfirmed: 1/4 factors passed, need 3 - weekly trend not aligned, CMF below accumulation floor, no oversold-oscillator support (STOCH/StochRSI/CCI))",
-    "Momentum": null,
+    "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL (Dip unconfirmed: 2/4 factors passed, need 3 - weekly trend not aligned, CMF below accumulation floor)",
+    "Momentum": "Oversold",
     "Rank Score": -27.6,
     "Reward:Risk": 1.24,
     "Win Rate Estimate (%)": 50.0,
@@ -36,9 +36,9 @@
     "Backtested Sample Size": null,
     "Current Price": 10.35,
     "Target Entry (VWAP)": 10.35,
-    "Suggested Stop-Loss": 7.878,
+    "Suggested Stop-Loss": 8.0546,
     "Stop-Loss Reliable": true,
-    "Take-Profit Target": 13.5124,
+    "Take-Profit Target": 13.2917,
     "Resistance (52W High)": 13.65,
     "Support (52W Low)": 10.35,
     "Open": 10.35,
@@ -58,12 +58,12 @@
     "Growth Health Score (est.)": 50.0,
     "STOCH %K": 0.0,
     "STOCH %D": 0.0,
-    "STOCHRSI": 100.0,
+    "STOCHRSI": 0.0,
     "CCI": -95.24,
     "ROC": 0.0,
     "Williams %R": -100.0,
     "UO": 0.0,
-    "Bull/Bear Power": -0.0104,
+    "Bull/Bear Power": -0.0089,
     "Highs/Lows": 0.0,
     "Nearest Resistance": null,
     "Resistance Touches": null,
@@ -79,8 +79,8 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 4.89,
-    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL (Dip unconfirmed: 1/4 factors passed, need 3 - weekly trend not aligned, CMF below accumulation floor, no oversold-oscillator support (STOCH/StochRSI/CCI)) | trend=Consolidation / Neutral | no decisive edge",
+    "Kelly %": 4.88,
+    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL (Dip unconfirmed: 2/4 factors passed, need 3 - weekly trend not aligned, CMF below accumulation floor) | trend=Consolidation / Neutral | no decisive edge | oversold",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
@@ -91,10 +91,10 @@
     "Regime": "N/A",
     "Trend Class": "Consolidation / Neutral",
     "RSI-14": 43.9,
-    "ADX-14": 10.0,
+    "ADX-14": 9.7,
     "Vol Z-Score": -0.24,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0149,
+    "MACD Histogram": 0.0144,
     "Bollinger %B": 0.5,
     "Avg Volume (20D)": 3,
     "Data Confidence": "High (1Y+)"
@@ -357,7 +357,8 @@
       "2026-09-15 00:00:00",
       "2026-09-16 00:00:00",
       "2026-09-17 00:00:00",
-      "2026-09-20 00:00:00"
+      "2026-09-20 00:00:00",
+      "2026-09-21 00:00:00"
     ],
     "close": [
       10.35,
@@ -587,6 +588,7 @@
       11.38,
       10.35,
       11.38,
+      10.35,
       10.35,
       10.35,
       10.35,
@@ -875,6 +877,7 @@
       12.42,
       12.42,
       12.42,
+      10.35,
       10.35
     ],
     "high": [
@@ -1134,6 +1137,7 @@
       12.42,
       12.42,
       12.42,
+      10.35,
       10.35
     ],
     "low": [
@@ -1381,6 +1385,7 @@
       10.35,
       10.35,
       12.42,
+      10.35,
       10.35,
       10.35,
       10.35,
@@ -1652,6 +1657,7 @@
       0,
       0,
       0,
+      0,
       0
     ],
     "vwap": [
@@ -1905,6 +1911,7 @@
       11.73,
       11.73,
       11.73,
+      11.6906,
       11.6906,
       11.6906,
       11.6906,
