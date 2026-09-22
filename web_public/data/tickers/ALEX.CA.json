@@ -1,10 +1,10 @@
 {
   "ticker": "ALEX.CA",
-  "last_data_date": "2026-09-21",
+  "last_data_date": "2026-09-22",
   "sector": "Building Materials",
   "matrix": {
     "Ticker": "ALEX.CA",
-    "Last Bar Date": "2026-09-21",
+    "Last Bar Date": "2026-09-22",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -29,20 +29,20 @@
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL",
     "Momentum": null,
-    "Rank Score": -30.8,
-    "Reward:Risk": 0.09,
+    "Rank Score": -29.2,
+    "Reward:Risk": 0.1,
     "Win Rate Estimate (%)": 40.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 22.0,
     "Target Entry (VWAP)": 22.0,
-    "Suggested Stop-Loss": 15.7257,
+    "Suggested Stop-Loss": 15.931,
     "Stop-Loss Reliable": true,
     "Take-Profit Target": 22.594,
     "Resistance (52W High)": 49.0,
     "Support (52W Low)": 11.0,
-    "Open": 21.2,
-    "Previous Close": 21.2,
+    "Open": 21.5,
+    "Previous Close": 22.0,
     "Day High": 22.8,
     "Day Low": 21.1,
     "Day's Range": "21.1 - 22.8",
@@ -56,14 +56,14 @@
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": null,
     "Growth Health Score (est.)": 100.0,
-    "STOCH %K": 28.04,
-    "STOCH %D": 28.4,
+    "STOCH %K": 32.28,
+    "STOCH %D": 28.04,
     "STOCHRSI": 20.9,
-    "CCI": 24.53,
+    "CCI": 22.64,
     "ROC": 10.0,
     "Williams %R": -63.49,
-    "UO": 58.92,
-    "Bull/Bear Power": -0.1366,
+    "UO": 53.68,
+    "Bull/Bear Power": -0.1314,
     "Highs/Lows": 36.51,
     "Nearest Resistance": null,
     "Resistance Touches": null,
@@ -76,14 +76,14 @@
     "S1": 18.6333,
     "S2": 16.0667,
     "S3": 12.4333,
-    "Projected Gain (%)": -4.68,
-    "Pattern Conf (%)": 17.82,
-    "Projected Range 95%": "-23.79% to 7.82%",
+    "Projected Gain (%)": -0.15,
+    "Pattern Conf (%)": 2.08,
+    "Projected Range 95%": "-7.02% to 7.71%",
     "Kelly %": 0.0,
     "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Strong Bullish Trend | no decisive edge | weekly aligned",
     "Score Breakdown": {
-      "pattern": 5.35,
-      "projected": -7.02,
+      "pattern": 0.62,
+      "projected": -0.22,
       "range": 1.45,
       "trend_bonus": -40.0,
       "confidence_weight": 0.79
@@ -91,12 +91,12 @@
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish Trend",
     "RSI-14": 52.3,
-    "ADX-14": 35.5,
-    "Vol Z-Score": -0.18,
+    "ADX-14": 37.0,
+    "Vol Z-Score": -0.66,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.1481,
-    "Bollinger %B": 0.547,
-    "Avg Volume (20D)": 4674,
+    "MACD Histogram": -0.1465,
+    "Bollinger %B": 0.542,
+    "Avg Volume (20D)": 4598,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -245,7 +245,8 @@
       "2026-09-16 00:00:00",
       "2026-09-17 00:00:00",
       "2026-09-20 00:00:00",
-      "2026-09-21 00:00:00"
+      "2026-09-21 00:00:00",
+      "2026-09-22 00:00:00"
     ],
     "close": [
       13.0,
@@ -392,6 +393,7 @@
       21.2,
       21.2,
       21.2,
+      22.0,
       22.0
     ],
     "open": [
@@ -539,7 +541,8 @@
       22.0,
       22.0,
       22.0,
-      21.2
+      21.2,
+      21.5
     ],
     "high": [
       14.45,
@@ -686,6 +689,7 @@
       22.0,
       22.0,
       22.0,
+      22.8,
       22.8
     ],
     "low": [
@@ -833,6 +837,7 @@
       20.2,
       20.2,
       20.2,
+      21.1,
       21.1
     ],
     "volume": [
@@ -980,7 +985,8 @@
       4169,
       4169,
       0,
-      3464
+      3464,
+      0
     ],
     "vwap": [
       13.4167,
@@ -1127,7 +1133,8 @@
       22.6317,
       22.5832,
       22.6021,
-      22.5785
+      22.5785,
+      22.5953
     ],
     "resistance": 49.0,
     "support": 15.2267,

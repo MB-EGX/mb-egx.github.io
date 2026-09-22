@@ -1,7 +1,47 @@
 {
-  "last_data_date": "2026-09-21",
+  "last_data_date": "2026-09-22",
   "session_picks": {
     "short": [
+      {
+        "id": 98,
+        "ticker": "NEDA.CA",
+        "horizon": "short",
+        "pick_date": "2026-09-22",
+        "ref_price": 2.75,
+        "source": "day1_breakout",
+        "rank_score": 27.4,
+        "rank_origin": "Day-1 Breakout",
+        "expected_from": "2026-09-23",
+        "expected_by": "2026-09-27",
+        "expected_pct": 3.0,
+        "stop_loss_pct": 3.0,
+        "days_active": 0,
+        "days_overdue": 0,
+        "is_overdue": false,
+        "benchmark_pct": 0.0,
+        "current_pct": 0.0,
+        "alpha_vs_benchmark_pct": 0.0
+      },
+      {
+        "id": 97,
+        "ticker": "OFH.CA",
+        "horizon": "short",
+        "pick_date": "2026-09-22",
+        "ref_price": 1.09,
+        "source": "signal",
+        "rank_score": 65.0,
+        "rank_origin": "⚡ BREAKOUT BUY (MOMENTUM) [💥 SQUEEZE] [👑 WEEKLY ALIGNED]",
+        "expected_from": "2026-09-23",
+        "expected_by": "2026-09-27",
+        "expected_pct": 3.0,
+        "stop_loss_pct": 3.0,
+        "days_active": 0,
+        "days_overdue": 0,
+        "is_overdue": false,
+        "benchmark_pct": 0.0,
+        "current_pct": 0.0,
+        "alpha_vs_benchmark_pct": 0.0
+      },
       {
         "id": 94,
         "ticker": "QNBE.CA",
@@ -15,32 +55,12 @@
         "expected_by": "2026-09-24",
         "expected_pct": 3.0,
         "stop_loss_pct": 3.0,
-        "days_active": 0,
+        "days_active": 1,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.0,
-        "current_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
-      },
-      {
-        "id": 93,
-        "ticker": "NAHO.CA",
-        "horizon": "short",
-        "pick_date": "2026-09-21",
-        "ref_price": 0.135,
-        "source": "day1_breakout",
-        "rank_score": 134.9,
-        "rank_origin": "Day-1 Breakout",
-        "expected_from": "2026-09-22",
-        "expected_by": "2026-09-24",
-        "expected_pct": 3.0,
-        "stop_loss_pct": 3.0,
-        "days_active": 0,
-        "days_overdue": 0,
-        "is_overdue": false,
-        "benchmark_pct": 0.0,
-        "current_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
+        "benchmark_pct": -0.115,
+        "current_pct": 2.99,
+        "alpha_vs_benchmark_pct": 3.11
       },
       {
         "id": 89,
@@ -55,32 +75,12 @@
         "expected_by": "2026-09-23",
         "expected_pct": 3.0,
         "stop_loss_pct": 3.0,
-        "days_active": 1,
+        "days_active": 2,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": -0.681,
-        "current_pct": -2.07,
-        "alpha_vs_benchmark_pct": -1.39
-      },
-      {
-        "id": 88,
-        "ticker": "ZEOT.CA",
-        "horizon": "short",
-        "pick_date": "2026-09-20",
-        "ref_price": 13.55,
-        "source": "day1_breakout",
-        "rank_score": 51.8,
-        "rank_origin": "Day-1 Breakout",
-        "expected_from": "2026-09-21",
-        "expected_by": "2026-09-23",
-        "expected_pct": 3.0,
-        "stop_loss_pct": 3.0,
-        "days_active": 1,
-        "days_overdue": 0,
-        "is_overdue": false,
-        "benchmark_pct": -0.681,
-        "current_pct": -2.95,
-        "alpha_vs_benchmark_pct": -2.27
+        "benchmark_pct": -0.796,
+        "current_pct": -0.89,
+        "alpha_vs_benchmark_pct": -0.09
       },
       {
         "id": 86,
@@ -95,12 +95,12 @@
         "expected_by": "2026-09-22",
         "expected_pct": 3.0,
         "stop_loss_pct": 3.0,
-        "days_active": 4,
+        "days_active": 5,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": -0.909,
-        "current_pct": 0.74,
-        "alpha_vs_benchmark_pct": 1.65
+        "benchmark_pct": -1.023,
+        "current_pct": 1.38,
+        "alpha_vs_benchmark_pct": 2.4
       }
     ],
     "medium": [
@@ -117,12 +117,12 @@
         "expected_by": "2026-11-23",
         "expected_pct": 8.0,
         "stop_loss_pct": 6.0,
-        "days_active": 0,
+        "days_active": 1,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.0,
-        "current_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
+        "benchmark_pct": -0.115,
+        "current_pct": -0.77,
+        "alpha_vs_benchmark_pct": -0.66
       },
       {
         "id": 91,
@@ -137,12 +137,12 @@
         "expected_by": "2026-11-22",
         "expected_pct": 8.0,
         "stop_loss_pct": 6.0,
-        "days_active": 1,
+        "days_active": 2,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": -0.681,
-        "current_pct": -2.34,
-        "alpha_vs_benchmark_pct": -1.66
+        "benchmark_pct": -0.796,
+        "current_pct": -1.64,
+        "alpha_vs_benchmark_pct": -0.84
       },
       {
         "id": 44,
@@ -157,12 +157,12 @@
         "expected_by": "2026-11-02",
         "expected_pct": 8.0,
         "stop_loss_pct": 6.0,
-        "days_active": 21,
+        "days_active": 22,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.234,
-        "current_pct": 6.29,
-        "alpha_vs_benchmark_pct": 6.06
+        "benchmark_pct": 0.118,
+        "current_pct": 3.02,
+        "alpha_vs_benchmark_pct": 2.9
       }
     ],
     "long": [
@@ -179,12 +179,12 @@
         "expected_by": "2027-05-31",
         "expected_pct": 15.0,
         "stop_loss_pct": 10.0,
-        "days_active": 0,
+        "days_active": 1,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.0,
-        "current_pct": 0.0,
-        "alpha_vs_benchmark_pct": 0.0
+        "benchmark_pct": -0.115,
+        "current_pct": -3.68,
+        "alpha_vs_benchmark_pct": -3.56
       },
       {
         "id": 79,
@@ -199,12 +199,12 @@
         "expected_by": "2027-05-24",
         "expected_pct": 15.0,
         "stop_loss_pct": 10.0,
-        "days_active": 7,
+        "days_active": 8,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": 0.361,
-        "current_pct": 2.14,
-        "alpha_vs_benchmark_pct": 1.78
+        "benchmark_pct": 0.245,
+        "current_pct": 1.24,
+        "alpha_vs_benchmark_pct": 1.0
       },
       {
         "id": 37,
@@ -219,16 +219,45 @@
         "expected_by": "2027-05-05",
         "expected_pct": 15.0,
         "stop_loss_pct": 10.0,
-        "days_active": 26,
+        "days_active": 27,
         "days_overdue": 0,
         "is_overdue": false,
-        "benchmark_pct": -0.204,
-        "current_pct": 5.69,
-        "alpha_vs_benchmark_pct": 5.89
+        "benchmark_pct": -0.319,
+        "current_pct": 5.28,
+        "alpha_vs_benchmark_pct": 5.6
       }
     ],
     "achieved_today": [],
-    "retired_today": [],
+    "retired_today": [
+      {
+        "id": 93,
+        "ticker": "NAHO.CA",
+        "horizon": "short",
+        "pick_date": "2026-09-21",
+        "ref_price": 0.135,
+        "source": "day1_breakout",
+        "rank_score": 134.9,
+        "rank_origin": "Day-1 Breakout",
+        "retired_date": "2026-09-22",
+        "retired_price": 0.13,
+        "retired_pct": -3.7,
+        "retired_reason": "stop_loss_3pct"
+      },
+      {
+        "id": 88,
+        "ticker": "ZEOT.CA",
+        "horizon": "short",
+        "pick_date": "2026-09-20",
+        "ref_price": 13.55,
+        "source": "day1_breakout",
+        "rank_score": 51.8,
+        "rank_origin": "Day-1 Breakout",
+        "retired_date": "2026-09-22",
+        "retired_price": 13.06,
+        "retired_pct": -3.62,
+        "retired_reason": "stop_loss_3pct"
+      }
+    ],
     "achieved_this_week": [
       {
         "id": 82,
@@ -296,7 +325,7 @@
         "rank_origin": "Day-1 Breakout"
       }
     ],
-    "session_date": "2026-09-21",
+    "session_date": "2026-09-22",
     "benchmark_label": "EGX 30",
     "achieved_history": [
       {

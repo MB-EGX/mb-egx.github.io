@@ -1,10 +1,10 @@
 {
   "ticker": "SNFI.CA",
-  "last_data_date": "2026-09-21",
+  "last_data_date": "2026-09-22",
   "sector": "Food, Beverages & Tobacco",
   "matrix": {
     "Ticker": "SNFI.CA",
-    "Last Bar Date": "2026-09-21",
+    "Last Bar Date": "2026-09-22",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -27,22 +27,22 @@
     "3Y Return %": 172.46,
     "External Rating Consensus": 0.5,
     "External Rating Note": null,
-    "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL",
+    "Action": "🟡 HOLD / NEUTRAL (Poor reward:risk 0.25x < 0.80x floor)",
     "Momentum": null,
-    "Rank Score": -21.4,
-    "Reward:Risk": 0.26,
+    "Rank Score": 8.7,
+    "Reward:Risk": 0.25,
     "Win Rate Estimate (%)": 40.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 10.98,
-    "Target Entry (VWAP)": 10.9001,
-    "Suggested Stop-Loss": 9.9176,
+    "Target Entry (VWAP)": 10.9654,
+    "Suggested Stop-Loss": 9.8563,
     "Stop-Loss Reliable": true,
     "Take-Profit Target": 11.2765,
     "Resistance (52W High)": 13.0,
     "Support (52W Low)": 7.2,
-    "Open": 11.4,
-    "Previous Close": 11.4,
+    "Open": 10.5,
+    "Previous Close": 10.98,
     "Day High": 10.99,
     "Day Low": 10.03,
     "Day's Range": "10.03 - 10.99",
@@ -52,18 +52,18 @@
     "Bid": null,
     "Ask": null,
     "Relative Value Score": null,
-    "Price Momentum Score": 62.4,
+    "Price Momentum Score": 62.5,
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": null,
     "Growth Health Score (est.)": 100.0,
-    "STOCH %K": 73.99,
-    "STOCH %D": 80.94,
+    "STOCH %K": 66.68,
+    "STOCH %D": 73.99,
     "STOCHRSI": 41.55,
-    "CCI": -24.39,
+    "CCI": -25.55,
     "ROC": 4.08,
     "Williams %R": -40.62,
-    "UO": 73.57,
-    "Bull/Bear Power": -1.1548,
+    "UO": 75.73,
+    "Bull/Bear Power": -1.1241,
     "Highs/Lows": 59.38,
     "Nearest Resistance": 12.7825,
     "Resistance Touches": 4,
@@ -76,27 +76,27 @@
     "S1": 11.0567,
     "S2": 10.7133,
     "S3": 10.4267,
-    "Projected Gain (%)": 0.31,
-    "Pattern Conf (%)": 5.56,
-    "Projected Range 95%": "-5.35% to 8.96%",
+    "Projected Gain (%)": -0.11,
+    "Pattern Conf (%)": 1.78,
+    "Projected Range 95%": "-5.53% to 8.96%",
     "Kelly %": 0.0,
-    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Strong Bearish Trend | no decisive edge | weekly aligned | vol x2.94",
+    "Signal Reason": "🟡 HOLD / NEUTRAL (Poor reward:risk 0.25x < 0.80x floor) | trend=Strong Bearish Trend | no decisive edge | weekly aligned",
     "Score Breakdown": {
-      "pattern": 1.67,
-      "projected": 0.46,
+      "pattern": 0.53,
+      "projected": -0.17,
       "range": 3.26,
-      "trend_bonus": -40.0,
+      "trend_bonus": 0.0,
       "confidence_weight": 0.79
     },
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bearish Trend",
     "RSI-14": 49.3,
-    "ADX-14": 27.4,
-    "Vol Z-Score": 1.44,
+    "ADX-14": 25.8,
+    "Vol Z-Score": -0.67,
     "MACD Signal": "Bullish",
-    "MACD Histogram": 0.0651,
-    "Bollinger %B": 0.609,
-    "Avg Volume (20D)": 3570,
+    "MACD Histogram": 0.0391,
+    "Bollinger %B": 0.594,
+    "Avg Volume (20D)": 2954,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -245,7 +245,8 @@
       "2026-09-16 00:00:00",
       "2026-09-17 00:00:00",
       "2026-09-20 00:00:00",
-      "2026-09-21 00:00:00"
+      "2026-09-21 00:00:00",
+      "2026-09-22 00:00:00"
     ],
     "close": [
       7.94,
@@ -392,6 +393,7 @@
       11.4,
       11.4,
       11.4,
+      10.98,
       10.98
     ],
     "open": [
@@ -539,7 +541,8 @@
       11.38,
       11.38,
       11.38,
-      11.4
+      11.4,
+      10.5
     ],
     "high": [
       7.99,
@@ -686,6 +689,7 @@
       11.63,
       11.63,
       11.63,
+      10.99,
       10.99
     ],
     "low": [
@@ -833,6 +837,7 @@
       11.0,
       11.0,
       11.0,
+      10.03,
       10.03
     ],
     "volume": [
@@ -980,7 +985,8 @@
       10573,
       10573,
       0,
-      10510
+      10510,
+      0
     ],
     "vwap": [
       7.86,
@@ -1127,7 +1133,8 @@
       10.8981,
       10.9551,
       10.9404,
-      10.9001
+      10.9001,
+      10.9654
     ],
     "resistance": 12.7825,
     "support": 10.03,
