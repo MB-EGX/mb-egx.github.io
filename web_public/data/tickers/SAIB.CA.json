@@ -1,10 +1,10 @@
 {
   "ticker": "SAIB.CA",
-  "last_data_date": "2026-09-22",
+  "last_data_date": "2026-09-23",
   "sector": "Banks",
   "matrix": {
     "Ticker": "SAIB.CA",
-    "Last Bar Date": "2026-09-22",
+    "Last Bar Date": "2026-09-23",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -36,9 +36,9 @@
     "Backtested Sample Size": null,
     "Current Price": 2.53,
     "Target Entry (VWAP)": 2.53,
-    "Suggested Stop-Loss": 1.7167,
+    "Suggested Stop-Loss": 1.7034,
     "Stop-Loss Reliable": true,
-    "Take-Profit Target": 3.5643,
+    "Take-Profit Target": 3.581,
     "Resistance (52W High)": 3.03,
     "Support (52W Low)": 2.11,
     "Open": 3.03,
@@ -51,8 +51,8 @@
     "Day Range %": 19.76,
     "Bid": null,
     "Ask": null,
-    "Relative Value Score": 85.6,
-    "Price Momentum Score": 56.5,
+    "Relative Value Score": 85.1,
+    "Price Momentum Score": 56.3,
     "Cash Flow Health Score (est.)": 100.0,
     "Profitability Health Score (est.)": 100.0,
     "Growth Health Score (est.)": 82.0,
@@ -62,8 +62,8 @@
     "CCI": 0.0,
     "ROC": 0.0,
     "Williams %R": -100.0,
-    "UO": 0.55,
-    "Bull/Bear Power": 0.5283,
+    "UO": 0.53,
+    "Bull/Bear Power": 0.5242,
     "Highs/Lows": 0.0,
     "Nearest Resistance": null,
     "Resistance Touches": null,
@@ -79,7 +79,7 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 4.91,
+    "Kelly %": 4.92,
     "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL (Signal unconfirmed: 2/5 factors passed, need 4 - low volume (RVOL/Z-score not confirmed), below VWAP, weak session close (near day's low)) | trend=Extremely Strong Bullish Trend | no decisive edge | weekly aligned",
     "Score Breakdown": {
       "pattern": 0.0,
@@ -91,17 +91,16 @@
     "Regime": "N/A",
     "Trend Class": "Extremely Strong Bullish Trend",
     "RSI-14": 100.0,
-    "ADX-14": 97.1,
-    "Vol Z-Score": -0.48,
+    "ADX-14": 97.2,
+    "Vol Z-Score": -0.45,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0148,
+    "MACD Histogram": -0.0151,
     "Bollinger %B": 0.5,
-    "Avg Volume (20D)": 6,
+    "Avg Volume (20D)": 3,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
     "dates": [
-      "2025-09-22 00:00:00",
       "2025-09-23 00:00:00",
       "2025-09-24 00:00:00",
       "2025-09-25 00:00:00",
@@ -358,7 +357,8 @@
       "2026-09-17 00:00:00",
       "2026-09-20 00:00:00",
       "2026-09-21 00:00:00",
-      "2026-09-22 00:00:00"
+      "2026-09-22 00:00:00",
+      "2026-09-23 00:00:00"
     ],
     "close": [
       2.11,
@@ -596,7 +596,7 @@
       2.11,
       2.11,
       2.11,
-      2.11,
+      2.53,
       2.53,
       2.53,
       2.53,
@@ -622,7 +622,6 @@
     ],
     "open": [
       2.11,
-      2.11,
       2.53,
       2.11,
       2.53,
@@ -874,6 +873,7 @@
       3.03,
       3.03,
       2.53,
+      3.03,
       3.03,
       3.03,
       3.03,
@@ -882,7 +882,6 @@
     ],
     "high": [
       2.11,
-      2.11,
       2.53,
       2.11,
       2.11,
@@ -1118,6 +1117,7 @@
       2.11,
       2.11,
       2.53,
+      3.03,
       3.03,
       3.03,
       3.03,
@@ -1142,7 +1142,6 @@
     ],
     "low": [
       2.11,
-      2.11,
       2.53,
       2.11,
       2.11,
@@ -1377,6 +1376,7 @@
       2.11,
       2.11,
       2.11,
+      2.53,
       2.53,
       2.53,
       2.53,
@@ -1401,7 +1401,6 @@
       2.53
     ],
     "volume": [
-      0,
       0,
       320,
       0,
@@ -1658,10 +1657,10 @@
       0,
       0,
       0,
+      0,
       0
     ],
     "vwap": [
-      2.11,
       2.11,
       2.39,
       2.39,
@@ -1917,6 +1916,7 @@
       2.5375,
       2.5375,
       2.5375,
+      2.6967,
       2.6967,
       2.6967
     ],
