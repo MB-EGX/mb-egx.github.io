@@ -1,10 +1,10 @@
 {
   "ticker": "APPC.CA",
-  "last_data_date": "2026-09-23",
+  "last_data_date": "2026-09-24",
   "sector": "Health Care & Pharmaceuticals",
   "matrix": {
     "Ticker": "APPC.CA",
-    "Last Bar Date": "2026-09-23",
+    "Last Bar Date": "2026-09-24",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -24,25 +24,25 @@
     "1M Return %": 14.6,
     "YTD Return %": 20.77,
     "1Y Return %": 44.04,
-    "3Y Return %": 74.44,
+    "3Y Return %": 78.41,
     "External Rating Consensus": 0.0,
     "External Rating Note": null,
-    "Action": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE]",
+    "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL",
     "Momentum": null,
-    "Rank Score": -9.0,
+    "Rank Score": -23.3,
     "Reward:Risk": 1.24,
-    "Win Rate Estimate (%)": 50.6,
-    "Win Rate Source": "backtest",
-    "Backtested Sample Size": 1987,
+    "Win Rate Estimate (%)": 50.0,
+    "Win Rate Source": "prior_50_50",
+    "Backtested Sample Size": null,
     "Current Price": 1.57,
     "Target Entry (VWAP)": 1.57,
-    "Suggested Stop-Loss": 1.1923,
+    "Suggested Stop-Loss": 1.2078,
     "Stop-Loss Reliable": true,
-    "Take-Profit Target": 2.0531,
+    "Take-Profit Target": 2.0337,
     "Resistance (52W High)": 1.89,
     "Support (52W Low)": 1.0,
     "Open": 1.65,
-    "Previous Close": 1.65,
+    "Previous Close": 1.57,
     "Day High": 1.65,
     "Day Low": 1.57,
     "Day's Range": "1.57 - 1.65",
@@ -56,14 +56,14 @@
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": 15.0,
     "Growth Health Score (est.)": 100.0,
-    "STOCH %K": 31.62,
-    "STOCH %D": 37.09,
+    "STOCH %K": 24.79,
+    "STOCH %D": 31.93,
     "STOCHRSI": 0.0,
-    "CCI": -107.28,
+    "CCI": -109.81,
     "ROC": -14.67,
     "Williams %R": -82.05,
-    "UO": 34.66,
-    "Bull/Bear Power": -0.0663,
+    "UO": 33.12,
+    "Bull/Bear Power": -0.0454,
     "Highs/Lows": 17.95,
     "Nearest Resistance": null,
     "Resistance Touches": null,
@@ -79,24 +79,24 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 5.43,
-    "Signal Reason": "🚫 ILLIQUID - 📈 ACCUMULATE [💥 SQUEEZE] | trend=Strong Bearish Trend | awaiting confirmation | weekly aligned | volatility squeeze | positive money flow",
+    "Kelly %": 4.88,
+    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Strong Bearish Trend | no decisive edge | weekly aligned",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
       "range": 3.2,
-      "trend_bonus": -22.0,
+      "trend_bonus": -40.0,
       "confidence_weight": 0.79
     },
     "Regime": "N/A",
     "Trend Class": "Strong Bearish Trend",
     "RSI-14": 47.8,
-    "ADX-14": 43.0,
-    "Vol Z-Score": -0.86,
+    "ADX-14": 40.4,
+    "Vol Z-Score": -1.15,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0174,
-    "Bollinger %B": 0.235,
-    "Avg Volume (20D)": 35005,
+    "MACD Histogram": -0.0213,
+    "Bollinger %B": 0.252,
+    "Avg Volume (20D)": 29147,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -246,7 +246,8 @@
       "2026-09-20 00:00:00",
       "2026-09-21 00:00:00",
       "2026-09-22 00:00:00",
-      "2026-09-23 00:00:00"
+      "2026-09-23 00:00:00",
+      "2026-09-24 00:00:00"
     ],
     "close": [
       1.09,
@@ -394,6 +395,7 @@
       1.69,
       1.65,
       1.65,
+      1.57,
       1.57
     ],
     "open": [
@@ -542,6 +544,7 @@
       1.77,
       1.69,
       1.74,
+      1.65,
       1.65
     ],
     "high": [
@@ -690,6 +693,7 @@
       1.83,
       1.74,
       1.74,
+      1.65,
       1.65
     ],
     "low": [
@@ -838,6 +842,7 @@
       1.68,
       1.5,
       1.5,
+      1.57,
       1.57
     ],
     "volume": [
@@ -986,7 +991,8 @@
       0,
       55433,
       0,
-      8335
+      8335,
+      0
     ],
     "vwap": [
       1.1,
@@ -1134,7 +1140,8 @@
       1.6488,
       1.6475,
       1.6647,
-      1.6835
+      1.6835,
+      1.7036
     ],
     "resistance": 1.89,
     "support": 1.2467,

@@ -1,10 +1,10 @@
 {
   "ticker": "EITP.CA",
-  "last_data_date": "2026-09-23",
+  "last_data_date": "2026-09-24",
   "sector": "Trade & Distributors",
   "matrix": {
     "Ticker": "EITP.CA",
-    "Last Bar Date": "2026-09-23",
+    "Last Bar Date": "2026-09-24",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -24,21 +24,21 @@
     "1M Return %": -6.89,
     "YTD Return %": -16.39,
     "1Y Return %": -21.26,
-    "3Y Return %": -74.66,
+    "3Y Return %": 102.75,
     "External Rating Consensus": -2.0,
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - 🛑 SELL / AVOID",
     "Momentum": "Oversold",
-    "Rank Score": 2.6,
-    "Reward:Risk": 2.12,
+    "Rank Score": -4.8,
+    "Reward:Risk": 1.68,
     "Win Rate Estimate (%)": 100.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 8.11,
     "Target Entry (VWAP)": 8.11,
-    "Suggested Stop-Loss": 7.5611,
+    "Suggested Stop-Loss": 7.6003,
     "Stop-Loss Reliable": true,
-    "Take-Profit Target": 9.3914,
+    "Take-Profit Target": 9.0605,
     "Resistance (52W High)": 12.77,
     "Support (52W Low)": 5.7,
     "Open": 8.11,
@@ -55,15 +55,15 @@
     "Price Momentum Score": 54.1,
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": 15.0,
-    "Growth Health Score (est.)": 2.0,
+    "Growth Health Score (est.)": 90.7,
     "STOCH %K": 0.0,
     "STOCH %D": 0.0,
     "STOCHRSI": 0.0,
-    "CCI": -132.9,
+    "CCI": -131.35,
     "ROC": -2.17,
     "Williams %R": -100.0,
-    "UO": 1.5,
-    "Bull/Bear Power": -0.2141,
+    "UO": 1.31,
+    "Bull/Bear Power": -0.1835,
     "Highs/Lows": 0.0,
     "Nearest Resistance": 10.475,
     "Resistance Touches": 2,
@@ -76,14 +76,14 @@
     "S1": 8.0167,
     "S2": 7.8333,
     "S3": 7.4667,
-    "Projected Gain (%)": 15.1,
-    "Pattern Conf (%)": 82.47,
-    "Projected Range 95%": "2.4% to 32.66%",
+    "Projected Gain (%)": 11.02,
+    "Pattern Conf (%)": 86.32,
+    "Projected Range 95%": "2.4% to 16.4%",
     "Kelly %": 25.0,
     "Signal Reason": "🚫 ILLIQUID - 🛑 SELL / AVOID | trend=Strong Bullish Trend | awaiting confirmation | volatility squeeze | oversold",
     "Score Breakdown": {
-      "pattern": 24.74,
-      "projected": 22.65,
+      "pattern": 25.9,
+      "projected": 16.53,
       "range": 1.7,
       "trend_bonus": -67.0,
       "confidence_weight": 0.79
@@ -91,12 +91,12 @@
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bullish Trend",
     "RSI-14": 29.3,
-    "ADX-14": 32.8,
-    "Vol Z-Score": -0.39,
-    "MACD Signal": "🟢 Bullish Cross",
-    "MACD Histogram": 0.0004,
-    "Bollinger %B": 0.256,
-    "Avg Volume (20D)": 841,
+    "ADX-14": 32.7,
+    "Vol Z-Score": -0.63,
+    "MACD Signal": "Bullish",
+    "MACD Histogram": 0.0024,
+    "Bollinger %B": 0.249,
+    "Avg Volume (20D)": 840,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -245,7 +245,8 @@
       "2026-09-20 00:00:00",
       "2026-09-21 00:00:00",
       "2026-09-22 00:00:00",
-      "2026-09-23 00:00:00"
+      "2026-09-23 00:00:00",
+      "2026-09-24 00:00:00"
     ],
     "close": [
       10.3,
@@ -390,6 +391,7 @@
       8.2,
       8.2,
       8.2,
+      8.11,
       8.11,
       8.11,
       8.11
@@ -539,6 +541,7 @@
       8.75,
       8.2,
       8.2,
+      8.11,
       8.11
     ],
     "high": [
@@ -686,6 +689,7 @@
       8.75,
       8.2,
       8.2,
+      8.11,
       8.11
     ],
     "low": [
@@ -831,6 +835,7 @@
       8.2,
       8.2,
       8.2,
+      8.11,
       8.11,
       8.11,
       8.11
@@ -980,7 +985,8 @@
       0,
       1289,
       0,
-      316
+      316,
+      0
     ],
     "vwap": [
       10.3,
@@ -1127,7 +1133,8 @@
       8.3417,
       8.326,
       8.326,
-      8.3219
+      8.3219,
+      8.3216
     ],
     "resistance": 12.77,
     "support": 5.7,
