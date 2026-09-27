@@ -56,15 +56,15 @@
 
 ============================================================
  Tickers backtested : 238
- Folds              : 6
- Trades             : 2670
- Win rate           : 49.4%
- Avg return/trade   : 0.659%
- Profit factor      : 1.149
- Sharpe (overall)   : 0.9214
- Max drawdown       : -99.46%
+ Folds              : 7
+ Trades             : 2719
+ Win rate           : 49.2%
+ Avg return/trade   : 0.731%
+ Profit factor      : 1.163
+ Sharpe (overall)   : 0.946
+ Max drawdown       : -99.66%
 ============================================================
-Saved as walk_forward_runs.id=49
+Saved as walk_forward_runs.id=50
 [  0%] Walk-forward: AALR.CA (0/263)...
 [  1%] Walk-forward: ACRO.CA (5/263)...
 [  3%] Walk-forward: ADRI.CA (10/263)...
@@ -123,9 +123,9 @@ Saved as walk_forward_runs.id=49
 Running walk-forward backtest with factor tagging...
 
 ==========================================================================================
- Trades: 2670   Win rate: 49.4%   Avg return/trade: 0.659%   Profit factor: 1.149
+ Trades: 2719   Win rate: 49.2%   Avg return/trade: 0.731%   Profit factor: 1.163
 
- Benchmark: .EGX30  (5/2670 trades have benchmark data)
+ Benchmark: .EGX30  (23/2719 trades have benchmark data)
 Traceback (most recent call last):
   File "C:\Users\Mohamed\Downloads\Stock-Web - Copy\backtest_tools.py", line 446, in <module>
     raise SystemExit(main())
@@ -146,7 +146,7 @@ Traceback (most recent call last):
   File "C:\Users\Mohamed\AppData\Local\Programs\Python\Python314\Lib\encodings\cp1252.py", line 19, in encode
     return codecs.charmap_encode(input,self.errors,encoding_table)[0]
            ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-UnicodeEncodeError: 'charmap' codec can't encode character '\u26a0' in position 75: character maps to <undefined>
+UnicodeEncodeError: 'charmap' codec can't encode character '\u26a0' in position 76: character maps to <undefined>
 Traceback (most recent call last):
   File "C:\Users\Mohamed\Downloads\Stock-Web - Copy\backtest_tools.py", line 446, in <module>
     raise SystemExit(main())
