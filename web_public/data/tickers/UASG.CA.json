@@ -1,16 +1,16 @@
 {
   "ticker": "UASG.CA",
-  "last_data_date": "2026-09-28",
+  "last_data_date": "2026-09-29",
   "sector": "Shipping & Transportation Services",
   "matrix": {
     "Ticker": "UASG.CA",
-    "Last Bar Date": "2026-09-28",
+    "Last Bar Date": "2026-09-29",
     "Days Stale": 0,
     "Day-1 Breakout": true,
     "Day-1 Breakout Reasons": [
       "Fresh 20-day high (dist -7.0%)",
-      "Volume 2.3x 20-day avg",
-      "Not extended (-2.7% vs VWAP)"
+      "Volume 2.1x 20-day avg",
+      "Not extended (-2.1% vs VWAP)"
     ],
     "Sector": "Shipping & Transportation Services",
     "Long-Term Setup Confirmed": false,
@@ -32,16 +32,16 @@
     "External Rating Note": null,
     "Action": "🟡 HOLD / NEUTRAL",
     "Momentum": "Oversold",
-    "Rank Score": 14.1,
-    "Reward:Risk": 0.28,
-    "Win Rate Estimate (%)": 0.0,
+    "Rank Score": 20.7,
+    "Reward:Risk": 0.37,
+    "Win Rate Estimate (%)": 20.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 0.4,
     "Target Entry (VWAP)": 0.4,
-    "Suggested Stop-Loss": 0.3636,
+    "Suggested Stop-Loss": 0.359,
     "Stop-Loss Reliable": true,
-    "Take-Profit Target": 0.4108,
+    "Take-Profit Target": 0.4162,
     "Resistance (52W High)": 0.57,
     "Support (52W Low)": 0.35,
     "Open": 0.4,
@@ -55,18 +55,18 @@
     "Bid": null,
     "Ask": null,
     "Relative Value Score": null,
-    "Price Momentum Score": 28.6,
+    "Price Momentum Score": 28.9,
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": 15.0,
     "Growth Health Score (est.)": 16.8,
-    "STOCH %K": 37.5,
-    "STOCH %D": 31.94,
+    "STOCH %K": 50.0,
+    "STOCH %D": 37.5,
     "STOCHRSI": 2.74,
-    "CCI": -214.29,
+    "CCI": -190.3,
     "ROC": -4.76,
     "Williams %R": -37.5,
-    "UO": 66.28,
-    "Bull/Bear Power": -0.0624,
+    "UO": 72.92,
+    "Bull/Bear Power": -0.0607,
     "Highs/Lows": 62.5,
     "Nearest Resistance": null,
     "Resistance Touches": null,
@@ -79,14 +79,14 @@
     "S1": 0.39,
     "S2": 0.38,
     "S3": 0.37,
-    "Projected Gain (%)": -2.56,
-    "Pattern Conf (%)": 42.06,
-    "Projected Range 95%": "-8.81% to 0.0%",
+    "Projected Gain (%)": 3.35,
+    "Pattern Conf (%)": 37.1,
+    "Projected Range 95%": "-1.9% to 15.32%",
     "Kelly %": 0.0,
-    "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Strong Bearish Trend | no decisive edge | vol x2.28 | oversold",
+    "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Strong Bearish Trend | no decisive edge | vol x2.09 | oversold",
     "Score Breakdown": {
-      "pattern": 12.62,
-      "projected": -3.84,
+      "pattern": 11.13,
+      "projected": 5.03,
       "range": 1.14,
       "trend_bonus": 0.0,
       "confidence_weight": 0.8
@@ -94,12 +94,12 @@
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bearish Trend",
     "RSI-14": 39.8,
-    "ADX-14": 26.3,
-    "Vol Z-Score": 1.07,
+    "ADX-14": 29.4,
+    "Vol Z-Score": 0.97,
     "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0014,
+    "MACD Histogram": -0.0013,
     "Bollinger %B": 0.224,
-    "Avg Volume (20D)": 391582,
+    "Avg Volume (20D)": 426963,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -251,7 +251,8 @@
       "2026-09-23 00:00:00",
       "2026-09-24 00:00:00",
       "2026-09-27 00:00:00",
-      "2026-09-28 00:00:00"
+      "2026-09-28 00:00:00",
+      "2026-09-29 00:00:00"
     ],
     "close": [
       0.47,
@@ -398,6 +399,7 @@
       0.41,
       0.41,
       0.41,
+      0.4,
       0.4,
       0.4,
       0.4,
@@ -551,6 +553,7 @@
       0.41,
       0.41,
       0.41,
+      0.4,
       0.4
     ],
     "high": [
@@ -701,6 +704,7 @@
       0.41,
       0.41,
       0.41,
+      0.4,
       0.4
     ],
     "low": [
@@ -851,6 +855,7 @@
       0.4,
       0.4,
       0.4,
+      0.35,
       0.35
     ],
     "volume": [
@@ -1001,6 +1006,7 @@
       139414,
       0,
       139414,
+      893558,
       893558
     ],
     "vwap": [
@@ -1151,7 +1157,8 @@
       0.4142,
       0.4146,
       0.4144,
-      0.4112
+      0.4112,
+      0.4085
     ],
     "resistance": 0.57,
     "support": 0.35,

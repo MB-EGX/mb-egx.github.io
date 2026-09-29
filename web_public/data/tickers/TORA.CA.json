@@ -1,10 +1,10 @@
 {
   "ticker": "TORA.CA",
-  "last_data_date": "2026-09-28",
+  "last_data_date": "2026-09-29",
   "sector": "Building Materials",
   "matrix": {
     "Ticker": "TORA.CA",
-    "Last Bar Date": "2026-09-28",
+    "Last Bar Date": "2026-09-29",
     "Days Stale": 0,
     "Day-1 Breakout": false,
     "Day-1 Breakout Reasons": [],
@@ -29,20 +29,20 @@
     "External Rating Note": null,
     "Action": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL",
     "Momentum": null,
-    "Rank Score": -10.8,
+    "Rank Score": -18.5,
     "Reward:Risk": 0.17,
-    "Win Rate Estimate (%)": 60.0,
+    "Win Rate Estimate (%)": 40.0,
     "Win Rate Source": "pattern_match",
     "Backtested Sample Size": null,
     "Current Price": 63.0,
-    "Target Entry (VWAP)": 63.0,
-    "Suggested Stop-Loss": 53.2448,
+    "Target Entry (VWAP)": 62.892,
+    "Suggested Stop-Loss": 53.1688,
     "Stop-Loss Reliable": true,
     "Take-Profit Target": 64.701,
     "Resistance (52W High)": 99.0,
     "Support (52W Low)": 31.03,
     "Open": 60.0,
-    "Previous Close": 61.0,
+    "Previous Close": 63.0,
     "Day High": 63.95,
     "Day Low": 58.54,
     "Day's Range": "58.54 - 63.95",
@@ -52,18 +52,18 @@
     "Bid": null,
     "Ask": null,
     "Relative Value Score": null,
-    "Price Momentum Score": 32.0,
+    "Price Momentum Score": 52.2,
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": 15.0,
     "Growth Health Score (est.)": 100.0,
-    "STOCH %K": 62.34,
-    "STOCH %D": 60.2,
+    "STOCH %K": 66.31,
+    "STOCH %D": 62.34,
     "STOCHRSI": 96.35,
-    "CCI": -64.1,
+    "CCI": -57.6,
     "ROC": -4.39,
     "Williams %R": -29.72,
-    "UO": 49.23,
-    "Bull/Bear Power": -2.5384,
+    "UO": 54.08,
+    "Bull/Bear Power": -2.6772,
     "Highs/Lows": 70.28,
     "Nearest Resistance": 74.5,
     "Resistance Touches": 2,
@@ -76,14 +76,14 @@
     "S1": 52.4667,
     "S2": 43.9333,
     "S3": 36.6667,
-    "Projected Gain (%)": 1.7,
-    "Pattern Conf (%)": 55.36,
-    "Projected Range 95%": "-1.82% to 5.17%",
+    "Projected Gain (%)": 0.98,
+    "Pattern Conf (%)": 27.15,
+    "Projected Range 95%": "-2.79% to 5.73%",
     "Kelly %": 0.0,
-    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Strong Bearish Trend | no decisive edge | vol x3.00",
+    "Signal Reason": "🚫 ILLIQUID - 🟡 HOLD / NEUTRAL | trend=Strong Bearish Trend | no decisive edge | vol x2.72",
     "Score Breakdown": {
-      "pattern": 16.61,
-      "projected": 2.55,
+      "pattern": 8.14,
+      "projected": 1.47,
       "range": 2.35,
       "trend_bonus": -40.0,
       "confidence_weight": 0.8
@@ -91,12 +91,12 @@
     "Regime": "Trending / Volatile",
     "Trend Class": "Strong Bearish Trend",
     "RSI-14": 44.5,
-    "ADX-14": 37.0,
-    "Vol Z-Score": 2.13,
-    "MACD Signal": "Bearish",
-    "MACD Histogram": -0.0065,
-    "Bollinger %B": 0.445,
-    "Avg Volume (20D)": 6358,
+    "ADX-14": 37.2,
+    "Vol Z-Score": 1.83,
+    "MACD Signal": "🟢 Bullish Cross",
+    "MACD Histogram": 0.1217,
+    "Bollinger %B": 0.461,
+    "Avg Volume (20D)": 7031,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -248,7 +248,8 @@
       "2026-09-23 00:00:00",
       "2026-09-24 00:00:00",
       "2026-09-27 00:00:00",
-      "2026-09-28 00:00:00"
+      "2026-09-28 00:00:00",
+      "2026-09-29 00:00:00"
     ],
     "close": [
       42.95,
@@ -398,6 +399,7 @@
       61.0,
       61.0,
       61.0,
+      63.0,
       63.0
     ],
     "open": [
@@ -548,6 +550,7 @@
       61.77,
       67.0,
       67.0,
+      60.0,
       60.0
     ],
     "high": [
@@ -698,6 +701,7 @@
       67.0,
       67.0,
       67.0,
+      63.95,
       63.95
     ],
     "low": [
@@ -848,6 +852,7 @@
       60.0,
       60.0,
       60.0,
+      58.54,
       58.54
     ],
     "volume": [
@@ -998,6 +1003,7 @@
       5981,
       0,
       5981,
+      19095,
       19095
     ],
     "vwap": [
@@ -1148,7 +1154,8 @@
       63.8057,
       63.6226,
       63.5723,
-      63.1961
+      63.1961,
+      62.892
     ],
     "resistance": 74.5,
     "support": 31.03,
