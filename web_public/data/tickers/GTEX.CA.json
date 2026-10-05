@@ -1,13 +1,17 @@
 {
   "ticker": "GTEX.CA",
-  "last_data_date": "2026-10-04",
+  "last_data_date": "2026-10-05",
   "sector": "Textiles & Durables",
   "matrix": {
     "Ticker": "GTEX.CA",
-    "Last Bar Date": "2026-10-04",
+    "Last Bar Date": "2026-10-05",
     "Days Stale": 0,
-    "Day-1 Breakout": false,
-    "Day-1 Breakout Reasons": [],
+    "Day-1 Breakout": true,
+    "Day-1 Breakout Reasons": [
+      "Fresh 20-day high (dist -20.0%)",
+      "Volume 2.3x 20-day avg",
+      "Not extended (-1.6% vs VWAP)"
+    ],
     "Sector": "Textiles & Durables",
     "Long-Term Setup Confirmed": false,
     "Long-Term Setup Reasons": [
@@ -24,20 +28,20 @@
     "YTD Return %": 11.11,
     "1Y Return %": 8.11,
     "3Y Return %": null,
-    "External Rating Consensus": 1.5,
+    "External Rating Consensus": -1.5,
     "External Rating Note": null,
     "Action": "🟡 HOLD / NEUTRAL",
     "Momentum": null,
-    "Rank Score": 14.9,
-    "Reward:Risk": 1.24,
+    "Rank Score": 14.7,
+    "Reward:Risk": 1.22,
     "Win Rate Estimate (%)": 50.0,
     "Win Rate Source": "prior_50_50",
     "Backtested Sample Size": null,
     "Current Price": 0.04,
     "Target Entry (VWAP)": 0.04,
-    "Suggested Stop-Loss": 0.0365,
+    "Suggested Stop-Loss": 0.0367,
     "Stop-Loss Reliable": true,
-    "Take-Profit Target": 0.0447,
+    "Take-Profit Target": 0.0443,
     "Resistance (52W High)": 0.05,
     "Support (52W Low)": 0.03,
     "Open": 0.04,
@@ -51,14 +55,14 @@
     "Bid": null,
     "Ask": null,
     "Relative Value Score": null,
-    "Price Momentum Score": 43.7,
+    "Price Momentum Score": 43.8,
     "Cash Flow Health Score (est.)": null,
     "Profitability Health Score (est.)": null,
     "Growth Health Score (est.)": 58.1,
     "STOCH %K": 0.0,
     "STOCH %D": 0.0,
-    "STOCHRSI": 100.0,
-    "CCI": -44.44,
+    "STOCHRSI": 50.0,
+    "CCI": -41.67,
     "ROC": 0.0,
     "Williams %R": -100.0,
     "UO": 30.61,
@@ -78,8 +82,8 @@
     "Projected Gain (%)": "N/A",
     "Pattern Conf (%)": "N/A",
     "Projected Range 95%": "N/A",
-    "Kelly %": 4.87,
-    "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Weak Bullish (Forming) | no decisive edge | weekly aligned",
+    "Kelly %": 4.45,
+    "Signal Reason": "🟡 HOLD / NEUTRAL | trend=Weak Bullish (Forming) | no decisive edge | weekly aligned | vol x2.35",
     "Score Breakdown": {
       "pattern": 0.0,
       "projected": 0.0,
@@ -90,12 +94,12 @@
     "Regime": "N/A",
     "Trend Class": "Weak Bullish (Forming)",
     "RSI-14": 49.7,
-    "ADX-14": 23.4,
-    "Vol Z-Score": -1.01,
+    "ADX-14": 24.5,
+    "Vol Z-Score": 1.39,
     "MACD Signal": "Bearish",
     "MACD Histogram": -0.0001,
     "Bollinger %B": 0.5,
-    "Avg Volume (20D)": 188535,
+    "Avg Volume (20D)": 201361,
     "Data Confidence": "High (1Y+)"
   },
   "chart_history": {
@@ -350,7 +354,8 @@
       "2026-09-28 00:00:00",
       "2026-09-29 00:00:00",
       "2026-10-01 00:00:00",
-      "2026-10-04 00:00:00"
+      "2026-10-04 00:00:00",
+      "2026-10-05 00:00:00"
     ],
     "close": [
       0.04,
@@ -583,6 +588,7 @@
       0.04,
       0.05,
       0.05,
+      0.04,
       0.04,
       0.04,
       0.04,
@@ -856,6 +862,7 @@
       0.04,
       0.04,
       0.04,
+      0.04,
       0.04
     ],
     "high": [
@@ -1109,6 +1116,7 @@
       0.04,
       0.04,
       0.04,
+      0.04,
       0.04
     ],
     "low": [
@@ -1342,6 +1350,7 @@
       0.04,
       0.04,
       0.05,
+      0.04,
       0.04,
       0.04,
       0.04,
@@ -1615,7 +1624,8 @@
       357786,
       140430,
       164502,
-      1000
+      1000,
+      472725
     ],
     "vwap": [
       0.0333,
@@ -1868,7 +1878,8 @@
       0.0427,
       0.0415,
       0.0412,
-      0.0409
+      0.0409,
+      0.0407
     ],
     "resistance": 0.05,
     "support": 0.03,
