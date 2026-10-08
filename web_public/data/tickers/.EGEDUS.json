@@ -1,6 +1,6 @@
 {
   "ticker": ".EGEDUS",
-  "last_data_date": "2026-10-05",
+  "last_data_date": "2026-10-07",
   "sector": "General / Diversified",
   "matrix": null,
   "chart_history": {
@@ -44,7 +44,8 @@
       "2026-09-29 00:00:00",
       "2026-10-01 00:00:00",
       "2026-10-04 00:00:00",
-      "2026-10-05 00:00:00"
+      "2026-10-05 00:00:00",
+      "2026-10-07 00:00:00"
     ],
     "close": [
       7089.63,
@@ -86,7 +87,8 @@
       12694.18,
       13165.54,
       13396.52,
-      13604.78
+      13604.78,
+      13344.89
     ],
     "open": [
       7101.02,
@@ -128,7 +130,8 @@
       12714.57,
       12463.15,
       13165.54,
-      13396.52
+      13396.52,
+      13452.12
     ],
     "high": [
       7112.73,
@@ -170,7 +173,8 @@
       12867.35,
       13341.0,
       13396.52,
-      14037.72
+      14037.72,
+      13471.4
     ],
     "low": [
       7083.45,
@@ -212,9 +216,11 @@
       12583.33,
       12463.15,
       13165.54,
-      13198.93
+      13198.93,
+      13344.89
     ],
     "volume": [
+      0,
       0,
       0,
       0,
@@ -296,9 +302,10 @@
       12694.18,
       13165.54,
       13396.52,
-      13604.78
+      13604.78,
+      13344.89
     ],
-    "resistance": 14820.41,
+    "resistance": 13588.38,
     "support": 12659.035,
     "pivots": {
       "pp": 13085.3967,
@@ -310,6 +317,37 @@
       "s3": 11840.9033
     },
     "patterns": [
+      {
+        "pattern": "Head & Shoulders",
+        "direction": "bearish",
+        "start_index": 8,
+        "end_index": 39,
+        "start_date": "2026-08-19",
+        "end_date": "2026-10-05",
+        "levels": {
+          "left_shoulder": 13727.21,
+          "head": 14220.35,
+          "right_shoulder": 13604.78,
+          "neckline": 12659.035,
+          "target": 11097.72
+        },
+        "quality": 0.84
+      },
+      {
+        "pattern": "Price Channel (Flat)",
+        "direction": "neutral",
+        "start_index": 8,
+        "end_index": 39,
+        "start_date": "2026-08-19",
+        "end_date": "2026-10-05",
+        "levels": {
+          "resistance_start": 13883.5952,
+          "resistance_end": 13821.3133,
+          "support_start": 12600.46,
+          "support_end": 12704.2214
+        },
+        "quality": 0.77
+      },
       {
         "pattern": "Double Bottom",
         "direction": "bullish",
@@ -324,6 +362,22 @@
           "target": 15781.665
         },
         "quality": 0.81
+      },
+      {
+        "pattern": "Descending Triangle",
+        "direction": "bearish",
+        "start_index": 15,
+        "end_index": 39,
+        "start_date": "2026-08-31",
+        "end_date": "2026-10-05",
+        "levels": {
+          "support": 12659.035,
+          "resistance_start": 14741.2169,
+          "resistance_end": 13604.78,
+          "apex_price": 12763.6766
+        },
+        "quality": 0.91,
+        "apex_index": 56.762958483433685
       }
     ]
   }
